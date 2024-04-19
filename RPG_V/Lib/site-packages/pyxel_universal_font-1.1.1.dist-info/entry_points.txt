@@ -1,0 +1,2 @@
+[console_scripts]
+puf = PyxelUniversalFont.command:command_manager
