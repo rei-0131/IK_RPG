@@ -1,9 +1,13 @@
 import pyxel
 import configparser
+import json
 from BDFRenderer import BDFRenderer
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("configs/config.ini")
+
+with open("configs/scenes.json",encoding="utf-8") as f:
+    scenes = json.loads(f.read())
 
 
 def dec(s_1,s_2):
@@ -32,16 +36,20 @@ pyxel.init(init_x,init_y,"test",fps=FPS)
 #文字コードの読み込み
 umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
 
+TITLE_SCENE = scenes["TITLE_SCENE"]
+MAIN_SCENE = scenes["MAIN_SCENE"]
+
 
 class Player:
     def __init__(self):
         self.x = 20
         self.y = init_y-100
         self.rl = 1
+        self.vy = 0
+        self.gravity = 0.98
         self.walk_img = 0
         self.walk_num = 0
         self.is_jump = False
-        self.is_fall = False
         self.walk_pos = [0,0,16,16]
 
     def update(self):
@@ -50,6 +58,7 @@ class Player:
         if pyxel.btn(pyxel.KEY_SPACE):
             if not self.is_jump:
                 self.is_jump = True
+                self.vy -= 10
         if pyxel.btn(pyxel.KEY_RIGHT):
             self.x += 1
             self.rl = 1
@@ -66,18 +75,10 @@ class Player:
             else:
                 self.walk_num += 1
         if self.is_jump:
-            if self.walk_num != 0:
-                self.walk_num = 0
-            if self.y < init_y-115 and not self.is_fall:
-                self.is_fall = True
-            if self.y <= init_y-100:
-                if self.is_fall:
-                    self.y += 2
-                else:
-                    self.y -= 3
-            else:
-                self.y = init_y-100
-                self.is_fall = False
+            self.vy += self.gravity
+            self.y += self.vy
+            if self.y > init_y - 100:
+                self.y = init_y - 100
                 self.is_jump = False
 
     def draw(self):
@@ -91,17 +92,26 @@ class App:
     def __init__(self):
         self.player = Player()
         #実行場所基準ではなくpyファイルの場所基準
+        self.now_scene = 0
+        from title import Title
+        self.title_s = Title()
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        self.player.update()
+        if self.now_scene == TITLE_SCENE:
+            self.now_scene = self.title_s.update()
+        elif self.now_scene == MAIN_SCENE:
+            self.player.update()
 
     def draw(self):
-        pyxel.cls(0)
-        dec("こんにちは 初めまして 桃井","今からデスゲームをしてもらう")
-        pyxel.line(10,init_y-100,init_x-10,init_y-100,7)
-        self.player.draw()
+        if self.now_scene == TITLE_SCENE:
+            self.title_s.draw()
+        elif self.now_scene == MAIN_SCENE:
+            pyxel.cls(0)
+            dec("こんにちは 初めまして XX","AIUEO aiueo あいうえお")
+            pyxel.line(10,init_y-100,init_x-10,init_y-100,7)
+            self.player.draw()
 
 
 App()
