@@ -9,23 +9,51 @@ config.read("configs/config.ini")
 with open("configs/scenes.json",encoding="utf-8") as f:
     scenes = json.loads(f.read())
 
+#セーブ機能
+#フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
+#プレイ時にファイルの存在の確認
+#複数のセーブデータの保存を可能に
+#特定キーが押された際、セーブできるウィンドウや仲間のステータスや装備の表示
+#改行ができるようにする \n を検知して改行する(2行まで)
 
-def dec(s_1,s_2):
+
+def dec(msg_dis:int,msg_num:int) -> tuple[int, int]:
     """文字を表示するデコレーション
 
     Parameters:
     ----------
-    x : Any
-        1行目に表示する文字列
-    y : Any
-        2行目に表示する文字列
+    msg_dis : int
+        表示する文字列のDictionaryのKey
+    msg_num : int
+        sのインデックス番号
+    Returns:
+    ----------
+    msg_dis : int
+        表示する文字列のDictionaryのKey
+    msg_num : int
+        sのインデックス番号
     """
 
+    s = words[msg_dis]
     pyxel.rect(5,10,init_x-10,30,0)
     pyxel.rectb(5,10,init_x-10,30,7)
+    if msg_num + 1 < len(s):
+        pyxel.tri(init_x/2-5,32,init_x/2+5,32,init_x/2,36,7)
     # 13文字以内 2行以内
-    umplus10.draw_text(5,15,s_1,7)
-    umplus10.draw_text(5,25,s_2,7)
+    umplus10.draw_text(5,15,s[msg_num],7)
+    if pyxel.btnp(pyxel.KEY_N):
+        print(f"{len(words)} {len(s)} {msg_num} {msg_dis}")
+        if msg_num + 1 < len(s):
+            msg_num += 1
+        else:
+            if len(words) - 1 == msg_dis + 1:
+                msg_dis = -1
+            elif len(words) - 1 > msg_dis + 1:
+                msg_dis += 1
+            msg_num = 0
+        print(f"{len(words)} {len(s)} {msg_num} {msg_dis}")
+
+    return msg_dis, msg_num
 
 
 init_x = int(config.get("args","screen_x"))
@@ -38,6 +66,8 @@ umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
 
 TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
+
+words = {-1:["",""],0:["こんにちは 初めまして XX","AIUEO aiueo あいうえお"],1:["OEUIA oeuia","sdfsd","werwe"]}
 
 
 class Player:
@@ -65,7 +95,7 @@ class Player:
         if pyxel.btn(pyxel.KEY_LEFT):
             self.x -= 1
             self.rl = -1
-        if not (pyxel.btn(pyxel.KEY_SPACE) or pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT)) and not self.is_jump:
+        if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT)) and not self.is_jump:
             self.walk_img = 0
             self.walk_num = 0
         elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT)) and not self.is_jump:
@@ -93,6 +123,8 @@ class App:
         self.player = Player()
         #実行場所基準ではなくpyファイルの場所基準
         self.now_scene = 0
+        self.msg_dis = 0
+        self.msg_num = 0
         from title import Title
         self.title_s = Title()
         pyxel.load("../assets/player.pyxres")
@@ -109,7 +141,10 @@ class App:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
-            dec("こんにちは 初めまして XX","AIUEO aiueo あいうえお")
+            if self.msg_dis == 0 and self.player.x < 350:
+                self.msg_dis,self.msg_num = dec(self.msg_dis,self.msg_num)
+            elif self.msg_dis == 1 and self.player.x >= 350:
+                self.msg_dis,self.msg_num = dec(self.msg_dis,self.msg_num)
             pyxel.line(10,init_y-100,init_x-10,init_y-100,7)
             self.player.draw()
 
