@@ -17,6 +17,10 @@ with open("configs/scenes.json",encoding="utf-8") as f:
 #改行ができるようにする \n を検知して改行する(2行まで)
 
 
+#呼び出す自作関数の中にあるファイル読み込みは自作関数があるディレクトリからカウントされる
+#その他は、基本的にはファイルの実行ディレクトリからカウントされる
+
+
 def dec(msg_dis:int,msg_num:int) -> tuple[int, int]:
     """文字を表示するデコレーション
 
