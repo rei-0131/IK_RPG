@@ -9,6 +9,11 @@ config.read("configs/config.ini")
 with open("configs/scenes.json",encoding="utf-8") as f:
     scenes = json.loads(f.read())
 
+
+with open("assets/words.json",encoding="utf-8") as f:
+    words = json.load(f)
+
+
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
 #プレイ時にファイルの存在の確認
@@ -38,7 +43,7 @@ def dec(msg_dis:int,msg_num:int) -> tuple[int, int]:
         sのインデックス番号
     """
 
-    s = words[msg_dis]
+    s = words[str(msg_dis)]
     pyxel.rect(5,10,init_x-10,30,0)
     pyxel.rectb(5,10,init_x-10,30,7)
     if msg_num + 1 < len(s):
@@ -70,8 +75,6 @@ umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
 
 TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
-
-words = {-1:["",""],0:["こんにちは 初めまして XX","AIUEO aiueo あいうえお"],1:["OEUIA oeuia","sdfsd","werwe"]}
 
 
 class Player:
