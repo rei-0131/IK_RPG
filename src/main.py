@@ -58,11 +58,11 @@ def dec_word(msg_dis:int,msg_num:int) -> tuple[int, int]:
 
     s = words["words"][str(msg_dis)]
     #テキスト出力の囲いの描画
-    pyxel.rect(5,init_y-40,init_x-10,init_y-10,0)
-    pyxel.rectb(5,10,init_x-10,30,7)
-    pyxel.tri(init_x/2-5,32,init_x/2+5,32,init_x/2,36,7)
+    pyxel.rect(5,init_y-60,init_x-10,init_y-10,0)
+    pyxel.rectb(5,init_y-60,init_x-10,init_y-10,7)
+    pyxel.tri(init_x/2-5,init_y-12,init_x/2+5,init_y-12,init_x/2,init_y-8,7)
     # 13文字以内 2行以内
-    umplus10.draw_text(5,15,s[msg_num],7)
+    umplus10.draw_text(5,init_y-55,s[msg_num],7)
     #質問w投げかけたときの処理
     if "question" in s[msg_num]:
         pass
