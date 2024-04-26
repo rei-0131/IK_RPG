@@ -26,7 +26,20 @@ with open("assets/words.json",encoding="utf-8") as f:
 #その他は、基本的にはファイルの実行ディレクトリからカウントされる
 
 
-def dec(msg_dis:int,msg_num:int) -> tuple[int, int]:
+def dec_question(msg_dis:int):
+    """質問を表示するデコレーション
+
+    Parameters:
+    ----------
+    msg_dis : int
+        表示する文字列のDictionaryのKey
+    """
+
+    s = words["questions"][str(msg_dis)]
+    pass
+
+
+def dec_word(msg_dis:int,msg_num:int) -> tuple[int, int]:
     """文字を表示するデコレーション
 
     Parameters:
@@ -43,13 +56,16 @@ def dec(msg_dis:int,msg_num:int) -> tuple[int, int]:
         sのインデックス番号
     """
 
-    s = words[str(msg_dis)]
-    pyxel.rect(5,10,init_x-10,30,0)
-    pyxel.rectb(5,10,init_x-10,30,7)
-    if msg_num + 1 < len(s):
-        pyxel.tri(init_x/2-5,32,init_x/2+5,32,init_x/2,36,7)
+    s = words["words"][str(msg_dis)]
+    #テキスト出力の囲いの描画
+    pyxel.rect(5,init_y-60,init_x-10,init_y-10,0)
+    pyxel.rectb(5,init_y-60,init_x-10,init_y-10,7)
+    pyxel.tri(init_x/2-5,init_y-12,init_x/2+5,init_y-12,init_x/2,init_y-8,7)
     # 13文字以内 2行以内
-    umplus10.draw_text(5,15,s[msg_num],7)
+    umplus10.draw_text(5,init_y-55,s[msg_num],7)
+    #質問w投げかけたときの処理
+    if "question" in s[msg_num]:
+        pass
     if pyxel.btnp(pyxel.KEY_N):
         print(f"{len(words)} {len(s)} {msg_num} {msg_dis}")
         if msg_num + 1 < len(s):
@@ -149,9 +165,9 @@ class App:
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
             if self.msg_dis == 0 and self.player.x < 350:
-                self.msg_dis,self.msg_num = dec(self.msg_dis,self.msg_num)
+                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num)
             elif self.msg_dis == 1 and self.player.x >= 350:
-                self.msg_dis,self.msg_num = dec(self.msg_dis,self.msg_num)
+                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num)
             pyxel.line(10,init_y-100,init_x-10,init_y-100,7)
             self.player.draw()
 
