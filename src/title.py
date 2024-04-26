@@ -18,5 +18,5 @@ class Title:
 
     def draw(self):
         pyxel.cls(0)
-        self.umplus10.draw_text(250,200,"     Title     ",7)
-        self.umplus10.draw_text(250,300,"- PRESS Enter -")
+        self.umplus10.draw_text(100,100,"     Title     ",7)
+        self.umplus10.draw_text(100,150,"- PRESS Enter -")
