@@ -122,6 +122,7 @@ class Player:
 
     def update(self):
         global is_question, is_answer
+        
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
         if not is_question:
