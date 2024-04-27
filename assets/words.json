@@ -1,4 +1,6 @@
 {
     "words":{"-1":["",""],"0":["こんにちは 初めまして XX","AIUEO aiueo あいうえおquestion"],"1":["OEUIA oeuia","sdfsd","werwe"]},
-    "questions":{"-1":["",""],"0":["Yes","はい","No","いいえ"]}
+
+    "questions":{"-1":["",""],"0":["Yes","はい"]},
+    "answers":{"-1":["",""],"0":["a","i"]}
 }

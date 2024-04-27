@@ -28,6 +28,7 @@ with open("assets/words.json",encoding="utf-8") as f:
 
 def dec_question(msg_dis:int):
     """質問を表示するデコレーション
+    質問は1度に4つまで
 
     Parameters:
     ----------
@@ -36,11 +37,11 @@ def dec_question(msg_dis:int):
     """
 
     s = words["questions"][str(msg_dis)]
-    height = len(s) * 9
-    pyxel.rect(init_x-40,init_y-60-height,35,37,0)
-    pyxel.rectb(init_x-40,init_y-60-height,35,37,7)
+    que_height = len(s) * 9
+    pyxel.rect(init_x-50,init_y-60-que_height,45,que_height+1,0)
+    pyxel.rectb(init_x-50,init_y-60-que_height,45,que_height+1,7)
     for i,h in zip(s,range(0,len(s)*9,9)):
-        umplus10.draw_text(init_x-38,init_y-97+h,i,7)
+        umplus10.draw_text(init_x-48,init_y-97+h+(36-que_height),i,7)
 
 
 def dec_word(msg_dis:int,msg_num:int) -> tuple[int, int]:
@@ -73,7 +74,7 @@ def dec_word(msg_dis:int,msg_num:int) -> tuple[int, int]:
         dec_question(msg_dis)
     else:
         umplus10.draw_text(6,init_y-55,s[msg_num],7)
-    if pyxel.btnp(pyxel.KEY_N) or pyxel.btnp(pyxel.KEY_RETURN):
+    if (not is_question and pyxel.btnp(pyxel.KEY_N)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN)):
         is_question = False
         print(f"{len(words['words'])} {len(s)} {msg_num} {msg_dis}")
         if msg_num + 1 < len(s):
@@ -101,6 +102,9 @@ TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
 
 is_question = False
+is_answer = False
+
+que_height = 0
 
 
 class Player:
@@ -117,7 +121,8 @@ class Player:
         self.walk_pos = [0,0,16,16]
 
     def update(self):
-        global is_question
+        global is_question, is_answer
+        
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
         if not is_question:
@@ -149,6 +154,7 @@ class Player:
                     self.question_mark += 9
             if pyxel.btnp(pyxel.KEY_RETURN):
                 print(self.question_mark/9)
+                is_answer = True
         if self.is_jump:
             self.vy += self.gravity
             self.y += self.vy
@@ -158,7 +164,7 @@ class Player:
 
     def draw(self):
         if is_question:
-            pyxel.blt(init_x-55,init_y-96-self.question_mark,self.walk_img,self.walk_pos[self.walk_num],0, 14 * self.rl,15,0)
+            pyxel.blt(init_x-67,init_y-96-self.question_mark,self.walk_img,15,0, 30,15,0)
         if self.is_jump:
             pyxel.blt(self.x,self.y - 15,1,0,0,15 * self.rl,15,0)
         else:
