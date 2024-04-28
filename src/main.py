@@ -4,16 +4,21 @@ import json
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
+from new_save import NewGame
+from save_load import SaveLoad
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("configs/config.ini")
 
-with open("configs/scenes.json",encoding="utf-8") as f:
+with open("assets/scenes.json",encoding="utf-8") as f:
     scenes = json.load(f)
 
 
 with open("assets/words.json",encoding="utf-8") as f:
     words = json.load(f)
+
+with open("configs/savedata.json",encoding="utf-8") as f:
+    save_data = json.load(f)
 
 
 #セーブ機能
@@ -74,16 +79,18 @@ def dec_word(msg_dis:int,msg_num:int,question) -> tuple[int, int]:
     return msg_dis, msg_num
 
 
-init_x = int(config.get("args","screen_x"))
-init_y = int(config.get("args","screen_y"))
-FPS = int(config.get("args","fps"))
+init_x = int(config.get("basic","screen_x"))
+init_y = int(config.get("basic","screen_y"))
+FPS = int(config.get("basic","fps"))
+name = config.get("basic","name")
 #BDFRendererのインスタンス作成より前にinitしないとエラーが発生する
-pyxel.init(init_x,init_y,"test",fps=FPS)
+pyxel.init(init_x,init_y,name,fps=FPS)
 #文字コードの読み込み
 umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
 
 TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
+BATTLE_SCENE = scenes["BATTLE_SCENE"]
 
 is_question = False
 is_answer = False
@@ -159,19 +166,28 @@ class App:
         self.now_scene = 0
         self.msg_dis = 0
         self.msg_num = 0
-        self.title_s = Title()
+        self.title_s = Title(init_x,init_y)
+        self.new_game = NewGame()
+        self.load_game = SaveLoad(init_x,init_y)
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):
         if self.now_scene == TITLE_SCENE:
             self.now_scene = self.title_s.update()
+            if self.title_s.game_start == 1:
+                self.load_game.update()
         elif self.now_scene == MAIN_SCENE:
             self.player.update()
 
     def draw(self):
         if self.now_scene == TITLE_SCENE:
             self.title_s.draw()
+            if self.title_s.game_start != -1:
+                if self.title_s.game_start == 0:
+                    self.new_game.create_newsave()
+                elif self.title_s.game_start == 1:
+                    self.load_game.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
             if self.msg_dis == 0 and self.player.x < 175:
