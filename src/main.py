@@ -2,6 +2,8 @@ import pyxel
 import configparser
 import json
 from BDFRenderer import BDFRenderer
+from question import Question
+from title import Title
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("configs/config.ini")
@@ -26,25 +28,7 @@ with open("assets/words.json",encoding="utf-8") as f:
 #その他は、基本的にはファイルの実行ディレクトリからカウントされる
 
 
-def dec_question(msg_dis:int):
-    """質問を表示するデコレーション
-    質問は1度に4つまで
-
-    Parameters:
-    ----------
-    msg_dis : int
-        表示する文字列のDictionaryのKey
-    """
-
-    s = words["questions"][str(msg_dis)]
-    que_height = len(s) * 9
-    pyxel.rect(init_x-50,init_y-60-que_height,45,que_height+1,0)
-    pyxel.rectb(init_x-50,init_y-60-que_height,45,que_height+1,7)
-    for i,h in zip(s,range(0,len(s)*9,9)):
-        umplus10.draw_text(init_x-48,init_y-97+h+(36-que_height),i,7)
-
-
-def dec_word(msg_dis:int,msg_num:int) -> tuple[int, int]:
+def dec_word(msg_dis:int,msg_num:int,question) -> tuple[int, int]:
     global is_question
     """文字を表示するデコレーション
 
@@ -71,7 +55,7 @@ def dec_word(msg_dis:int,msg_num:int) -> tuple[int, int]:
     if "question" in str(s[msg_num]):
         is_question = True
         umplus10.draw_text(6,init_y-55,str(s[msg_num]).replace("question",""),7)
-        dec_question(msg_dis)
+        question.dec_question(msg_dis)
     else:
         umplus10.draw_text(6,init_y-55,s[msg_num],7)
     if (not is_question and pyxel.btnp(pyxel.KEY_N)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN)):
@@ -108,9 +92,11 @@ que_height = 0
 
 
 class Player:
-    def __init__(self):
+    def __init__(self,x,y,question):
         self.x = 20
-        self.y = init_y-100
+        self.y = y-100
+        self.init_x = x
+        self.init_y = y
         self.rl = 1
         self.vy = 0
         self.gravity = 0.98
@@ -118,6 +104,7 @@ class Player:
         self.walk_num = 0
         self.question_mark = 0
         self.is_jump = False
+        self.question = question
         self.walk_pos = [0,0,16,16]
 
     def update(self):
@@ -145,25 +132,17 @@ class Player:
                 else:
                     self.walk_num += 1
         else:
-            if pyxel.btnp(pyxel.KEY_DOWN):
-                if self.question_mark != -27:
-                    self.question_mark -= 9
-            if pyxel.btnp(pyxel.KEY_UP):
-                if self.question_mark != 0:
-                    self.question_mark += 9
-            if pyxel.btnp(pyxel.KEY_RETURN):
-                print(self.question_mark/9)
-                is_answer = True
+            self.question.update()
         if self.is_jump:
             self.vy += self.gravity
             self.y += self.vy
-            if self.y > init_y - 100:
-                self.y = init_y - 100
+            if self.y > self.init_y - 100:
+                self.y = self.init_y - 100
                 self.is_jump = False
 
     def draw(self):
         if is_question:
-            pyxel.blt(init_x-67,init_y-96-self.question_mark,self.walk_img,15,0, 30,15,0)
+            self.question.draw()
         if self.is_jump:
             pyxel.blt(self.x,self.y - 15,1,0,0,15 * self.rl,15,0)
         else:
@@ -171,13 +150,15 @@ class Player:
 
 
 class App:
-    def __init__(self):
-        self.player = Player()
+    def __init__(self,x,y):
+        self.init_x = x
+        self.init_y = y
+        self.question = Question(init_x,init_y,umplus10)
+        self.player = Player(x,y,self.question)
         #実行場所基準ではなくpyファイルの場所基準
         self.now_scene = 0
         self.msg_dis = 0
         self.msg_num = 0
-        from title import Title
         self.title_s = Title()
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
@@ -194,11 +175,11 @@ class App:
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
             if self.msg_dis == 0 and self.player.x < 175:
-                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num)
+                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num,self.question)
             elif self.msg_dis == 1 and self.player.x >= 175:
-                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num)
-            pyxel.line(10,init_y-100,init_x-10,init_y-100,7)
+                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num,self.question)
+            pyxel.line(10,self.init_y-100,self.init_x-10,self.init_y-100,7)
             self.player.draw()
 
 
-App()
+App(init_x,init_y)
