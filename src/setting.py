@@ -18,11 +18,10 @@ class Setting:
             if self.finger_pos != 77:
                 self.finger_pos += 11
         elif pyxel.btnp(pyxel.KEY_RETURN):
-            enter_pos = self.finger_pos//11
-            print(enter_pos)
-            if enter_pos == -1:
-                if enter_pos == 7:
-                    pyxel.quit()
+            self.enter_pos = self.finger_pos//11
+            print(self.enter_pos)
+            if self.enter_pos == 7:
+                pyxel.quit()
 
     def draw(self):
         pyxel.cls(0)
