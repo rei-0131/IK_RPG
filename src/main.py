@@ -4,8 +4,9 @@ import json
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
-from new_save import NewGame
+from save import Save
 from save_load import SaveLoad
+from setting import Setting
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("configs/config.ini")
@@ -90,6 +91,7 @@ umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
 
 TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
+SETTING_SCENE = scenes["SETTING_SCENE"]
 BATTLE_SCENE = scenes["BATTLE_SCENE"]
 
 is_question = False
@@ -116,9 +118,7 @@ class Player:
 
     def update(self):
         global is_question, is_answer
-        
-        if pyxel.btnp(pyxel.KEY_Q):
-            pyxel.quit()
+
         if not is_question:
             if pyxel.btn(pyxel.KEY_SPACE):
                 if not self.is_jump:
@@ -161,15 +161,17 @@ class App:
     def __init__(self,x,y):
         self.init_x = x
         self.init_y = y
-        self.question = Question(init_x,init_y,umplus10)
-        self.player = Player(x,y,self.question)
+        self.question = Question(self.init_x,self.init_y,umplus10)
+        self.player = Player(self.init_x,self.init_y,self.question)
         #実行場所基準ではなくpyファイルの場所基準
         self.now_scene = 0
         self.msg_dis = 0
         self.msg_num = 0
-        self.title_s = Title(init_x,init_y)
-        self.new_game = NewGame()
-        self.load_game = SaveLoad(init_x,init_y)
+        self.be_scene = 0
+        self.title_s = Title(self.init_x,self.init_y)
+        self.save = Save()
+        self.load_game = SaveLoad(self.init_x,self.init_y)
+        self.setting = Setting(self.init_x,self.init_y,umplus10)
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
@@ -180,13 +182,23 @@ class App:
                 self.load_game.update()
         elif self.now_scene == MAIN_SCENE:
             self.player.update()
+        elif self.now_scene == SETTING_SCENE:
+            self.setting.update()
+        if pyxel.btnp(pyxel.KEY_TAB):
+            if self.now_scene == SETTING_SCENE:
+                self.now_scene = self.be_scene
+            else:
+                self.be_scene = self.now_scene
+                self.now_scene = SETTING_SCENE
+        if pyxel.btnp(pyxel.KEY_Q):
+            pyxel.quit()
 
     def draw(self):
         if self.now_scene == TITLE_SCENE:
             self.title_s.draw()
             if self.title_s.game_start != -1:
                 if self.title_s.game_start == 0:
-                    self.new_game.create_newsave()
+                    self.save.create_newsave()
                 elif self.title_s.game_start == 1:
                     self.load_game.draw()
         elif self.now_scene == MAIN_SCENE:
@@ -197,6 +209,8 @@ class App:
                 self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num,self.question)
             pyxel.line(10,self.init_y-100,self.init_x-10,self.init_y-100,7)
             self.player.draw()
+        elif self.now_scene == SETTING_SCENE:
+            self.setting.draw()
 
 
 App(init_x,init_y)
