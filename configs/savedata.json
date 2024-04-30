@@ -5,5 +5,33 @@
         {
             "scene":0
         }
+    },
+    "1":
+    {
+        "play_data":
+        {
+            "scene":1
+        }
+    },
+    "2":
+    {
+        "play_data":
+        {
+            "scene":2
+        }
+    },
+    "3":
+    {
+        "play_data":
+        {
+            "scene":3
+        }
+    },
+    "4":
+    {
+        "play_data":
+        {
+            "scene":4
+        }
     }
 }
