@@ -2,5 +2,6 @@
     "TITLE_SCENE":0,
     "MAIN_SCENE":1,
     "SETTING_SCENE":2,
-    "BATTLE_SCENE":3
+    "SAVE_SCENE":3,
+    "BATTLE_SCENE":4
 }
