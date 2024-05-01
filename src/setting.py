@@ -13,14 +13,17 @@ class Setting:
         self.save_pos = 1
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
-        print(self.save_data)
         self.save = Save()
 
     def save_update(self):
         if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
             self.setting_finger -= 1
-        elif pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
+        if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
             self.setting_finger += 1
+        if pyxel.btnp(pyxel.KEY_LEFT):
+            self.enter_pos = -1
+        if pyxel.btnp(pyxel.KEY_RETURN):
+            print(self.setting_finger)
 
     def update(self):
         if self.enter_pos == -1:
@@ -45,17 +48,20 @@ class Setting:
             self.save_pos -= 1
         for i,l in zip(range(0,4),range(self.save_pos,4+self.save_pos)):
             if l == self.setting_finger:
-                pyxel.rect(70,6+(48.75*(i)),self.init_x-70,48.75,1)
-                pyxel.rectb(70,6+(48.75*(i)),self.init_x-70,48.75,7)
+                pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,1)
+                pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
             else:
-                pyxel.rect(70,6+(48.75*(i)),self.init_x-70,48.75,0)
-                pyxel.rectb(70,6+(48.75*(i)),self.init_x-70,48.75,7)
-            self.umplus10.draw_text(71,6+int(48.75*(i)),f"data {l}",7)
-
+                pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
+                pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
+            self.umplus10.draw_text(71,5+int(48.75*(i)),f"data {l}",7)
             if str(l) in self.save_data:
-                pass
+                self.umplus10.draw_text(200,6+int(48.75*(i)),f"time:{self.save_data[str(l)]['play_data']['time']}",7)
             else:
-                pass
+                self.umplus10.draw_text(125,25+int(48.75*(i)),f"保存データなし",7)
+            # if str(l) in self.save_data:
+            #     print(self.save_data[str(l)]["play_data"])
+            # else:
+            #     self.save_data[str(l)]["play_data"] = {}
 
     def draw(self):
         pyxel.cls(0)
