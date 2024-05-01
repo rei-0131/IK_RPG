@@ -4,7 +4,7 @@ from save import Save
 
 #セーブデータをロードする画面を表示する
 class SaveLoad:
-    def __init__(self,x,y,ump,over_load):
+    def __init__(self,x,y,ump,over_load,left=True,load=False):
         self.init_x = x
         self.init_y = y
         self.umplus10 = ump
@@ -13,37 +13,49 @@ class SaveLoad:
         self.setting_finger = 1
         self.save_pos = 1
         self.save = Save()
+        self.left = left
         self.over_load = over_load
+        self.continue_game = False
+        self.load = load
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
+        with open("../assets/scenes.json",encoding="utf-8") as f:
+            self.scenes = json.load(f)
+        self.load = self.scenes["LOAD_SCENE"]
+        self.title = self.scenes["TITLE_SCENE"]
+        self.main = self.scenes["MAIN_SCENE"]
 
     def update(self):
-        enter_pos = 1
-        if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
-            self.setting_finger -= 1
-        if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
-            self.setting_finger += 1
-        if pyxel.btnp(pyxel.KEY_LEFT):
-            enter_pos = -1
-        if pyxel.btnp(pyxel.KEY_RETURN):
-            print(self.setting_finger)
-            if self.over_load:
-                self.save.newsave(self.setting_finger)
-        return enter_pos
-
-    def t_update(self):
-        enter_pos = 0
-        if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
-            self.setting_finger -= 1
-        if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
-            self.setting_finger += 1
-        if pyxel.btnp(pyxel.KEY_LEFT):
-            enter_pos = -1
-        if pyxel.btnp(pyxel.KEY_RETURN):
-            print(self.setting_finger)
-            if self.over_load:
-                self.save.newsave(self.setting_finger)
-        return enter_pos
+        if self.left:
+            enter_pos = 1
+            if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
+                self.setting_finger -= 1
+            if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
+                self.setting_finger += 1
+            if pyxel.btnp(pyxel.KEY_LEFT):
+                enter_pos = -1
+            if pyxel.btnp(pyxel.KEY_RETURN):
+                print(self.setting_finger)
+                if self.over_load:
+                    self.save.newsave(self.setting_finger)
+            return enter_pos
+        else:
+            enter_pos = self.load
+            if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
+                self.setting_finger -= 1
+            if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
+                self.setting_finger += 1
+            if pyxel.btnp(pyxel.KEY_LEFT):
+                enter_pos = self.title
+            if pyxel.btnp(pyxel.KEY_RETURN):
+                print(self.setting_finger)
+                if self.load:
+                    if str(self.setting_finger) in self.save_data:
+                        enter_pos = self.main
+                self.continue_game = True
+                if self.over_load:
+                    self.save.newsave(self.setting_finger)
+            return enter_pos
 
     def draw(self):
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)

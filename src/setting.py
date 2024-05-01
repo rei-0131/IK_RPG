@@ -15,8 +15,13 @@ class In_Setting:
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True)
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
+        with open("../assets/scenes.json",encoding="utf-8") as f:
+            self.scenes = json.load(f)
+        self.setting_sc = self.scenes["IN_SETTING_SCENE"]
+        self.title_sc = self.scenes["MAIN_SCENE"]
 
     def update(self):
+        scene = self.title_sc
         if self.enter_pos == -1:
             if pyxel.btnp(pyxel.KEY_UP):
                 if self.finger_pos != 0:
@@ -30,7 +35,8 @@ class In_Setting:
         elif self.enter_pos == 7:
             pyxel.quit()
         elif self.enter_pos == 6:
-            self.enter_pos = self.save_load.update(self.enter_pos)
+            #ゲーム中のセーブ機能の追加
+            self.enter_pos = self.save_load.update()
 
     def draw(self):
         pyxel.cls(0)
@@ -60,12 +66,11 @@ class Out_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
-        self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False)
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
         with open("../assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
-        self.setting_sc = self.scenes["SETTING_SCENE"]
+        self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
         self.title_sc = self.scenes["TITLE_SCENE"]
 
     def update(self):
@@ -74,18 +79,15 @@ class Out_Setting:
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
             elif pyxel.btnp(pyxel.KEY_DOWN):
-                if self.finger_pos != 22:
+                if self.finger_pos != 11:
                     self.finger_pos += 11
             elif pyxel.btnp(pyxel.KEY_RETURN):
                 self.enter_pos = self.finger_pos//11
             elif pyxel.btnp(pyxel.KEY_LEFT):
                 return self.title_sc
             return self.setting_sc
-        elif self.enter_pos == 2:
-            pyxel.quit()
         elif self.enter_pos == 1:
-            self.enter_pos = self.save_load.update()
-            return self.setting_sc
+            pyxel.quit()
         elif self.enter_pos == 0:
             pass
 
@@ -97,9 +99,6 @@ class Out_Setting:
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
         pyxel.blt(0,5+self.finger_pos,0,15,0,30,15,0)
         self.umplus10.draw_text(18,6,"オプション",7)
-        self.umplus10.draw_text(18,17,"セーブ",7)
-        self.umplus10.draw_text(18,28,"ゲーム終了",7)
-        if self.enter_pos == 1:
-            self.save_load.draw()
-        elif self.enter_pos == 0:
+        self.umplus10.draw_text(18,17,"ゲーム終了",7)
+        if self.enter_pos == 0:
             pass

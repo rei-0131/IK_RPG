@@ -15,6 +15,8 @@ class Title:
             self.scenes = json.load(f)
         self.MAIN_SCENE = self.scenes["MAIN_SCENE"]
         self.TITLE_SCENE = self.scenes["TITLE_SCENE"]
+        self.Continue = self.scenes["LOAD_SCENE"]
+        self.setting_scene = self.scenes["OUT_SETTING_SCENE"]
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False)
         self.save_data = None
         self.enter_pos = 1
@@ -30,17 +32,17 @@ class Title:
         if pyxel.btnp(pyxel.KEY_RETURN):
             self.enter_pos = self.question_mark // 9
             if self.enter_pos == 0:
-                return 1
+                return self.MAIN_SCENE
             elif self.enter_pos == -1:
-                return 3
+                return self.Continue
             elif self.enter_pos == -2:
-                return 2
+                return self.setting_scene
 
     def draw(self):
         pyxel.cls(0)
         self.umplus10.draw_text(100,100,"     Title     ",7)
-        self.umplus10.draw_text(100,110,"-   New Game  -",7)
-        self.umplus10.draw_text(100,120,"-   Continue  -",7)
-        self.umplus10.draw_text(100,130,"-   Settings  -",7)
-        self.umplus10.draw_text(100,150,"- PRESS Enter -",7)
+        self.umplus10.draw_text(100,110,"-   New Game   -",7)
+        self.umplus10.draw_text(100,120,"-   Continue   -",7)
+        self.umplus10.draw_text(100,130,"-   Settings   -",7)
+        self.umplus10.draw_text(100,150,"-  PRESS Enter -",7)
         pyxel.blt(self.init_x-220,self.init_y-88-self.question_mark,0,15,0,30,15,0)
