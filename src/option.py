@@ -2,7 +2,8 @@ import pyxel
 import configparser
 
 class Option:
-    def __init__(self,x,y,ump):
+    def __init__(self,app,x,y,ump):
+        self.app = app
         self.init_x = x
         self.init_y = y
         self.umplus10 = ump
@@ -27,6 +28,7 @@ class Option:
             print(self.vol_finger)
             self.now_volume = self.vol_finger
             self.config.set("basic","volume",str(self.now_volume))
+            self.app.volume = self.now_volume
             with open("../configs/config.ini","w",encoding="utf-8") as f:
                 self.config.write(f)
             self.enter_pos = -1

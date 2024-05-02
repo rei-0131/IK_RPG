@@ -22,6 +22,3 @@ class Save:
         }
         with open("../configs/savedata.json","w",encoding="utf-8") as f:
             json.dump(save_data,f,indent=4)
-
-    def save_game(self,game_pos):
-        pass

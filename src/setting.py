@@ -15,7 +15,7 @@ class In_Setting:
         self.setting_finger = 1
         self.save_pos = 1
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
-        self.option = Option(self.init_x,self.init_y,self.umplus10)
+        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
         with open("../assets/scenes.json",encoding="utf-8") as f:
@@ -65,7 +65,8 @@ class In_Setting:
 
 
 class Out_Setting:
-    def __init__(self,x,y,ump):
+    def __init__(self,app,x,y,ump):
+        self.app = app
         self.init_x = x
         self.init_y = y
         self.umplus10 = ump
@@ -73,7 +74,7 @@ class Out_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
-        self.option = Option(self.init_x,self.init_y,self.umplus10)
+        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
         with open("../assets/scenes.json",encoding="utf-8") as f:

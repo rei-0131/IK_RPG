@@ -177,7 +177,8 @@ class App:
         self.savedata = None
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True)
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
-        self.setting_out = Out_Setting(self.init_x,self.init_y,umplus10)
+        self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
+        self.volume = int(config.get("basic","volume"))
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
