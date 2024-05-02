@@ -6,7 +6,7 @@ from question import Question
 from title import Title
 from save import Save
 from save_load import SaveLoad
-from setting import Setting
+from setting import In_Setting, Out_Setting
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("configs/config.ini")
@@ -91,7 +91,9 @@ umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
 
 TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
-SETTING_SCENE = scenes["SETTING_SCENE"]
+IN_SETTING_SCENE = scenes["IN_SETTING_SCENE"]
+OUT_SETTING_SCENE = scenes["OUT_SETTING_SCENE"]
+LOAD_SCENE = scenes["LOAD_SCENE"]
 BATTLE_SCENE = scenes["BATTLE_SCENE"]
 
 is_question = False
@@ -170,37 +172,56 @@ class App:
         self.be_scene = 0
         self.title_s = Title(self.init_x,self.init_y)
         self.save = Save()
-        self.load_game = SaveLoad(self.init_x,self.init_y)
-        self.setting = Setting(self.init_x,self.init_y,umplus10)
+        self.new_game = True
+        self.from_load = False
+        self.savedata = None
+        self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True)
+        self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
+        self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
+        self.volume = int(config.get("basic","volume"))
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        if self.now_scene == TITLE_SCENE:
+        if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.now_scene = self.title_s.update()
-            if self.title_s.game_start == 1:
-                self.load_game.update()
         elif self.now_scene == MAIN_SCENE:
+            #savedata.jsonを初期化しないように変更すること
+            if self.new_game:
+                if self.from_load:
+                    with open("../configs/savedata.json","r",encoding="utf-8") as f:
+                        self.savedata = json.load(f)
+                    print(self.savedata[str(self.save_load.setting_finger)])
+                    self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
+                    self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
+                    self.from_load = False
+                else:
+                    # with open("../assets/savedata.json","w",encoding="utf-8") as f:
+                    #     json.dump({},f,indent=4)
+                    print("new game")
+                self.new_game = False
             self.player.update()
-        elif self.now_scene == SETTING_SCENE:
-            self.setting.update()
-        if pyxel.btnp(pyxel.KEY_TAB):
-            if self.now_scene == SETTING_SCENE:
+        elif self.now_scene == OUT_SETTING_SCENE:
+            self.now_scene = self.setting_out.update()
+        elif self.now_scene == IN_SETTING_SCENE:
+            self.setting_in.update()
+        elif self.now_scene == LOAD_SCENE:
+            self.now_scene = self.save_load.update()
+            if self.save_load.continue_game:
+                self.from_load = True
+        if pyxel.btnp(pyxel.KEY_TAB) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
+            if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
             else:
                 self.be_scene = self.now_scene
-                self.now_scene = SETTING_SCENE
+                self.now_scene = IN_SETTING_SCENE
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
     def draw(self):
-        if self.now_scene == TITLE_SCENE:
+        #print(self.now_scene)
+        if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.title_s.draw()
-            if self.title_s.game_start != -1:
-                if self.title_s.game_start == 0:
-                    self.save.create_newsave()
-                elif self.title_s.game_start == 1:
-                    self.load_game.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
             if self.msg_dis == 0 and self.player.x < 175:
@@ -209,8 +230,13 @@ class App:
                 self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num,self.question)
             pyxel.line(10,self.init_y-100,self.init_x-10,self.init_y-100,7)
             self.player.draw()
-        elif self.now_scene == SETTING_SCENE:
-            self.setting.draw()
-
+        elif self.now_scene == OUT_SETTING_SCENE:
+            self.setting_out.draw()
+        elif self.now_scene == IN_SETTING_SCENE:
+            self.setting_in.draw()
+        elif self.now_scene == LOAD_SCENE:
+            self.save_load.draw()
+        # elif self.now_scene == SAVE_SCENE:
+        #     self.save_load.draw()
 
 App(init_x,init_y)
