@@ -4,7 +4,8 @@ from save import Save
 
 #セーブデータをロードする画面を表示する
 class SaveLoad:
-    def __init__(self,x,y,ump,over_load,left=True,load=False):
+    def __init__(self,x,y,ump,over_load,left=True,load=False,app = None):
+        self.app = app
         self.init_x = x
         self.init_y = y
         self.umplus10 = ump
@@ -12,7 +13,7 @@ class SaveLoad:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
-        self.save = Save()
+        self.save = Save(self.app)
         self.left = left
         self.over_load = over_load
         self.continue_game = False
@@ -25,9 +26,9 @@ class SaveLoad:
         self.title = self.scenes["TITLE_SCENE"]
         self.main = self.scenes["MAIN_SCENE"]
 
-    def update(self):
+    def update(self,ent=None):
         if self.left:
-            enter_pos = 1
+            enter_pos = ent
             if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
                 self.setting_finger -= 1
             if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
@@ -38,6 +39,8 @@ class SaveLoad:
                 print(self.setting_finger)
                 if self.over_load:
                     self.save.newsave(self.setting_finger)
+                with open("../configs/savedata.json","r",encoding="utf-8") as f:
+                    self.save_data = json.load(f)
             return enter_pos
         else:
             enter_pos = self.load

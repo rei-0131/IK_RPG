@@ -2,9 +2,11 @@ import pyxel
 import json
 from save import Save
 from save_load import SaveLoad
+from option import Option
 
 class In_Setting:
-    def __init__(self,x,y,ump):
+    def __init__(self,app,x,y,ump):
+        self.app = app
         self.init_x = x
         self.init_y = y
         self.umplus10 = ump
@@ -12,7 +14,8 @@ class In_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
-        self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True)
+        self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
+        self.option = Option(self.init_x,self.init_y,self.umplus10)
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
         with open("../assets/scenes.json",encoding="utf-8") as f:
@@ -36,7 +39,9 @@ class In_Setting:
             pyxel.quit()
         elif self.enter_pos == 6:
             #ゲーム中のセーブ機能の追加
-            self.enter_pos = self.save_load.update()
+            self.enter_pos = self.save_load.update(self.enter_pos)
+        elif self.enter_pos == 5:
+            self.enter_pos = self.option.update(self.enter_pos)
 
     def draw(self):
         pyxel.cls(0)
@@ -55,6 +60,8 @@ class In_Setting:
         self.umplus10.draw_text(18,83,"ゲーム終了",7)
         if self.enter_pos == 6:
             self.save_load.draw()
+        elif self.enter_pos == 5:
+            self.option.draw()
 
 
 class Out_Setting:
@@ -66,6 +73,7 @@ class Out_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
+        self.option = Option(self.init_x,self.init_y,self.umplus10)
         with open("../configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
         with open("../assets/scenes.json",encoding="utf-8") as f:
@@ -89,7 +97,8 @@ class Out_Setting:
         elif self.enter_pos == 1:
             pyxel.quit()
         elif self.enter_pos == 0:
-            pass
+            self.enter_pos = self.option.update(self.enter_pos)
+            return self.setting_sc
 
     def draw(self):
         pyxel.cls(0)
@@ -101,4 +110,4 @@ class Out_Setting:
         self.umplus10.draw_text(18,6,"オプション",7)
         self.umplus10.draw_text(18,17,"ゲーム終了",7)
         if self.enter_pos == 0:
-            pass
+            self.option.draw()

@@ -176,7 +176,7 @@ class App:
         self.from_load = False
         self.savedata = None
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True)
-        self.setting_in = In_Setting(self.init_x,self.init_y,umplus10)
+        self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
         self.setting_out = Out_Setting(self.init_x,self.init_y,umplus10)
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
@@ -191,6 +191,8 @@ class App:
                     with open("../configs/savedata.json","r",encoding="utf-8") as f:
                         self.savedata = json.load(f)
                     print(self.savedata[str(self.save_load.setting_finger)])
+                    self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
+                    self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
                     self.from_load = False
                 else:
                     # with open("../assets/savedata.json","w",encoding="utf-8") as f:
