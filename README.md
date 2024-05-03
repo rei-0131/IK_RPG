@@ -5,6 +5,7 @@
 * pyxel
 * configparser
 * json
+* time
 * BDFRenderer
 
 ## 進捗
