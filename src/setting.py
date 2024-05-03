@@ -1,5 +1,6 @@
 import pyxel
 import json
+import time
 from save import Save
 from save_load import SaveLoad
 from option import Option
@@ -14,6 +15,9 @@ class In_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
+        self.time_h= 0
+        self.time_m = 0
+        self.time_s = 0
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
         with open("../configs/savedata.json",encoding="utf-8") as f:
@@ -24,6 +28,14 @@ class In_Setting:
         self.title_sc = self.scenes["MAIN_SCENE"]
 
     def update(self):
+        time_time = int(time.time() - self.app.game_time_start)
+        old_time_h,old_time_m,old_time_s = map(int,self.app.game_time.split(":"))
+        time_time += old_time_h * 3600
+        time_time += old_time_m * 60
+        time_time += old_time_s
+        self.time_h = time_time // 3600
+        self.time_m = (time_time % 3600) // 60
+        self.time_s = (time_time % 3600 % 60)
         scene = self.title_sc
         if self.enter_pos == -1:
             if pyxel.btnp(pyxel.KEY_UP):
@@ -47,6 +59,8 @@ class In_Setting:
         pyxel.cls(0)
         pyxel.rect(18,5,65,95,0)
         pyxel.rectb(18,5,65,95,7)
+        pyxel.rect(5,self.init_y-75,65,75,0)
+        pyxel.rectb(5,self.init_y-75,65,75,7)
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
         pyxel.blt(0,5+self.finger_pos,0,15,0,30,15,0)
@@ -58,6 +72,7 @@ class In_Setting:
         self.umplus10.draw_text(18,61,"オプション",7)
         self.umplus10.draw_text(18,72,"セーブ",7)
         self.umplus10.draw_text(18,83,"ゲーム終了",7)
+        self.umplus10.draw_text(20,self.init_y-11,f"{str(self.time_h).zfill(2)}:{str(self.time_m).zfill(2)}:{str(self.time_s).zfill(2)}")
         if self.enter_pos == 6:
             self.save_load.draw()
         elif self.enter_pos == 5:

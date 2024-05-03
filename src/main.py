@@ -1,6 +1,7 @@
 import pyxel
 import configparser
 import json
+import time
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
@@ -170,7 +171,7 @@ class App:
         self.msg_dis = 0
         self.msg_num = 0
         self.be_scene = 0
-        self.title_s = Title(self.init_x,self.init_y)
+        self.title_s = Title(self,self.init_x,self.init_y)
         self.save = Save()
         self.new_game = True
         self.from_load = False
@@ -179,6 +180,8 @@ class App:
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
         self.volume = int(config.get("basic","volume"))
+        self.game_time = "00:00:00"
+        self.game_time_start = None
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
@@ -192,6 +195,8 @@ class App:
                     with open("../configs/savedata.json","r",encoding="utf-8") as f:
                         self.savedata = json.load(f)
                     print(self.savedata[str(self.save_load.setting_finger)])
+                    self.game_time_start = time.time()
+                    self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
                     self.from_load = False
