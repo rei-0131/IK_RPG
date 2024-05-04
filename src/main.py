@@ -193,6 +193,7 @@ class App:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
+            pyxel.bltm(0,0,0,0,0,300,200,0)
             if (self.msg_dis == 0 and self.player.x < 175) or (self.msg_dis == 1 and self.player.x >= 175):
                 self.is_word = True
             else:

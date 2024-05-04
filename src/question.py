@@ -40,4 +40,4 @@ class Question:
             print(self.question_mark/9)
 
     def draw(self):
-        pyxel.blt(self.init_x-67,self.init_y-96-self.question_mark+(36-self.que_height),0,15,0,30,15,0)
+        pyxel.blt(self.init_x-67,self.init_y-96-self.question_mark+(36-self.que_height),0,15,0,15,15,0)

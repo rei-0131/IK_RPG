@@ -48,4 +48,4 @@ class Title:
         self.umplus10.draw_text(103,120,"-   Continue   -",7)
         self.umplus10.draw_text(103,130,"-   Settings   -",7)
         self.umplus10.draw_text(103,150,"-  PRESS Enter -",7)
-        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,0,15,0,30,15,0)
+        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,0,15,0,15,15,0)
