@@ -6,11 +6,11 @@ import time
 class Save:
     def __init__(self,app = None):
         self.app = app
-        with open("../assets/scenes.json",encoding="utf-8") as f:
+        with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
 
     def newsave(self,pos):
-        with open("../configs/savedata.json",encoding="utf-8") as f:
+        with open("configs/savedata.json",encoding="utf-8") as f:
             save_data = json.load(f)
 
         #以下コードからAppクラスの変数にアクセス
@@ -22,9 +22,6 @@ class Save:
         time_h = time_time // 3600
         time_m = (time_time % 3600) // 60
         time_s = (time_time % 3600 % 60)
-        time_h+=old_time_h
-        time_m+=old_time_m
-        time_s+=old_time_s
         save_data[str(pos)] = {}
         save_data[str(pos)]["play_data"] = {
             "time":f"{str(time_h).zfill(2)}:{str(time_m).zfill(2)}:{str(time_s).zfill(2)}",
@@ -32,5 +29,5 @@ class Save:
             "x":self.app.player.x,
             "y":self.app.player.y,
         }
-        with open("../configs/savedata.json","w",encoding="utf-8") as f:
+        with open("configs/savedata.json","w",encoding="utf-8") as f:
             json.dump(save_data,f,indent=4)

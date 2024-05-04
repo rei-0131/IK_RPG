@@ -10,7 +10,7 @@ class Option:
         self.select_pos = 0
         self.enter_pos = -1
         self.config = configparser.ConfigParser(interpolation=None)
-        self.config.read("../configs/config.ini")
+        self.config.read("configs/config.ini")
         self.now_volume = int(self.config.get("basic","volume"))
         self.vol_pos = self.now_volume - 2
         self.vol_finger = self.now_volume
@@ -29,7 +29,7 @@ class Option:
             self.now_volume = self.vol_finger
             self.config.set("basic","volume",str(self.now_volume))
             self.app.volume = self.now_volume
-            with open("../configs/config.ini","w",encoding="utf-8") as f:
+            with open("configs/config.ini","w",encoding="utf-8") as f:
                 self.config.write(f)
             self.enter_pos = -1
 

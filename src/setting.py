@@ -20,9 +20,9 @@ class In_Setting:
         self.time_s = 0
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
-        with open("../configs/savedata.json",encoding="utf-8") as f:
+        with open("configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
-        with open("../assets/scenes.json",encoding="utf-8") as f:
+        with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.setting_sc = self.scenes["IN_SETTING_SCENE"]
         self.title_sc = self.scenes["MAIN_SCENE"]
@@ -90,9 +90,9 @@ class Out_Setting:
         self.setting_finger = 1
         self.save_pos = 1
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
-        with open("../configs/savedata.json",encoding="utf-8") as f:
+        with open("configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
-        with open("../assets/scenes.json",encoding="utf-8") as f:
+        with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
         self.title_sc = self.scenes["TITLE_SCENE"]

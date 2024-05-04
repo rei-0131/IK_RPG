@@ -12,8 +12,8 @@ class Title:
         self.init_y = y
         self.question_mark = 0
         self.game_start = -1
-        self.umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
-        with open("../assets/scenes.json",encoding="utf-8") as f:
+        self.umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
+        with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.MAIN_SCENE = self.scenes["MAIN_SCENE"]
         self.TITLE_SCENE = self.scenes["TITLE_SCENE"]
