@@ -1,12 +1,14 @@
 import pyxel
 import configparser
 import json
+import time
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
 from save import Save
 from save_load import SaveLoad
 from setting import In_Setting, Out_Setting
+from player import Player
 
 config = configparser.ConfigParser(interpolation=None)
 config.read("configs/config.ini")
@@ -24,18 +26,13 @@ with open("configs/savedata.json",encoding="utf-8") as f:
 
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
-#プレイ時にファイルの存在の確認
-#複数のセーブデータの保存を可能に
-#特定キーが押された際、セーブできるウィンドウや仲間のステータスや装備の表示
-#改行ができるようにする \n を検知して改行する(2行まで)
 
 
 #呼び出す自作関数の中にあるファイル読み込みは自作関数があるディレクトリからカウントされる
 #その他は、基本的にはファイルの実行ディレクトリからカウントされる
 
 
-def dec_word(msg_dis:int,msg_num:int,question) -> tuple[int, int]:
-    global is_question
+def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, int]:
     """文字を表示するデコレーション
 
     Parameters:
@@ -64,7 +61,7 @@ def dec_word(msg_dis:int,msg_num:int,question) -> tuple[int, int]:
         question.dec_question(msg_dis)
     else:
         umplus10.draw_text(6,init_y-55,s[msg_num],7)
-    if (not is_question and pyxel.btnp(pyxel.KEY_N)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN)):
+    if (not is_question and pyxel.btnp(pyxel.KEY_SPACE)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN)):
         is_question = False
         print(f"{len(words['words'])} {len(s)} {msg_num} {msg_dis}")
         if msg_num + 1 < len(s):
@@ -77,7 +74,7 @@ def dec_word(msg_dis:int,msg_num:int,question) -> tuple[int, int]:
             msg_num = 0
         print(f"{len(words['words'])} {len(s)} {msg_num} {msg_dis}")
 
-    return msg_dis, msg_num
+    return msg_dis, msg_num, is_question
 
 
 init_x = int(config.get("basic","screen_x"))
@@ -96,68 +93,7 @@ OUT_SETTING_SCENE = scenes["OUT_SETTING_SCENE"]
 LOAD_SCENE = scenes["LOAD_SCENE"]
 BATTLE_SCENE = scenes["BATTLE_SCENE"]
 
-is_question = False
-is_answer = False
-
 que_height = 0
-
-
-class Player:
-    def __init__(self,x,y,question):
-        self.x = 20
-        self.y = y-100
-        self.init_x = x
-        self.init_y = y
-        self.rl = 1
-        self.vy = 0
-        self.gravity = 0.98
-        self.walk_img = 0
-        self.walk_num = 0
-        self.question_mark = 0
-        self.is_jump = False
-        self.question = question
-        self.walk_pos = [0,0,16,16]
-
-    def update(self):
-        global is_question, is_answer
-
-        if not is_question:
-            if pyxel.btn(pyxel.KEY_SPACE):
-                if not self.is_jump:
-                    self.is_jump = True
-                    self.vy -= 10
-            if pyxel.btn(pyxel.KEY_RIGHT):
-                self.x += 1
-                self.rl = 1
-            if pyxel.btn(pyxel.KEY_LEFT):
-                self.x -= 1
-                self.rl = -1
-            if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT)) and not self.is_jump:
-                self.walk_img = 0
-                self.walk_num = 0
-            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT)) and not self.is_jump:
-                self.walk_img = 2
-                if self.walk_num == 3:
-                    self.walk_num = 0
-                else:
-                    self.walk_num += 1
-        else:
-            self.question.update()
-        if self.is_jump:
-            self.vy += self.gravity
-            self.y += self.vy
-            if self.y > self.init_y - 100:
-                self.y = self.init_y - 100
-                self.is_jump = False
-
-    def draw(self):
-        if is_question:
-            self.question.draw()
-        if self.is_jump:
-            pyxel.blt(self.x,self.y - 15,1,0,0,15 * self.rl,15,0)
-        else:
-            pyxel.blt(self.x,self.y - 15,self.walk_img,self.walk_pos[self.walk_num],0, 14 * self.rl,15,0)
-
 
 class App:
     def __init__(self,x,y):
@@ -170,7 +106,9 @@ class App:
         self.msg_dis = 0
         self.msg_num = 0
         self.be_scene = 0
-        self.title_s = Title(self.init_x,self.init_y)
+        self.is_question = False
+        self.is_word = False
+        self.title_s = Title(self,self.init_x,self.init_y)
         self.save = Save()
         self.new_game = True
         self.from_load = False
@@ -179,6 +117,8 @@ class App:
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
         self.volume = int(config.get("basic","volume"))
+        self.game_time = "00:00:00"
+        self.game_time_start = None
         pyxel.load("../assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
@@ -192,6 +132,8 @@ class App:
                     with open("../configs/savedata.json","r",encoding="utf-8") as f:
                         self.savedata = json.load(f)
                     print(self.savedata[str(self.save_load.setting_finger)])
+                    self.game_time_start = time.time()
+                    self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
                     self.from_load = False
@@ -200,7 +142,7 @@ class App:
                     #     json.dump({},f,indent=4)
                     print("new game")
                 self.new_game = False
-            self.player.update()
+            self.player.update(self.is_question,self.is_word)
         elif self.now_scene == OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()
         elif self.now_scene == IN_SETTING_SCENE:
@@ -209,6 +151,8 @@ class App:
             self.now_scene = self.save_load.update()
             if self.save_load.continue_game:
                 self.from_load = True
+        if self.is_question:
+            self.question.update()
         if pyxel.btnp(pyxel.KEY_TAB) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
@@ -224,12 +168,15 @@ class App:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
-            if self.msg_dis == 0 and self.player.x < 175:
-                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num,self.question)
-            elif self.msg_dis == 1 and self.player.x >= 175:
-                self.msg_dis,self.msg_num = dec_word(self.msg_dis,self.msg_num,self.question)
-            pyxel.line(10,self.init_y-100,self.init_x-10,self.init_y-100,7)
+            if (self.msg_dis == 0 and self.player.x < 175) or (self.msg_dis == 1 and self.player.x >= 175):
+                self.is_word = True
+            else:
+                self.is_word = False
             self.player.draw()
+            if self.is_word:
+                self.msg_dis,self.msg_num,self.is_question = dec_word(self.msg_dis,self.msg_num,self.question,self.is_question)
+            if self.is_question:
+                self.question.draw()
         elif self.now_scene == OUT_SETTING_SCENE:
             self.setting_out.draw()
         elif self.now_scene == IN_SETTING_SCENE:

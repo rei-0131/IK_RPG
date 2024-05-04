@@ -1,5 +1,6 @@
 import pyxel
 import json
+import time
 
 #新しいセーブデータを作成する
 class Save:
@@ -13,9 +14,20 @@ class Save:
             save_data = json.load(f)
 
         #以下コードからAppクラスの変数にアクセス
+        time_time = int(time.time() - self.app.game_time_start)
+        old_time_h,old_time_m,old_time_s = map(int,self.app.game_time.split(":"))
+        time_time += old_time_h * 3600
+        time_time += old_time_m * 60
+        time_time += old_time_s
+        time_h = time_time // 3600
+        time_m = (time_time % 3600) // 60
+        time_s = (time_time % 3600 % 60)
+        time_h+=old_time_h
+        time_m+=old_time_m
+        time_s+=old_time_s
         save_data[str(pos)] = {}
         save_data[str(pos)]["play_data"] = {
-            "time":"00:00:00",
+            "time":f"{str(time_h).zfill(2)}:{str(time_m).zfill(2)}:{str(time_s).zfill(2)}",
             "scene":self.scenes["MAIN_SCENE"],
             "x":self.app.player.x,
             "y":self.app.player.y,

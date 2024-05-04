@@ -1,11 +1,13 @@
 import pyxel
 import json
+import time
 from BDFRenderer import BDFRenderer
 from save_load import SaveLoad
 from setting import Out_Setting
 
 class Title:
-    def __init__(self,x,y):
+    def __init__(self,app,x,y):
+        self.app = app
         self.init_x = x
         self.init_y = y
         self.question_mark = 0
@@ -20,7 +22,7 @@ class Title:
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False)
         self.save_data = None
         self.enter_pos = 1
-        self.setting = Out_Setting(self.init_x,self.init_y,self.umplus10)
+        self.setting = Out_Setting(self,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_DOWN):
@@ -32,6 +34,7 @@ class Title:
         if pyxel.btnp(pyxel.KEY_RETURN):
             self.enter_pos = self.question_mark // 9
             if self.enter_pos == 0:
+                self.app.game_time_start = time.time()
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
                 return self.Continue
