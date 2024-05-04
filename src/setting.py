@@ -59,6 +59,8 @@ class In_Setting:
             self.enter_pos = self.save_load.update(self.enter_pos)
         elif self.enter_pos == 5:
             self.enter_pos = self.option.update(self.enter_pos)
+        else:
+            self.enter_pos = -1
 
     def draw(self):
         pyxel.cls(0)
@@ -68,15 +70,15 @@ class In_Setting:
         pyxel.rectb(5,self.init_y-75,65,75,7)
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
-        pyxel.blt(0,5+self.finger_pos,0,15,0,30,15,0)
-        self.umplus10.draw_text(18,6,"アイテム",7)
-        self.umplus10.draw_text(18,17,"スキル",7)
-        self.umplus10.draw_text(18,28,"装備",7)
-        self.umplus10.draw_text(18,39,"ステータス",7)
-        self.umplus10.draw_text(18,50,"並び替え",7)
-        self.umplus10.draw_text(18,61,"オプション",7)
-        self.umplus10.draw_text(18,72,"セーブ",7)
-        self.umplus10.draw_text(18,83,"ゲーム終了",7)
+        pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
+        self.umplus10.draw_text(19,6,"アイテム",1)
+        self.umplus10.draw_text(19,17,"スキル",1)
+        self.umplus10.draw_text(19,28,"装備",1)
+        self.umplus10.draw_text(19,39,"ステータス",1)
+        self.umplus10.draw_text(19,50,"並び替え",1)
+        self.umplus10.draw_text(19,61,"オプション",7)
+        self.umplus10.draw_text(19,72,"セーブ",7)
+        self.umplus10.draw_text(19,83,"ゲーム終了",7)
         self.umplus10.draw_text(20,self.init_y-11,f"{str(self.time_h).zfill(2)}:{str(self.time_m).zfill(2)}:{str(self.time_s).zfill(2)}")
         if self.enter_pos == 6:
             self.save_load.draw()
@@ -131,8 +133,8 @@ class Out_Setting:
         pyxel.rectb(18,5,65,95,7)
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
-        pyxel.blt(0,5+self.finger_pos,0,15,0,30,15,0)
-        self.umplus10.draw_text(18,6,"オプション",7)
-        self.umplus10.draw_text(18,17,"ゲーム終了",7)
+        pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
+        self.umplus10.draw_text(19,6,"オプション",7)
+        self.umplus10.draw_text(19,17,"ゲーム終了",7)
         if self.enter_pos == 0:
             self.option.draw()
