@@ -75,7 +75,7 @@ def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, in
         question.dec_question(msg_dis)
     else:
         umplus10.draw_text(6,init_y-55,s[msg_num],7)
-    if (not is_question and pyxel.btnp(pyxel.KEY_SPACE or pyxel.GAMEPAD1_BUTTON_B)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN or pyxel.GAMEPAD1_BUTTON_DPAD_B)):
+    if (not is_question and pyxel.btnp(pyxel.KEY_SPACE) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
         is_question = False
         print(f"{len(words['words'])} {len(s)} {msg_num} {msg_dis}")
         if msg_num + 1 < len(s):
@@ -179,7 +179,7 @@ class App:
                 self.from_load = True
         if self.is_question:
             self.question.update()
-        if pyxel.btnp(pyxel.KEY_TAB or pyxel.GAMEPAD1_BUTTON_Y) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
+        if pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
             else:

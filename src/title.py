@@ -25,13 +25,13 @@ class Title:
         self.setting = Out_Setting(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
-        if pyxel.btnp(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
             if self.question_mark != -18:
                 self.question_mark -= 9
-        if pyxel.btnp(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
             if self.question_mark != 0:
                 self.question_mark += 9
-        if pyxel.btnp(pyxel.KEY_RETURN or pyxel.GAMEPAD1_BUTTON_B):
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             self.enter_pos = self.question_mark // 9
             if self.enter_pos == 0:
                 self.app.game_time_start = time.time()

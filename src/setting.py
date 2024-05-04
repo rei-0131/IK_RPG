@@ -43,13 +43,13 @@ class In_Setting:
         self.time_s = (time_time % 3600 % 60)
         scene = self.title_sc
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != 77:
                     self.finger_pos += 11
-            elif pyxel.btnp(pyxel.KEY_RETURN or pyxel.GAMEPAD1_BUTTON_B):
+            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 self.enter_pos = self.finger_pos//11
                 print(self.enter_pos)
         elif self.enter_pos == 7:
@@ -108,15 +108,15 @@ class Out_Setting:
 
     def update(self):
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != 11:
                     self.finger_pos += 11
-            elif pyxel.btnp(pyxel.KEY_RETURN or pyxel.GAMEPAD1_BUTTON_B):
+            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 self.enter_pos = self.finger_pos//11
-            elif pyxel.btnp(pyxel.KEY_LEFT or pyxel.GAMEPAD1_BUTTON_A):
+            elif pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 return self.title_sc
             return self.setting_sc
         elif self.enter_pos == 1:
