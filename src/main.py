@@ -156,8 +156,9 @@ class App:
                             self.savedata = json.load(f)
                     else:
                         self.savedata = cloud.load()
-                    print(self.savedata[str(self.save_load.setting_finger)])
+                        time.sleep(0.3)
                     self.game_time_start = time.time()
+                    print(self.save_load.setting_finger)
                     self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
                     self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
