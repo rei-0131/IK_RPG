@@ -11,16 +11,16 @@ from setting import In_Setting, Out_Setting
 from player import Player
 
 config = configparser.ConfigParser(interpolation=None)
-config.read("configs/config.ini")
+config.read("src/configs/config.ini")
 
-with open("assets/scenes.json",encoding="utf-8") as f:
+with open("src/assets/scenes.json",encoding="utf-8") as f:
     scenes = json.load(f)
 
 
-with open("assets/words.json",encoding="utf-8") as f:
+with open("src/assets/words.json",encoding="utf-8") as f:
     words = json.load(f)
 
-with open("configs/savedata.json",encoding="utf-8") as f:
+with open("src/configs/savedata.json",encoding="utf-8") as f:
     save_data = json.load(f)
 
 
@@ -84,7 +84,7 @@ name = config.get("basic","name")
 #BDFRendererのインスタンス作成より前にinitしないとエラーが発生する
 pyxel.init(init_x,init_y,name,fps=FPS)
 #文字コードの読み込み
-umplus10 = BDFRenderer("../assets/umplus_j10r.bdf")
+umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
 
 TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
@@ -99,27 +99,26 @@ class App:
     def __init__(self,x,y):
         self.init_x = x
         self.init_y = y
-        self.question = Question(self.init_x,self.init_y,umplus10)
-        self.player = Player(self.init_x,self.init_y,self.question)
-        #実行場所基準ではなくpyファイルの場所基準
         self.now_scene = 0
         self.msg_dis = 0
         self.msg_num = 0
         self.be_scene = 0
         self.is_question = False
         self.is_word = False
-        self.title_s = Title(self,self.init_x,self.init_y)
-        self.save = Save()
         self.new_game = True
         self.from_load = False
         self.savedata = None
+        self.question = Question(self.init_x,self.init_y,umplus10)
+        self.player = Player(self.init_x,self.init_y,self.question)
+        self.title_s = Title(self,self.init_x,self.init_y)
+        self.save = Save()
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True)
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
         self.volume = int(config.get("basic","volume"))
         self.game_time = "00:00:00"
         self.game_time_start = None
-        pyxel.load("../assets/player.pyxres")
+        pyxel.load("assets/player.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):
@@ -129,7 +128,7 @@ class App:
             #savedata.jsonを初期化しないように変更すること
             if self.new_game:
                 if self.from_load:
-                    with open("../configs/savedata.json","r",encoding="utf-8") as f:
+                    with open("configs/savedata.json","r",encoding="utf-8") as f:
                         self.savedata = json.load(f)
                     print(self.savedata[str(self.save_load.setting_finger)])
                     self.game_time_start = time.time()
@@ -163,7 +162,6 @@ class App:
             pyxel.quit()
 
     def draw(self):
-        #print(self.now_scene)
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
@@ -183,7 +181,5 @@ class App:
             self.setting_in.draw()
         elif self.now_scene == LOAD_SCENE:
             self.save_load.draw()
-        # elif self.now_scene == SAVE_SCENE:
-        #     self.save_load.draw()
 
 App(init_x,init_y)

@@ -2,7 +2,7 @@ import pyxel
 import json
 from BDFRenderer import BDFRenderer
 
-with open("assets/words.json",encoding="utf-8") as f:
+with open("src/assets/words.json",encoding="utf-8") as f:
     words = json.load(f)
 
 class Question:

@@ -4,6 +4,24 @@ from save import Save
 
 #セーブデータをロードする画面を表示する
 class SaveLoad:
+    """セーブデータロード画面を表示
+    Parameters:
+    ----------
+    x : int
+        画面のinit_x
+    y : int
+        画面のinit_y
+    ump : Any
+        BDFRendererのインスタンス
+    over_load : bool
+        セーブデータの上書きが可能か
+    left : bool
+        左キーを押した際一つ前の動作に戻るかタイトルに戻るか
+    load : bool
+        セーブデータ、ロードオンリーかどうか
+    app : Any
+        Appクラスのself
+    """
     def __init__(self,x,y,ump,over_load,left=True,load=False,app = None):
         self.app = app
         self.init_x = x
@@ -18,9 +36,9 @@ class SaveLoad:
         self.over_load = over_load
         self.continue_game = False
         self.load = load
-        with open("../configs/savedata.json",encoding="utf-8") as f:
+        with open("configs/savedata.json",encoding="utf-8") as f:
             self.save_data = json.load(f)
-        with open("../assets/scenes.json",encoding="utf-8") as f:
+        with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.load = self.scenes["LOAD_SCENE"]
         self.title = self.scenes["TITLE_SCENE"]
@@ -39,7 +57,7 @@ class SaveLoad:
                 print(self.setting_finger)
                 if self.over_load:
                     self.save.newsave(self.setting_finger)
-                with open("../configs/savedata.json","r",encoding="utf-8") as f:
+                with open("configs/savedata.json","r",encoding="utf-8") as f:
                     self.save_data = json.load(f)
             return enter_pos
         else:
