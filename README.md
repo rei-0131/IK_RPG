@@ -1,8 +1,7 @@
 ## IK RPG
 2DRPG
-**現段階のmasterをプレイ**
-<script src="https://cdn.jsdelivr.net/gh/kitao/pyxel/wasm/pyxel.js"></script>
-<pyxel-play root="[https://cdn.jsdelivr.net/gh/kitao/pyxel/python/pyxel/examples](https://github.com/rei-0131/IK_RPG/edit/master)" name="src.pyxapp"></pyxel-play>
+
+[**現段階のmasterをプレイ**](https://tops-desired-hog.ngrok-free.app/IK_RPG)
 
 ## 使用モジュール
 * pyxel
