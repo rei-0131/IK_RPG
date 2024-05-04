@@ -16,20 +16,20 @@ class Player:
 
     def update(self,is_question,is_word):
         if not is_question and not is_word:
-            if pyxel.btn(pyxel.KEY_RIGHT):
+            if pyxel.btn(pyxel.KEY_RIGHT or pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.x += 1
                 self.rl = 1
-            if pyxel.btn(pyxel.KEY_LEFT):
+            if pyxel.btn(pyxel.KEY_LEFT or pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
                 self.x -= 1
                 self.rl = -1
-            if pyxel.btn(pyxel.KEY_UP):
+            if pyxel.btn(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 self.y -= 1
-            if pyxel.btn(pyxel.KEY_DOWN):
+            if pyxel.btn(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 self.y += 1
-            if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_DOWN)):
+            if not (pyxel.btn(pyxel.KEY_RIGHT or pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT or pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.walk_img = 0
                 self.walk_num = 0
-            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_DOWN)):
+            elif (pyxel.btn(pyxel.KEY_RIGHT or pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT or pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.walk_img = 2
                 if self.walk_num == 3:
                     self.walk_num = 0

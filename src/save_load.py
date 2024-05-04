@@ -1,6 +1,7 @@
 import pyxel
 import json
 from save import Save
+from cloud_data import cloud_data
 
 #セーブデータをロードする画面を表示する
 class SaveLoad:
@@ -36,8 +37,12 @@ class SaveLoad:
         self.over_load = over_load
         self.continue_game = False
         self.load = load
-        with open("configs/savedata.json",encoding="utf-8") as f:
-            self.save_data = json.load(f)
+        self.cloud = cloud_data(is_test=True)
+        if self.app.local:
+            with open("configs/savedata.json",encoding="utf-8") as f:
+                self.save_data = json.load(f)
+        else:
+            self.save_data = self.cloud.load()
         with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.load = self.scenes["LOAD_SCENE"]
@@ -47,28 +52,31 @@ class SaveLoad:
     def update(self,ent=None):
         if self.left:
             enter_pos = ent
-            if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
+            if pyxel.btnp(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP) and self.setting_finger != 1:
                 self.setting_finger -= 1
-            if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
+            if pyxel.btnp(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN) and self.setting_finger != 20:
                 self.setting_finger += 1
-            if pyxel.btnp(pyxel.KEY_LEFT):
+            if pyxel.btnp(pyxel.KEY_LEFT or pyxel.GAMEPAD1_BUTTON_A):
                 enter_pos = -1
-            if pyxel.btnp(pyxel.KEY_RETURN):
+            if pyxel.btnp(pyxel.KEY_RETURN or pyxel.GAMEPAD1_BUTTON_B):
                 print(self.setting_finger)
                 if self.over_load:
                     self.save.newsave(self.setting_finger)
-                with open("configs/savedata.json","r",encoding="utf-8") as f:
-                    self.save_data = json.load(f)
+                if self.app.local:
+                    with open("configs/savedata.json","r",encoding="utf-8") as f:
+                        self.save_data = json.load(f)
+                else:
+                    self.save_data = self.cloud.load()
             return enter_pos
         else:
             enter_pos = self.load
-            if pyxel.btnp(pyxel.KEY_UP) and self.setting_finger != 1:
+            if pyxel.btnp(pyxel.KEY_UP or pyxel.GAMEPAD1_BUTTON_DPAD_UP) and self.setting_finger != 1:
                 self.setting_finger -= 1
-            if pyxel.btnp(pyxel.KEY_DOWN) and self.setting_finger != 20:
+            if pyxel.btnp(pyxel.KEY_DOWN or pyxel.GAMEPAD1_BUTTON_DPAD_DOWN) and self.setting_finger != 20:
                 self.setting_finger += 1
-            if pyxel.btnp(pyxel.KEY_LEFT):
+            if pyxel.btnp(pyxel.KEY_LEFT or pyxel.GAMEPAD1_BUTTON_A):
                 enter_pos = self.title
-            if pyxel.btnp(pyxel.KEY_RETURN):
+            if pyxel.btnp(pyxel.KEY_RETURN or pyxel.GAMEPAD1_BUTTON_B):
                 print(self.setting_finger)
                 if self.load:
                     if str(self.setting_finger) in self.save_data:
