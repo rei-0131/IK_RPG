@@ -9,9 +9,20 @@ from save import Save
 from save_load import SaveLoad
 from setting import In_Setting, Out_Setting
 from player import Player
+from cloud_data import cloud_data
 
-config = configparser.ConfigParser(interpolation=None)
-config.read("src/configs/config.ini")
+##########
+is_test = True
+##########
+
+cloud = cloud_data(is_test=is_test)
+local = cloud.import_()
+
+if local:
+    config = configparser.ConfigParser(interpolation=None)
+    config.read("src/configs/config.ini")
+else:
+    config = cloud.config_load()
 
 with open("src/assets/scenes.json",encoding="utf-8") as f:
     scenes = json.load(f)
@@ -20,8 +31,11 @@ with open("src/assets/scenes.json",encoding="utf-8") as f:
 with open("src/assets/words.json",encoding="utf-8") as f:
     words = json.load(f)
 
-with open("src/configs/savedata.json",encoding="utf-8") as f:
-    save_data = json.load(f)
+if local:
+    with open("src/configs/savedata.json",encoding="utf-8") as f:
+        save_data = json.load(f)
+else:
+    save_data = cloud.load()
 
 
 #セーブ機能
@@ -61,7 +75,7 @@ def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, in
         question.dec_question(msg_dis)
     else:
         umplus10.draw_text(6,init_y-55,s[msg_num],7)
-    if (not is_question and pyxel.btnp(pyxel.KEY_SPACE)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN)):
+    if (not is_question and pyxel.btnp(pyxel.KEY_SPACE) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
         is_question = False
         print(f"{len(words['words'])} {len(s)} {msg_num} {msg_dis}")
         if msg_num + 1 < len(s):
@@ -76,11 +90,16 @@ def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, in
 
     return msg_dis, msg_num, is_question
 
-
-init_x = int(config.get("basic","screen_x"))
-init_y = int(config.get("basic","screen_y"))
-FPS = int(config.get("basic","fps"))
-name = config.get("basic","name")
+if local:
+    init_x = int(config.get("basic","screen_x"))
+    init_y = int(config.get("basic","screen_y"))
+    FPS = int(config.get("basic","fps"))
+    name = config.get("basic","name")
+else:
+    init_x = int(config["basic"]["screen_x"])
+    init_y = int(config["basic"]["screen_y"])
+    FPS = int(config["basic"]["fps"])
+    name = config["basic"]["name"]
 #BDFRendererのインスタンス作成より前にinitしないとエラーが発生する
 pyxel.init(init_x,init_y,name,fps=FPS)
 #文字コードの読み込み
@@ -99,6 +118,7 @@ class App:
     def __init__(self,x,y):
         self.init_x = x
         self.init_y = y
+        self.local = local
         self.now_scene = 0
         self.msg_dis = 0
         self.msg_num = 0
@@ -112,10 +132,13 @@ class App:
         self.player = Player(self.init_x,self.init_y,self.question)
         self.title_s = Title(self,self.init_x,self.init_y)
         self.save = Save()
-        self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True)
+        self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
-        self.volume = int(config.get("basic","volume"))
+        if self.local:
+            self.volume = int(config.get("basic","volume"))
+        else:
+            self.volume = int(config["basic"]["volume"])
         self.game_time = "00:00:00"
         self.game_time_start = None
         pyxel.load("assets/player.pyxres")
@@ -128,13 +151,17 @@ class App:
             #savedata.jsonを初期化しないように変更すること
             if self.new_game:
                 if self.from_load:
-                    with open("configs/savedata.json","r",encoding="utf-8") as f:
-                        self.savedata = json.load(f)
-                    print(self.savedata[str(self.save_load.setting_finger)])
+                    if self.local:
+                        with open("configs/savedata.json","r",encoding="utf-8") as f:
+                            self.savedata = json.load(f)
+                    else:
+                        self.savedata = cloud.load()
+                        time.sleep(0.3)
                     self.game_time_start = time.time()
+                    print(self.save_load.setting_finger)
                     self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
-                    self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
+                    self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
                     self.from_load = False
                 else:
                     # with open("../assets/savedata.json","w",encoding="utf-8") as f:
@@ -152,7 +179,7 @@ class App:
                 self.from_load = True
         if self.is_question:
             self.question.update()
-        if pyxel.btnp(pyxel.KEY_TAB) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
+        if pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
             else:

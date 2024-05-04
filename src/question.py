@@ -1,6 +1,5 @@
 import pyxel
 import json
-from BDFRenderer import BDFRenderer
 
 with open("src/assets/words.json",encoding="utf-8") as f:
     words = json.load(f)
@@ -31,13 +30,13 @@ class Question:
             self.umplus10.draw_text(self.init_x-48,self.init_y-97+h+(36-self.que_height),i,7)
 
     def update(self):
-        if pyxel.btnp(pyxel.KEY_DOWN):
+        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
             if self.question_mark != -27+(36-self.que_height):
                 self.question_mark -= 9
-        if pyxel.btnp(pyxel.KEY_UP):
+        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
             if self.question_mark != 0:
                 self.question_mark += 9
-        if pyxel.btnp(pyxel.KEY_RETURN):
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             print(self.question_mark/9)
 
     def draw(self):

@@ -4,6 +4,7 @@ import time
 from save import Save
 from save_load import SaveLoad
 from option import Option
+from cloud_data import cloud_data
 
 class In_Setting:
     def __init__(self,app,x,y,ump):
@@ -11,6 +12,7 @@ class In_Setting:
         self.init_x = x
         self.init_y = y
         self.umplus10 = ump
+        self.cloud = cloud_data(is_test=True)
         self.finger_pos = 0
         self.enter_pos = -1
         self.setting_finger = 1
@@ -20,8 +22,11 @@ class In_Setting:
         self.time_s = 0
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
-        with open("configs/savedata.json",encoding="utf-8") as f:
-            self.save_data = json.load(f)
+        if self.app.local:
+            with open("configs/savedata.json",encoding="utf-8") as f:
+                self.save_data = json.load(f)
+        else:
+            self.save_data = self.cloud.load()
         with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.setting_sc = self.scenes["IN_SETTING_SCENE"]
@@ -38,13 +43,13 @@ class In_Setting:
         self.time_s = (time_time % 3600 % 60)
         scene = self.title_sc
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP):
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != 77:
                     self.finger_pos += 11
-            elif pyxel.btnp(pyxel.KEY_RETURN):
+            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 self.enter_pos = self.finger_pos//11
                 print(self.enter_pos)
         elif self.enter_pos == 7:
@@ -90,8 +95,12 @@ class Out_Setting:
         self.setting_finger = 1
         self.save_pos = 1
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
-        with open("configs/savedata.json",encoding="utf-8") as f:
-            self.save_data = json.load(f)
+        self.cloud = cloud_data(is_test=True)
+        if self.app.local:
+            with open("configs/savedata.json",encoding="utf-8") as f:
+                self.save_data = json.load(f)
+        else:
+            self.save_data = self.cloud.load()
         with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
@@ -99,15 +108,15 @@ class Out_Setting:
 
     def update(self):
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP):
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != 11:
                     self.finger_pos += 11
-            elif pyxel.btnp(pyxel.KEY_RETURN):
+            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 self.enter_pos = self.finger_pos//11
-            elif pyxel.btnp(pyxel.KEY_LEFT):
+            elif pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 return self.title_sc
             return self.setting_sc
         elif self.enter_pos == 1:
