@@ -1,7 +1,7 @@
 LOCAL = False
 try:
     from js import window,document
-    from pyodide.http import open_url
+    from pyodide.http import open_url # type: ignore
 except:
     import urllib.request
     import os

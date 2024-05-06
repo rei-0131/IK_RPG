@@ -10,6 +10,7 @@ from save_load import SaveLoad
 from setting import In_Setting, Out_Setting
 from player import Player
 from cloud_data import cloud_data
+from Map import Map
 
 ##########
 is_test = True
@@ -123,18 +124,20 @@ class App:
         self.msg_dis = 0
         self.msg_num = 0
         self.be_scene = 0
+        self.now_map = 0
         self.is_question = False
         self.is_word = False
         self.new_game = True
         self.from_load = False
         self.savedata = None
         self.question = Question(self.init_x,self.init_y,umplus10)
-        self.player = Player(self.init_x,self.init_y,self.question)
+        self.player = Player(self,self.init_x,self.init_y,self.question)
         self.title_s = Title(self,self.init_x,self.init_y)
         self.save = Save()
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
+        self.map = Map()
         if self.local:
             self.volume = int(config.get("basic","volume"))
         else:
@@ -193,7 +196,7 @@ class App:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
-            pyxel.bltm(0,0,0,0,0,300,200,0)
+            self.map.draw_map(self.now_map)
             if (self.msg_dis == 0 and self.player.x < 175) or (self.msg_dis == 1 and self.player.x >= 175):
                 self.is_word = True
             else:
