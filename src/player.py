@@ -11,7 +11,8 @@ class Player:
         self.init_x = x
         self.init_y = y
         self.rl = 1
-        self.walk_speed = 1.1
+        #self.walk_speed = 1.1
+        self.walk_speed = 1
         self.walk_img = 0
         self.walk_num = 0
         self.question_mark = 0
@@ -33,10 +34,10 @@ class Player:
                     self.dx -= self.walk_speed
                 self.rl = -1
             if (pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
-                if self.y > 16:
+                if self.y > 0:
                     self.dy -= self.walk_speed
             if (pyxel.btn(pyxel.KEY_DOWN) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
-                if self.y < 199:
+                if self.y < 184:
                     self.dy += self.walk_speed
             if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.walk_img = 0
@@ -52,4 +53,12 @@ class Player:
             self.y += self.dy
 
     def draw(self):
-        pyxel.blt(self.x,self.y - 15,self.walk_img,self.walk_pos[self.walk_num],0, 14 * self.rl,15,0)
+        pyxel.blt(self.x,self.y,self.walk_img,self.walk_pos[self.walk_num],0, 14 * self.rl,15,0)
+        #右下
+        pyxel.line(self.x + 15,self.y + 15,self.x + 15,self.y + 15,0)
+        #左下
+        pyxel.line(self.x,self.y + 15,self.x,self.y + 15,0)
+        #右上
+        pyxel.line(self.x + 15,self.y,self.x + 15,self.y,0)
+        #左上
+        pyxel.line(self.x,self.y,self.x,self.y,0)

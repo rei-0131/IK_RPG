@@ -1,5 +1,6 @@
 import pyxel
 import json
+import numpy as np
 
 #19x13
 class Map:
@@ -18,9 +19,18 @@ class Map:
 
     def cd_check(self,x,y,dx,dy,num):
         map_ = self.map_data[str(num)]
-        next_x = int((x + dx)//16)
-        next_y = int((y + dy)//16)
-        if map_[next_y][next_x] in self.cd_blocks:
+        input_array = np.array(map_)
+        enlarged_array = np.repeat(np.repeat(input_array, 16, axis=1), 16, axis=0)
+        map_16 = enlarged_array.tolist()
+        next_x = x + dx + 1
+        next_y = y + dy - 2
+        if map_16[next_y][next_x] in self.cd_blocks or map_16[next_y+16][next_x] in self.cd_blocks or map_16[next_y][next_x+16] in self.cd_blocks or map_16[next_y+16][next_x+16] in self.cd_blocks:
             return True
         else:
             return False
+        # next_x = int((x + dx)/16)
+        # next_y = int((y + dy)/16)
+        # if map_[next_y][next_x] in self.cd_blocks or map_[next_y+1][next_x] in self.cd_blocks or map_[next_y][next_x+1] in self.cd_blocks or map_[next_y+1][next_x+1] in self.cd_blocks:
+        #     return True
+        # else:
+        #     return False
