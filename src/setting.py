@@ -7,6 +7,20 @@ from option import Option
 from cloud_data import cloud_data
 
 class In_Setting:
+    """
+    プレイしているときの設定のクラス
+
+    Parameters:
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
+    """
     def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x
@@ -87,6 +101,20 @@ class In_Setting:
 
 
 class Out_Setting:
+    """
+    プレイしていないときの設定
+
+    Parameters:
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
+    """
     def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x

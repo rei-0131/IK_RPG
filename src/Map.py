@@ -2,8 +2,10 @@ import pyxel
 import json
 import numpy as np
 
-#19x13
 class Map:
+    """
+    マップに関するクラス
+    """
     def __init__(self):
         with open("assets/map.json",encoding="utf-8") as f:
             self.map_data = json.load(f)
@@ -15,12 +17,44 @@ class Map:
         self.cd_blocks = [3,]
 
     def draw_map(self,num):
+        """
+        マップの描画
+
+        Parameters:
+        ----------
+        num : int
+            マップデータ番号
+        """
         map_ = self.map_data[str(num)]
         for y in range(self.map_y):
             for x in range(self.map_x):
                 pyxel.blt(16*x,16*y,1,map_[y][x]*16,0,16,16,0)
 
     def cd_check(self,x,y,dx,dy,num,key):
+        """
+        当たり判定の判定
+
+        Parameters:
+        ----------
+        x : float
+            プレイヤーの現在位置x
+        y : float
+            プレイヤーの現在位置y
+        dx : float
+            次のフレームで動く距離x
+        dy : float
+            次のフレームで動く距離y
+        num : int
+            マップデータ番号
+        key : string
+            wasdのどれが押されたか
+            スマホやゲームパッドの場合はキーボードに相当するキー
+
+        Returns:
+        ----------
+        Any : bool
+            あたっている場合はTrue、そうでない場合はFalse
+        """
         self.key = key
         map_ = self.map_data[str(num)]
         input_array = np.array(map_)
@@ -48,6 +82,10 @@ class Map:
         #     return False
 
     def cd_debug(self):
+        """
+        当たり判定のデバッグ\n
+        現在のフレームの当たり判定の場所を表示
+        """
         if self.key == "w":
             pyxel.line(self.next_x+2,self.next_y,self.next_x+2,self.next_y,0)
             pyxel.line(self.next_x+16-2,self.next_y,self.next_x+16-2,self.next_y,0)

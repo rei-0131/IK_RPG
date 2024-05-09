@@ -4,6 +4,14 @@ from cloud_data import cloud_data
 
 #新しいセーブデータを作成する
 class Save:
+    """
+    セーブに関するクラス
+
+    Parameters:
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    """
     def __init__(self,app = None):
         self.app = app
         self.cloud = cloud_data(is_test=True)

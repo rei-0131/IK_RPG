@@ -10,14 +10,38 @@ except:
 import json
 
 class cloud_data:
+    """
+    クラウドにデータをセーブ・ロードする際のクラス
+
+    Parameters:
+    ----------
+    is_test : bool
+        デバッグのバージョンかどうか
+    """
     def __init__(self,is_test):
         self.is_test = is_test
 
     def import_(self):
+        """
+        ローカルかクラウドかの判断
+
+        Returns:
+        ----------
+        LOCAL : bool
+            ローカル動作ならTrue、クラウド動作ならFalse
+        """
         global LOCAL
         return LOCAL
 
     def save(self,savedata):
+        """
+        セーブデータのセーブ
+
+        Parameters:
+        ----------
+        savedata : dict
+            セーブデータ
+        """
         save_name = ""
         if self.is_test:
             save_name = "savedata_test"
@@ -26,6 +50,14 @@ class cloud_data:
         window.localStorage.setItem(save_name,savedata)
 
     def load(self):
+        """
+        セーブデータのロード
+
+        Returns:
+        ----------
+        savedata : dict
+            セーブデータ
+        """
         save_name = ""
         if self.is_test:
             save_name = "savedata_test"
@@ -38,6 +70,14 @@ class cloud_data:
         return savedata
 
     def config_save(self,config):
+        """
+        コンフィグのセーブ
+
+        Parameters:
+        ----------
+        config : dict
+            コンフィグ
+        """
         config_name = ""
         if self.is_test:
             config_name = "config_test"
@@ -46,6 +86,14 @@ class cloud_data:
         window.localStorage.setItem(config_name,config)
 
     def config_load(self):
+        """
+        コンフィグのロード
+
+        Returns:
+        ----------
+        config : dict
+            コンフィグ
+        """
         config_name = ""
         if self.is_test:
             config_name = "config_test"

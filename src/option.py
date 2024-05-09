@@ -3,6 +3,20 @@ import configparser
 from cloud_data import cloud_data
 
 class Option:
+    """
+    詳細設定に関するクラス
+
+    Parameters:
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
+    """
     def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x
@@ -22,6 +36,9 @@ class Option:
         self.vol_finger = self.now_volume
 
     def volume_update(self):
+        """
+        音量操作の処理
+        """
         if pyxel.btnp(pyxel.KEY_UP) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
             if self.vol_finger != 0:
                 self.vol_finger -= 1
@@ -60,6 +77,9 @@ class Option:
         return enter_pos
 
     def volume_draw(self):
+        """
+        音量操作の描画
+        """
         pyxel.rect(self.init_x//2-29,self.init_y//2-25,66,50,0)
         pyxel.rectb(self.init_x//2-29,self.init_y//2-25,66,50,7)
         if self.vol_finger == self.vol_pos + 3:

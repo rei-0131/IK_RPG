@@ -6,6 +6,18 @@ from save_load import SaveLoad
 from setting import Out_Setting
 
 class Title:
+    """
+    タイトルに関するクラス
+
+    Parameters:
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    """
     def __init__(self,app,x,y):
         self.app = app
         self.init_x = x

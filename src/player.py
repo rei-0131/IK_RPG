@@ -2,6 +2,17 @@ import pyxel
 from Map import Map
 
 class Player:
+    """プレイヤーに関するクラス
+
+    Parameter:
+    ----------
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    question : Any
+        Questionクラスのインスタンス
+    """
     def __init__(self,app,x,y,question):
         self.app = app
         self.x = 20

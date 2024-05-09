@@ -48,7 +48,8 @@ else:
 
 
 def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, int]:
-    """文字を表示するデコレーション
+    """
+    文字を表示するデコレーション
 
     Parameters:
     ----------
@@ -56,12 +57,18 @@ def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, in
         表示する文字列のDictionaryのKey
     msg_num : int
         sのインデックス番号
+    question : Any
+        Questionクラスのインスタンス
+    is_question : bool
+        質問が表示されているか
     Returns:
     ----------
     msg_dis : int
         表示する文字列のDictionaryのKey
     msg_num : int
         sのインデックス番号
+    is_question : bool
+        質問が表示されているか
     """
 
     s = words["words"][str(msg_dis)]
@@ -91,6 +98,7 @@ def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, in
 
     return msg_dis, msg_num, is_question
 
+#各設定の読み込み
 if local:
     init_x = int(config.get("basic","screen_x"))
     init_y = int(config.get("basic","screen_y"))
@@ -116,6 +124,16 @@ BATTLE_SCENE = scenes["BATTLE_SCENE"]
 que_height = 0
 
 class App:
+    """
+    アプリケーションに関するクラス
+
+    Parameters:
+    ----------
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    """
     def __init__(self,x,y):
         self.init_x = x
         self.init_y = y
