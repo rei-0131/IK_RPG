@@ -5,6 +5,18 @@ with open("src/assets/words.json",encoding="utf-8") as f:
     words = json.load(f)
 
 class Question:
+    """
+    質問に関するクラス
+
+    Parameters:
+    ----------
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
+    """
     def __init__(self,x,y,ump):
         self.question_mark = 0
         self.init_x = x
@@ -13,7 +25,8 @@ class Question:
         self.que_height = 0
 
     def dec_question(self,msg_dis:int):
-        """質問を表示するデコレーション
+        """
+        質問を表示するデコレーション\n
         質問は1度に4つまで
 
         Parameters:

@@ -5,7 +5,9 @@ from cloud_data import cloud_data
 
 #セーブデータをロードする画面を表示する
 class SaveLoad:
-    """セーブデータロード画面を表示
+    """
+    セーブデータロード画面を表示
+
     Parameters:
     ----------
     x : int
@@ -13,7 +15,7 @@ class SaveLoad:
     y : int
         画面のinit_y
     ump : Any
-        BDFRendererのインスタンス
+        umplus10(日本語出力)
     over_load : bool
         セーブデータの上書きが可能か
     left : bool
