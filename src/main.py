@@ -168,50 +168,53 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        if self.now_scene == TITLE_SCENE or self.now_scene == None:
-            self.now_scene = self.title_s.update()
-        elif self.now_scene == MAIN_SCENE:
-            #savedata.jsonを初期化しないように変更すること
-            if self.new_game:
-                if self.from_load:
-                    if self.local:
-                        with open("configs/savedata.json","r",encoding="utf-8") as f:
-                            self.savedata = json.load(f)
-                    else:
-                        self.savedata = cloud.load()
-                        time.sleep(0.3)
-                    self.game_time_start = time.time()
-                    print(self.save_load.setting_finger)
-                    self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
-                    self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
-                    self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
-                    self.from_load = False
-                else:
-                    # with open("../assets/savedata.json","w",encoding="utf-8") as f:
-                    #     json.dump({},f,indent=4)
-                    print("new game")
-                self.new_game = False
-            self.player.update(self.is_question,self.is_word)
-        elif self.now_scene == OUT_SETTING_SCENE:
-            self.now_scene = self.setting_out.update()
-        elif self.now_scene == IN_SETTING_SCENE:
-            self.setting_in.update()
-        elif self.now_scene == LOAD_SCENE:
-            self.now_scene = self.save_load.update()
-            if self.save_load.continue_game:
-                self.from_load = True
-        if self.is_question:
-            self.question.update()
-        if pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
-            if self.now_scene == IN_SETTING_SCENE:
-                self.now_scene = self.be_scene
-            else:
-                self.be_scene = self.now_scene
-                self.now_scene = IN_SETTING_SCENE
+        ###battle画面制作中につきコメントアウト###
+        # if self.now_scene == TITLE_SCENE or self.now_scene == None:
+        #     self.now_scene = self.title_s.update()
+        # elif self.now_scene == MAIN_SCENE:
+        #     #savedata.jsonを初期化しないように変更すること
+        #     if self.new_game:
+        #         if self.from_load:
+        #             if self.local:
+        #                 with open("configs/savedata.json","r",encoding="utf-8") as f:
+        #                     self.savedata = json.load(f)
+        #             else:
+        #                 self.savedata = cloud.load()
+        #                 time.sleep(0.3)
+        #             self.game_time_start = time.time()
+        #             print(self.save_load.setting_finger)
+        #             self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
+        #             self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
+        #             self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
+        #             self.from_load = False
+        #         else:
+        #             # with open("../assets/savedata.json","w",encoding="utf-8") as f:
+        #             #     json.dump({},f,indent=4)
+        #             print("new game")
+        #         self.new_game = False
+        #     self.player.update(self.is_question,self.is_word)
+        # elif self.now_scene == OUT_SETTING_SCENE:
+        #     self.now_scene = self.setting_out.update()
+        # elif self.now_scene == IN_SETTING_SCENE:
+        #     self.setting_in.update()
+        # elif self.now_scene == LOAD_SCENE:
+        #     self.now_scene = self.save_load.update()
+        #     if self.save_load.continue_game:
+        #         self.from_load = True
+        # if self.is_question:
+        #     self.question.update()
+        # if pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
+        #     if self.now_scene == IN_SETTING_SCENE:
+        #         self.now_scene = self.be_scene
+        #     else:
+        #         self.be_scene = self.now_scene
+        #         self.now_scene = IN_SETTING_SCENE
+        self.battle.update()
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
     def draw(self):
+        ###battle画面制作中につきコメントアウト###
         # if self.now_scene == TITLE_SCENE or self.now_scene == None:
         #     self.title_s.draw()
         # elif self.now_scene == MAIN_SCENE:
