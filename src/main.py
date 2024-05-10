@@ -11,6 +11,7 @@ from setting import In_Setting, Out_Setting
 from player import Player
 from cloud_data import cloud_data
 from Map import Map
+from battle import Battle
 
 ##########
 is_test = True
@@ -155,6 +156,7 @@ class App:
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
+        self.battle = Battle(self.init_x, self.init_y,umplus10)
         self.map = Map()
         if self.local:
             self.volume = int(config.get("basic","volume"))
@@ -210,25 +212,26 @@ class App:
             pyxel.quit()
 
     def draw(self):
-        if self.now_scene == TITLE_SCENE or self.now_scene == None:
-            self.title_s.draw()
-        elif self.now_scene == MAIN_SCENE:
-            pyxel.cls(0)
-            self.map.draw_map(self.now_map)
-            if (self.msg_dis == 0 and self.player.x < 175) or (self.msg_dis == 1 and self.player.x >= 175):
-                self.is_word = True
-            else:
-                self.is_word = False
-            self.player.draw()
-            if self.is_word:
-                self.msg_dis,self.msg_num,self.is_question = dec_word(self.msg_dis,self.msg_num,self.question,self.is_question)
-            if self.is_question:
-                self.question.draw()
-        elif self.now_scene == OUT_SETTING_SCENE:
-            self.setting_out.draw()
-        elif self.now_scene == IN_SETTING_SCENE:
-            self.setting_in.draw()
-        elif self.now_scene == LOAD_SCENE:
-            self.save_load.draw()
+        # if self.now_scene == TITLE_SCENE or self.now_scene == None:
+        #     self.title_s.draw()
+        # elif self.now_scene == MAIN_SCENE:
+        #     pyxel.cls(0)
+        #     self.map.draw_map(self.now_map)
+        #     if (self.msg_dis == 0 and self.player.x < 175) or (self.msg_dis == 1 and self.player.x >= 175):
+        #         self.is_word = True
+        #     else:
+        #         self.is_word = False
+        #     self.player.draw()
+        #     if self.is_word:
+        #         self.msg_dis,self.msg_num,self.is_question = dec_word(self.msg_dis,self.msg_num,self.question,self.is_question)
+        #     if self.is_question:
+        #         self.question.draw()
+        # elif self.now_scene == OUT_SETTING_SCENE:
+        #     self.setting_out.draw()
+        # elif self.now_scene == IN_SETTING_SCENE:
+        #     self.setting_in.draw()
+        # elif self.now_scene == LOAD_SCENE:
+        #     self.save_load.draw()
+        self.battle.draw()
 
 App(init_x,init_y)
