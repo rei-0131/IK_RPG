@@ -165,6 +165,7 @@ class App:
         self.game_time = "00:00:00"
         self.game_time_start = None
         pyxel.load("assets/player.pyxres")
+        # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):
@@ -235,6 +236,7 @@ class App:
         #     self.setting_in.draw()
         # elif self.now_scene == LOAD_SCENE:
         #     self.save_load.draw()
+        # pyxel.blt(0,0,0,0,0,63,79,10)
         self.battle.draw()
 
 App(init_x,init_y)
