@@ -35,19 +35,35 @@
 
 ## セーブデータのフォーマット
 {
+
   data_number:{
+  
     "player_data":{
+    
       "time":play_time,
+      
       "scene":scene_number,
+      
       "x":player_x,
+      
       "y":player_y,
+      
       "chara_data":{
+      
         chara_name:{
+        
           "Level":Level,
+          
           "HP":[MAX_HP,NOW_HP],
+          
           "MP":[MAX_MP,NOW_MP]
+          
         },
+        
       }
+      
     }
+    
   }
+  
 }
