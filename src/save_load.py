@@ -82,8 +82,8 @@ class SaveLoad:
                 print(self.setting_finger)
                 if self.load:
                     if str(self.setting_finger) in self.save_data:
+                        self.continue_game = True
                         enter_pos = self.main
-                self.continue_game = True
                 if self.over_load:
                     self.save.newsave(self.setting_finger)
             return enter_pos

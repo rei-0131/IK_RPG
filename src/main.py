@@ -149,7 +149,7 @@ class App:
         self.new_game = True
         self.from_load = False
         self.savedata = None
-        self.chara_data = {"ぼく":{"HP":[230,180],"MP":[140,130]},"アラオ":{"HP":[340,320],"MP":[120,30]},"アラオ2":{"HP":[230,230],"MP":[270,150]},"アラオ3":{"HP":[170,10],"MP":[560,430]}}
+        self.chara_data = {"ぼく":{"HP":[100,100],"MP":[100,100]}}
         self.question = Question(self.init_x,self.init_y,umplus10)
         self.player = Player(self,self.init_x,self.init_y,self.question)
         self.title_s = Title(self,self.init_x,self.init_y)
@@ -212,6 +212,12 @@ class App:
             else:
                 self.be_scene = self.now_scene
                 self.now_scene = IN_SETTING_SCENE
+        if pyxel.btnp(pyxel.KEY_B):
+            if self.now_scene == 5:
+                self.now_scene = self.be_scene
+            else:
+                self.be_scene = self.now_scene
+                self.now_scene = 5
         if self.now_scene == 5:
             self.battle.update()
         if pyxel.btnp(pyxel.KEY_Q):
