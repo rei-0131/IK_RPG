@@ -40,6 +40,13 @@ class Save:
             "scene":self.scenes["MAIN_SCENE"],
             "x":self.app.player.x,
             "y":self.app.player.y,
+            "chara_data":{
+                "ぼく":{
+                    "Level":1,
+                    "HP":[100,100],
+                    "MP":[100,100]
+                }
+            }
         }
         if self.app.local:
             with open("configs/savedata.json","w",encoding="utf-8") as f:
