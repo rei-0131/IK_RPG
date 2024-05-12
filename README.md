@@ -34,36 +34,36 @@
 . . . . . **今後も追加予定**
 
 ## セーブデータのフォーマット
+```rb
 {
-
   data_number:{
-  
     "player_data":{
-    
-      "time":play_time,
-      
-      "scene":scene_number,
-      
+      "time":play_time,  
+      "scene":scene_number, 
       "x":player_x,
-      
       "y":player_y,
-      
       "chara_data":{
-      
-        chara_name:{
-        
-          "Level":Level,
-          
-          "HP":[MAX_HP,NOW_HP],
-          
-          "MP":[MAX_MP,NOW_MP]
-          
-        },
-        
-      }
-      
-    }
-    
+        chara_name:{  
+          "Level":Level,    
+          "HP":[MAX_HP,NOW_HP],     
+          "MP":[MAX_MP,NOW_MP]          
+        },        
+      }      
+    }   
   }
-  
 }
+```
+
+|    表記    |       意味       |
+|:----------:|:----------------:|
+|data_number |データ番号         |
+|play_time   |プレイ時間         |
+|scene_number|シーン番号         |
+|player_x    |プレイヤーの座標x   |
+|player_y    |プレイヤーの座標y   |
+|chara_name  |キャラクターの名前  |
+|Level       |キャラクターのレベル|
+|MAX_HP      |最大HP             |
+|NOW_HP      |今のHP             |
+|MAX_MP      |最大MP             |
+|NOW_MP      |今のMP             |
