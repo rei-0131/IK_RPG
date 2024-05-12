@@ -9,6 +9,10 @@
 * json
 * time
 * BDFRenderer
+* js
+* pyodide.http
+* urllib.request
+* os
 
 ## 進捗
 - [ ] メイン画面
