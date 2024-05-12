@@ -30,6 +30,10 @@ class In_Setting:
         self.finger_pos = 0
         self.enter_pos = -1
         self.setting_finger = 1
+        self.in_st_finger = 0
+        self.chara_keys = list(self.app.chara_data.keys())
+        self.move_fi = False
+        self.move_to = 0
         self.save_pos = 1
         self.time_h= 0
         self.time_m = 0
@@ -45,6 +49,28 @@ class In_Setting:
             self.scenes = json.load(f)
         self.setting_sc = self.scenes["IN_SETTING_SCENE"]
         self.title_sc = self.scenes["MAIN_SCENE"]
+
+    def sort_update(self):
+        len_ = len(self.app.chara_data.items())
+        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            self.enter_pos = -1
+        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+                self.in_st_finger -= 1
+        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
+            self.in_st_finger += 1
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+            if not self.move_fi:
+                self.move_to = self.in_st_finger
+                self.move_fi = True
+            else:
+                chara_data_be = {}
+                tmp = self.chara_keys[self.in_st_finger]
+                self.chara_keys[self.in_st_finger] = self.chara_keys[self.move_to]
+                self.chara_keys[self.move_to] = tmp
+                for i in self.chara_keys:
+                    chara_data_be[i] = self.app.chara_data[i]
+                self.app.chara_data = chara_data_be
+                self.move_fi = False
 
     def update(self):
         time_time = int(time.time() - self.app.game_time_start)
@@ -73,8 +99,17 @@ class In_Setting:
             self.enter_pos = self.save_load.update(self.enter_pos)
         elif self.enter_pos == 5:
             self.enter_pos = self.option.update(self.enter_pos)
+        elif self.enter_pos == 4:
+            self.sort_update()
         else:
             self.enter_pos = -1
+
+    def sort_draw(self):
+        for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
+            if i == self.in_st_finger:
+                pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+            pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+            self.umplus10.draw_text(71,int(6+(49*i)),t,7)
 
     def draw(self):
         pyxel.cls(0)
@@ -89,7 +124,7 @@ class In_Setting:
         self.umplus10.draw_text(19,17,"スキル",1)
         self.umplus10.draw_text(19,28,"装備",1)
         self.umplus10.draw_text(19,39,"ステータス",1)
-        self.umplus10.draw_text(19,50,"並び替え",1)
+        self.umplus10.draw_text(19,50,"並び替え",7)
         self.umplus10.draw_text(19,61,"オプション",7)
         self.umplus10.draw_text(19,72,"セーブ",7)
         self.umplus10.draw_text(19,83,"ゲーム終了",7)
@@ -98,6 +133,8 @@ class In_Setting:
             self.save_load.draw()
         elif self.enter_pos == 5:
             self.option.draw()
+        elif self.enter_pos == 4:
+            self.sort_draw()
 
 
 class Out_Setting:
