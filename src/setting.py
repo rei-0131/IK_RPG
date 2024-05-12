@@ -31,7 +31,6 @@ class In_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.in_st_finger = 0
-        self.chara_keys = list(self.app.chara_data.keys())
         self.move_fi = False
         self.move_to = 0
         self.save_pos = 1
@@ -52,6 +51,7 @@ class In_Setting:
 
     def sort_update(self):
         len_ = len(self.app.chara_data.items())
+        self.chara_keys = list(self.app.chara_data.keys())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
         if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:

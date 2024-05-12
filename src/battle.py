@@ -16,11 +16,11 @@ class Battle:
         Appクラスのインスタンス
     """
     def __init__(self,x,y,ump,app):
+        self.app = app
         self.init_x = x
         self.init_y = y
         self.username = "ぼく"
         self.umplus10 = ump
-        self.chara_data = app.chara_data
         self.select_num = 0
         self.finger_pos = 0
 
@@ -39,17 +39,17 @@ class Battle:
         pyxel.rect(30,self.init_y//2+10,65,4,0)
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
-        for i,data in zip(range(1,1+len(self.chara_data.items())),self.chara_data):
+        for i,data in zip(range(1,1+len(self.app.chara_data.items())),self.app.chara_data):
             height = 18*(i - 1)
             self.umplus10.draw_text(115,self.init_y//2+15+height,data,7)
             pyxel.text(172,self.init_y//2+14+height,"HP",7)
             pyxel.text(172,self.init_y//2+21+height,"MP",7)
-            pyxel.rect(180,self.init_y//2+14+height,(self.chara_data[data]["HP"][1]/self.chara_data[data]["HP"][0])*100,5,11)
+            pyxel.rect(180,self.init_y//2+14+height,(self.app.chara_data[data]["HP"][1]/self.app.chara_data[data]["HP"][0])*100,5,11)
             pyxel.rectb(180,self.init_y//2+14+height,100,5,7)
-            pyxel.text(281,self.init_y//2+14+height,f"{self.chara_data[data]['HP'][1]}",11)
-            pyxel.rect(180,self.init_y//2+21+height,(self.chara_data[data]["MP"][1]/self.chara_data[data]["MP"][0])*100,5,5)
+            pyxel.text(281,self.init_y//2+14+height,f"{self.app.chara_data[data]['HP'][1]}",11)
+            pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data]["MP"][1]/self.app.chara_data[data]["MP"][0])*100,5,5)
             pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
-            pyxel.text(281,self.init_y//2+21+height,f"{self.chara_data[data]['MP'][1]}",5)
+            pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data]['MP'][1]}",5)
         if self.select_num == 0:
             self.umplus10.draw_text(26,self.init_y//2+15,"たたかう",7)
             self.umplus10.draw_text(26,self.init_y//2+35,"まほう",7)
