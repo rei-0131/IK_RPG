@@ -50,7 +50,10 @@
         chara_name:{  
           "Level":Level,    
           "HP":[MAX_HP,NOW_HP],     
-          "MP":[MAX_MP,NOW_MP]          
+          "MP":[MAX_MP,NOW_MP],
+          "magic_codes":{
+            "magic_code"
+          }          
         },        
       }      
     }   
@@ -58,16 +61,17 @@
 }
 ```
 
-|    表記    |       意味       |
-|:----------:|:----------------:|
-|data_number |データ番号         |
-|play_time   |プレイ時間         |
-|scene_number|シーン番号         |
-|player_x    |プレイヤーの座標x   |
-|player_y    |プレイヤーの座標y   |
-|chara_name  |キャラクターの名前  |
-|Level       |キャラクターのレベル|
-|MAX_HP      |最大HP             |
-|NOW_HP      |今のHP             |
-|MAX_MP      |最大MP             |
-|NOW_MP      |今のMP             |
+|    表記    |       意味                  |
+|:----------:|:---------------------------:|
+|data_number |データ番号        　　　　　　 |
+|play_time   |プレイ時間        　　　　　　 |
+|scene_number|シーン番号        　　　　　　 |
+|player_x    |プレイヤーの座標x              |
+|player_y    |プレイヤーの座標y  　　　　　　 |
+|chara_name  |キャラクターの名前 　　　　　　 |
+|Level       |キャラクターのレベル　　　　　　|
+|MAX_HP      |最大HP           　　　　　　  |
+|NOW_HP      |今のHP           　　　　　　  |
+|MAX_MP      |最大MP          　　　　　　   |
+|NOW_MP      |今のMP            　　　　　　 |
+|magic_code  |magic.jsonに記述された魔法コード|
