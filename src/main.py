@@ -29,7 +29,6 @@ else:
 with open("src/assets/scenes.json",encoding="utf-8") as f:
     scenes = json.load(f)
 
-
 with open("src/assets/words.json",encoding="utf-8") as f:
     words = json.load(f)
 
@@ -144,6 +143,7 @@ class App:
         self.msg_num = 0
         self.be_scene = 0
         self.now_map = 0
+        self.is_test = is_test
         self.is_question = False
         self.is_word = False
         self.new_game = True

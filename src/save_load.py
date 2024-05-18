@@ -39,7 +39,7 @@ class SaveLoad:
         self.over_load = over_load
         self.continue_game = False
         self.load = load
-        self.cloud = cloud_data(is_test=True)
+        self.cloud = cloud_data(is_test=self.app.is_test)
         if self.app.local:
             with open("configs/savedata.json",encoding="utf-8") as f:
                 self.save_data = json.load(f)
