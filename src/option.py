@@ -24,7 +24,7 @@ class Option:
         self.umplus10 = ump
         self.select_pos = 0
         self.enter_pos = -1
-        self.cloud = cloud_data(is_test=True)
+        self.cloud = cloud_data(is_test=self.app.is_test)
         if self.app.local:
             self.config = configparser.ConfigParser(interpolation=None)
             self.config.read("configs/config.ini")

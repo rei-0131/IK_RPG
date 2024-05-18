@@ -26,7 +26,7 @@ class In_Setting:
         self.init_x = x
         self.init_y = y
         self.umplus10 = ump
-        self.cloud = cloud_data(is_test=True)
+        self.cloud = cloud_data(is_test=self.app.is_test)
         self.finger_pos = 0
         self.enter_pos = -1
         self.setting_finger = 1

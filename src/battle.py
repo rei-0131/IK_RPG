@@ -1,4 +1,5 @@
 import pyxel
+import sklearn
 
 #バトル画面の表示と処理
 class Battle:
