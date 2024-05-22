@@ -1,8 +1,7 @@
 import pyxel
+import json
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from sklearn import svm
 from sklearn.decomposition import PCA
 
@@ -24,20 +23,27 @@ class Battle:
         self.app = app
         self.init_x = x
         self.init_y = y
-        self.username = "ぼく"
+        self.select_chara = ""
         self.umplus10 = ump
         self.select_num1 = -1
         self.finger_pos1 = 0
         self.select_num2 = -1
         self.finger_pos2 = 0
+        self.finger_pos3 = 0
+        self.item_num = 0
+        self.item_pos = 0
+        self.dis_num = 0
+        with open("assets/magic.json","r",encoding="utf-8") as f:
+            self.magic_codes = json.load(f)
         self.AI = self.create_AI("")
+        self.ai_data = []
 
     def create_AI(self,add_data):
         #first_aiに入っているデータはセットアップデータ
         #continueではfirst_ai+プレイヤーから取得した学習データを使用
         data = []
         ai_answer =[]
-        with open("src/rpg_parameters.txt","r",encoding="utf-8") as f:
+        with open("assets/first_ai.txt","r",encoding="utf-8") as f:
             ai_data_ = []
             for line in f:
                 line = line.rstrip()
@@ -117,8 +123,44 @@ class Battle:
             self.select_num2 = -1
 
     def magic_update(self):
-        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+        if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.select_num2 = -1
+        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
+                self.finger_pos3-=2
+            elif self.item_pos - 2 >= 0:
+                self.item_pos -= 2
+        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if self.finger_pos3 != 8 and self.finger_pos3 != 9:
+                if self.finger_pos3 + 2 < self.dis_num:
+                    self.finger_pos3 += 2
+            else:
+                if self.finger_pos3 + self.item_pos + 2 < self.item_num:
+                    self.item_pos += 2
+                elif self.finger_pos3 + self.item_pos + 2 == self.item_num and self.item_num > 10:
+                    self.item_pos += 2
+                    self.finger_pos3 -= 1
+        if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+            if self.finger_pos3 + 1 < self.dis_num:
+                self.finger_pos3 += 1
+            elif not self.item_pos + 12 <= self.item_num and self.item_pos + 11 <= self.item_num:
+                self.finger_pos3 -= 1
+                self.item_pos += 2
+            elif self.item_pos + 12 <= self.item_num:
+                self.item_pos += 2
+        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+            if self.item_pos != 0:
+                if self.finger_pos3 == 0:
+                    self.finger_pos3 += 1
+                    self.item_pos -= 2
+                else:
+                    self.finger_pos3 -= 1
+            else:
+                if self.finger_pos3 != 0:
+                    self.finger_pos3 -= 1
+        if pyxel.btnp(pyxel.KEY_RETURN):
+            #魔法名出力
+            print(self.magic_codes[self.app.chara_data[self.select_chara]["magic_codes"][self.item_pos + self.finger_pos3]][0])
 
     def item_update(self):
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -135,7 +177,6 @@ class Battle:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.select_num1 = int(self.finger_pos1 // 20)
                 self.select_num2 = -1
-                print(self.select_num1)
         elif self.select_num1 != 3:
             if self.select_num2 == -1:
                 if self.select_num1 == 0 or self.select_num1 == 1:
@@ -149,7 +190,12 @@ class Battle:
                         self.select_num1 = -1
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                         self.select_num2 = int(self.finger_pos2 // 18)
-                        print(self.select_num2)
+                        self.select_chara = list(self.app.chara_data.keys())[self.select_num2]
+                        if self.select_num1 == 1:
+                            self.finger_pos3 = 0
+                            self.item_num = 0
+                            self.item_pos = 0
+                            self.dis_num = 0
                 elif self.select_num1 == 2:
                     self.item_update()
             else:
@@ -157,14 +203,37 @@ class Battle:
                     self.fight_update()
                 elif self.select_num1 == 1:
                     self.magic_update()
+                #self.ai_data.append([])
 
     def fight_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
 
+
     def magic_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
+        self.item_num = len(self.app.chara_data[self.select_chara]["magic_codes"])
+        if self.item_num >= self.item_pos+11:
+            self.dis_num = 10
+            for i,item in zip(range(10),self.app.chara_data[self.select_chara]["magic_codes"][self.item_pos:self.item_pos+10]):
+                h = int(i // 2)
+                w = i % 2
+                if i == self.finger_pos3:
+                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,1)
+                else:
+                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,0)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[item][0],7)
+        else:
+            self.dis_num = self.item_num - self.item_pos
+            for i,item in zip(range(self.item_num-self.item_pos),self.app.chara_data[self.select_chara]["magic_codes"][self.item_pos:self.item_num]):
+                h = int(i // 2)
+                w = i % 2
+                if i == self.finger_pos3:
+                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,1)
+                else:
+                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,0)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[item][0],7)
 
     def item_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
