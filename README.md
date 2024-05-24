@@ -35,7 +35,7 @@
 - [x] セーブ・ロード
 - [ ] 戦闘画面
 - - [ ] たたかう
-- - [ ] まほう
+- - [x] まほう
 - - [ ] どうぐ
 - - [ ] にげる
 - - [x] 敵AI
@@ -57,27 +57,55 @@
           "Level":Level,    
           "HP":[MAX_HP,NOW_HP],     
           "MP":[MAX_MP,NOW_MP],
-          "magic_codes":{
-            "magic_code"
-          }          
+          "magic_codes":[magic_code,...]   ,
+          "off_ab":off_ab,
+          "diff_ab":diff_ab,
+          "satisfaction":[satisfaction,rate:,
+          "off_buff":off_buff,
+          "diff_buff":diff_buff,
+          "equipments":{
+            "head":equipment_head_code,
+            "chest":equipment_chest_code,
+            "leggings":equipment_leggings_code,
+            "boots":equipment_boots_cod
+          }       
         },        
-      }      
+      },
+      "item_codes":{
+        [item_code,item_num]
+      },
+      "imp_item_codes":{
+        [imp_item_code]
+      }   
     }   
   }
 }
 ```
 
-|    表記    |       意味                  |
-|:----------:|:---------------------------:|
-|data_number |データ番号        　　　　　　 |
-|play_time   |プレイ時間        　　　　　　 |
-|scene_number|シーン番号        　　　　　　 |
-|player_x    |プレイヤーの座標x              |
-|player_y    |プレイヤーの座標y  　　　　　　 |
-|chara_name  |キャラクターの名前 　　　　　　 |
-|Level       |キャラクターのレベル　　　　　　|
-|MAX_HP      |最大HP           　　　　　　  |
-|NOW_HP      |今のHP           　　　　　　  |
-|MAX_MP      |最大MP          　　　　　　   |
-|NOW_MP      |今のMP            　　　　　　 |
-|magic_code  |magic.jsonに記述された魔法コード|
+|    表記    |               意味                  |
+|:----------:|:-----------------------------------:|
+|data_number  |データ番号     　　　　   　　　　　　 |
+|play_time    |プレイ時間        　　　　　　　　　　 |
+|scene_number |シーン番号        　　　　　　　　　　 |
+|player_x     |プレイヤーの座標x           　　　　   |
+|player_y     |プレイヤーの座標y  　　　　　　　　　　 |
+|chara_name   |キャラクターの名前 　　　　　　　　　　 |
+|Level        |キャラクターのレベル　　　　　　　　　　|
+|MAX_HP       |最大HP           　　　　　　　　　　  |
+|NOW_HP       |今のHP           　　　　　　　　　　  |
+|MAX_MP       |最大MP          　　　　　　　　　　   |
+|NOW_MP       |今のMP            　　　　　　　　　　 |
+|magic_code   |magic.jsonに記述された魔法コード　　　　|
+|item_code    |tools.jsonに記述された道具コード　　　　|
+|imp_item_code|tools.jsonに既出された重要アイテムコード|
+|item_num     |アイテムの所持数         　　　　       |
+|off_ab       |攻撃力            　　　　             |
+|diff_ab      |防御力          　　　　               |
+|rate         |会心            　　　　               |
+|damage       |会心率                   　　　　      |
+|off_buff     |攻撃力バフ               　　　　       |
+|diff_buff    |防御力バフ               　　　　       |
+|equipment_head_code|頭装備                           |
+|equipment_chest_code|胴装備                          |
+|equipment_leggings_code|脚装備                       |
+|equipment_boots_code|足装備                          |
