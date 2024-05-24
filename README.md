@@ -53,7 +53,8 @@
       "x":player_x,
       "y":player_y,
       "chara_data":{
-        chara_name:{  
+        chara_name:{
+          "post":post_num  
           "Level":Level,    
           "HP":[MAX_HP,NOW_HP],     
           "MP":[MAX_MP,NOW_MP],
@@ -65,18 +66,16 @@
           "def_buff":def_buff,
           "equipments":{
             "head":equipment_head_code,
-            "chest":equipment_chest_code,
+            "armor":equipment_armor_code,
             "leggings":equipment_leggings_code,
-            "boots":equipment_boots_cod
+            "boots":equipment_boots_code
           }       
         },        
       },
       "item_codes":{
-        [item_code,item_num]
+        item_code:item_num
       },
-      "imp_item_codes":{
-        [imp_item_code]
-      }   
+      "imp_item_codes":[imp_item_code] 
     }   
   }
 }
@@ -90,6 +89,7 @@
 |player_x     |プレイヤーの座標x           　　　　   |
 |player_y     |プレイヤーの座標y  　　　　　　　　　　 |
 |chara_name   |キャラクターの名前 　　　　　　　　　　 |
+|post_num     |職業コード                           |
 |Level        |キャラクターのレベル　　　　　　　　　　|
 |MAX_HP       |最大HP           　　　　　　　　　　  |
 |NOW_HP       |今のHP           　　　　　　　　　　  |
@@ -100,12 +100,12 @@
 |imp_item_code|tools.jsonに既出された重要アイテムコード|
 |item_num     |アイテムの所持数         　　　　       |
 |atk_ab       |攻撃力            　　　　             |
-|def_ab      |防御力          　　　　               |
+|def_ab      |防御力          　　　　                |
 |rate         |会心            　　　　               |
-|damage       |会心率                   　　　　      |
+|damage       |会心率                   　　　　       |
 |atk_buff     |攻撃力バフ               　　　　       |
-|def_buff    |防御力バフ               　　　　       |
+|def_buff    |防御力バフ               　　　　        |
 |equipment_head_code|頭装備                           |
-|equipment_chest_code|胴装備                          |
+|equipment_armor_code|胴装備                          |
 |equipment_leggings_code|脚装備                       |
 |equipment_boots_code|足装備                          |
