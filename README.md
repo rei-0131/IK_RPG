@@ -58,11 +58,11 @@
           "HP":[MAX_HP,NOW_HP],     
           "MP":[MAX_MP,NOW_MP],
           "magic_codes":[magic_code,...]   ,
-          "off_ab":off_ab,
-          "diff_ab":diff_ab,
+          "atk_ab":atk_ab,
+          "def_ab":def_ab,
           "satisfaction":[satisfaction,rate:,
-          "off_buff":off_buff,
-          "diff_buff":diff_buff,
+          "atk_buff":atk_buff,
+          "def_buff":def_buff,
           "equipments":{
             "head":equipment_head_code,
             "chest":equipment_chest_code,
@@ -99,12 +99,12 @@
 |item_code    |tools.jsonに記述された道具コード　　　　|
 |imp_item_code|tools.jsonに既出された重要アイテムコード|
 |item_num     |アイテムの所持数         　　　　       |
-|off_ab       |攻撃力            　　　　             |
-|diff_ab      |防御力          　　　　               |
+|atk_ab       |攻撃力            　　　　             |
+|def_ab      |防御力          　　　　               |
 |rate         |会心            　　　　               |
 |damage       |会心率                   　　　　      |
-|off_buff     |攻撃力バフ               　　　　       |
-|diff_buff    |防御力バフ               　　　　       |
+|atk_buff     |攻撃力バフ               　　　　       |
+|def_buff    |防御力バフ               　　　　       |
 |equipment_head_code|頭装備                           |
 |equipment_chest_code|胴装備                          |
 |equipment_leggings_code|脚装備                       |
