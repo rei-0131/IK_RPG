@@ -60,7 +60,7 @@
           "magic_codes":[magic_code,...]   ,
           "atk_ab":atk_ab,
           "def_ab":def_ab,
-          "satisfaction":[satisfaction,rate:,
+          "satisfaction":[satisfaction,rate],
           "atk_buff":atk_buff,
           "def_buff":def_buff,
           "equipments":{
