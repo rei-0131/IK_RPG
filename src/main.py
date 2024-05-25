@@ -20,6 +20,106 @@ is_test = True
 cloud = cloud_data(is_test=is_test)
 local = cloud.import_()
 
+
+chara_data_tmp = {
+    "ぼく":{
+        "post":1,
+        "Level":1,
+        "HP":[100,100],
+        "MP":[100,100],
+        "magic_codes":[
+            "01","03","05","08","09","09","08","07","04","02","01"
+        ],
+        "atk_ab":100,
+        "def_ab":100,
+        "satisfaction":[1.5,120],
+        "atk_buff":100,
+        "def_buff":100,
+        "equipments":{
+            "head":"001",
+            "armor":"001",
+            "leggings":"001",
+            "boots":"001"
+        }
+    },
+    "アラオ": {
+        "Level": 1,
+        "HP": [
+            340,
+            320
+        ],
+        "MP": [
+            120,
+            30
+        ],
+        "magic_codes":[
+            "01","03","05","08"
+        ],
+        "atk_ab":100,
+        "def_ab":100,
+        "satisfaction":[1.5,120],
+        "atk_buff":100,
+        "def_buff":100,
+        "equipments":{
+            "head":"002",
+            "armor":"002",
+            "leggings":"002",
+            "boots":"002"
+        }
+    },
+    "アラオ2": {
+        "Level": 1,
+        "HP": [
+            230,
+            230
+        ],
+        "MP": [
+            270,
+            150
+        ],
+        "magic_codes":[
+            "01","03","05","08","09","09","08","07","04","02"
+        ],
+        "atk_ab":100,
+        "def_ab":100,
+        "satisfaction":[1.5,120],
+        "atk_buff":100,
+        "def_buff":100,
+        "equipments":{
+            "head":"004",
+            "armor":"004",
+            "leggings":"004",
+            "boots":"004"
+        }
+    },
+    "アラオ3": {
+        "Level": 1,
+        "HP": [
+            170,
+            10
+        ],
+        "MP": [
+            560,
+            430
+        ],
+        "magic_codes":[
+            "03"
+        ],
+        "atk_ab":100,
+        "def_ab":100,
+        "satisfaction":[1.5,120],
+        "atk_buff":100,
+        "def_buff":100,
+        "equipments":{
+            "head":"003",
+            "armor":"003",
+            "leggings":"003",
+            "boots":"003"
+        }
+    }
+}
+
+
 if local:
     config = configparser.ConfigParser(interpolation=None)
     config.read("src/configs/config.ini")
@@ -150,7 +250,12 @@ class App:
         self.from_load = False
         self.savedata = None
         self.loaddata = None
-        self.chara_data = {"ぼく":{"HP":[100,100],"MP":[100,100]}}
+        self.chara_data = chara_data_tmp
+        self.item_codes = {
+            "001":3,
+            "004":4
+        }
+        self.imp_item_codes = ["001"]
         self.question = Question(self.init_x,self.init_y,umplus10)
         self.player = Player(self,self.init_x,self.init_y,self.question)
         self.title_s = Title(self,self.init_x,self.init_y)
@@ -191,11 +296,24 @@ class App:
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
                     self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
                     self.chara_data = self.savedata[str(self.save_load.setting_finger)]["play_data"]["chara_data"]
+                    self.item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["item_codes"]
+                    self.imp_item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["imp_item_codes"]
                     self.from_load = False
                 else:
                     # with open("../assets/savedata.json","w",encoding="utf-8") as f:
                     #     json.dump({},f,indent=4)
                     print("new game")
+                    self.loaddata = {
+                        "play_data": {
+                        "time": "00:00:00",
+                        "scene": 1,
+                        "x": 20,
+                        "y": 200,
+                        "chara_data":self.chara_data,
+                        "item_codes":self.item_codes,
+                        "imp_item_codes":self.imp_item_codes,
+                        }
+                    }
                 self.new_game = False
             self.player.update(self.is_question,self.is_word)
         elif self.now_scene == OUT_SETTING_SCENE:

@@ -75,7 +75,7 @@ class In_Setting:
                 self.move_fi = False
 
     def item_update(self):
-        len_ = len(self.app.loaddata["play_data"]["item_codes"].items())
+        len_ = len(self.app.item_codes.items())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
         if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
@@ -84,10 +84,10 @@ class In_Setting:
             self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
             #アイテムを使用するときの処理など
-            print(self.tools["basic"][list(self.app.loaddata["play_data"]["item_codes"].keys())[self.in_st_finger]][0])
+            print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger]][0])
 
     def imp_update(self):
-        len_ = len(self.app.loaddata["play_data"]["imp_item_codes"])
+        len_ = len(self.app.imp_item_codes)
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
         if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
@@ -95,7 +95,7 @@ class In_Setting:
         if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
             self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-            print(self.tools["important"][self.app.loaddata["play_data"]["imp_item_codes"][self.in_st_finger]][0])
+            print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger]][0])
 
     def update(self):
         time_time = int(time.time() - self.app.game_time_start)
@@ -136,7 +136,7 @@ class In_Setting:
             self.enter_pos = -1
 
     def item_draw(self):
-        for i,kv in enumerate(self.app.loaddata["play_data"]["item_codes"].items()):
+        for i,kv in enumerate(self.app.item_codes.items()):
             if i == self.in_st_finger:
                 pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
             pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
@@ -145,7 +145,7 @@ class In_Setting:
         pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def imp_draw(self):
-        for i,v in enumerate(self.app.loaddata["play_data"]["imp_item_codes"]):
+        for i,v in enumerate(self.app.imp_item_codes):
             if i == self.in_st_finger:
                 pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
             pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
