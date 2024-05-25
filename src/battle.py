@@ -36,7 +36,7 @@ class Battle:
         self.dis_num = 0
         with open("assets/magic.json","r",encoding="utf-8") as f:
             self.magic_codes = json.load(f)
-        self.AI = self.create_AI("")
+        self.AI = self.create_AI()
         self.ai_data = []
 
     def create_AI(self):
@@ -64,14 +64,12 @@ class Battle:
                 for i in range(en_):
                     tm = [0,tmp[(int(tmp[0])*3+2)+i*2],tmp[(int(tmp[0])*3+2)+i*2+1]]
                     ai_data_[tmp_len - 1].append(tm)
-                for i in range(4-en_):
-                    ai_data_[tmp_len - 1].append([0,0,0])
-                for i in range(3):
+                for i in range(3-en_):
                     ai_data_[tmp_len - 1].append([0,0,0])
                 c = tmp[tmp_len_ - 3]
                 c = [0,0,c]
                 ai_data_[tmp_len - 1].append(c)
-                d = tmp[tmp_len_ - 1]
+                d = tmp[tmp_len_ - 2:tmp_len_]
                 nd_ = np.array([])
                 ai_data_[tmp_len - 1] = np.append(nd_,ai_data_[tmp_len-1]).tolist()
                 ai_answer.append(d)

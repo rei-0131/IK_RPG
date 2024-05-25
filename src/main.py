@@ -149,6 +149,7 @@ class App:
         self.new_game = True
         self.from_load = False
         self.savedata = None
+        self.loaddata = None
         self.chara_data = {"ぼく":{"HP":[100,100],"MP":[100,100]}}
         self.question = Question(self.init_x,self.init_y,umplus10)
         self.player = Player(self,self.init_x,self.init_y,self.question)
@@ -185,6 +186,7 @@ class App:
                         time.sleep(0.3)
                     self.game_time_start = time.time()
                     print(self.save_load.setting_finger)
+                    self.loaddata = self.savedata[str(self.save_load.setting_finger)]
                     self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
                     self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
