@@ -326,13 +326,13 @@ class App:
                 self.from_load = True
         if self.is_question:
             self.question.update()
-        if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
+        if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
             else:
                 self.be_scene = self.now_scene
                 self.now_scene = IN_SETTING_SCENE
-        if pyxel.btnp(pyxel.KEY_B):
+        if pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):
             if self.now_scene == 5:
                 self.now_scene = self.be_scene
             else:
@@ -344,7 +344,6 @@ class App:
             pyxel.quit()
 
     def draw(self):
-        ###battle画面制作中につきコメントアウト###
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:

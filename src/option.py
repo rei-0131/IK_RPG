@@ -39,15 +39,15 @@ class Option:
         """
         音量操作の処理
         """
-        if pyxel.btnp(pyxel.KEY_UP) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
             if self.vol_finger != 0:
                 self.vol_finger -= 1
-        if pyxel.btnp(pyxel.KEY_DOWN) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
             if self.vol_finger != 7:
                 self.vol_finger += 1
-        if pyxel.btnp(pyxel.KEY_LEFT) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
-        if pyxel.btnp(pyxel.KEY_RETURN) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             print(self.vol_finger)
             self.now_volume = self.vol_finger
             if self.app.local:
@@ -62,15 +62,15 @@ class Option:
 
     def update(self,enter_pos):
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_LEFT) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 enter_pos = -1
-            if pyxel.btnp(pyxel.KEY_UP) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.select_pos != 0:
                     self.select_pos -= 11
-            if pyxel.btnp(pyxel.KEY_DOWN) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.select_pos != 0:
                     self.select_pos += 11
-            if pyxel.btnp(pyxel.KEY_RETURN) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 self.enter_pos = self.select_pos // 11
         elif self.enter_pos == 0:
             self.volume_update()
