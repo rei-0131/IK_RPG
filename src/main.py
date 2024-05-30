@@ -22,27 +22,47 @@ local = cloud.import_()
 
 
 chara_data_tmp = {
-    "ぼく":{
-        "post":1,
-        "Level":1,
-        "HP":[100,100],
-        "MP":[100,100],
-        "magic_codes":[
-            "01","03","05","08","09","09","08","07","04","02","01"
+    "ぼく": {
+        "post": 1,
+        "Level": 1,
+        "HP": [
+            230,
+            180
         ],
-        "atk_ab":100,
-        "def_ab":100,
-        "satisfaction":[1.5,120],
-        "atk_buff":100,
-        "def_buff":100,
-        "equipments":{
-            "head":"001",
-            "armor":"001",
-            "leggings":"001",
-            "boots":"001"
+        "MP": [
+            140,
+            130
+        ],
+        "magic_codes": [
+            "01",
+            "03",
+            "05",
+            "08",
+            "09",
+            "09",
+            "08",
+            "07",
+            "04",
+            "02",
+            "01"
+        ],
+        "atk_ab": 100,
+        "def_ab": 100,
+        "satisfaction": [
+            1.5,
+            120
+        ],
+        "atk_buff": 100,
+        "def_buff": 100,
+        "equipments": {
+            "head": "001",
+            "armor": "001",
+            "leggings": "001",
+            "sword":"001"
         }
     },
     "アラオ": {
+        "post":2,
         "Level": 1,
         "HP": [
             340,
@@ -52,22 +72,30 @@ chara_data_tmp = {
             120,
             30
         ],
-        "magic_codes":[
-            "01","03","05","08"
+        "magic_codes": [
+            "01",
+            "03",
+            "05",
+            "08"
         ],
-        "atk_ab":100,
-        "def_ab":100,
-        "satisfaction":[1.5,120],
-        "atk_buff":100,
-        "def_buff":100,
-        "equipments":{
-            "head":"002",
-            "armor":"002",
-            "leggings":"002",
-            "boots":"002"
+        "atk_ab": 100,
+        "def_ab": 100,
+        "satisfaction": [
+            1.5,
+            120
+        ],
+        "atk_buff": 100,
+        "def_buff": 100,
+        "equipments": {
+            "head": "002",
+            "armor": "002",
+            "leggings": "002",
+            "boots": "002",
+            "staff":"002"
         }
     },
     "アラオ2": {
+        "post":3,
         "Level": 1,
         "HP": [
             230,
@@ -77,22 +105,36 @@ chara_data_tmp = {
             270,
             150
         ],
-        "magic_codes":[
-            "01","03","05","08","09","09","08","07","04","02"
+        "magic_codes": [
+            "01",
+            "03",
+            "05",
+            "08",
+            "09",
+            "09",
+            "08",
+            "07",
+            "04",
+            "02"
         ],
-        "atk_ab":100,
-        "def_ab":100,
-        "satisfaction":[1.5,120],
-        "atk_buff":100,
-        "def_buff":100,
-        "equipments":{
-            "head":"004",
-            "armor":"004",
-            "leggings":"004",
-            "boots":"004"
+        "atk_ab": 100,
+        "def_ab": 100,
+        "satisfaction": [
+            1.5,
+            120
+        ],
+        "atk_buff": 100,
+        "def_buff": 100,
+        "equipments": {
+            "head": "004",
+            "armor": "004",
+            "leggings": "004",
+            "boots": "004",
+            "staff":"004"
         }
     },
     "アラオ3": {
+        "post":5,
         "Level": 1,
         "HP": [
             170,
@@ -102,19 +144,23 @@ chara_data_tmp = {
             560,
             430
         ],
-        "magic_codes":[
+        "magic_codes": [
             "03"
         ],
-        "atk_ab":100,
-        "def_ab":100,
-        "satisfaction":[1.5,120],
-        "atk_buff":100,
-        "def_buff":100,
-        "equipments":{
-            "head":"003",
-            "armor":"003",
-            "leggings":"003",
-            "boots":"003"
+        "atk_ab": 100,
+        "def_ab": 100,
+        "satisfaction": [
+            1.5,
+            120
+        ],
+        "atk_buff": 100,
+        "def_buff": 100,
+        "equipments": {
+            "head": "003",
+            "armor": "003",
+            "leggings": "003",
+            "boots": "003",
+            "other":"002"
         }
     }
 }
@@ -252,8 +298,17 @@ class App:
         self.loaddata = None
         self.chara_data = chara_data_tmp
         self.item_codes = {
-            "001":3,
-            "004":4
+            "001": 3,
+            "004": 4
+        }
+        self.equip_codes = {
+            "head":["001","002","003","004","001","002","003","004","001","002","003"],
+            "armor":["001","002","003","004"],
+            "leggings":["001","002","003","004"],
+            "boots":["001","002","003","004"],
+            "sword":["001","002","003","004"],
+            "staff":["001","002","003","004"],
+            "other":["001","002"]
         }
         self.imp_item_codes = ["001"]
         self.question = Question(self.init_x,self.init_y,umplus10)
@@ -312,6 +367,7 @@ class App:
                         "chara_data":self.chara_data,
                         "item_codes":self.item_codes,
                         "imp_item_codes":self.imp_item_codes,
+                        "equip_codes":self.equip_codes
                         }
                     }
                 self.new_game = False
