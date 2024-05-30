@@ -25,7 +25,7 @@
 - [ ] 設定画面
 - - [ ] キャラクタを選択した際
 - - - [ ] スキル 
-- - - [ ] アイテム一覧
+- - [x] アイテム一覧
 - - [ ] 詳細設定
 - - - [x] 音量調節(0 ~ 7)
 - - [x] セーブデータ一覧(20個ほど?)
@@ -55,7 +55,8 @@
       "chara_data":{
         chara_name:{
           "post":post_num  
-          "Level":Level,    
+          "Level":Level,
+          "XP":XP,    
           "HP":[MAX_HP,NOW_HP],     
           "MP":[MAX_MP,NOW_MP],
           "magic_codes":[magic_code,...]   ,
@@ -91,6 +92,7 @@
 |chara_name   |キャラクターの名前 　　　　　　　　　　 |
 |post_num     |職業コード                           |
 |Level        |キャラクターのレベル　　　　　　　　　　|
+|XP           |獲得XP量                             |
 |MAX_HP       |最大HP           　　　　　　　　　　  |
 |NOW_HP       |今のHP           　　　　　　　　　　  |
 |MAX_MP       |最大MP          　　　　　　　　　　   |
