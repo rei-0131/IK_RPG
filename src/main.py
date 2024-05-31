@@ -353,6 +353,7 @@ class App:
                     self.chara_data = self.savedata[str(self.save_load.setting_finger)]["play_data"]["chara_data"]
                     self.item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["item_codes"]
                     self.imp_item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["imp_item_codes"]
+                    self.equip_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
                     self.from_load = False
                 else:
                     # with open("../assets/savedata.json","w",encoding="utf-8") as f:
