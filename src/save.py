@@ -42,7 +42,8 @@ class Save:
             "y":self.app.player.y,
             "chara_data":self.app.chara_data,
             "item_codes":self.app.item_codes,
-            "imp_item_codes":self.app.imp_item_codes
+            "imp_item_codes":self.app.imp_item_codes,
+            "equip_codes":self.app.equip_codes
         }
         if self.app.local:
             with open("configs/savedata.json","w",encoding="utf-8") as f:

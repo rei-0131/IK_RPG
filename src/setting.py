@@ -227,7 +227,7 @@ class In_Setting:
                                 self.in_eqst_item += 2
                                 self.in_pqse_finger -= 1
                     if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-                        if self.in_pqse_finger - 2 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
+                        if self.in_pqse_finger - 1 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
                             self.in_pqse_finger += 1
                         elif self.in_eqst_item + self.in_pqse_finger != len_eq + 1 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
                             self.in_eqst_item += 2
@@ -258,6 +258,21 @@ class In_Setting:
                         else:
                             del self.app.loaddata["play_data"]["chara_data"][select_equip[2]]["equipments"][self.tool_names[self.equip_part]]
                     self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"][self.tool_names[self.equip_part]] = select_equip[0]
+
+    def status_update(self):
+        len_ = len(self.app.chara_data.items())
+        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            self.enter_pos = -1
+        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+                self.in_st_finger -= 1
+        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
+            self.in_st_finger += 1
+        if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
+            self.in_eq_enter = self.in_st_finger
+            self.in_eqse_finger = 0
+            self.in_eqse_pos = 0
+            self.equip_men = True
+            self.equip_select = True
 
     def update(self):
         time_time = int(time.time() - self.app.game_time_start)
@@ -290,6 +305,8 @@ class In_Setting:
             self.enter_pos = self.option.update(self.enter_pos)
         elif self.enter_pos == 5:
             self.sort_update()
+        elif self.enter_pos == 4:
+            self.status_update()
         elif self.enter_pos == 3:
             self.equip_update()
         elif self.enter_pos == 2:
@@ -383,14 +400,14 @@ class In_Setting:
                 if i in chara_data["equipments"]:
                     tool = self.tools[i][chara_data["equipments"][i]]
                     if tool[2] == "p":
-                        def_p += int(def_ / tool[3])
+                        def_p += int(def_ * (tool[3] / 100))
                     elif tool[2] == "f":
                         def_p += tool[3]
             for i in weapon_names:
                 if i in chara_data["equipments"]:
                     weapon = self.tools[i][chara_data["equipments"][i]]
                     if weapon[2] == "p":
-                        atk_p += int(atk / weapon[3])
+                        atk_p += int(atk * (weapon[3] / 100))
                     elif weapon[2] == "f":
                         atk_p += weapon[3]
             self.umplus10.draw_text(71,93,f"ATK {atk + atk_p}",7)
@@ -402,6 +419,9 @@ class In_Setting:
             elif chara_data["post"] == 2 or chara_data["post"] == 3:
                 self.tool_names.append("staff")
                 self.tool_names_.append("杖")
+            elif chara_data["post"] == 3:
+                self.tool_names.append("shield")
+                self.tool_names_.append("盾")
             elif chara_data["post"] == 5:
                 self.tool_names.append("other")
                 self.tool_names_.append("他")
@@ -471,8 +491,63 @@ class In_Setting:
                                     self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
                             self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
                     pyxel.rect(71,6,228,20,0)
+                    self.umplus10.draw_text(115,93,"→",7)
+                    self.umplus10.draw_text(115,104,"→",7)
+                    if self.in_eqst_item + self.in_pqse_finger + 1 >= len(list(self.tools[self.tool_names[self.equip_part]].keys())):
+                        equip_sum = (self.in_eqst_item + self.in_pqse_finger) % 4
+                    else:
+                        equip_sum = self.in_eqst_item + self.in_pqse_finger
+                    if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][1] == "DEF":
+                        if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
+                            if int(def_ + def_ * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100)) > def_ + def_p:
+                                self.umplus10.draw_text(125,104,f"{int(def_ + def_ * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100))}",11)
+                            elif int(def_ + def_ * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100)) == def_ + def_p:
+                                self.umplus10.draw_text(125,104,f"{int(def_ + def_ * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100))}",7)
+                            else:
+                                self.umplus10.draw_text(125,104,f"{int(def_ + def_ * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100))}",8)
+                        else:
+                            if int(def_ + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]) > def_ + def_p:
+                                self.umplus10.draw_text(125,104,f"{int(def_ + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3])}",11)
+                            elif int(def_ + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]) == def_ + def_p:
+                                self.umplus10.draw_text(125,104,f"{int(def_ + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3])}",7)
+                            else:
+                                self.umplus10.draw_text(125,104,f"{int(def_ + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3])}",8)
+                    else:
+                        if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
+                            if int(atk + atk * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100)) > atk + atk_p:
+                                self.umplus10.draw_text(125,93,f"{int(atk + atk * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100))}",11)
+                            elif int(atk + atk * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100)) == atk+ atk_p:
+                                self.umplus10.draw_text(125,93,f"{int(atk + atk * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100))}",7)
+                            else:
+                                self.umplus10.draw_text(125,93,f"{int(atk + atk * (self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3] / 100))}",8)
+                        else:
+                            if int(atk + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]) > atk + atk_p:
+                                self.umplus10.draw_text(125,93,f"{int(atk + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3])}",11)
+                            elif int(atk + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]) == atk + atk_p:
+                                self.umplus10.draw_text(125,93,f"{int(atk + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3])}",7)
+                            else:
+                                self.umplus10.draw_text(125,93,f"{int(atk + self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3])}",8)
                     self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
                 self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
+
+    def status_draw(self):
+        pyxel.line(70,70,self.init_x,70,7)
+        self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
+        for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
+            if i == self.in_st_finger:
+                pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
+            pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
+            self.umplus10.draw_text(71,int(18+(13*i)),t,7)
+        pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
+
+        chara_data = self.app.chara_data[list(self.app.chara_data.keys())[self.in_st_finger]]
+        self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_st_finger],7)
+        self.umplus10.draw_text(150,71,f"Level {chara_data['Level']}     {chara_data['XP']}/XXXX",7)
+        self.umplus10.draw_text(71,82,f"HP {chara_data['HP'][1]}/{chara_data['HP'][0]}",7)
+        self.umplus10.draw_text(71,93,f"MP {chara_data['MP'][1]}/{chara_data['MP'][0]}",7)
+        self.umplus10.draw_text(71,104,f"ATK {chara_data['atk_ab']}",7)
+        self.umplus10.draw_text(71,115,f"DEF {chara_data['def_ab']}",7)
+        self.umplus10.draw_text(71,126,f"会心率 {chara_data['satisfaction'][0]}% 会心ダメ{chara_data['satisfaction'][1]}%",7)
 
     def sort_draw(self):
         for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
@@ -495,7 +570,7 @@ class In_Setting:
         self.umplus10.draw_text(19,17,"大切なもの",7)
         self.umplus10.draw_text(19,28,"スキル",7)
         self.umplus10.draw_text(19,39,"装備",7)
-        self.umplus10.draw_text(19,50,"ステータス",1)
+        self.umplus10.draw_text(19,50,"ステータス",7)
         self.umplus10.draw_text(19,61,"並び替え",7)
         self.umplus10.draw_text(19,72,"オプション",7)
         self.umplus10.draw_text(19,83,"セーブ",7)
@@ -507,6 +582,8 @@ class In_Setting:
             self.option.draw()
         elif self.enter_pos == 5:
             self.sort_draw()
+        elif self.enter_pos == 4:
+            self.status_draw()
         elif self.enter_pos == 3:
             self.equip_draw()
         elif self.enter_pos == 2:
