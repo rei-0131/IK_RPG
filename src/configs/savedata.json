@@ -31,6 +31,9 @@
                         "02",
                         "01"
                     ],
+                    "skill_codes":[
+
+                    ],
                     "atk_ab": 100,
                     "def_ab": 100,
                     "satisfaction": [
@@ -63,6 +66,9 @@
                         "03",
                         "05",
                         "08"
+                    ],
+                    "skill_codes":[
+
                     ],
                     "atk_ab": 100,
                     "def_ab": 100,
@@ -104,6 +110,9 @@
                         "04",
                         "02"
                     ],
+                    "skill_codes":[
+
+                    ],
                     "atk_ab": 100,
                     "def_ab": 100,
                     "satisfaction": [
@@ -134,6 +143,9 @@
                     ],
                     "magic_codes": [
                         "03"
+                    ],
+                    "skill_codes":[
+
                     ],
                     "atk_ab": 100,
                     "def_ab": 100,
