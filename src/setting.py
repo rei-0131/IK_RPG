@@ -661,6 +661,10 @@ class Out_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
+        with open("assets/scenes.json",encoding="utf-8") as f:
+            self.scenes = json.load(f)
+        self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
+        self.title_sc = self.scenes["TITLE_SCENE"]
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
