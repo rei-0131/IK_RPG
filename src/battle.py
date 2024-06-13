@@ -34,10 +34,35 @@ class Battle:
         self.item_num = 0
         self.item_pos = 0
         self.dis_num = 0
+        self.enemy_num = 0
+        self.enemy_code = []
+        self.operation_player = True
+        self.player_op = {}
+        self.enemy_op = {}
         with open("assets/magic.json","r",encoding="utf-8") as f:
             self.magic_codes = json.load(f)
         self.AI = self.create_AI()
         self.ai_data = []
+
+    def clean(self):
+        self.select_chara = ""
+        self.select_num1 = -1
+        self.finger_pos1 = 0
+        self.select_num2 = -1
+        self.finger_pos2 = 0
+        self.finger_pos3 = 0
+        self.item_num = 0
+        self.item_pos = 0
+        self.dis_num = 0
+        self.enemy_num = 0
+        self.enemy_code = []
+        self.operation_player = True
+        self.player_op = {}
+        self.enemy_op = {}
+
+    def set_enemy(self,enemy_num,enemy_code):
+        self.enemy_num = enemy_num
+        self.enemy_code = enemy_code
 
     def create_AI(self):
         #first_aiに入っているデータはセットアップデータ
@@ -90,8 +115,7 @@ class Battle:
         return clf
 
     def fight_update(self):
-        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-            self.select_num2 = -1
+        pass
 
     def sm_update(self,sm):
         if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -131,6 +155,7 @@ class Battle:
                     self.finger_pos3 -= 1
         if pyxel.btnp(pyxel.KEY_RETURN):
             #魔法名出力
+            self.player_op[self.select_num2] = {"target":self.select_num1,"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
             print(self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]][0])
 
     def item_update(self):
@@ -138,50 +163,60 @@ class Battle:
             self.select_num1 = -1
 
     def update(self):
-        if self.select_num1 == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
-                if self.finger_pos1 != 0:
-                    self.finger_pos1 -= 15
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
-                if self.finger_pos1 != 60:
-                    self.finger_pos1 += 15
-            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-                self.select_num1 = int(self.finger_pos1 // 15)
-                print(self.select_num1)
-                self.select_num2 = -1
-        elif self.select_num1 != 4:
-            if self.select_num2 == -1:
-                if 0 <= self.select_num1 <= 2:
-                    if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
-                        if self.finger_pos2 != 0:
-                            self.finger_pos2 -= 18
-                    if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
-                        if self.finger_pos2 != (len(self.app.chara_data.items()) - 1) * 18:
-                            self.finger_pos2 += 18
-                    if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-                        self.select_num1 = -1
-                    if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-                        self.select_num2 = int(self.finger_pos2 // 18)
-                        self.select_chara = list(self.app.chara_data.keys())[self.select_num2]
-                        if self.select_num1 == 1:
-                            self.finger_pos3 = 0
-                            self.item_num = 0
-                            self.item_pos = 0
-                            self.dis_num = 0
-                elif self.select_num1 == 3:
-                    self.item_update()
-            else:
-                if self.select_num1 == 0:
-                    self.fight_update()
-                elif self.select_num1 == 1:
-                    self.sm_update("skill")
-                elif self.select_num1 == 2:
-                    self.sm_update("magic")
-                #self.ai_data.append([])
+        if self.operation_player:
+            if self.select_num1 == -1:
+                if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                    if self.finger_pos1 != 0:
+                        self.finger_pos1 -= 15
+                if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                    if self.finger_pos1 != 60:
+                        self.finger_pos1 += 15
+                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                    self.select_num1 = int(self.finger_pos1 // 15)
+                    print(self.select_num1)
+                    self.select_num2 = -1
+            elif self.select_num1 != 4:
+                if self.select_num2 == -1:
+                    if 0 <= self.select_num1 <= 2:
+                        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                            if self.finger_pos2 != 0:
+                                self.finger_pos2 -= 18
+                        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                            if self.finger_pos2 != (len(self.app.chara_data.items()) - 1) * 18:
+                                self.finger_pos2 += 18
+                        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                            self.select_num1 = -1
+                        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                            self.select_num2 = int(self.finger_pos2 // 18)
+                            self.select_chara = list(self.app.chara_data.keys())[self.select_num2]
+                            if self.select_num1 == 1:
+                                self.finger_pos3 = 0
+                                self.item_num = 0
+                                self.item_pos = 0
+                                self.dis_num = 0
+                    elif self.select_num1 == 3:
+                        self.item_update()
+                else:
+                    live_num = 0
+                    for i in self.app.chara_data:
+                        if self.app.chara_data[i]["HP"][1] != 0:
+                            live_num += 1
+                    #攻撃を当てる敵選択させるupdate関数とdraw関数の作成とself.player_opに
+                    #攻撃手段、攻撃をする味方、攻撃を当てる敵、skillかmagicかの区別を入力
+                    if self.select_num1 == 0:
+                        self.fight_update()
+                    elif self.select_num1 == 1:
+                        self.sm_update("skill")
+                    elif self.select_num1 == 2:
+                        self.sm_update("magic")
+                    if len(self.player_op) == live_num:
+                        print(self.player_op)
+                        self.operation_player = False
+        else:
+            print("enemy")
 
     def fight_draw(self):
-        pyxel.rect(110,self.init_y//2+10,185,75,0)
-        pyxel.rectb(110,self.init_y//2+10,185,75,7)
+        pass
 
     def sm_draw(self,sm):
         pyxel.rect(110,self.init_y//2+10,185,75,0)

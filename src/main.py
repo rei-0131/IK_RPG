@@ -2,6 +2,7 @@ import pyxel
 import configparser
 import json
 import time
+import random
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
@@ -253,6 +254,10 @@ class App:
                 self.now_scene = self.be_scene
             else:
                 self.be_scene = self.now_scene
+                self.battle.clean()
+                #以下、敵のランダムな数、敵の名称を決定するコード
+                # enemy_num = random.randint(1,3)
+                self.battle.set_enemy(3,[1,1,1])
                 self.now_scene = 5
         if self.now_scene == 5:
             self.battle.update()
