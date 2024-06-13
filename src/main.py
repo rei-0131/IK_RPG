@@ -2,6 +2,7 @@ import pyxel
 import configparser
 import json
 import time
+import random
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
@@ -20,150 +21,8 @@ is_test = True
 cloud = cloud_data(is_test=is_test)
 local = cloud.import_()
 
-
-chara_data_tmp = {
-    "ぼく": {
-        "post": 1,
-        "Level": 1,
-        "HP": [
-            230,
-            180
-        ],
-        "MP": [
-            140,
-            130
-        ],
-        "magic_codes": [
-            "01",
-            "03",
-            "05",
-            "08",
-            "09",
-            "09",
-            "08",
-            "07",
-            "04",
-            "02",
-            "01"
-        ],
-        "atk_ab": 100,
-        "def_ab": 100,
-        "satisfaction": [
-            1.5,
-            120
-        ],
-        "atk_buff": 100,
-        "def_buff": 100,
-        "equipments": {
-            "head": "001",
-            "armor": "001",
-            "leggings": "001",
-            "sword":"001"
-        }
-    },
-    "アラオ": {
-        "post":2,
-        "Level": 1,
-        "HP": [
-            340,
-            320
-        ],
-        "MP": [
-            120,
-            30
-        ],
-        "magic_codes": [
-            "01",
-            "03",
-            "05",
-            "08"
-        ],
-        "atk_ab": 100,
-        "def_ab": 100,
-        "satisfaction": [
-            1.5,
-            120
-        ],
-        "atk_buff": 100,
-        "def_buff": 100,
-        "equipments": {
-            "head": "002",
-            "armor": "002",
-            "leggings": "002",
-            "boots": "002",
-            "staff":"002"
-        }
-    },
-    "アラオ2": {
-        "post":3,
-        "Level": 1,
-        "HP": [
-            230,
-            230
-        ],
-        "MP": [
-            270,
-            150
-        ],
-        "magic_codes": [
-            "01",
-            "03",
-            "05",
-            "08",
-            "09",
-            "09",
-            "08",
-            "07",
-            "04",
-            "02"
-        ],
-        "atk_ab": 100,
-        "def_ab": 100,
-        "satisfaction": [
-            1.5,
-            120
-        ],
-        "atk_buff": 100,
-        "def_buff": 100,
-        "equipments": {
-            "head": "004",
-            "armor": "004",
-            "leggings": "004",
-            "boots": "004",
-            "staff":"004"
-        }
-    },
-    "アラオ3": {
-        "post":5,
-        "Level": 1,
-        "HP": [
-            170,
-            10
-        ],
-        "MP": [
-            560,
-            430
-        ],
-        "magic_codes": [
-            "03"
-        ],
-        "atk_ab": 100,
-        "def_ab": 100,
-        "satisfaction": [
-            1.5,
-            120
-        ],
-        "atk_buff": 100,
-        "def_buff": 100,
-        "equipments": {
-            "head": "003",
-            "armor": "003",
-            "leggings": "003",
-            "boots": "003",
-            "other":"002"
-        }
-    }
-}
+with open("src/assets/init_chara_data.json",encoding="utf-8") as f:
+    chara_data_tmp = json.load(f)
 
 
 if local:
@@ -387,6 +246,7 @@ class App:
             if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
             else:
+                self.setting_in.clean()
                 self.be_scene = self.now_scene
                 self.now_scene = IN_SETTING_SCENE
         if pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):
@@ -394,6 +254,10 @@ class App:
                 self.now_scene = self.be_scene
             else:
                 self.be_scene = self.now_scene
+                self.battle.clean()
+                #以下、敵のランダムな数、敵の名称を決定するコード
+                # enemy_num = random.randint(1,3)
+                self.battle.set_enemy(3,[1,1,1])
                 self.now_scene = 5
         if self.now_scene == 5:
             self.battle.update()
