@@ -269,6 +269,7 @@ class Battle:
             pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data]["MP"][1]/self.app.chara_data[data]["MP"][0])*100,5,5)
             pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
             pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data]['MP'][1]}",5)
+        
         self.umplus10.draw_text(26,self.init_y//2+15,"たたかう",7)
         self.umplus10.draw_text(26,self.init_y//2+30,"スキル",7)
         self.umplus10.draw_text(26,self.init_y//2+45,"まほう",7)
