@@ -45,7 +45,6 @@ class Battle:
         self.enemy_op = {}
         self.finger_pos4 = 0
         self.target_pos = -1
-        self.sm_ids = []
         with open("assets/magic.json","r",encoding="utf-8") as f:
             self.magic_codes = json.load(f)
         with open("assets/enemy_info.json",encoding="utf-8") as f:
@@ -71,7 +70,6 @@ class Battle:
         self.enemy_op = {}
         self.finger_pos4 = 0
         self.target_pos = -1
-        self.sm_ids = []
 
     def set_enemy(self,enemy_num,enemy_code):
         self.enemy_num = enemy_num
@@ -142,6 +140,17 @@ class Battle:
             if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != 0:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) - 1]
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+            if self.select_num1 == 0:
+                sm = "None"
+                self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None"}
+            elif self.select_num1 == 1:
+                sm = "skill"
+                self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
+            elif self.select_num1 == 2:
+                sm = "magic"
+                self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
+            print(self.player_op)
+
             self.finger_pos1 = 0
             self.select_num1 = -1
             self.finger_pos2 = 0
@@ -149,7 +158,6 @@ class Battle:
             self.finger_pos3 = 0
             self.select_num3 = -1
             self.finger_pos4 = 0
-            pass
 
     def fight_update(self):
         pass
@@ -195,8 +203,6 @@ class Battle:
                 #魔法名出力
                 self.select_num3 = 0
                 self.finger_pos4 = 0
-                self.sm_ids = [sm,self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]]
-                self.player_op[self.select_num2] = {"target":self.select_num1,"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
                 print(self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]][0])
 
     def item_update(self):
