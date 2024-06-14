@@ -34,13 +34,19 @@ class Battle:
         self.item_num = 0
         self.item_pos = 0
         self.dis_num = 0
+        self.enemy_type = ""
         self.enemy_num = 0
         self.enemy_code = []
         self.operation_player = True
         self.player_op = {}
         self.enemy_op = {}
+        self.finger_pos4 = 0
+        self.target_pos = -1
+        self.sm_ids = []
         with open("assets/magic.json","r",encoding="utf-8") as f:
             self.magic_codes = json.load(f)
+        with open("assets/enemy_info.json",encoding="utf-8") as f:
+            self.enemy_info = json.load(f)
         self.AI = self.create_AI()
         self.ai_data = []
 
@@ -59,6 +65,9 @@ class Battle:
         self.operation_player = True
         self.player_op = {}
         self.enemy_op = {}
+        self.finger_pos4 = 0
+        self.target_pos = -1
+        self.sm_ids = []
 
     def set_enemy(self,enemy_num,enemy_code):
         self.enemy_num = enemy_num
@@ -114,6 +123,18 @@ class Battle:
 
         return clf
 
+    def target_select_update(self):
+        if self.finger_pos4 == 0:
+            self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
+        if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            self.select_num3 = -1
+        if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+            if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != self.enemy_num - 1:
+                self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) + 1]
+        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+            if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != 0:
+                self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) - 1]
+
     def fight_update(self):
         pass
 
@@ -155,6 +176,7 @@ class Battle:
                     self.finger_pos3 -= 1
         if pyxel.btnp(pyxel.KEY_RETURN):
             #魔法名出力
+            self.sm_ids = [sm,self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]]
             self.player_op[self.select_num2] = {"target":self.select_num1,"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
             print(self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]][0])
 
@@ -204,7 +226,7 @@ class Battle:
                     #攻撃を当てる敵選択させるupdate関数とdraw関数の作成とself.player_opに
                     #攻撃手段、攻撃をする味方、攻撃を当てる敵、skillかmagicかの区別を入力
                     if self.select_num1 == 0:
-                        self.fight_update()
+                        self.target_select_update()
                     elif self.select_num1 == 1:
                         self.sm_update("skill")
                     elif self.select_num1 == 2:
@@ -248,6 +270,9 @@ class Battle:
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
 
+    def targert_select_draw(self):
+        pyxel.blt(self.finger_pos4 - 8,6,0,32,0,16,16,0)
+
     def draw(self):
         pyxel.cls(0)
         pyxel.rect(25,self.init_y//2+10,75,75,0)
@@ -269,7 +294,10 @@ class Battle:
             pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data]["MP"][1]/self.app.chara_data[data]["MP"][0])*100,5,5)
             pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
             pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data]['MP'][1]}",5)
-        
+        for n,i in enumerate(self.enemy_code):
+            enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]
+            enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
+            pyxel.blt(enemy_interval[n] - 32,20,enemy_data[0],enemy_data[1][0],enemy_data[1][1],enemy_data[2][0],enemy_data[2][1],enemy_data[3])
         self.umplus10.draw_text(26,self.init_y//2+15,"たたかう",7)
         self.umplus10.draw_text(26,self.init_y//2+30,"スキル",7)
         self.umplus10.draw_text(26,self.init_y//2+45,"まほう",7)
@@ -279,7 +307,7 @@ class Battle:
         if self.select_num1 == 0:
             pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
             if self.select_num2 != -1:
-                self.fight_draw()
+                self.targert_select_draw()
         elif self.select_num1 == 1:
             pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
             if self.select_num2 != -1:

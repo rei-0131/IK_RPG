@@ -257,7 +257,7 @@ class App:
                 self.battle.clean()
                 #以下、敵のランダムな数、敵の名称を決定するコード
                 # enemy_num = random.randint(1,3)
-                self.battle.set_enemy(3,[1,1,1])
+                self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
                 self.now_scene = 5
         if self.now_scene == 5:
             self.battle.update()
