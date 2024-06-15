@@ -45,6 +45,7 @@ class Battle:
         self.enemy_op = {}
         self.finger_pos4 = 0
         self.target_pos = -1
+        self.enemy_status = []
         with open("assets/magic.json","r",encoding="utf-8") as f:
             self.magic_codes = json.load(f)
         with open("assets/enemy_info.json",encoding="utf-8") as f:
@@ -65,6 +66,7 @@ class Battle:
         self.dis_num = 0
         self.enemy_num = 0
         self.enemy_code = []
+        self.enemy_status = []
         self.operation_player = True
         self.player_op = {}
         self.enemy_op = {}
@@ -74,6 +76,22 @@ class Battle:
     def set_enemy(self,enemy_num,enemy_code):
         self.enemy_num = enemy_num
         self.enemy_code = enemy_code
+        for i in range(self.enemy_num):
+            #以下、enemy_infoから敵の情報を引っ張って来て書き込む
+            enemy_st = {
+                "enemy_name":self.enemy_code,
+                "HP":[100,100],
+                "MP":[100,100],
+                "atk_ab": 100,
+                "def_ab": 100,
+                "satisfaction": [
+                    1.5,
+                    120
+                ],
+                "atk_buff": 100,
+                "def_buff": 100
+                }
+            self.enemy_status.append(enemy_st)
 
     def create_AI(self):
         #first_aiに入っているデータはセットアップデータ
@@ -136,9 +154,13 @@ class Battle:
         if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
             if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != self.enemy_num - 1:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) + 1]
+            else:
+                self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
             if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != 0:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) - 1]
+            else:
+                self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_num - 1]
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if self.select_num1 == 0:
                 sm = "None"
@@ -158,9 +180,6 @@ class Battle:
             self.finger_pos3 = 0
             self.select_num3 = -1
             self.finger_pos4 = 0
-
-    def fight_update(self):
-        pass
 
     def sm_update(self,sm):
         if self.select_num3 == -1:
@@ -268,10 +287,60 @@ class Battle:
                         print(self.player_op)
                         self.operation_player = False
         else:
-            print("enemy")
+            ai_input_data = []
+            live_enemy = []
+            for i in range(self.enemy_num):
+                if self.enemy_status[i]["HP"][1] != 0:
+                    live_enemy.append(i)
+            for x in range(len(live_enemy)):
+                write_str = f"{len(self.app.chara_data)} "
+                for i in self.app.chara_data.keys():
+                    write_str += f'{self.app.chara_data[i]["post"]} {(self.app.chara_data[i]["HP"][1]/self.app.chara_data[i]["HP"][0]):.4f} {(self.app.chara_data[i]["MP"][1]/self.app.chara_data[i]["MP"][0]):.4f} '
+                write_str += f"{self.enemy_num} "
+                for i in live_enemy:
+                    write_str += f'{(self.enemy_status[i]["HP"][1]/self.enemy_status[i]["HP"][0]):.4f} {(self.enemy_status[i]["MP"][1]/self.enemy_status[i]["MP"][0]):.4f} '
+                write_str += f"{x}"
+                write_str = write_str.split()
+                for i in range(len(write_str)):
+                    write_str[i] = float(write_str[i])
+                ai_input_data.append([])
+                pl_ = int(write_str[0])
+                tmp_len_ = len(write_str)
+                tmp_len = len(ai_input_data)
+                for i in range(pl_):
+                    ai_input_data[tmp_len - 1].append(write_str[1+i*3:1+(i+1)*3])
+                for i in range(4-pl_):
+                    ai_input_data[tmp_len - 1].append([0,0,0])
+                en_ = int(write_str[int(write_str[0])*3+1])
+                for i in range(en_):
+                    tm = [0,write_str[(int(write_str[0])*3+2)+i*2],write_str[(int(write_str[0])*3+2)+i*2+1]]
+                    ai_input_data[tmp_len - 1].append(tm)
+                for i in range(3-en_):
+                    ai_input_data[tmp_len - 1].append([0,0,0])
+                c = write_str[tmp_len_ - 3]
+                c = [0,0,c]
+                ai_input_data[tmp_len - 1].append(c)
+                nd_ = np.array([])
+                ai_input_data[tmp_len - 1] = np.append(nd_,ai_input_data[tmp_len-1]).tolist()
 
-    def fight_draw(self):
-        pass
+            inp_data = 0
+            l = len(ai_input_data)
+            for i in range(20-l):
+                ai_input_data.append(ai_input_data[inp_data])
+                if inp_data + 1 == l:
+                    imp_data = 0
+
+            ai_input_data = np.array(ai_input_data)
+            print(ai_input_data.shape)
+            pca = PCA(n_components = 20,whiten = False)
+            pca.fit(ai_input_data)
+            ai_input_data = pca.fit_transform(ai_input_data)
+            ai_input_data = ai_input_data[0:self.enemy_num]
+            scaler = StandardScaler()
+            ai_input_data = scaler.fit_transform(ai_input_data)
+            ai_action = self.AI.predict(ai_input_data)
+            print(ai_action)
+            print("enemy")
 
     def sm_draw(self,sm):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
