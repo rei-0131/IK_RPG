@@ -164,14 +164,13 @@ class Battle:
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if self.select_num1 == 0:
                 sm = "None"
-                self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None"}
+                self.player_op[self.select_num2] = {"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None"}
             elif self.select_num1 == 1:
                 sm = "skill"
                 self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
             elif self.select_num1 == 2:
                 sm = "magic"
                 self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
-            print(self.player_op)
 
             self.finger_pos1 = 0
             self.select_num1 = -1
@@ -285,6 +284,9 @@ class Battle:
                             self.target_select_update()
                     if len(self.player_op) == live_num:
                         print(self.player_op)
+                        for i in self.player_op.values():
+                            #以下敵にプレイヤーの行動を適用
+                            pass
                         self.operation_player = False
         else:
             ai_input_data = []
@@ -328,10 +330,9 @@ class Battle:
             for i in range(20-l):
                 ai_input_data.append(ai_input_data[inp_data])
                 if inp_data + 1 == l:
-                    imp_data = 0
+                    inp_data = 0
 
             ai_input_data = np.array(ai_input_data)
-            print(ai_input_data.shape)
             pca = PCA(n_components = 20,whiten = False)
             pca.fit(ai_input_data)
             ai_input_data = pca.fit_transform(ai_input_data)
@@ -340,7 +341,7 @@ class Battle:
             ai_input_data = scaler.fit_transform(ai_input_data)
             ai_action = self.AI.predict(ai_input_data)
             print(ai_action)
-            print("enemy")
+            #以下敵AIの行動をプレイヤーに適用
 
     def sm_draw(self,sm):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
@@ -356,7 +357,7 @@ class Battle:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,1)
                 else:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,0)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item][0],7)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
         else:
             self.dis_num = self.item_num - self.item_pos
             for i,item in zip(range(self.item_num-self.item_pos),self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos:self.item_num]):
@@ -366,7 +367,7 @@ class Battle:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,1)
                 else:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,0)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item][0],7)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
 
     def item_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
