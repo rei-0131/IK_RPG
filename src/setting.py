@@ -383,14 +383,14 @@ class In_Setting:
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
                         pyxel.rect(71+(115*w),71+(13*h),114,13,1)
-                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v[1]][0],7)
+                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v[1]]["name"],7)
             else:
                 for i,v in enumerate(chara_data[f"{sm}_codes"]):
                     w = i % 2
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
                         pyxel.rect(71+(115*w),71+(13*h),115,13,1)
-                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v][0],7)
+                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v]["name"],7)
             self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def equip_draw(self):

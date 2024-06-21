@@ -30,7 +30,7 @@ class Map:
             for x in range(self.map_x):
                 pyxel.blt(16*x,16*y,1,map_[y][x]*16,0,16,16,0)
 
-    def cd_check(self,x,y,dx,dy,num,key):
+    def cd_check(self,x,    y,dx,dy,num,key):
         """
         当たり判定の判定
 

@@ -46,6 +46,12 @@ class Battle:
         self.finger_pos4 = 0
         self.target_pos = -1
         self.enemy_status = []
+        self.battle_action = {}
+        self.latest_action = {}
+        #防御などターンを通しての効果などを表記
+        self.sp_now = {}
+        with open("assets/tools.json","r",encoding="utf-8") as f:
+            self.tools = json.load(f)
         with open("assets/magic.json","r",encoding="utf-8") as f:
             self.magic_codes = json.load(f)
         with open("assets/enemy_info.json",encoding="utf-8") as f:
@@ -72,6 +78,9 @@ class Battle:
         self.enemy_op = {}
         self.finger_pos4 = 0
         self.target_pos = -1
+        self.battle_action = {}
+        self.latest_action = {}
+        self.sp_now = {}
 
     def set_enemy(self,enemy_num,enemy_code):
         self.enemy_num = enemy_num
@@ -143,6 +152,9 @@ class Battle:
 
         return clf
 
+    def history_write(self,mode,faction,datas):
+        pass
+
     def target_select_update(self):
         if self.finger_pos4 == 0:
             self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
@@ -164,14 +176,13 @@ class Battle:
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if self.select_num1 == 0:
                 sm = "None"
-                self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None"}
+                self.player_op[self.select_num2] = {"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None"}
             elif self.select_num1 == 1:
                 sm = "skill"
                 self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
             elif self.select_num1 == 2:
                 sm = "magic"
                 self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
-            print(self.player_op)
 
             self.finger_pos1 = 0
             self.select_num1 = -1
@@ -219,10 +230,57 @@ class Battle:
                     if self.finger_pos3 != 0:
                         self.finger_pos3 -= 1
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                #魔法名出力
-                self.select_num3 = 0
-                self.finger_pos4 = 0
-                print(self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]][0])
+                use_sm = self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]
+                if use_sm["req_MP"] <= self.app.chara_data[self.select_chara]["MP"][1]:
+                    atk = 0
+                    def_ = 0
+                    atk += self.app.chara_data[self.select_chara]["atk_ab"]
+                    def_ += self.app.chara_data[self.select_chara]["def_ab"]
+                    isd_ = ["head","armor","leggings","boots","shield"]
+                    isa_ = ["sword","staff","other"]
+                    for i,v in self.app.chara_data[self.select_chara]["equipments"].items():
+                        if i in isd_:
+                            if self.tools[i][v][2] == "f":
+                                def_ += self.tools[i][v][3]
+                            else:
+                                def_ += self.app.chara_data[self.select_chara]["def_ab"] * (self.tools[i][v][3] / 100)
+                        elif i in isa_:
+                            if self.tools[i][v][2] == "f":
+                                atk += self.tools[i][v][3]
+                            else:
+                                atk += self.app.chara_data[self.select_chara]["atk_ab"] * (self.tools[i][v][3] / 100)
+                    atk *= self.app.chara_data[self.select_chara]["atk_buff"] / 100
+                    def_ *= self.app.chara_data[self.select_chara]["def_buff"] / 100
+                    print(f"{atk=} {def_=}")
+
+                    if sm == "skill":
+                        #共通処理
+                        #----------------------------------------------------------------
+                        #個別処理
+                        if use_sm["name"] == "はやぶさ斬り":
+                            pass
+                        elif use_sm["name"] == "一刀両断":
+                            pass
+                        elif use_sm["name"] == "パラケイル":
+                            pass
+                        elif use_sm["name"] == "オートケイル":
+                            pass
+                        elif use_sm["name"] == "かばう":
+                            pass
+                        elif use_sm["name"] == "オートブロック":
+                            pass
+                        elif use_sm["name"] == "バフアップ":
+                            pass
+                        elif use_sm["name"] == "あそぶ":
+                            pass
+                        elif use_sm["name"] == "口笛":
+                            pass
+                    else:
+                        pass
+                    #魔法名出力
+                    self.select_num3 = 0
+                    self.finger_pos4 = 0
+                    print(use_sm["name"])
 
     def item_update(self):
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -285,6 +343,9 @@ class Battle:
                             self.target_select_update()
                     if len(self.player_op) == live_num:
                         print(self.player_op)
+                        for i in self.player_op.values():
+                            #以下敵にプレイヤーの行動を適用
+                            pass
                         self.operation_player = False
         else:
             ai_input_data = []
@@ -328,10 +389,9 @@ class Battle:
             for i in range(20-l):
                 ai_input_data.append(ai_input_data[inp_data])
                 if inp_data + 1 == l:
-                    imp_data = 0
+                    inp_data = 0
 
             ai_input_data = np.array(ai_input_data)
-            print(ai_input_data.shape)
             pca = PCA(n_components = 20,whiten = False)
             pca.fit(ai_input_data)
             ai_input_data = pca.fit_transform(ai_input_data)
@@ -340,7 +400,7 @@ class Battle:
             ai_input_data = scaler.fit_transform(ai_input_data)
             ai_action = self.AI.predict(ai_input_data)
             print(ai_action)
-            print("enemy")
+            #以下敵AIの行動をプレイヤーに適用
 
     def sm_draw(self,sm):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
@@ -356,7 +416,11 @@ class Battle:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,1)
                 else:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,0)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item][0],7)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
+                if self.magic_codes[sm][item]["req_MP"] > self.app.chara_data[self.select_chara]["MP"][1]:
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),8)
+                else:
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),5)
         else:
             self.dis_num = self.item_num - self.item_pos
             for i,item in zip(range(self.item_num-self.item_pos),self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos:self.item_num]):
@@ -366,7 +430,11 @@ class Battle:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,1)
                 else:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.3),92,15,0)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item][0],7)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
+                if self.magic_codes[sm][item]["req_MP"] > self.app.chara_data[self.select_chara]["MP"][1]:
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),8)
+                else:
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),5)
 
     def item_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
