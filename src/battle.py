@@ -152,9 +152,6 @@ class Battle:
 
         return clf
 
-    def history_write(self,mode,faction,datas):
-        pass
-
     def target_select_update(self):
         if self.finger_pos4 == 0:
             self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]

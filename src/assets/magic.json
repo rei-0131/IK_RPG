@@ -2,108 +2,158 @@
     "magic":{
         "01":{
             "attribute":"火",
-            "name":"イーブ",
+            "name":"イーグ",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10
+            "atk_amount":10,
+            "req_post":["atk","heal"]
         },
         "02":{
             "attribute":"火",
             "name":"イグニア",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18
+            "atk_amount":18,
+            "req_post":["atk","heal"]
         },
         "03":{
             "attribute":"火",
             "name":"イグニシア",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23
+            "atk_amount":23,
+            "req_post":["atk","heal"]
         },
         "04":{
             "attribute":"水",
             "name":"ポード",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10
+            "atk_amount":10,
+            "req_post":["heal"]
         },
         "05":{
             "attribute":"水",
             "name":"ポセリア",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18
+            "atk_amount":18,
+            "req_post":["heal"]
         },
         "06":{
             "attribute":"水",
             "name":"ポセイディア",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23
+            "atk_amount":23,
+            "req_post":["atk","heal"]
         },
         "07":{
             "attribute":"雷",
             "name":"ライガ",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10
+            "atk_amount":10,
+            "req_post":["atk","heal"]
         },
         "08":{
             "attribute":"雷",
             "name":"リライガ",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18
+            "atk_amount":18,
+            "req_post":["atk","heal"]
         },
         "09":{
             "attribute":"雷",
             "name":"リライガス",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23
+            "atk_amount":23,
+            "req_post":["atk","heal"]
         },
         "10":{
             "attribute":"土",
             "name":"ガイア",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10
+            "atk_amount":10,
+            "req_post":["heal"]
         },
         "11":{
             "attribute":"土",
             "name":"メガイア",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18
+            "atk_amount":18,
+            "req_post":["heal"]
         },
         "12":{
             "attribute":"土",
             "name":"ギガイア",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23
+            "atk_amount":23,
+            "req_post":["heal"]
         },
         "13":{
             "attribute":"風",
             "name":"アラオ",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10
+            "atk_amount":10,
+            "req_post":["heal"]
         },
         "14":{
             "attribute":"風",
             "name":"アラリオ",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18
+            "atk_amount":18,
+            "req_post":["heal"]
         },
         "15":{
             "attribute":"風",
             "name":"アラリオン",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23
+            "atk_amount":23,
+            "req_post":["heal"]
+        },
+        "16":{
+            "attribute":"回",
+            "name":"ケイル",
+            "req_MP":10,
+            "recovery_amount":["p",10],
+            "req_post":["atk","heal","tank"]
+        },
+        "17":{
+            "attribute":"デバフ",
+            "name":"ラルム",
+            "req_MP":10,
+            "dbuff_type":"def",
+            "dbuff_amount":["p",15]
+        },
+        "18":{
+            "attribute":"デバフ",
+            "name":"アンジュルム",
+            "req_MP":15,
+            "dbuff_type":"atk",
+            "dbuff_amount":["p",15]
+        },
+        "19":{
+            "attribute":"バフ",
+            "name":"ソウルアップ",
+            "req_MP":15,
+            "buff_type":"def",
+            "buff_amount":["p",15]
+        },
+        "20":{
+            "attribute":"バフ",
+            "name":"パワービヨンド",
+            "req_MP":15,
+            "buff_type":"atk",
+            "buff_amount":["p",15]
         }
     },
     "skill":{
