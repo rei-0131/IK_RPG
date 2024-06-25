@@ -1,6 +1,7 @@
 import pyxel
 import json
 import numpy as np
+import random as ran
 from sklearn.decomposition import PCA
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
@@ -41,13 +42,15 @@ class Battle:
         self.enemy_num = 0
         self.enemy_code = []
         self.operation_player = True
-        self.player_op = {}
-        self.enemy_op = {}
+        self.player_op = []
+        self.enemy_op = []
         self.finger_pos4 = 0
         self.target_pos = -1
         self.enemy_status = []
-        self.battle_action = {}
-        self.latest_action = {}
+        self.battle_action = []
+        self.target_team = ""
+        self.finger_pos5 = 0
+        self.select_num5 = -1
         #防御などターンを通しての効果などを表記
         self.sp_now = {}
         with open("assets/tools.json","r",encoding="utf-8") as f:
@@ -74,13 +77,14 @@ class Battle:
         self.enemy_code = []
         self.enemy_status = []
         self.operation_player = True
-        self.player_op = {}
-        self.enemy_op = {}
+        self.player_op = []
+        self.enemy_op = []
         self.finger_pos4 = 0
         self.target_pos = -1
-        self.battle_action = {}
-        self.latest_action = {}
+        self.battle_action = []
         self.sp_now = {}
+        self.finger_pos5 = 0
+        self.select_num5 = -1
 
     def set_enemy(self,enemy_num,enemy_code):
         self.enemy_num = enemy_num
@@ -152,7 +156,7 @@ class Battle:
 
         return clf
 
-    def target_select_update(self):
+    def enemy_target_select_update(self):
         if self.finger_pos4 == 0:
             self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
         if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -173,13 +177,13 @@ class Battle:
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if self.select_num1 == 0:
                 sm = "None"
-                self.player_op[self.select_num2] = {"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None"}
+                self.player_op.append({"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None","target_team":"enemy"})
             elif self.select_num1 == 1:
                 sm = "skill"
-                self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
+                self.player_op.append({"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
             elif self.select_num1 == 2:
                 sm = "magic"
-                self.player_op[self.select_num2] = {"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]}
+                self.player_op.append({"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
 
             self.finger_pos1 = 0
             self.select_num1 = -1
@@ -188,6 +192,48 @@ class Battle:
             self.finger_pos3 = 0
             self.select_num3 = -1
             self.finger_pos4 = 0
+
+    def self_target_select_update(self):
+        if self.select_num5 == -1:
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                if self.finger_pos5 != 0:
+                    self.finger_pos5 -= 18
+            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if self.finger_pos5 != (len(self.app.chara_data.items()) - 1) * 18:
+                    self.finger_pos5 += 18
+            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                self.select_num5 = -1
+                self.finger_pos5 = 0
+                self.select_num5 = -1
+                self.select_num3 = -1
+            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                self.select_num5 = int(self.finger_pos5 // 18)
+                print(self.select_num5)
+                if self.select_num1 == 1:
+                    sm = "skill"
+                    self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
+                elif self.select_num1 == 2:
+                    sm = "magic"
+                    self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
+
+                self.finger_pos1 = 0
+                self.select_num1 = -1
+                self.finger_pos2 = 0
+                self.select_num2 = -1
+                self.finger_pos3 = 0
+                self.select_num3 = -1
+                self.finger_pos4 = 0
+                self.select_num5 = -1
+                self.finger_pos5 = 0
+
+    def none_target_select_update(self):
+        self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
+        self.finger_pos1 = 0
+        self.select_num1 = -1
+        self.finger_pos2 = 0
+        self.select_num2 = -1
+        self.finger_pos3 = 0
+        self.select_num3 = -1
 
     def sm_update(self,sm):
         if self.select_num3 == -1:
@@ -252,6 +298,12 @@ class Battle:
 
                     if sm == "skill":
                         #共通処理
+                        if use_sm["content"] == "atk":
+                            self.target_team = "enemy"
+                        elif use_sm["content"] == "tank" or use_sm["content"] == "buff" or use_sm["content"] == "heal":
+                            self.target_team = "self"
+                        elif use_sm["content"] == "play":
+                            self.target_team = "none"
                         #----------------------------------------------------------------
                         #個別処理
                         if use_sm["name"] == "はやぶさ斬り":
@@ -273,11 +325,64 @@ class Battle:
                         elif use_sm["name"] == "口笛":
                             pass
                     else:
-                        pass
+                        if use_sm["content"] == "atk" or use_sm["content"] == "def":
+                            self.target_team = "enemy"
+                        elif use_sm["content"] == "tank" or use_sm["content"] == "buff" or use_sm["content"] == "heal":
+                            self.target_team = "self"
+                        elif use_sm["content"] == "play":
+                            self.target_team = "None"
                     #魔法名出力
                     self.select_num3 = 0
                     self.finger_pos4 = 0
                     print(use_sm["name"])
+
+    def target_attack_update(self):
+        print(self.player_op)
+        for action in self.player_op:
+            action_p = self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]
+            atk = 0
+            def_ = 0
+            atk += action_p["atk_ab"]
+            def_ += action_p["def_ab"]
+            isd_ = ["head","armor","leggings","boots","shield"]
+            isa_ = ["sword","staff","other"]
+            for i,v in action_p["equipments"].items():
+                if i in isd_:
+                    if self.tools[i][v][2] == "f":
+                        def_ += self.tools[i][v][3]
+                    else:
+                        def_ += action_p["def_ab"] * (self.tools[i][v][3] / 100)
+                elif i in isa_:
+                    if self.tools[i][v][2] == "f":
+                        atk += self.tools[i][v][3]
+                    else:
+                        atk += action_p["atk_ab"] * (self.tools[i][v][3] / 100)
+                        atk *= action_p["atk_buff"] / 100
+                        def_ *= action_p["def_buff"] / 100
+            if action["target_team"] == "enemy":
+                if self.enemy_status[action["target"]]["HP"][1] <= 0:
+                    live_e = []
+                    for len_,v in enumerate(self.enemy_status):
+                        if  v["HP"][1] > 0:
+                            live_e.append(len_)
+                    action["target"] = live_e[ran.randint(0,len(live_e) - 1)]
+                if action["sm"] == "None":
+                    print(self.enemy_status[action["target"]]["HP"])
+                    self.enemy_status[action["target"]]["HP"][1] -= atk
+                elif action["sm"] == "skill":
+                    pass
+                elif action["sm"] == "magic":
+                    pass
+            elif action["target_team"] == "self":
+                if action["sm"] == "skill":
+                    pass
+                elif action["sm"] == "magic":
+                    pass
+            elif action["target_team"] == "None":
+                pass
+        print(self.enemy_status)
+        self.player_op = []
+        self.operation_player = False
 
     def item_update(self):
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -311,12 +416,15 @@ class Battle:
                             self.select_num2 = -1
                         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                             self.select_num2 = int(self.finger_pos2 // 18)
-                            self.select_chara = list(self.app.chara_data.keys())[self.select_num2]
-                            if self.select_num1 == 1:
-                                self.finger_pos3 = 0
-                                self.item_num = 0
-                                self.item_pos = 0
-                                self.dis_num = 0
+                            if self.app.chara_data[list(self.app.chara_data.keys())[self.select_num2]]["HP"][1] > 0:
+                                self.select_chara = list(self.app.chara_data.keys())[self.select_num2]
+                                if self.select_num1 == 1:
+                                    self.finger_pos3 = 0
+                                    self.item_num = 0
+                                    self.item_pos = 0
+                                    self.dis_num = 0
+                            else:
+                                self.select_num2 = -1
                     elif self.select_num1 == 3:
                         self.item_update()
                 else:
@@ -325,25 +433,31 @@ class Battle:
                         if self.app.chara_data[i]["HP"][1] != 0:
                             live_num += 1
                     if self.select_num1 == 0:
-                        self.target_select_update()
+                        self.enemy_target_select_update()
                     elif self.select_num1 == 1:
                         if self.select_num3 == -1:
                             self.sm_update("skill")
                         else:
-                            self.sm_update("skill")
-                            self.target_select_update()
+                            if self.target_team == "enemy":
+                                self.sm_update("skill")
+                                self.enemy_target_select_update()
+                            elif self.target_team == "self":
+                                self.self_target_select_update()
+                            elif self.target_team == "none":
+                                self.none_target_select_update()
                     elif self.select_num1 == 2:
                         if self.select_num3 == -1:
                             self.sm_update("magic")
                         else:
-                            self.sm_update("magic")
-                            self.target_select_update()
+                            if self.target_team == "enemy":
+                                self.sm_update("magic")
+                                self.enemy_target_select_update()
+                            elif self.target_team == "self":
+                                self.self_target_select_update()
+                            elif self.target_team == "none":
+                                self.none_target_select_update()
                     if len(self.player_op) == live_num:
-                        print(self.player_op)
-                        for i in self.player_op.values():
-                            #以下敵にプレイヤーの行動を適用
-                            pass
-                        self.operation_player = False
+                        self.target_attack_update()
         else:
             ai_input_data = []
             live_enemy = []
@@ -398,6 +512,7 @@ class Battle:
             ai_action = self.AI.predict(ai_input_data)
             print(ai_action)
             #以下敵AIの行動をプレイヤーに適用
+            self.operation_player = True
 
     def sm_draw(self,sm):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
@@ -437,9 +552,34 @@ class Battle:
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
 
-    def target_select_draw(self):
+    def enemy_target_select_draw(self):
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
         pyxel.blt(self.finger_pos4 - 8,2,0,32,0,16,16,0)
+
+    def self_target_select_draw(self):
+        pyxel.rect(110,self.init_y//2+10,185,75,0)
+        pyxel.rectb(110,self.init_y//2+10,185,75,7)
+        for i,data in zip(range(1,1+len(self.app.chara_data.items())),self.app.chara_data):
+            height = 18*(i - 1)
+            if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2:
+                self.umplus10.draw_text(115,self.init_y//2+15+height,data,7)
+            else:
+                self.umplus10.draw_text(130,self.init_y//2+15+height,data,7)
+            pyxel.text(172,self.init_y//2+14+height,"HP",7)
+            pyxel.text(172,self.init_y//2+21+height,"MP",7)
+            pyxel.rect(180,self.init_y//2+14+height,(self.app.chara_data[data]["HP"][1]/self.app.chara_data[data]["HP"][0])*100,5,11)
+            pyxel.rectb(180,self.init_y//2+14+height,100,5,7)
+            pyxel.text(281,self.init_y//2+14+height,f"{self.app.chara_data[data]['HP'][1]}",11)
+            pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data]["MP"][1]/self.app.chara_data[data]["MP"][0])*100,5,5)
+            pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
+            pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data]['MP'][1]}",5)
+        pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),0,16,0,16,16,0)
+
+    def none_target_select_draw(self):
+        pass
+
+    def target_attack_draw(self):
+        pass
 
     def draw(self):
         pyxel.cls(0)
@@ -475,24 +615,41 @@ class Battle:
         if self.select_num1 == 0:
             pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
             if self.select_num2 != -1:
-                self.target_select_draw()
+                self.enemy_target_select_draw()
         elif self.select_num1 == 1:
             pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
             if self.select_num2 != -1:
                 if self.select_num3 == -1:
                     self.sm_draw("skill")
                 else:
-                    self.sm_draw("skill")
-                    self.target_select_draw()
+                    if self.target_team == "enemy":
+                        self.sm_draw("skill")
+                        self.enemy_target_select_draw()
+                    elif self.target_team == "self":
+                        self.self_target_select_draw()
+                    elif self.target_team == "none":
+                        self.none_target_select_draw()
         elif self.select_num1 == 2:
             pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
             if self.select_num2 != -1:
                 if self.select_num3 == -1:
                     self.sm_draw("magic")
                 else:
-                    self.sm_draw("magic")
-                    self.target_select_draw()
+                    if self.target_team == "enemy":
+                        self.sm_draw("magic")
+                        self.enemy_target_select_draw()
+                    elif self.target_team == "self":
+                        self.self_target_select_draw()
+                    elif self.target_team == "none":
+                        self.none_target_select_draw()
         elif self.select_num1 == 3:
             self.item_draw()
         elif self.select_num1 == 4:
             pass
+        live_num = 0
+        for i in self.app.chara_data:
+            if self.app.chara_data[i]["HP"][1] != 0:
+                live_num += 1
+        if len(self.player_op) == live_num:
+            self.target_attack_update()
+            # self.operation_player = False

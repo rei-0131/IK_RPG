@@ -124,6 +124,7 @@
             "attribute":"回",
             "name":"ケイル",
             "req_MP":10,
+            "content":"heal",
             "recovery_amount":["p",10],
             "req_post":["atk","heal","tank"]
         },
@@ -131,6 +132,7 @@
             "attribute":"デバフ",
             "name":"ラルム",
             "req_MP":10,
+            "content":"def",
             "dbuff_type":"def",
             "dbuff_amount":["p",15]
         },
@@ -138,6 +140,7 @@
             "attribute":"デバフ",
             "name":"アンジュルム",
             "req_MP":15,
+            "content":"def",
             "dbuff_type":"atk",
             "dbuff_amount":["p",15]
         },
@@ -145,6 +148,7 @@
             "attribute":"バフ",
             "name":"ソウルアップ",
             "req_MP":15,
+            "content":"buff",
             "buff_type":"def",
             "buff_amount":["p",15]
         },
@@ -152,6 +156,7 @@
             "attribute":"バフ",
             "name":"パワービヨンド",
             "req_MP":15,
+            "content":"buff",
             "buff_type":"atk",
             "buff_amount":["p",15]
         }
