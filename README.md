@@ -8,6 +8,7 @@
 * configparser
 * json
 * time
+* random
 * BDFRenderer
 * js
 * pyodide.http
