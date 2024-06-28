@@ -1,7 +1,6 @@
 import pyxel
 import json
 import time
-from save import Save
 from save_load import SaveLoad
 from option import Option
 from cloud_data import cloud_data

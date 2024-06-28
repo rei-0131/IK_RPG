@@ -134,7 +134,7 @@
             "req_MP":10,
             "content":"def",
             "dbuff_type":"def",
-            "dbuff_amount":["p",15]
+            "dbuff_amount":15
         },
         "18":{
             "attribute":"デバフ",
@@ -142,7 +142,7 @@
             "req_MP":15,
             "content":"def",
             "dbuff_type":"atk",
-            "dbuff_amount":["p",15]
+            "dbuff_amount":15
         },
         "19":{
             "attribute":"バフ",
@@ -150,7 +150,7 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"def",
-            "buff_amount":["p",15]
+            "buff_amount":15
         },
         "20":{
             "attribute":"バフ",
@@ -158,7 +158,7 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"atk",
-            "buff_amount":["p",15]
+            "buff_amount":15
         }
     },
     "skill":{
@@ -198,21 +198,18 @@
         "05":{
             "name":"かばう",
             "content":"tank",
-            "req_MP":35,
-            "target_num":"1"
+            "req_MP":35
         },
         "06":{
             "name":"オールブロック",
             "content":"tank",
-            "req_MP":60,
-            "target_num":"all"
+            "req_MP":60
         },
         "07":{
             "name":"バフアップ",
             "content":"buff",
             "req_MP":30,
-            "buff_amount":["p",3],
-            "up_status":["soul","power"]
+            "buff_amount":3
         },
         "08":{
             "name":"あそぶ",
