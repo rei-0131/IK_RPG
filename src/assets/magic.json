@@ -6,7 +6,8 @@
             "req_MP":10,
             "content":"atk",
             "atk_amount":10,
-            "req_post":["atk","heal"]
+            "req_post":["atk","heal"],
+            "info":"敵に攻撃力の10%のダメージを与える"
         },
         "02":{
             "attribute":"火",
@@ -15,6 +16,8 @@
             "content":"atk",
             "atk_amount":18,
             "req_post":["atk","heal"]
+            ,
+            "info":"敵に攻撃力の18%のダメージを与える"
         },
         "03":{
             "attribute":"火",
@@ -22,7 +25,8 @@
             "req_MP":30,
             "content":"atk",
             "atk_amount":23,
-            "req_post":["atk","heal"]
+            "req_post":["atk","heal"],
+            "info":"敵に攻撃力の23%のダメージを与える"
         },
         "04":{
             "attribute":"水",
@@ -30,7 +34,8 @@
             "req_MP":10,
             "content":"atk",
             "atk_amount":10,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の10%のダメージを与える"
         },
         "05":{
             "attribute":"水",
@@ -38,7 +43,8 @@
             "req_MP":15,
             "content":"atk",
             "atk_amount":18,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の18%のダメージを与える"
         },
         "06":{
             "attribute":"水",
@@ -46,7 +52,8 @@
             "req_MP":30,
             "content":"atk",
             "atk_amount":23,
-            "req_post":["atk","heal"]
+            "req_post":["atk","heal"],
+            "info":"敵に攻撃力の23%のダメージを与える"
         },
         "07":{
             "attribute":"雷",
@@ -54,7 +61,8 @@
             "req_MP":10,
             "content":"atk",
             "atk_amount":10,
-            "req_post":["atk","heal"]
+            "req_post":["atk","heal"],
+            "info":"敵に攻撃力の10%のダメージを与える"
         },
         "08":{
             "attribute":"雷",
@@ -62,7 +70,8 @@
             "req_MP":15,
             "content":"atk",
             "atk_amount":18,
-            "req_post":["atk","heal"]
+            "req_post":["atk","heal"],
+            "info":"敵に攻撃力の18%のダメージを与える"
         },
         "09":{
             "attribute":"雷",
@@ -70,7 +79,8 @@
             "req_MP":30,
             "content":"atk",
             "atk_amount":23,
-            "req_post":["atk","heal"]
+            "req_post":["atk","heal"],
+            "info":"敵に攻撃力の23%のダメージを与える"
         },
         "10":{
             "attribute":"土",
@@ -78,7 +88,8 @@
             "req_MP":10,
             "content":"atk",
             "atk_amount":10,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の10%のダメージを与える"
         },
         "11":{
             "attribute":"土",
@@ -86,7 +97,8 @@
             "req_MP":15,
             "content":"atk",
             "atk_amount":18,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の18%のダメージを与える"
         },
         "12":{
             "attribute":"土",
@@ -94,7 +106,8 @@
             "req_MP":30,
             "content":"atk",
             "atk_amount":23,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の23%のダメージを与える"
         },
         "13":{
             "attribute":"風",
@@ -102,7 +115,8 @@
             "req_MP":10,
             "content":"atk",
             "atk_amount":10,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の10%のダメージを与える"
         },
         "14":{
             "attribute":"風",
@@ -110,7 +124,8 @@
             "req_MP":15,
             "content":"atk",
             "atk_amount":18,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の18%のダメージを与える"
         },
         "15":{
             "attribute":"風",
@@ -118,7 +133,8 @@
             "req_MP":30,
             "content":"atk",
             "atk_amount":23,
-            "req_post":["heal"]
+            "req_post":["heal"],
+            "info":"敵に攻撃力の23%のダメージを与える"
         },
         "16":{
             "attribute":"回",
@@ -126,23 +142,26 @@
             "req_MP":10,
             "content":"heal",
             "recovery_amount":["p",10],
-            "req_post":["atk","heal","tank"]
+            "req_post":["atk","heal","tank"],
+            "info":"任意の味方のHPを10%分回復させる"
         },
         "17":{
             "attribute":"デバフ",
             "name":"ラルム",
             "req_MP":10,
-            "content":"def",
+            "content":"dbf",
             "dbuff_type":"def",
-            "dbuff_amount":15
+            "dbuff_amount":15,
+            "info":"任意の敵の防御力を15%アップ"
         },
         "18":{
             "attribute":"デバフ",
             "name":"アンジュルム",
             "req_MP":15,
-            "content":"def",
+            "content":"dbf",
             "dbuff_type":"atk",
-            "dbuff_amount":15
+            "dbuff_amount":15,
+            "info":"任意の敵の攻撃力を15%アップ"
         },
         "19":{
             "attribute":"バフ",
@@ -150,7 +169,8 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"def",
-            "buff_amount":15
+            "buff_amount":15,
+            "info":"任意の味方の防御力を15%アップ"
         },
         "20":{
             "attribute":"バフ",
@@ -158,7 +178,8 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"atk",
-            "buff_amount":15
+            "buff_amount":15,
+            "info":"任意の味方の攻撃力を15%アップ"
         }
     },
     "skill":{
@@ -169,7 +190,8 @@
             "other":{
                 "atk_num":2,
                 "type":"nomal"
-            }
+            },
+            "info":"二回の通常攻撃をする"
         },
         "02":{
             "name":"一刀両断",
@@ -178,13 +200,15 @@
             "other":{
                 "use_limit":1,
                 "absolute_critical":"true"
-            }
+            },
+            "info":"確定クリティカル攻撃をする。一戦闘に一回のみ使用可能。"
         },
         "03":{
             "name":"パラケイル",
             "content":"heal",
             "req_MP":20,
-            "recovery_amount":["p",20]
+            "recovery_amount":["p",20],
+            "info":"任意の味方のHPを20%分回復させる"
         },
         "04":{
             "name":"オートケイル",
@@ -193,33 +217,39 @@
             "recovery_amount":["p",5],
             "other":{
                 "continue_turn":5
-            }
+            },
+            "info":"5ターンの間、任意の味方のHPを5%分回復させる"
         },
         "05":{
             "name":"かばう",
             "content":"tank",
-            "req_MP":35
+            "req_MP":35,
+            "info":"任意の味方への攻撃をかばう"
         },
         "06":{
             "name":"オールブロック",
             "content":"tank",
-            "req_MP":60
+            "req_MP":60,
+            "info":"すべての攻撃を無効化する"
         },
         "07":{
             "name":"バフアップ",
             "content":"buff",
             "req_MP":30,
-            "buff_amount":3
+            "buff_amount":3,
+            "info":"（ソウル、パワーのステータスアップ量増加）＋３%"
         },
         "08":{
             "name":"あそぶ",
             "content":"play",
-            "req_MP":10
+            "req_MP":10,
+            "info":"10%の確率でランダムで魔法発動"
         },
         "09":{
             "name":"口笛",
             "content":"play",
-            "req_MP":10
+            "req_MP":10,
+            "info":"5%の確率で3%攻撃力アップ"
         }
     }
 }
