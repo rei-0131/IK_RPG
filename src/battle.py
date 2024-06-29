@@ -7,7 +7,6 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 
-#戦闘中のみに適応される効果やバフなどをプレイヤー名をキーとした辞書型に格納
 
 class Battle:
     """
@@ -119,7 +118,7 @@ class Battle:
             #以下、enemy_infoから敵の情報を引っ張って来て書き込む
             enemy_st = {
                 "enemy_name":self.enemy_code[i],
-                "HP":[100,100],
+                "HP":[10000,10000],
                 "MP":[100,100],
                 "atk_ab": 100,
                 "def_ab": 100,
@@ -207,11 +206,14 @@ class Battle:
             else:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_num - 1]
 
-        while self.enemy_status[self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4)]["HP"][1] <= 0:
-            if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != self.enemy_num - 1:
-                self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) + 1]
-            else:
-                self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
+        try:
+            while self.enemy_status[self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4)]["HP"][1] <= 0:
+                if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != self.enemy_num - 1:
+                    self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) + 1]
+                else:
+                    self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
+        except ValueError:
+            pass
 
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if self.select_num1 == 0:
@@ -243,7 +245,6 @@ class Battle:
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_num5 = -1
                 self.finger_pos5 = 0
-                self.select_num5 = -1
                 self.select_num3 = -1
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.select_num5 = int(self.finger_pos5 // 18)
@@ -264,6 +265,8 @@ class Battle:
                 self.finger_pos4 = 0
                 self.select_num5 = -1
                 self.finger_pos5 = 0
+                self.item_pos = 0
+                self.dis_num = 0
 
     def none_target_select_update(self):
         self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
@@ -292,7 +295,7 @@ class Battle:
                 else:
                     if self.finger_pos3 + self.item_pos + 2 < self.item_num:
                         self.item_pos += 2
-                    elif self.finger_pos3 + self.item_pos + 2 == self.item_num and self.item_num > 10:
+                    elif self.finger_pos3 + self.item_pos + 3 == self.item_num and self.item_num > 10:
                         self.item_pos += 2
                         self.finger_pos3 -= 1
             if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
@@ -316,27 +319,6 @@ class Battle:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 use_sm = self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]
                 if use_sm["req_MP"] <= self.app.chara_data[self.select_chara]["MP"][1]:
-                    atk = 0
-                    def_ = 0
-                    atk += self.app.chara_data[self.select_chara]["atk_ab"]
-                    def_ += self.app.chara_data[self.select_chara]["def_ab"]
-                    isd_ = ["head","armor","leggings","boots","shield"]
-                    isa_ = ["sword","staff","other"]
-                    for i,v in self.app.chara_data[self.select_chara]["equipments"].items():
-                        if i in isd_:
-                            if self.tools[i][v][2] == "f":
-                                def_ += self.tools[i][v][3]
-                            else:
-                                def_ += self.app.chara_data[self.select_chara]["def_ab"] * (self.tools[i][v][3] / 100)
-                        elif i in isa_:
-                            if self.tools[i][v][2] == "f":
-                                atk += self.tools[i][v][3]
-                            else:
-                                atk += self.app.chara_data[self.select_chara]["atk_ab"] * (self.tools[i][v][3] / 100)
-                    atk *= self.app.chara_data[self.select_chara]["atk_buff"] / 100
-                    def_ *= self.app.chara_data[self.select_chara]["def_buff"] / 100
-                    print(f"{atk=} {def_=}")
-
                     if sm == "skill":
                         #共通処理
                         if use_sm["content"] == "atk":
@@ -346,7 +328,7 @@ class Battle:
                         elif use_sm["content"] == "play":
                             self.target_team = "none"
                     else:
-                        if use_sm["content"] == "atk" or use_sm["content"] == "def":
+                        if use_sm["content"] == "atk" or use_sm["content"] == "dbf":
                             self.target_team = "enemy"
                         elif use_sm["content"] == "tank" or use_sm["content"] == "buff" or use_sm["content"] == "heal":
                             self.target_team = "self"
@@ -384,6 +366,8 @@ class Battle:
                 else:
                     self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += effect["recovery_info"][1]
                 effect["recovery_turn"] -= 1
+            if effect["atk_invalid"]:
+                effect["atk_invalid"] = False
         for action in self.player_op:
             action_p = self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]
             atk = 0
@@ -405,6 +389,7 @@ class Battle:
                         atk += action_p["atk_ab"] * (self.tools[i][v][3] / 100)
                 atk *= (action_p["atk_buff"] + self.player_effect[action["player_pos"]]["atk_buff"] - self.player_effect[action["player_pos"]]["atk_dbuff"]) / 100
                 def_ *= (action_p["def_buff"] + self.player_effect[action["player_pos"]]["def_buff"] - self.player_effect[action["player_pos"]]["def_dbuff"]) / 100
+            print(f"{action=}\n{action_p=}\n{self.player_effect[action['player_pos']]=}\n{atk=} {def_=}\n\n\n")
             if action["target"] != "None":
                 if self.enemy_status[action["target"]]["HP"][1] <= 0:
                     live_e = []
@@ -420,7 +405,6 @@ class Battle:
                     int_code = int(action["sm_code"])
                 if action["target_team"] == "enemy":
                     if action["sm"] == "None":
-                        print(self.enemy_status[action["target"]]["HP"])
                         self.enemy_status[action["target"]]["HP"][1] -= atk
                     elif action["sm"] == "skill":
                         sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
@@ -434,7 +418,7 @@ class Battle:
                     elif action["sm"] == "magic":
                         if 1 <= int_code <= 15:
                             sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                            magic_atk = atk * ((100 + sm_info["atk_amount"]) / 100)
+                            magic_atk = atk * sm_info["atk_amount"] / 100
                             self.enemy_status[action["target"]]["HP"][1] -= magic_atk
                             self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                         elif 17 <= int_code <= 18:
@@ -442,6 +426,10 @@ class Battle:
                                 self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
                             elif sm_info["buff_type"] == "def":
                                 self.enemy_effect[action["target"]]["def_dbuff"] += sm_info["dbuff_amount"]
+                    self.enemy_effect[action["player_pos"]]["atk_buff"] = 0
+                    self.enemy_effect[action["player_pos"]]["def_buff"] = 0
+                    self.enemy_effect[action["player_pos"]]["basic_atk_buff"] = 0
+                    self.enemy_effect[action["player_pos"]]["basic_def_buff"] = 0
                 elif action["target_team"] == "self":
                     if action["sm"] == "skill":
                         sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
@@ -475,9 +463,9 @@ class Battle:
                                 self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][1] += sm_info["recovery_amount"][1]
                         elif 19 <= int_code <= 20:
                             if sm_info["buff_type"] == "atk":
-                                self.player_effect[action["player_pos"]]["basic_atk_buff"] += sm_info["buff_amount"]
+                                self.player_effect[action["target"]]["basic_atk_buff"] += sm_info["buff_amount"]
                             elif sm_info["buff_type"] == "def":
-                                self.player_effect[action["player_pos"]]["basic_def_buff"] += sm_info["buff_amount"]
+                                self.player_effect[action["target"]]["basic_def_buff"] += sm_info["buff_amount"]
                             self.battle_effect["buff_up"] = 0
                         self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                 elif action["target_team"] == "None":
@@ -631,6 +619,9 @@ class Battle:
     def sm_draw(self,sm):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
+        pyxel.rect(25,self.init_y//2-20,270,25,0)
+        pyxel.rectb(25,self.init_y//2-20,270,25,7)
+        self.umplus10.draw_text(26,self.init_y//2-19,self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"],7)
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
         self.item_num = len(self.app.chara_data[self.select_chara][f"{sm}_codes"])
         if self.item_num >= self.item_pos + 11:
@@ -696,7 +687,7 @@ class Battle:
         if self.in_battle:
             pyxel.rect(25,self.init_y//2+10,75,75,0)
             pyxel.rectb(25,self.init_y//2+10,75,75,7)
-            pyxel.rect(30,self.init_y//2+10,65,4,0)
+            pyxel.rect(50,self.init_y//2+10,25,4,0)
             pyxel.rect(110,self.init_y//2+10,185,75,0)
             pyxel.rectb(110,self.init_y//2+10,185,75,7)
             live_num = 0
@@ -732,6 +723,7 @@ class Battle:
                 pyxel.rect(enemy_interval[n] - 25,15,(self.enemy_status[n]["HP"][1] / self.enemy_status[n]["HP"][0]) * 100 / 2,3,11)
                 pyxel.rectb(enemy_interval[n] - 25,15,50,3,7)
                 pyxel.blt(enemy_interval[n] - 32,20,enemy_data[0],enemy_data[1][0],enemy_data[1][1],enemy_data[2][0],enemy_data[2][1],enemy_data[3])
+            self.umplus10.draw_text(53,self.init_y//2+5,"行動",7)
             self.umplus10.draw_text(26,self.init_y//2+15,"たたかう",7)
             self.umplus10.draw_text(26,self.init_y//2+30,"スキル",7)
             self.umplus10.draw_text(26,self.init_y//2+45,"まほう",7)
