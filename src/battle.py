@@ -7,6 +7,7 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 
+#攻撃される際の防御力の適用
 
 class Battle:
     """
@@ -482,6 +483,8 @@ class Battle:
                         if 1 <= ran.randint(1,100) <= 5:
                             self.player_effect[action["player_pos"]]["atk_buff"] += 3
                     self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+            if self.enemy_status[action["target"]]["HP"][1] < 0:
+                self.enemy_status[action["target"]]["HP"][1] = 0
         print(self.enemy_status)
         self.player_op = []
         self.operation_player = False
@@ -653,6 +656,19 @@ class Battle:
                     ai_action = self.AI.predict(ai_input_data)
                     print(ai_action)
                     #以下敵AIの行動をプレイヤーに適用
+                    live_p = []
+                    for len_,i in enumerate(self.app.chara_data):
+                        if self.app.chara_data[i]["HP"][1] > 0:
+                            live_p.append(len_)
+                    for i,ai_ac in enumerate(ai_action):
+                        if self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
+                            ai_ac[0] = live_p[ran.randint(0,len(live_p) - 1)]
+                        if ai_ac[1] == 1:
+                            self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= self.enemy_status[live_enemy[i]]["atk_ab"]
+                        else:
+                            self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= self.enemy_status[live_enemy[i]]["atk_ab"]
+                        if self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] < 0:
+                            self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] = 0
                 self.operation_player = True
 
     def sm_draw(self,sm):
@@ -741,85 +757,90 @@ class Battle:
 
     def draw(self):
         pyxel.cls(0)
-        if self.in_battle:
-            pyxel.rect(25,self.init_y//2+10,75,75,0)
-            pyxel.rectb(25,self.init_y//2+10,75,75,7)
-            pyxel.rect(50,self.init_y//2+10,25,4,0)
-            pyxel.rect(110,self.init_y//2+10,185,75,0)
-            pyxel.rectb(110,self.init_y//2+10,185,75,7)
-            live_num = 0
-            live_p = []
-            for len_,i in enumerate(self.app.chara_data):
-                if self.app.chara_data[i]["HP"][1] > 0:
-                    live_num += 1
-                    live_p.append(len_)
-            for i,data in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data)):
-                height = 18*(i - 1)
-                if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2:
-                    if data[0] in live_p:
-                        self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],7)
-                    else:
-                        self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],8)
+        pyxel.rect(25,self.init_y//2+10,75,75,0)
+        pyxel.rectb(25,self.init_y//2+10,75,75,7)
+        pyxel.rect(50,self.init_y//2+10,25,4,0)
+        pyxel.rect(110,self.init_y//2+10,185,75,0)
+        pyxel.rectb(110,self.init_y//2+10,185,75,7)
+        live_num = 0
+        live_p = []
+        for len_,i in enumerate(self.app.chara_data):
+            if self.app.chara_data[i]["HP"][1] > 0:
+                live_num += 1
+                live_p.append(len_)
+        for i,data in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data)):
+            height = 18*(i - 1)
+            if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2:
+                if data[0] in live_p:
+                    self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],7)
                 else:
-                    if data[0] in live_p:
-                        self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],7)
-                    else:
-                        self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],8)
-                pyxel.text(172,self.init_y//2+14+height,"HP",7)
-                pyxel.text(172,self.init_y//2+21+height,"MP",7)
-                pyxel.rect(180,self.init_y//2+14+height,(self.app.chara_data[data[1]]["HP"][1] / self.app.chara_data[data[1]]["HP"][0]) * 100,5,11)
-                pyxel.rectb(180,self.init_y//2+14+height,100,5,7)
-                pyxel.text(281,self.init_y//2+14+height,f"{self.app.chara_data[data[1]]['HP'][1]}",11)
-                pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data[1]]["MP"][1] / self.app.chara_data[data[1]]["MP"][0]) * 100,5,5)
-                pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
-                pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
-            for n,i in enumerate(self.enemy_code):
-                enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]
-                enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
-                pyxel.text(enemy_interval[n] - 34,14,"HP",7)
-                pyxel.rect(enemy_interval[n] - 25,15,(self.enemy_status[n]["HP"][1] / self.enemy_status[n]["HP"][0]) * 100 / 2,3,11)
-                pyxel.rectb(enemy_interval[n] - 25,15,50,3,7)
-                pyxel.blt(enemy_interval[n] - 32,20,enemy_data[0],enemy_data[1][0],enemy_data[1][1],enemy_data[2][0],enemy_data[2][1],enemy_data[3])
-            self.umplus10.draw_text(53,self.init_y//2+5,"行動",7)
-            self.umplus10.draw_text(26,self.init_y//2+15,"たたかう",7)
-            self.umplus10.draw_text(26,self.init_y//2+30,"スキル",7)
-            self.umplus10.draw_text(26,self.init_y//2+45,"まほう",7)
-            self.umplus10.draw_text(26,self.init_y//2+60,"どうぐ",7)
-            self.umplus10.draw_text(26,self.init_y//2+75,"にげる",7)
-            pyxel.blt(7,self.init_y//2+15+(self.finger_pos1),0,16,0,16,16,0)
-            if self.select_num1 == 0:
-                pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
-                if self.select_num2 != -1:
-                    self.enemy_target_select_draw()
-            elif self.select_num1 == 1:
-                pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
-                if self.select_num2 != -1:
-                    if self.select_num3 == -1:
-                        self.sm_draw("skill")
-                    else:
-                        if self.target_team == "enemy":
+                    self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],8)
+            else:
+                if data[0] in live_p:
+                    self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],7)
+                else:
+                    self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],8)
+            pyxel.text(172,self.init_y//2+14+height,"HP",7)
+            pyxel.text(172,self.init_y//2+21+height,"MP",7)
+            pyxel.rect(180,self.init_y//2+14+height,(self.app.chara_data[data[1]]["HP"][1] / self.app.chara_data[data[1]]["HP"][0]) * 100,5,11)
+            pyxel.rectb(180,self.init_y//2+14+height,100,5,7)
+            pyxel.text(281,self.init_y//2+14+height,f"{self.app.chara_data[data[1]]['HP'][1]}",11)
+            pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data[1]]["MP"][1] / self.app.chara_data[data[1]]["MP"][0]) * 100,5,5)
+            pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
+            pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
+        for n,i in enumerate(self.enemy_code):
+            enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]
+            enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
+            pyxel.text(enemy_interval[n] - 34,14,"HP",7)
+            pyxel.rect(enemy_interval[n] - 25,15,(self.enemy_status[n]["HP"][1] / self.enemy_status[n]["HP"][0]) * 100 / 2,3,11)
+            pyxel.rectb(enemy_interval[n] - 25,15,50,3,7)
+            pyxel.blt(enemy_interval[n] - 32,20,enemy_data[0],enemy_data[1][0],enemy_data[1][1],enemy_data[2][0],enemy_data[2][1],enemy_data[3])
+        self.umplus10.draw_text(53,self.init_y//2+5,"行動",7)
+        self.umplus10.draw_text(26,self.init_y//2+15,"たたかう",7)
+        self.umplus10.draw_text(26,self.init_y//2+30,"スキル",7)
+        self.umplus10.draw_text(26,self.init_y//2+45,"まほう",7)
+        self.umplus10.draw_text(26,self.init_y//2+60,"どうぐ",7)
+        self.umplus10.draw_text(26,self.init_y//2+75,"にげる",7)
+        if self.in_battle:
+            if live_num == 0:
+                self.in_battle = False
+            else:
+                pyxel.blt(7,self.init_y//2+15+(self.finger_pos1),0,16,0,16,16,0)
+                if self.select_num1 == 0:
+                    pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                    if self.select_num2 != -1:
+                        self.enemy_target_select_draw()
+                elif self.select_num1 == 1:
+                    pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                    if self.select_num2 != -1:
+                        if self.select_num3 == -1:
                             self.sm_draw("skill")
-                            self.enemy_target_select_draw()
-                        elif self.target_team == "self":
-                            self.self_target_select_draw()
-                        elif self.target_team == "none":
-                            self.none_target_select_draw()
-            elif self.select_num1 == 2:
-                pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
-                if self.select_num2 != -1:
-                    if self.select_num3 == -1:
-                        self.sm_draw("magic")
-                    else:
-                        if self.target_team == "enemy":
+                        else:
+                            if self.target_team == "enemy":
+                                self.sm_draw("skill")
+                                self.enemy_target_select_draw()
+                            elif self.target_team == "self":
+                                self.self_target_select_draw()
+                            elif self.target_team == "none":
+                                self.none_target_select_draw()
+                elif self.select_num1 == 2:
+                    pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                    if self.select_num2 != -1:
+                        if self.select_num3 == -1:
                             self.sm_draw("magic")
-                            self.enemy_target_select_draw()
-                        elif self.target_team == "self":
-                            self.self_target_select_draw()
-                        elif self.target_team == "none":
-                            self.none_target_select_draw()
-            elif self.select_num1 == 3:
-                self.item_draw()
-            elif self.select_num1 == 4:
-                pass
-            if len(self.player_op) == live_num:
-                self.target_attack_update()
+                        else:
+                            if self.target_team == "enemy":
+                                self.sm_draw("magic")
+                                self.enemy_target_select_draw()
+                            elif self.target_team == "self":
+                                self.self_target_select_draw()
+                            elif self.target_team == "none":
+                                self.none_target_select_draw()
+                elif self.select_num1 == 3:
+                    self.item_draw()
+                elif self.select_num1 == 4:
+                    pass
+                if len(self.player_op) == live_num:
+                    self.target_attack_update()
+        else:
+            pass
