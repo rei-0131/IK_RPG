@@ -2,7 +2,6 @@ import pyxel
 import configparser
 import json
 import time
-import random
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
@@ -157,8 +156,18 @@ class App:
         self.loaddata = None
         self.chara_data = chara_data_tmp
         self.item_codes = {
-            "001": 3,
-            "004": 4
+            "001": {
+                "value":3,
+                "battle":"true"
+            },
+            "007":{
+                "value":8,
+                "battle":"false"
+            },
+            "004": {
+                "value":4,
+                "battle":"true"
+            }
         }
         self.equip_codes = {
             "head":["001","002","003","004","001","002","003","004","001","002","003"],

@@ -173,8 +173,18 @@
                 }
             },
             "item_codes": {
-                "001": 3,
-                "004": 4
+                "001": {
+                    "value":3,
+                    "battle":"true"
+                },
+                "007":{
+                    "value":8,
+                    "battle":"false"
+                },
+                "004": {
+                    "value":4,
+                    "battle":"true"
+                }
             },
             "imp_item_codes": [
                 "001"

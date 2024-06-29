@@ -57,6 +57,7 @@ class Battle:
             "soul":0
         }
         self.in_battle = True
+        self.battle_item = {}
         #防御などターンを通しての効果などを表記
         self.sp_now = {}
         with open("assets/tools.json","r",encoding="utf-8") as f:
@@ -97,6 +98,7 @@ class Battle:
             "buff_up":0
         }
         self.in_battle = True
+        self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"] == "true"}
         for _ in range(len(self.app.chara_data)):
             self.player_effect.append({
                 "atk_buff":0,
@@ -485,8 +487,45 @@ class Battle:
         self.operation_player = False
 
     def item_update(self):
-        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-            self.select_num1 = -1
+        if self.select_num3 == -1:
+            if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                self.select_num1 = -1
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
+                    self.finger_pos3-=2
+                elif self.item_pos - 2 >= 0:
+                    self.item_pos -= 2
+            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if self.finger_pos3 != 8 and self.finger_pos3 != 9:
+                    if self.finger_pos3 + 2 < self.dis_num:
+                        self.finger_pos3 += 2
+                else:
+                    if self.finger_pos3 + self.item_pos + 2 < self.item_num:
+                        self.item_pos += 2
+                    elif self.finger_pos3 + self.item_pos + 3 == self.item_num and self.item_num > 10:
+                        self.item_pos += 2
+                        self.finger_pos3 -= 1
+            if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                if self.finger_pos3 + 1 < self.dis_num:
+                    self.finger_pos3 += 1
+                elif not self.item_pos + 12 <= self.item_num and self.item_pos + 11 <= self.item_num:
+                    self.finger_pos3 -= 1
+                    self.item_pos += 2
+                elif self.item_pos + 12 <= self.item_num:
+                    self.item_pos += 2
+            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                if self.item_pos != 0:
+                    if self.finger_pos3 == 0:
+                        self.finger_pos3 += 1
+                        self.item_pos -= 2
+                    else:
+                        self.finger_pos3 -= 1
+                else:
+                    if self.finger_pos3 != 0:
+                        self.finger_pos3 -= 1
+            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                use_item = self.tools["basic"][list(self.battle_item.items())[self.item_pos + self.finger_pos3][0]]
+                print(use_item)
 
     def update(self):
         if self.in_battle:
@@ -652,6 +691,24 @@ class Battle:
     def item_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
+        self.item_num = len(self.battle_item.items())
+        if self.item_num >= self.item_pos + 11:
+            self.dis_num = 10
+            for i,item in enumerate(self.battle_item.items()):
+                h = int(i // 2)
+                w = i % 2
+                if i == self.finger_pos3:
+                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+        else:
+            self.dis_num = self.item_num - self.item_pos
+            for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
+                h = int(i // 2)
+                w = i % 2
+                if i == self.finger_pos3:
+                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+
 
     def enemy_target_select_draw(self):
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
