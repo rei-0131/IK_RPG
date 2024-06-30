@@ -54,8 +54,7 @@ class Battle:
         self.player_effect = []
         self.enemy_effect = []
         self.battle_effect = {
-            "power":0,
-            "soul":0
+            "buff_up":0
         }
         self.in_battle = True
         self.battle_item = {}
@@ -110,7 +109,8 @@ class Battle:
                 "def_dbuff":0,
                 "atk_invalid":False,
                 "recovery_turn":0,
-                "recovery_info":[]
+                "recovery_info":[],
+                "02_use":True
                 #ほか追加？
             })
 
@@ -250,26 +250,27 @@ class Battle:
                 self.finger_pos5 = 0
                 self.select_num3 = -1
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-                self.select_num5 = int(self.finger_pos5 // 18)
-                print(self.select_num5)
-                if self.select_num1 == 1:
-                    sm = "skill"
-                    self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
-                elif self.select_num1 == 2:
-                    sm = "magic"
-                    self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
+                if self.app.chara_data[list(self.app.chara_data.keys())[self.finger_pos5//18]]["HP"][1] > 0:
+                    self.select_num5 = int(self.finger_pos5 // 18)
+                    print(self.select_num5)
+                    if self.select_num1 == 1:
+                        sm = "skill"
+                        self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
+                    elif self.select_num1 == 2:
+                        sm = "magic"
+                        self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
 
-                self.finger_pos1 = 0
-                self.select_num1 = -1
-                self.finger_pos2 = 0
-                self.select_num2 = -1
-                self.finger_pos3 = 0
-                self.select_num3 = -1
-                self.finger_pos4 = 0
-                self.select_num5 = -1
-                self.finger_pos5 = 0
-                self.item_pos = 0
-                self.dis_num = 0
+                    self.finger_pos1 = 0
+                    self.select_num1 = -1
+                    self.finger_pos2 = 0
+                    self.select_num2 = -1
+                    self.finger_pos3 = 0
+                    self.select_num3 = -1
+                    self.finger_pos4 = 0
+                    self.select_num5 = -1
+                    self.finger_pos5 = 0
+                    self.item_pos = 0
+                    self.dis_num = 0
 
     def none_target_select_update(self):
         self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
@@ -322,25 +323,26 @@ class Battle:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 use_sm = self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]
                 if use_sm["req_MP"] <= self.app.chara_data[self.select_chara]["MP"][1]:
-                    if sm == "skill":
-                        #共通処理
-                        if use_sm["content"] == "atk":
-                            self.target_team = "enemy"
-                        elif use_sm["content"] == "tank" or use_sm["content"] == "buff" or use_sm["content"] == "heal":
-                            self.target_team = "self"
-                        elif use_sm["content"] == "play":
-                            self.target_team = "none"
-                    else:
-                        if use_sm["content"] == "atk" or use_sm["content"] == "dbf":
-                            self.target_team = "enemy"
-                        elif use_sm["content"] == "tank" or use_sm["content"] == "buff" or use_sm["content"] == "heal":
-                            self.target_team = "self"
-                        elif use_sm["content"] == "play":
-                            self.target_team = "None"
-                    #魔法名出力
-                    self.select_num3 = 0
-                    self.finger_pos4 = 0
-                    print(use_sm["name"])
+                    if not (use_sm["name"] == "一刀両断" and not self.player_effect[self.select_num2]["02_use"]):
+                        if sm == "skill":
+                            #共通処理
+                            if use_sm["content"] == "atk":
+                                self.target_team = "enemy"
+                            elif use_sm["content"] == "tank" or use_sm["content"] == "buff" or use_sm["content"] == "heal":
+                                self.target_team = "self"
+                            elif use_sm["content"] == "play":
+                                self.target_team = "none"
+                        else:
+                            if use_sm["content"] == "atk" or use_sm["content"] == "dbf":
+                                self.target_team = "enemy"
+                            elif use_sm["content"] == "tank" or use_sm["content"] == "buff" or use_sm["content"] == "heal":
+                                self.target_team = "self"
+                            elif use_sm["content"] == "play":
+                                self.target_team = "None"
+                        #魔法名出力
+                        self.select_num3 = 0
+                        self.finger_pos4 = 0
+                        print(use_sm["name"])
 
     def play_magic(self,magic_code,atk,action):
         if 1 <= magic_code <= 15:
@@ -358,6 +360,13 @@ class Battle:
             pass
         elif 19 <= magic_code <= 20:
             pass
+
+    def hp_int(self,target):
+        if target != "none":
+            self.app.chara_data[list(self.app.chara_data.keys())[target]]["HP"][1] = int(self.app.chara_data[list(self.app.chara_data.keys())[target]]["HP"][1])
+        else:
+            for i in self.app.chara_data.keys():
+                self.app.chara_data[i]["HP"][1] = int(self.app.chara_data[i]["HP"][1])
 
     def target_attack_update(self):
         print(self.player_op)
@@ -417,18 +426,21 @@ class Battle:
                         elif action["sm_code"] == "02":
                             cri_atk = atk * (self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
                             self.enemy_status[action["target"]]["HP"][1] -= cri_atk
+                            self.player_effect[action["player_pos"]]["02_use"] = False
                         self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                     elif action["sm"] == "magic":
                         if 1 <= int_code <= 15:
                             sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                             magic_atk = atk * sm_info["atk_amount"] / 100
                             self.enemy_status[action["target"]]["HP"][1] -= magic_atk
-                            self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                         elif 17 <= int_code <= 18:
                             if sm_info["buff_type"] == "atk":
                                 self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
                             elif sm_info["buff_type"] == "def":
                                 self.enemy_effect[action["target"]]["def_dbuff"] += sm_info["dbuff_amount"]
+                        self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+                    if self.enemy_status[action["target"]]["HP"][1] < 0:
+                        self.enemy_status[action["target"]]["HP"][1] = 0
                     self.enemy_effect[action["player_pos"]]["atk_buff"] = 0
                     self.enemy_effect[action["player_pos"]]["def_buff"] = 0
                     self.enemy_effect[action["player_pos"]]["basic_atk_buff"] = 0
@@ -438,17 +450,17 @@ class Battle:
                         sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                         if action["sm_code"] == "03":
                             if sm_info["recovery_amount"][0] == "p":
-                                self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
+                                self.app.chara_data[list(self.app.chara_data.keys())[action["target"]]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
                             else:
-                                self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][1] += sm_info["recovery_amount"][1]
+                                self.app.chara_data[list(self.app.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
                         elif action["sm_code"] == "04":
                             self.player_effect[action["target"]]["recovery_turn"] = sm_info["other"]["continue_turn"]
                             self.player_effect[action["target"]]["recovery_info"] = sm_info["recovery_amount"]
                             self.player_effect[action["target"]]["recovery_info"][1] -= 1
                             if self.player_effect[action["target"]]["recovery_info"][0] == "p":
-                                self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][0] * (self.player_effect[action["target"]]["recovery_info"][1] / 100)
+                                self.app.chara_data[list(self.app.chara_data.keys())[action["target"]]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][0] * (self.player_effect[action["target"]]["recovery_info"][1] / 100)
                             else:
-                                self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][1] += self.player_effect[action["target"]]["recovery_info"][1]
+                                self.app.chara_data[list(self.app.chara_data.keys())[action["target"]]]["HP"][1] += self.player_effect[action["target"]]["recovery_info"][1]
                         elif action["sm_code"] == "05":
                             self.player_effect[action["target"]]["atk_invalid"] = True
                         elif action["sm_code"] == "06":
@@ -461,16 +473,17 @@ class Battle:
                         sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                         if action["sm_code"] == "16":
                             if sm_info["recovery_amount"][0] == "p":
-                                self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
+                                self.app.chara_data[list(self.app.chara_data.keys())[action["target"]]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
                             else:
-                                self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["HP"][1] += sm_info["recovery_amount"][1]
+                                self.app.chara_data[list(self.app.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
                         elif 19 <= int_code <= 20:
                             if sm_info["buff_type"] == "atk":
-                                self.player_effect[action["target"]]["basic_atk_buff"] += sm_info["buff_amount"]
+                                self.player_effect[action["target"]]["basic_atk_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
                             elif sm_info["buff_type"] == "def":
-                                self.player_effect[action["target"]]["basic_def_buff"] += sm_info["buff_amount"]
+                                self.player_effect[action["target"]]["basic_def_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
                             self.battle_effect["buff_up"] = 0
                         self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+                    self.hp_int(action["target"])
                 elif action["target_team"] == "None":
                     sm_info = self.magic_codes["skill"][action["sm_code"]]
                     if action["sm_code"] == "08":
@@ -483,8 +496,9 @@ class Battle:
                         if 1 <= ran.randint(1,100) <= 5:
                             self.player_effect[action["player_pos"]]["atk_buff"] += 3
                     self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
-            if self.enemy_status[action["target"]]["HP"][1] < 0:
-                self.enemy_status[action["target"]]["HP"][1] = 0
+        for i in self.app.chara_data.keys():
+            if self.app.chara_data[i]["HP"][1] >= self.app.chara_data[i]["HP"][0]:
+                self.app.chara_data[i]["HP"][1] = self.app.chara_data[i]["HP"][0]
         print(self.enemy_status)
         self.player_op = []
         self.operation_player = False
@@ -663,12 +677,14 @@ class Battle:
                     for i,ai_ac in enumerate(ai_action):
                         if self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
                             ai_ac[0] = live_p[ran.randint(0,len(live_p) - 1)]
-                        if ai_ac[1] == 1:
-                            self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= self.enemy_status[live_enemy[i]]["atk_ab"]
-                        else:
-                            self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= self.enemy_status[live_enemy[i]]["atk_ab"]
-                        if self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] < 0:
-                            self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] = 0
+                        if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:
+                            if ai_ac[1] == 1:
+                                self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= self.enemy_status[live_enemy[i]]["atk_ab"]
+                            else:
+                                self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= self.enemy_status[live_enemy[i]]["atk_ab"]
+                            if self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] < 0:
+                                self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] = 0
+                    self.hp_int("none")
                 self.operation_player = True
 
     def sm_draw(self,sm):
@@ -686,7 +702,12 @@ class Battle:
                 w = i % 2
                 if i == self.finger_pos3:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
+
+                if self.magic_codes[sm][item]["name"] == "一刀両断" and not self.player_effect[self.select_num2]["02_use"]:
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],8)
+                else:
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
+
                 if self.magic_codes[sm][item]["req_MP"] > self.app.chara_data[self.select_chara]["MP"][1]:
                     self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),8)
                 else:
@@ -698,7 +719,12 @@ class Battle:
                 w = i % 2
                 if i == self.finger_pos3:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
+
+                if self.magic_codes[sm][item]["name"] == "一刀両断" and not self.player_effect[self.select_num2]["02_use"]:
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],8)
+                else:
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
+
                 if self.magic_codes[sm][item]["req_MP"] > self.app.chara_data[self.select_chara]["MP"][1]:
                     self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),8)
                 else:
@@ -733,20 +759,33 @@ class Battle:
     def self_target_select_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
-        for i,data in zip(range(1,1+len(self.app.chara_data.items())),self.app.chara_data):
+        live_num = 0
+        live_p = []
+        for len_,i in enumerate(self.app.chara_data):
+            if self.app.chara_data[i]["HP"][1] > 0:
+                live_num += 1
+                live_p.append(len_)
+
+        for i,data in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data)):
             height = 18*(i - 1)
             if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2:
-                self.umplus10.draw_text(115,self.init_y//2+15+height,data,7)
+                if data[0] in live_p:
+                    self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],7)
+                else:
+                    self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],8)
             else:
-                self.umplus10.draw_text(130,self.init_y//2+15+height,data,7)
-            pyxel.text(172,self.init_y//2+14+height,"HP",7)
-            pyxel.text(172,self.init_y//2+21+height,"MP",7)
-            pyxel.rect(180,self.init_y//2+14+height,(self.app.chara_data[data]["HP"][1]/self.app.chara_data[data]["HP"][0])*100,5,11)
-            pyxel.rectb(180,self.init_y//2+14+height,100,5,7)
-            pyxel.text(281,self.init_y//2+14+height,f"{self.app.chara_data[data]['HP'][1]}",11)
-            pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data]["MP"][1]/self.app.chara_data[data]["MP"][0])*100,5,5)
-            pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
-            pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data]['MP'][1]}",5)
+                if data[0] in live_p:
+                    self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],7)
+                else:
+                    self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],8)
+            pyxel.text(170,self.init_y//2+14+height,"HP",7)
+            pyxel.text(170,self.init_y//2+21+height,"MP",7)
+            pyxel.rect(178,self.init_y//2+14+height,(self.app.chara_data[data[1]]["HP"][1]/self.app.chara_data[data[1]]["HP"][0])*100,5,11)
+            pyxel.rectb(178,self.init_y//2+14+height,100,5,7)
+            pyxel.text(279,self.init_y//2+14+height,f"{self.app.chara_data[data[1]]['HP'][1]}",11)
+            pyxel.rect(178,self.init_y//2+21+height,(self.app.chara_data[data[1]]["MP"][1]/self.app.chara_data[data[1]]["MP"][0])*100,5,5)
+            pyxel.rectb(178,self.init_y//2+21+height,100,5,7)
+            pyxel.text(279,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
         pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),0,16,0,16,16,0)
 
     def none_target_select_draw(self):
@@ -768,6 +807,7 @@ class Battle:
             if self.app.chara_data[i]["HP"][1] > 0:
                 live_num += 1
                 live_p.append(len_)
+
         for i,data in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data)):
             height = 18*(i - 1)
             if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2:
@@ -780,14 +820,14 @@ class Battle:
                     self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],7)
                 else:
                     self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],8)
-            pyxel.text(172,self.init_y//2+14+height,"HP",7)
-            pyxel.text(172,self.init_y//2+21+height,"MP",7)
-            pyxel.rect(180,self.init_y//2+14+height,(self.app.chara_data[data[1]]["HP"][1] / self.app.chara_data[data[1]]["HP"][0]) * 100,5,11)
-            pyxel.rectb(180,self.init_y//2+14+height,100,5,7)
-            pyxel.text(281,self.init_y//2+14+height,f"{self.app.chara_data[data[1]]['HP'][1]}",11)
-            pyxel.rect(180,self.init_y//2+21+height,(self.app.chara_data[data[1]]["MP"][1] / self.app.chara_data[data[1]]["MP"][0]) * 100,5,5)
-            pyxel.rectb(180,self.init_y//2+21+height,100,5,7)
-            pyxel.text(281,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
+            pyxel.text(170,self.init_y//2+14+height,"HP",7)
+            pyxel.text(170,self.init_y//2+21+height,"MP",7)
+            pyxel.rect(178,self.init_y//2+14+height,(self.app.chara_data[data[1]]["HP"][1] / self.app.chara_data[data[1]]["HP"][0]) * 100,5,11)
+            pyxel.rectb(178,self.init_y//2+14+height,100,5,7)
+            pyxel.text(279,self.init_y//2+14+height,f"{self.app.chara_data[data[1]]['HP'][1]}",11)
+            pyxel.rect(178,self.init_y//2+21+height,(self.app.chara_data[data[1]]["MP"][1] / self.app.chara_data[data[1]]["MP"][0]) * 100,5,5)
+            pyxel.rectb(178,self.init_y//2+21+height,100,5,7)
+            pyxel.text(279,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
         for n,i in enumerate(self.enemy_code):
             enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]
             enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
