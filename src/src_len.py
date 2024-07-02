@@ -27,6 +27,7 @@ filenames = [
     'src/assets/scenes.json',
     'src/assets/tools.json',
     'src/assets/words.json',
+    'src/assets/init_data.json',
     'src/configs/config.ini']
 
 all_line = 0
