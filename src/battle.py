@@ -56,6 +56,7 @@ class Battle:
         self.battle_effect = {
             "buff_up":0
         }
+        self.damage_pos = 0
         self.in_battle = True
         self.battle_item = {}
         #防御などターンを通しての効果などを表記
@@ -101,6 +102,7 @@ class Battle:
         self.battle_effect = {
             "buff_up":0
         }
+        self.damage_pos = 0
         self.in_battle = True
         self.attack_count = 0
         self.vibe_count = 0
@@ -374,12 +376,35 @@ class Battle:
         elif 19 <= magic_code <= 20:
             pass
 
-    def hp_int(self,target):
+    def hp_int(self,target) -> str:
         if target != "none":
             self.app.chara_data[list(self.app.chara_data.keys())[target]]["HP"][1] = int(self.app.chara_data[list(self.app.chara_data.keys())[target]]["HP"][1])
         else:
             for i in self.app.chara_data.keys():
                 self.app.chara_data[i]["HP"][1] = int(self.app.chara_data[i]["HP"][1])
+
+    def atk_def_sum(self,action) -> tuple[float,float]:
+        action_p = self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]
+        atk = 0
+        def_ = 0
+        atk += action_p["atk_ab"] * ((self.player_effect[action["player_pos"]]["basic_atk_buff"] + 100) / 100)
+        def_ += action_p["def_ab"] * ((self.player_effect[action["player_pos"]]["basic_def_buff"] + 100) / 100)
+        isd_ = ["head","armor","leggings","boots","shield"]
+        isa_ = ["sword","staff","other"]
+        for i,v in action_p["equipments"].items():
+            if i in isd_:
+                if self.tools[i][v][2] == "f":
+                    def_ += self.tools[i][v][3]
+                else:
+                    def_ += action_p["def_ab"] * (self.tools[i][v][3] / 100)
+            elif i in isa_:
+                if self.tools[i][v][2] == "f":
+                    atk += self.tools[i][v][3]
+                else:
+                    atk += action_p["atk_ab"] * (self.tools[i][v][3] / 100)
+            atk *= (action_p["atk_buff"] + self.player_effect[action["player_pos"]]["atk_buff"] - self.player_effect[action["player_pos"]]["atk_dbuff"]) / 100
+            def_ *= (action_p["def_buff"] + self.player_effect[action["player_pos"]]["def_buff"] - self.player_effect[action["player_pos"]]["def_dbuff"]) / 100
+        return atk,def_
 
     def target_attack_update(self):
         print(self.player_op)
@@ -395,27 +420,8 @@ class Battle:
                 effect["atk_invalid"] = False
         if not self.enemy_animation:
             action = self.player_op[self.attack_count]
-            action_p = self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]
-            atk = 0
-            def_ = 0
-            atk += action_p["atk_ab"] * ((self.player_effect[action["player_pos"]]["basic_atk_buff"] + 100) / 100)
-            def_ += action_p["def_ab"] * ((self.player_effect[action["player_pos"]]["basic_def_buff"] + 100) / 100)
-            isd_ = ["head","armor","leggings","boots","shield"]
-            isa_ = ["sword","staff","other"]
-            for i,v in action_p["equipments"].items():
-                if i in isd_:
-                    if self.tools[i][v][2] == "f":
-                        def_ += self.tools[i][v][3]
-                    else:
-                        def_ += action_p["def_ab"] * (self.tools[i][v][3] / 100)
-                elif i in isa_:
-                    if self.tools[i][v][2] == "f":
-                        atk += self.tools[i][v][3]
-                    else:
-                        atk += action_p["atk_ab"] * (self.tools[i][v][3] / 100)
-                atk *= (action_p["atk_buff"] + self.player_effect[action["player_pos"]]["atk_buff"] - self.player_effect[action["player_pos"]]["atk_dbuff"]) / 100
-                def_ *= (action_p["def_buff"] + self.player_effect[action["player_pos"]]["def_buff"] - self.player_effect[action["player_pos"]]["def_dbuff"]) / 100
-            print(f"{action=}\n{action_p=}\n{self.player_effect[action['player_pos']]=}\n{atk=} {def_=}\n\n\n")
+            atk,def_ = self.atk_def_sum(action)
+            print(f"{action=}\n{self.player_effect[action['player_pos']]=}\n{atk=} {def_=}\n\n\n")
             if action["target"] != "None":
                 if self.enemy_status[action["target"]]["HP"][1] <= 0:
                     live_e = []
@@ -537,7 +543,33 @@ class Battle:
                             "value":0,
                             "move":"p"
                         }
+                        self.damage_pos = 0
                     elif self.vibe_enemy[self.vibe_count]["total"] < 10:
+                        action = self.player_op[self.attack_count]
+                        atk,def_ = self.atk_def_sum(action)
+                        damage = False
+                        damage_amount = 0
+                        if action["sm"] == "None":
+                            damage = True
+                            damage_amount = atk
+                        elif action["sm"] == "skill":
+                            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                            if action["sm_code"] == "01":
+                                damage = True
+                                damage_amount = atk * 2
+                            elif action["sm_code"] == "02":
+                                damage = True
+                                cri_atk = atk * (self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
+                                damage_amount = cri_atk
+                        elif action["sm"] == "magic":
+                            if 1 <= int_code <= 15:
+                                damage = True
+                                magic_atk = atk * sm_info["atk_amount"] / 100
+                                damage_amount = magic_atk
+                        if damage:
+                            enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
+                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),8)
+                            self.damage_pos -= 2
                         vibe = self.vibe_enemy[self.vibe_count]
                         if vibe["move"] == "p":
                             if vibe["value"] < 2:
