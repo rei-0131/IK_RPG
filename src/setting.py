@@ -347,8 +347,8 @@ class In_Setting:
             if i == self.in_st_finger:
                 pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
             pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-            self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]][0])
-            self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]}")
+            self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+            self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
         pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def imp_draw(self):
