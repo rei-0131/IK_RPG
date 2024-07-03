@@ -65,6 +65,10 @@ class Battle:
         self.enemy_animation = True
         self.vibe_enemy = []
         self.vibe_count = 0
+        self.player_animation = True
+        self.vibe_player = []
+        self.ai_action = None
+        self.first_ai_action = False
         with open("assets/tools.json","r",encoding="utf-8") as f:
             self.tools = json.load(f)
         with open("assets/magic.json","r",encoding="utf-8") as f:
@@ -108,6 +112,10 @@ class Battle:
         self.vibe_count = 0
         self.enemy_animation = True
         self.vibe_enemy = []
+        self.player_animation = True
+        self.vibe_player = []
+        self.ai_action = None
+        self.first_ai_action = False
         self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"] == "true"}
         for _ in range(len(self.app.chara_data)):
             self.player_effect.append({
@@ -122,6 +130,11 @@ class Battle:
                 "recovery_info":[],
                 "02_use":True
                 #ほか追加？
+            })
+            self.vibe_player.append({
+                "total":0,
+                "value":0,
+                "move":"p"
             })
 
     def set_enemy(self,enemy_num,enemy_code):
@@ -529,6 +542,7 @@ class Battle:
             if self.attack_count == len(live_e):
                 self.player_op = []
                 self.operation_player = False
+                self.first_ai_action = True
                 self.attack_count = 0
                 print(self.enemy_status)
             if self.operation_player:
@@ -702,6 +716,8 @@ class Battle:
                                 pl_pos.pop(i)
                         if len(self.player_op) == live_num:
                             self.target_attack_update()
+                        else:
+                            self.attack_count = 0
             else:
                 ai_input_data = []
                 live_enemy = []
@@ -709,59 +725,62 @@ class Battle:
                     if self.enemy_status[i]["HP"][1] > 0:
                         live_enemy.append(i)
                 if len(live_enemy) != 0:
-                    for x in range(len(live_enemy)):
-                        write_str = f"{len(self.app.chara_data)} "
-                        for i in self.app.chara_data.keys():
-                            write_str += f'{self.app.chara_data[i]["post"]} {(self.app.chara_data[i]["HP"][1]/self.app.chara_data[i]["HP"][0]):.4f} {(self.app.chara_data[i]["MP"][1]/self.app.chara_data[i]["MP"][0]):.4f} '
-                        write_str += f"{self.enemy_num} "
-                        for i in live_enemy:
-                            write_str += f'{(self.enemy_status[i]["HP"][1]/self.enemy_status[i]["HP"][0]):.4f} {(self.enemy_status[i]["MP"][1]/self.enemy_status[i]["MP"][0]):.4f} '
-                        write_str += f"{x}"
-                        write_str = write_str.split()
-                        for i in range(len(write_str)):
-                            write_str[i] = float(write_str[i])
-                        ai_input_data.append([])
-                        pl_ = int(write_str[0])
-                        tmp_len_ = len(write_str)
-                        tmp_len = len(ai_input_data)
-                        for i in range(pl_):
-                            ai_input_data[tmp_len - 1].append(write_str[1+i*3:1+(i+1)*3])
-                        for i in range(4-pl_):
-                            ai_input_data[tmp_len - 1].append([0,0,0])
-                        en_ = int(write_str[int(write_str[0])*3+1])
-                        for i in range(en_):
-                            tm = [0,write_str[(int(write_str[0])*3+2)+i*2],write_str[(int(write_str[0])*3+2)+i*2+1]]
-                            ai_input_data[tmp_len - 1].append(tm)
-                        for i in range(3-en_):
-                            ai_input_data[tmp_len - 1].append([0,0,0])
-                        c = write_str[tmp_len_ - 3]
-                        c = [0,0,c]
-                        ai_input_data[tmp_len - 1].append(c)
-                        nd_ = np.array([])
-                        ai_input_data[tmp_len - 1] = np.append(nd_,ai_input_data[tmp_len-1]).tolist()
-
-                    inp_data = 0
-                    l = len(ai_input_data)
-                    for i in range(20-l):
-                        ai_input_data.append(ai_input_data[inp_data])
-                        if inp_data + 1 == l:
-                            inp_data = 0
-
-                    ai_input_data = np.array(ai_input_data)
-                    pca = PCA(n_components = 20,whiten = False)
-                    pca.fit(ai_input_data)
-                    ai_input_data = pca.fit_transform(ai_input_data)
-                    ai_input_data = ai_input_data[0:self.enemy_num]
-                    scaler = StandardScaler()
-                    ai_input_data = scaler.fit_transform(ai_input_data)
-                    ai_action = self.AI.predict(ai_input_data)
-                    print(ai_action)
                     #以下敵AIの行動をプレイヤーに適用
                     live_p = []
                     for len_,i in enumerate(self.app.chara_data):
                         if self.app.chara_data[i]["HP"][1] > 0:
                             live_p.append(len_)
-                    for i,ai_ac in enumerate(ai_action):
+                    if self.first_ai_action:
+                        for x in range(len(live_enemy)):
+                            write_str = f"{len(self.app.chara_data)} "
+                            for i in self.app.chara_data.keys():
+                                write_str += f'{self.app.chara_data[i]["post"]} {(self.app.chara_data[i]["HP"][1]/self.app.chara_data[i]["HP"][0]):.4f} {(self.app.chara_data[i]["MP"][1]/self.app.chara_data[i]["MP"][0]):.4f} '
+                            write_str += f"{self.enemy_num} "
+                            for i in live_enemy:
+                                write_str += f'{(self.enemy_status[i]["HP"][1]/self.enemy_status[i]["HP"][0]):.4f} {(self.enemy_status[i]["MP"][1]/self.enemy_status[i]["MP"][0]):.4f} '
+                            write_str += f"{x}"
+                            write_str = write_str.split()
+                            for i in range(len(write_str)):
+                                write_str[i] = float(write_str[i])
+                            ai_input_data.append([])
+                            pl_ = int(write_str[0])
+                            tmp_len_ = len(write_str)
+                            tmp_len = len(ai_input_data)
+                            for i in range(pl_):
+                                ai_input_data[tmp_len - 1].append(write_str[1+i*3:1+(i+1)*3])
+                            for i in range(4-pl_):
+                                ai_input_data[tmp_len - 1].append([0,0,0])
+                            en_ = int(write_str[int(write_str[0])*3+1])
+                            for i in range(en_):
+                                tm = [0,write_str[(int(write_str[0])*3+2)+i*2],write_str[(int(write_str[0])*3+2)+i*2+1]]
+                                ai_input_data[tmp_len - 1].append(tm)
+                            for i in range(3-en_):
+                                ai_input_data[tmp_len - 1].append([0,0,0])
+                            c = write_str[tmp_len_ - 3]
+                            c = [0,0,c]
+                            ai_input_data[tmp_len - 1].append(c)
+                            nd_ = np.array([])
+                            ai_input_data[tmp_len - 1] = np.append(nd_,ai_input_data[tmp_len-1]).tolist()
+                        inp_data = 0
+                        l = len(ai_input_data)
+                        for i in range(20-l):
+                            ai_input_data.append(ai_input_data[inp_data])
+                            if inp_data + 1 == l:
+                                inp_data = 0
+
+                        ai_input_data = np.array(ai_input_data)
+                        pca = PCA(n_components = 20,whiten = False)
+                        pca.fit(ai_input_data)
+                        ai_input_data = pca.fit_transform(ai_input_data)
+                        ai_input_data = ai_input_data[0:self.enemy_num]
+                        scaler = StandardScaler()
+                        ai_input_data = scaler.fit_transform(ai_input_data)
+                        self.ai_action = self.AI.predict(ai_input_data)
+                        print(self.ai_action)
+                        self.first_ai_action = False
+                    i = self.attack_count
+                    ai_ac = self.ai_action[i]
+                    if not self.player_animation:
                         if int(ai_ac[0]) >= len(list(self.app.chara_data.keys())):
                             ai_ac[0] = len(list(self.app.chara_data.keys())) - 1
                         if self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
@@ -773,8 +792,40 @@ class Battle:
                                 self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= self.enemy_status[live_enemy[i]]["atk_ab"]
                             if self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] < 0:
                                 self.app.chara_data[list(self.app.chara_data.keys())[int(ai_ac[0])]]["HP"][1] = 0
+                        self.attack_count += 1
+                        self.player_animation = True
+                        if self.attack_count == len(self.ai_action):
+                            self.operation_player = True
+                            self.attack_count = 0
+                    else:
+                        if self.attack_count == len(live_p):
+                            self.attack_count = 0
+                        if 1 != 1:
+                            pass
+                        else:
+                            if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
+                                self.player_animation = False
+                                self.vibe_player[int(ai_ac[0])] = {
+                                    "total":0,
+                                    "value":0,
+                                    "move":"p"
+                                }
+                            else:
+                                vibe = self.vibe_player[int(ai_ac[0])]
+                                if vibe["move"] == "p":
+                                    if vibe["value"] < 2:
+                                        vibe["value"] += 2
+                                    else:
+                                        vibe["move"] = "m"
+                                        vibe["value"] -= 2
+                                else:
+                                    if vibe["value"] > -2:
+                                        vibe["value"] -= 2
+                                    else:
+                                        vibe["move"] = "p"
+                                        vibe["value"] += 2
+                                vibe["total"] += 1
                     self.hp_int("none")
-                self.operation_player = True
 
     def sm_draw(self,sm):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
@@ -897,7 +948,7 @@ class Battle:
                 live_num += 1
                 live_p.append(len_)
 
-        for i,data in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data)):
+        for i,data,ch_i in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data),range(len(self.app.chara_data.keys()))):
             height = 18*(i - 1)
             op_player = False
             for i in self.player_op:
@@ -922,11 +973,11 @@ class Battle:
                     self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],8)
             pyxel.text(170,self.init_y//2+14+height,"HP",7)
             pyxel.text(170,self.init_y//2+21+height,"MP",7)
-            pyxel.rect(178,self.init_y//2+14+height,(self.app.chara_data[data[1]]["HP"][1] / self.app.chara_data[data[1]]["HP"][0]) * 100,5,11)
-            pyxel.rectb(178,self.init_y//2+14+height,100,5,7)
+            pyxel.rect(178 + self.vibe_player[ch_i]["value"],self.init_y//2+14+height,(self.app.chara_data[data[1]]["HP"][1] / self.app.chara_data[data[1]]["HP"][0]) * 100,5,11)
+            pyxel.rectb(178 + self.vibe_player[ch_i]["value"],self.init_y//2+14+height,100,5,7)
             pyxel.text(279,self.init_y//2+14+height,f"{self.app.chara_data[data[1]]['HP'][1]}",11)
-            pyxel.rect(178,self.init_y//2+21+height,(self.app.chara_data[data[1]]["MP"][1] / self.app.chara_data[data[1]]["MP"][0]) * 100,5,5)
-            pyxel.rectb(178,self.init_y//2+21+height,100,5,7)
+            pyxel.rect(178 + self.vibe_player[ch_i]["value"],self.init_y//2+21+height,(self.app.chara_data[data[1]]["MP"][1] / self.app.chara_data[data[1]]["MP"][0]) * 100,5,5)
+            pyxel.rectb(178 + self.vibe_player[ch_i]["value"],self.init_y//2+21+height,100,5,7)
             pyxel.text(279,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
         for n,i in enumerate(self.enemy_code):
             enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]

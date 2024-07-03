@@ -28,7 +28,8 @@ filenames = [
     'src/assets/tools.json',
     'src/assets/words.json',
     'src/assets/init_data.json',
-    'src/configs/config.ini']
+    'src/configs/config.ini',
+    "src/assets/enemy_info.json"]
 
 all_line = 0
 all_char = 0
