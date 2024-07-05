@@ -822,7 +822,7 @@ class Battle:
                         pca = PCA(n_components = 20,whiten = False)
                         pca.fit(ai_input_data)
                         ai_input_data = pca.fit_transform(ai_input_data)
-                        ai_input_data = ai_input_data[0:self.enemy_num]
+                        ai_input_data = ai_input_data[0:len(live_enemy)]
                         scaler = StandardScaler()
                         ai_input_data = scaler.fit_transform(ai_input_data)
                         self.ai_action = self.AI.predict(ai_input_data)
@@ -850,9 +850,7 @@ class Battle:
                         if self.attack_count == len(self.ai_action):
                             self.operation_player = True
                             self.attack_count = 0
-                    else:
-                        if self.attack_count == len(live_p):
-                            self.attack_count = 0
+                            print(self.player_effect)
                             for n,effect in enumerate(self.player_effect):
                                 if effect["recovery_turn"] != 0:
                                     self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1]
@@ -863,6 +861,9 @@ class Battle:
                                     effect["recovery_turn"] -= 1
                                 if effect["atk_invalid"]:
                                     effect["atk_invalid"] = False
+                    else:
+                        if self.attack_count == len(live_p):
+                            self.attack_count = 0
                         if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                             self.player_animation = False
                             self.vibe_player[int(ai_ac[0])] = {
