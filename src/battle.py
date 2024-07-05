@@ -528,9 +528,6 @@ class Battle:
                                 self.app.chara_data[list(self.app.chara_data.keys())[action["target"]]]["HP"][1] += self.player_effect[action["target"]]["recovery_info"][1]
                         elif action["sm_code"] == "05":
                             self.player_effect[action["target"]]["atk_invalid"] = True
-                        elif action["sm_code"] == "06":
-                            for i in range(len(self.player_effect)):
-                                self.player_effect[i]["atk_invalid"] = True
                         elif action["sm_code"] == "07":
                             self.battle_effect["buff_up"] += sm_info["buff_amount"]
                         self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
@@ -549,9 +546,12 @@ class Battle:
                             self.battle_effect["buff_up"] = 0
                         self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                     self.hp_int(action["target"])
-                elif action["target_team"] == "None":
+                elif action["target_team"] == "none":
                     sm_info = self.magic_codes["skill"][action["sm_code"]]
-                    if action["sm_code"] == "08":
+                    if action["sm_code"] == "06":
+                        for i in range(len(self.player_effect)):
+                            self.player_effect[i]["atk_invalid"] = True
+                    elif action["sm_code"] == "08":
                         if 1 <= ran.randint(1,100) <= 10:
                             random_magic = ran.randint(1,20)
                             if random_magic < 10:
@@ -822,7 +822,7 @@ class Battle:
                         pca = PCA(n_components = 20,whiten = False)
                         pca.fit(ai_input_data)
                         ai_input_data = pca.fit_transform(ai_input_data)
-                        ai_input_data = ai_input_data[0:self.enemy_num]
+                        ai_input_data = ai_input_data[0:len(live_enemy)]
                         scaler = StandardScaler()
                         ai_input_data = scaler.fit_transform(ai_input_data)
                         self.ai_action = self.AI.predict(ai_input_data)
@@ -850,9 +850,7 @@ class Battle:
                         if self.attack_count == len(self.ai_action):
                             self.operation_player = True
                             self.attack_count = 0
-                    else:
-                        if self.attack_count == len(live_p):
-                            self.attack_count = 0
+                            print(self.player_effect)
                             for n,effect in enumerate(self.player_effect):
                                 if effect["recovery_turn"] != 0:
                                     self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1]
@@ -863,6 +861,9 @@ class Battle:
                                     effect["recovery_turn"] -= 1
                                 if effect["atk_invalid"]:
                                     effect["atk_invalid"] = False
+                    else:
+                        if self.attack_count == len(live_p):
+                            self.attack_count = 0
                         if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                             self.player_animation = False
                             self.vibe_player[int(ai_ac[0])] = {
@@ -872,18 +873,19 @@ class Battle:
                             }
                         else:
                             vibe = self.vibe_player[int(ai_ac[0])]
-                            if vibe["move"] == "p":
-                                if vibe["value"] < 2:
-                                    vibe["value"] += 2
+                            if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:
+                                if vibe["move"] == "p":
+                                    if vibe["value"] < 2:
+                                        vibe["value"] += 2
+                                    else:
+                                        vibe["move"] = "m"
+                                        vibe["value"] -= 2
                                 else:
-                                    vibe["move"] = "m"
-                                    vibe["value"] -= 2
-                            else:
-                                if vibe["value"] > -2:
-                                    vibe["value"] -= 2
-                                else:
-                                    vibe["move"] = "p"
-                                    vibe["value"] += 2
+                                    if vibe["value"] > -2:
+                                        vibe["value"] -= 2
+                                    else:
+                                        vibe["move"] = "p"
+                                        vibe["value"] += 2
                             vibe["total"] += 1
                     self.hp_int("none")
 
