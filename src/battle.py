@@ -508,6 +508,7 @@ class Battle:
                             magic_atk = atk * sm_info["atk_amount"] / 100
                             self.enemy_status[action["target"]]["HP"][1] -= magic_atk
                         elif 17 <= int_code <= 18:
+                            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                             if sm_info["buff_type"] == "atk":
                                 self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
                             elif sm_info["buff_type"] == "def":
