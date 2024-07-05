@@ -8,6 +8,7 @@
 * configparser
 * json
 * time
+* random
 * BDFRenderer
 * js
 * pyodide.http
@@ -22,9 +23,10 @@
 - - [x] ニューゲーム処理
 - - [x] コンティニュー処理
 - [x] 詳細設定にアクセス
-- [ ] 設定画面
-- - [ ] キャラクタを選択した際
-- - - [ ] スキル 
+- [x] 設定画面
+- - [x] キャラクタを選択した際
+- - - [x] 魔法 
+- - - [x] スキル
 - - [x] アイテム一覧
 - - [ ] 詳細設定
 - - - [x] 音量調節(0 ~ 7)
@@ -35,7 +37,7 @@
 - [x] セーブ・ロード
 - [ ] 戦闘画面
 - - [ ] たたかう
-- - [x] まほう
+- - [ ] まほう
 - - [ ] どうぐ
 - - [ ] にげる
 - - [x] 敵AI
@@ -48,18 +50,19 @@
 {
   data_number:{
     "player_data":{
-      "time":play_time,  
-      "scene":scene_number, 
+      "time":play_time,
+      "scene":scene_number,
       "x":player_x,
       "y":player_y,
       "chara_data":{
         chara_name:{
-          "post":post_num  
+          "post":post_num
           "Level":Level,
-          "XP":XP,    
-          "HP":[MAX_HP,NOW_HP],     
+          "XP":XP,
+          "HP":[MAX_HP,NOW_HP],
           "MP":[MAX_MP,NOW_MP],
-          "magic_codes":[magic_code,...]   ,
+          "magic_codes":[magic_code,...],
+          "skill_codes":[skill_code,...],
           "atk_ab":atk_ab,
           "def_ab":def_ab,
           "satisfaction":[rate,damage],
@@ -70,14 +73,24 @@
             "armor":equipment_armor_code,
             "leggings":equipment_leggings_code,
             "boots":equipment_boots_code
-          }       
-        },        
+          }
+        },
       },
       "item_codes":{
         item_code:item_num
       },
-      "imp_item_codes":[imp_item_code] 
-    }   
+      "imp_item_codes":[imp_item_code],
+      "equip_codes":{
+        "head":[head_code,...],
+        "armor":[armor_code,...],
+        "leggings":[leggings_code,...],
+        "boots":[boots_code,...],
+        "sword":[sword_code,...],
+        "shield":[shield_code,...],
+        "staff":[staff_code,...],
+        "other":[other_code,...]
+      }
+    }
   }
 }
 ```
@@ -98,6 +111,7 @@
 |MAX_MP       |最大MP          　　　　　　　　　　   |
 |NOW_MP       |今のMP            　　　　　　　　　　 |
 |magic_code   |magic.jsonに記述された魔法コード　　　　|
+|skill_code   |magic.jsonに記述されたスキルコード　　　|
 |item_code    |tools.jsonに記述された道具コード　　　　|
 |imp_item_code|tools.jsonに既出された重要アイテムコード|
 |item_num     |アイテムの所持数         　　　　       |
@@ -111,3 +125,11 @@
 |equipment_armor_code|胴装備                          |
 |equipment_leggings_code|脚装備                       |
 |equipment_boots_code|足装備                          |
+|head_code    |頭装備の装備コード                      |
+|armor_code   |胴装備の装備コード                      |
+|leggings_code|脚装備の装備コード                      |
+|boots_code   |足装備の装備コード                      |
+|sword_code   |剣の装備コード                          |
+|shield_code  |盾の装備コード                          |
+|staff_code   |杖の装備コード                          |
+|other_code   |その他の装備コード                      |

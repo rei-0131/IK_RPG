@@ -1,7 +1,6 @@
 import pyxel
 import json
 import time
-from save import Save
 from save_load import SaveLoad
 from option import Option
 from cloud_data import cloud_data
@@ -348,8 +347,8 @@ class In_Setting:
             if i == self.in_st_finger:
                 pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
             pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-            self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]][0])
-            self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]}")
+            self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+            self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
         pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def imp_draw(self):
@@ -383,14 +382,14 @@ class In_Setting:
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
                         pyxel.rect(71+(115*w),71+(13*h),114,13,1)
-                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v[1]][0],7)
+                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v[1]]["name"],7)
             else:
                 for i,v in enumerate(chara_data[f"{sm}_codes"]):
                     w = i % 2
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
                         pyxel.rect(71+(115*w),71+(13*h),115,13,1)
-                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v][0],7)
+                    self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v]["name"],7)
             self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def equip_draw(self):
@@ -583,12 +582,31 @@ class In_Setting:
         pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
 
         chara_data = self.app.chara_data[list(self.app.chara_data.keys())[self.in_st_finger]]
+        atk = 0
+        def_ = 0
+        atk += chara_data["atk_ab"]
+        def_ += chara_data["def_ab"]
+        isd_ = ["head","armor","leggings","boots","shield"]
+        isa_ = ["sword","staff","other"]
+        for i,v in chara_data["equipments"].items():
+            if i in isd_:
+                if self.tools[i][v][2] == "f":
+                    def_ += self.tools[i][v][3]
+                else:
+                    def_ += chara_data["def_ab"] * (self.tools[i][v][3] / 100)
+            elif i in isa_:
+                if self.tools[i][v][2] == "f":
+                    atk += self.tools[i][v][3]
+                else:
+                    atk += chara_data["atk_ab"] * (self.tools[i][v][3] / 100)
+                    atk *= chara_data["atk_buff"] / 100
+                    def_ *= chara_data["def_buff"] / 100
         self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_st_finger],7)
         self.umplus10.draw_text(150,71,f"Level {chara_data['Level']}     {chara_data['XP']}/XXXX",7)
         self.umplus10.draw_text(71,82,f"HP {chara_data['HP'][1]}/{chara_data['HP'][0]}",7)
         self.umplus10.draw_text(71,93,f"MP {chara_data['MP'][1]}/{chara_data['MP'][0]}",7)
-        self.umplus10.draw_text(71,104,f"ATK {chara_data['atk_ab']}",7)
-        self.umplus10.draw_text(71,115,f"DEF {chara_data['def_ab']}",7)
+        self.umplus10.draw_text(71,104,f"ATK {atk}",7)
+        self.umplus10.draw_text(71,115,f"DEF {def_}",7)
         self.umplus10.draw_text(71,126,f"会心率 {chara_data['satisfaction'][0]}% 会心ダメ{chara_data['satisfaction'][1]}%",7)
 
     def sort_draw(self):

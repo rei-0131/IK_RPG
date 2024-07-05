@@ -2,7 +2,6 @@ import pyxel
 import configparser
 import json
 import time
-import random
 from BDFRenderer import BDFRenderer
 from question import Question
 from title import Title
@@ -21,8 +20,8 @@ is_test = True
 cloud = cloud_data(is_test=is_test)
 local = cloud.import_()
 
-with open("src/assets/init_chara_data.json",encoding="utf-8") as f:
-    chara_data_tmp = json.load(f)
+with open("src/assets/init_data.json",encoding="utf-8") as f:
+    init_data = json.load(f)
 
 
 if local:
@@ -155,21 +154,10 @@ class App:
         self.from_load = False
         self.savedata = None
         self.loaddata = None
-        self.chara_data = chara_data_tmp
-        self.item_codes = {
-            "001": 3,
-            "004": 4
-        }
-        self.equip_codes = {
-            "head":["001","002","003","004","001","002","003","004","001","002","003"],
-            "armor":["001","002","003","004"],
-            "leggings":["001","002","003","004"],
-            "boots":["001","002","003","004"],
-            "sword":["001","002","003","004"],
-            "staff":["001","002","003","004"],
-            "other":["001","002"]
-        }
-        self.imp_item_codes = ["001"]
+        self.chara_data = init_data["chara_data"]
+        self.item_codes = init_data["item_codes"]
+        self.equip_codes = init_data["equip_codes"]
+        self.imp_item_codes = init_data["imp_item_codes"]
         self.question = Question(self.init_x,self.init_y,umplus10)
         self.player = Player(self,self.init_x,self.init_y,self.question)
         self.title_s = Title(self,self.init_x,self.init_y)
@@ -257,7 +245,7 @@ class App:
                 self.battle.clean()
                 #以下、敵のランダムな数、敵の名称を決定するコード
                 # enemy_num = random.randint(1,3)
-                self.battle.set_enemy(3,[1,1,1])
+                self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
                 self.now_scene = 5
         if self.now_scene == 5:
             self.battle.update()
