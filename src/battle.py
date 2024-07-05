@@ -445,16 +445,6 @@ class Battle:
         return atk,def_
 
     def target_attack_update(self):
-        for n,effect in enumerate(self.player_effect):
-            if effect["recovery_turn"] != 0:
-                self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1]
-                if effect["recovery_info"][0] == "p":
-                    self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][0] * (effect["recovery_info"][1] / 100)
-                else:
-                    self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += effect["recovery_info"][1]
-                effect["recovery_turn"] -= 1
-            if effect["atk_invalid"]:
-                effect["atk_invalid"] = False
         try:
             action = self.player_op[self.attack_count]
             if action["target"] != "None":
@@ -509,9 +499,9 @@ class Battle:
                             self.enemy_status[action["target"]]["HP"][1] -= magic_atk
                         elif 17 <= int_code <= 18:
                             sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                            if sm_info["buff_type"] == "atk":
+                            if sm_info["dbuff_type"] == "atk":
                                 self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
-                            elif sm_info["buff_type"] == "def":
+                            elif sm_info["dbuff_type"] == "def":
                                 self.enemy_effect[action["target"]]["def_dbuff"] += sm_info["dbuff_amount"]
                         self.app.chara_data[list(self.app.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                     if self.enemy_status[action["target"]]["HP"][1] < 0:
@@ -863,6 +853,16 @@ class Battle:
                     else:
                         if self.attack_count == len(live_p):
                             self.attack_count = 0
+                            for n,effect in enumerate(self.player_effect):
+                                if effect["recovery_turn"] != 0:
+                                    self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1]
+                                    if effect["recovery_info"][0] == "p":
+                                        self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][0] * (effect["recovery_info"][1] / 100)
+                                    else:
+                                        self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += effect["recovery_info"][1]
+                                    effect["recovery_turn"] -= 1
+                                if effect["atk_invalid"]:
+                                    effect["atk_invalid"] = False
                         if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                             self.player_animation = False
                             self.vibe_player[int(ai_ac[0])] = {
