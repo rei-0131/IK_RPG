@@ -445,16 +445,6 @@ class Battle:
         return atk,def_
 
     def target_attack_update(self):
-        for n,effect in enumerate(self.player_effect):
-            if effect["recovery_turn"] != 0:
-                self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1]
-                if effect["recovery_info"][0] == "p":
-                    self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][0] * (effect["recovery_info"][1] / 100)
-                else:
-                    self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += effect["recovery_info"][1]
-                effect["recovery_turn"] -= 1
-            if effect["atk_invalid"]:
-                effect["atk_invalid"] = False
         try:
             action = self.player_op[self.attack_count]
             if action["target"] != "None":
@@ -863,6 +853,16 @@ class Battle:
                     else:
                         if self.attack_count == len(live_p):
                             self.attack_count = 0
+                            for n,effect in enumerate(self.player_effect):
+                                if effect["recovery_turn"] != 0:
+                                    self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1]
+                                    if effect["recovery_info"][0] == "p":
+                                        self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][0] * (effect["recovery_info"][1] / 100)
+                                    else:
+                                        self.app.chara_data[list(self.app.chara_data.keys())[n]]["HP"][1] += effect["recovery_info"][1]
+                                    effect["recovery_turn"] -= 1
+                                if effect["atk_invalid"]:
+                                    effect["atk_invalid"] = False
                         if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                             self.player_animation = False
                             self.vibe_player[int(ai_ac[0])] = {
