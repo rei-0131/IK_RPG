@@ -152,7 +152,7 @@
             "content":"dbf",
             "dbuff_type":"def",
             "dbuff_amount":15,
-            "info":"任意の敵の防御力を15%アップ"
+            "info":"任意の敵の防御力を15%ダウン"
         },
         "18":{
             "attribute":"デバフ",
@@ -161,7 +161,7 @@
             "content":"dbf",
             "dbuff_type":"atk",
             "dbuff_amount":15,
-            "info":"任意の敵の攻撃力を15%アップ"
+            "info":"任意の敵の攻撃力を15%ダウン"
         },
         "19":{
             "attribute":"バフ",
@@ -228,13 +228,13 @@
         },
         "06":{
             "name":"オールブロック",
-            "content":"tank",
+            "content":"all_tank",
             "req_MP":60,
             "info":"すべての攻撃を無効化する"
         },
         "07":{
             "name":"バフアップ",
-            "content":"buff",
+            "content":"buff_up",
             "req_MP":30,
             "buff_amount":3,
             "info":"（ソウル、パワーのステータスアップ量増加）＋３%"
