@@ -583,6 +583,37 @@ class Battle:
                             #魔法発動処理
                             #
                             #
+                            live_e = []
+                            for len_,v in enumerate(self.enemy_status):
+                                if  v["HP"][1] > 0:
+                                    live_e.append(len_)
+                            live_p = []
+                            for len_,i in enumerate(self.app.chara_data):
+                                if self.app.chara_data[i]["HP"][1] > 0:
+                                    live_p.append(len_)
+                            ran_p = live_p[ran.randint(0,len(live_p) - 1)]
+                            ran_e = live_e[ran.randint(0,len(live_e) - 1)]
+                            int_code = int(random_magic)
+                            sm_info = self.magic_codes["magic"][random_magic]
+                            if 1 <= int_code <= 15:
+                                magic_atk = atk * sm_info["atk_amount"] / 100
+                                self.enemy_status[ran_e]["HP"][1] -= magic_atk
+                            elif int_code == 16:
+                                if sm_info["recovery_amount"][0] == "p":
+                                    self.app.chara_data[list(self.app.chara_data.keys())[ran_p]]["HP"][1] += self.app.chara_data[list(self.app.chara_data.keys())[ran_p]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
+                                else:
+                                    self.app.chara_data[list(self.app.chara_data.keys())[ran_p]]["HP"][1] += sm_info["recovery_amount"][1]
+                            elif 17 <= int_code <= 18:
+                                if sm_info["dbuff_type"] == "atk":
+                                    self.enemy_effect[ran_e]["atk_dbuff"] += sm_info["dbuff_amount"]
+                                elif sm_info["dbuff_type"] == "def":
+                                    self.enemy_effect[ran_e]["def_dbuff"] += sm_info["dbuff_amount"]
+                            elif 19 <= int_code <= 20:
+                                if sm_info["buff_type"] == "atk":
+                                    self.player_effect[ran_p]["basic_atk_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
+                                elif sm_info["buff_type"] == "def":
+                                    self.player_effect[ran_p]["basic_def_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
+                                self.battle_effect["buff_up"] = 0
                             self.player_op[self.attack_count]["effect_invoke"] = True
                             self.player_op[self.attack_count]["effect_name"] = random_magic
                     elif action["sm_code"] == "09":
