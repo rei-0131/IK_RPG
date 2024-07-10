@@ -578,11 +578,6 @@ class Battle:
                                 random_magic = f"0{random_magic}"
                             else:
                                 random_magic = str(random_magic)
-                            #攻撃魔法だけなのかバフ、デバフ魔法も含むのか
-                            #含むのなら対象をどうやって選出するのか
-                            #魔法発動処理
-                            #
-                            #
                             live_e = []
                             for len_,v in enumerate(self.enemy_status):
                                 if  v["HP"][1] > 0:
@@ -732,9 +727,43 @@ class Battle:
                     if self.finger_pos3 != 0:
                         self.finger_pos3 -= 1
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                use_item = self.tools["basic"][list(self.battle_item.items())[self.item_pos + self.finger_pos3][0]]
-                #アイテムの効果を発動
-                print(use_item)
+                self.select_num3 = self.item_pos + self.finger_pos3
+        else:
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                if self.finger_pos5 != 0:
+                    self.finger_pos5 -= 18
+            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if self.finger_pos5 != (len(self.app.chara_data.items()) - 1) * 18:
+                    self.finger_pos5 += 18
+            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                self.finger_pos5 = 0
+                self.select_num3 = -1
+            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                use_item = self.tools["basic"][list(self.battle_item.items())[self.select_num3][0]]
+                use_player = list(self.app.chara_data.keys())[int(self.finger_pos5 // 18)]
+                if (use_item["type"] == "revival" and self.app.chara_data[use_player]["HP"][1] <= 0) or use_item["type"] != "revival":
+                    if use_item["type"] == "HP":
+                        size = ran.randint(use_item["effect"][0],use_item["effect"][1])
+                        self.app.chara_data[use_player]["HP"][1] += size
+                        if self.app.chara_data[use_player]["HP"][1] > self.app.chara_data[use_player]["HP"][0]:
+                            self.app.chara_data[use_player]["HP"][1] = self.app.chara_data[use_player]["HP"][0]
+                    elif use_item["type"] == "MP":
+                        size = ran.randint(use_item["effect"][0],use_item["effect"][1])
+                        self.app.chara_data[use_player]["MP"][1] += size
+                        if self.app.chara_data[use_player]["MP"][1] > self.app.chara_data[use_player]["MP"][0]:
+                            self.app.chara_data[use_player]["MP"][1] = self.app.chara_data[use_player]["MP"][0]
+                    elif use_item["type"] == "revival":
+                        self.app.chara_data[use_player]["HP"][1] = self.app.chara_data[use_player]["HP"][0] * (use_item["effect"] / 100)
+                    self.battle_item[list(self.battle_item.keys())[self.select_num3]]["value"] -= 1
+                    if self.app.item_codes[list(self.battle_item.keys())[self.select_num3]]["value"] == 0:
+                        self.app.item_codes.pop(list(self.battle_item.keys())[self.select_num3])
+                        self.battle_item.pop(list(self.battle_item.keys())[self.select_num3])
+                    self.finger_pos5 = 0
+                    self.finger_pos3 = 0
+                    self.select_num3 = -1
+                    self.select_num1 = -1
+                    self.finger_pos1 = 0
+                    print(use_item)
 
     def update(self):
         if self.in_battle:
@@ -998,6 +1027,9 @@ class Battle:
     def item_draw(self):
         pyxel.rect(110,self.init_y//2+10,185,75,0)
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
+        pyxel.rect(25,self.init_y//2-20,270,25,0)
+        pyxel.rectb(25,self.init_y//2-20,270,25,7)
+        self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
         self.item_num = len(self.battle_item.items())
         if self.item_num >= self.item_pos + 11:
@@ -1008,6 +1040,7 @@ class Battle:
                 if i == self.finger_pos3:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
                 self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
         else:
             self.dis_num = self.item_num - self.item_pos
             for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
@@ -1016,6 +1049,7 @@ class Battle:
                 if i == self.finger_pos3:
                     pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
                 self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
 
 
     def enemy_target_select_draw(self):
@@ -1034,7 +1068,7 @@ class Battle:
 
         for i,data in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data)):
             height = 18*(i - 1)
-            if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2:
+            if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2 and self.select_num1 != 3:
                 if data[0] in live_p:
                     self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],7)
                 else:
@@ -1198,29 +1232,37 @@ class Battle:
                                     elif self.target_team == "none":
                                         self.none_target_select_draw()
                         elif self.select_num1 == 3:
-                            self.item_draw()
+                            if self.select_num3 == -1:
+                                self.item_draw()
+                            else:
+                                self.self_target_select_draw()
                         elif self.select_num1 == 4:
-                            pass
+                            self.select_num1 = -1
             else:
                 if self.play_effect_info:
                     play_ef = []
                     for i in self.player_op:
                         if "effect_invoke" in i:
                             if i["effect_invoke"]:
-                                play_ef.append(i["effect_name"])
+                                play_ef.append([i["effect_name"],i["sm_code"],i["player_pos"]])
                             else:
-                                play_ef.append("none")
+                                play_ef.append(["none",i["sm_code"],i["player_pos"]])
                     if play_ef != []:
                         pyxel.rect(50,self.init_y//2+20,200,60,0)
                         pyxel.rectb(50,self.init_y//2+20,200,60,7)
                         for i,n in enumerate(play_ef):
-                            if n == "atk_buff":
-                                self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"攻撃力が3%アップした",7)
-                            elif n == "none":
-                                self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"何も起こらなかった",7)
+                            p_name = list(self.app.chara_data.keys())[n[2]]
+                            magic_name = self.magic_codes["skill"][n[1]]["name"]
+                            if n[0] == "atk_buff":
+                                self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いて攻撃力が3%アップした",7)
+                            elif n[0] == "none":
+                                if magic_name == "口笛":
+                                    self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いたが何も起こらなかった",7)
+                                else:
+                                    self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が遊んだが何も起こらなかった",7)
                             else:
-                                magic_info = self.magic_codes["magic"][n]
-                                self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{magic_info['name']}を発動した",7)
+                                magic_info = self.magic_codes["magic"][n[0]]
+                                self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が遊んで{magic_info['name']}を発動した",7)
                     else:
                         self.play_effect_info = False
                         self.player_op = []
