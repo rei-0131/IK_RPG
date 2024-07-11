@@ -27,7 +27,7 @@
             "question":{
                 "exist":false
             },
-            "item":false,
+            "item":["basic","001",10],
             "battle":false,
             "to":"None"
         },
@@ -37,7 +37,7 @@
             "question":{
                 "exist":false
             },
-            "item":false,
+            "item":["important","005"],
             "battle":false,
             "to":"None"
         }
