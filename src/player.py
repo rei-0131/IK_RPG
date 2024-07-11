@@ -13,10 +13,10 @@ class Player:
     question : Any
         Questionクラスのインスタンス
     """
-    def __init__(self,app,x,y,question):
+    def __init__(self,app,x,y):
         self.app = app
         self.x = 20
-        self.y = y-100
+        self.y = y - 100
         self.dx = 0
         self.dy = 0
         self.init_x = x
@@ -27,16 +27,15 @@ class Player:
         self.walk_img = 0
         self.walk_num = 0
         self.question_mark = 0
-        self.question = question
         self.is_word = False
         self.map = Map()
         self.walk_pos = [0,0,0,0,0,16,16,16,16,16]
 
-    def update(self,is_question,is_word):
+    def update(self):
         self.dx = 0
         self.dy = 0
         key = ""
-        if not is_question and not is_word:
+        if not self.app.in_word:
             if (pyxel.btn(pyxel.KEY_RIGHT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 if self.x < 286:
                     self.dx += self.walk_speed
