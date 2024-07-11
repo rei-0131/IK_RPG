@@ -68,6 +68,7 @@ class In_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.in_st_finger = 0
+        self.in_st_pos = 0
         self.in_eqse_finger = 0
         self.in_eqse_pos = 0
         self.in_eqst_finger = 0
@@ -113,24 +114,40 @@ class In_Setting:
         len_ = len(self.app.item_codes.items())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+            self.in_st_finger = 0
+            self.in_st_pos = 0
+        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if self.in_st_finger == 0:
+                self.in_st_pos -= 1
+            elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
-            self.in_st_finger += 1
+        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if self.in_st_finger == 3:
+                self.in_st_pos += 1
+            else:
+                self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
             #アイテムを使用するときの処理など
-            print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger]][0])
+            print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]][0])
 
     def imp_update(self):
         len_ = len(self.app.imp_item_codes)
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+            self.in_st_finger = 0
+            self.in_st_pos = 0
+        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if self.in_st_finger == 0:
+                self.in_st_pos -= 1
+            elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
-            self.in_st_finger += 1
+        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if self.in_st_finger == 3:
+                self.in_st_pos += 1
+            else:
+                self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-            print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger]][0])
+            print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger + self.in_st_pos]][0])
 
     def sm_update(self,sm):
         if not self.equip_men:
@@ -343,21 +360,39 @@ class In_Setting:
             self.enter_pos = -1
 
     def item_draw(self):
-        for i,kv in enumerate(self.app.item_codes.items()):
-            if i == self.in_st_finger:
-                pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-            pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-            self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
-            self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
-        pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+        if len(self.app.item_codes) > 4:
+            for i,kv in enumerate(list(self.app.item_codes.items())[self.in_st_pos:self.in_st_pos + 4]):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+
+        else:
+            for i,kv in enumerate(self.app.item_codes.items()):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def imp_draw(self):
-        for i,v in enumerate(self.app.imp_item_codes):
-            if i == self.in_st_finger:
-                pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-            pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-            self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
-        pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+        if len(self.app.imp_item_codes) > 4:
+            for i,v in enumerate(self.app.imp_item_codes[self.in_st_pos:self.in_st_pos + 4]):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
+            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+        else:
+            for i,v in enumerate(self.app.imp_item_codes):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
+            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def sm_draw(self,sm):
         pyxel.rect(71,5,self.init_x-70,self.init_y-5,0)
