@@ -183,7 +183,7 @@
         },
         "007":{
             "value":8,
-            "battle":"false"
+            "battle":"true"
         },
         "004":{
             "value":4,

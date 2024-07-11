@@ -1,6 +1,45 @@
 {
-    "words":{"-1":["",""],"0":["こんにちは 初めまして XX","AIUEO aiueo あいうえおquestion"],"1":["OEUIA oeuia","sdfsd","werwe"]},
-
-    "questions":{"-1":["",""],"0":["Yes","はい"]},
-    "answers":{"-1":["",""],"0":["a","i"]}
-}
+    "words":{
+        "01":{
+            "speaker":"speaker",
+            "word":"word",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"02"
+        },
+        "02":{
+            "speaker":"speaker2",
+            "word":["word2","あいうえおかきくけこ"],
+            "question":{
+                "exist":true,
+                "questions":["はい","いいえ"]
+            },
+            "item":false,
+            "battle":false,
+            "to":["03","04"]
+        },
+        "03":{
+            "speaker":"speaker",
+            "word":"yes",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"None"
+        },
+        "04":{
+            "speaker":"speaker",
+            "word":"no",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"None"
+        }
+    }
+} 

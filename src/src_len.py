@@ -16,7 +16,7 @@ filenames = [
     'src/Map.py',
     'src/option.py',
     'src/player.py',
-    'src/question.py',
+    'src/words.py',
     'src/save_load.py',
     'src/save.py',
     'src/save.py',

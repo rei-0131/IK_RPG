@@ -631,7 +631,7 @@ class Battle:
                             if self.app.chara_data[action["target"]]["MP"][1] > self.app.chara_data[action["target"]]["MP"][0]:
                                 self.app.chara_data[action["target"]]["MP"][1] = self.app.chara_data[action["target"]]["MP"][0]
                         elif action["sm_code"]["type"] == "revival":
-                            self.app.chara_data[action["target"]]["HP"][1] = self.app.chara_data[action["target"]]["HP"][0] * (action["sm_code"]["effect"] / 100)
+                            self.app.chara_data[action["target"]]["HP"][1] = int(self.app.chara_data[action["target"]]["HP"][0] * (action["sm_code"]["effect"] / 100))
                         self.battle_item[list(self.battle_item.keys())[self.select_num3]]["value"] -= 1
                         if self.app.item_codes[list(self.battle_item.keys())[self.select_num3]]["value"] == 0:
                             self.app.item_codes.pop(list(self.battle_item.keys())[self.select_num3])
@@ -1282,21 +1282,21 @@ class Battle:
                             else:
                                 play_ef.append(["none",i["sm_code"],i["player_pos"]])
                     if play_ef != []:
-                        pyxel.rect(50,self.init_y//2+20,200,60,0)
-                        pyxel.rectb(50,self.init_y//2+20,200,60,7)
+                        pyxel.rect(35,self.init_y//2+20,230,60,0)
+                        pyxel.rectb(35,self.init_y//2+20,230,60,7)
                         for i,n in enumerate(play_ef):
                             p_name = list(self.app.chara_data.keys())[n[2]]
                             magic_name = self.magic_codes["skill"][n[1]]["name"]
                             if n[0] == "atk_buff":
-                                self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いて攻撃力が3%アップした",7)
+                                self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いて攻撃力が3%アップした",7)
                             elif n[0] == "none":
                                 if magic_name == "口笛":
-                                    self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いたが何も起こらなかった",7)
+                                    self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いたが何も起こらなかった",7)
                                 else:
-                                    self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が遊んだが何も起こらなかった",7)
+                                    self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が遊んだが何も起こらなかった",7)
                             else:
                                 magic_info = self.magic_codes["magic"][n[0]]
-                                self.umplus10.draw_text(51,self.init_y//2+20+(i*15),f"{p_name}が遊んで{magic_info['name']}を発動した",7)
+                                self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が遊んで{magic_info['name']}を発動した",7)
                     else:
                         self.play_effect_info = False
                         self.player_op = []
