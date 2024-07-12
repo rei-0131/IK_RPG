@@ -83,7 +83,6 @@ class Words:
             for i in self.question["questions"]:
                 if max_str < len(i) * 10:
                     max_str = len(i) * 10
-            #最大文字数に枠を合わせる
             pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
             pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
             pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
