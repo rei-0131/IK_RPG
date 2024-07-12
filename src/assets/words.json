@@ -6,18 +6,14 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"02"
         },
         "02":{
             "speaker":"桃井",
-            "word":"えーみなさん、とりあえず席についてもらってもよろしいでしょうか？",
+            "word":["えーみなさん、","とりあえず席についてもらってもよろしいでしょうか？"],
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"03"
         },
         "03":{
@@ -26,8 +22,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"04"
         },
         "04":{
@@ -36,8 +30,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"05"
         },
         "05":{
@@ -46,8 +38,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"06"
         },
         "06":{
@@ -56,8 +46,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"07"
         },
         "07":{
@@ -66,8 +54,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"08"
         },
         "08":{
@@ -76,8 +62,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"09"
         },
         "09":{
@@ -86,8 +70,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"10"
         },
         "10":{
@@ -96,8 +78,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"11"
         },
         "11":{
@@ -107,8 +87,6 @@
                 "exist":true,
                 "questions":["初めまして、よろしくお願いします"]
             },
-            "item":false,
-            "battle":false,
             "to":"12"
         },
         "12":{
@@ -117,8 +95,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"13"
         },
         "13":{
@@ -127,8 +103,6 @@
             "question":{
                 "exist":false
             },
-            "item":false,
-            "battle":false,
             "to":"14"
         },
         "14":{
@@ -138,8 +112,6 @@
                 "exist":true,
                 "questions":["はい、わかりました"]
             },
-            "item":false,
-            "battle":false,
             "to":"15"
         }
     }

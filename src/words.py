@@ -35,7 +35,7 @@ class Words:
                     elif type(self.word["to"]) == str:
                         self.msg_id = self.word["to"]
                 else:
-                    if self.word["battle"] != False:
+                    if "battle" in self.word:
                         self.app.in_battle = True
                     self.disp_id = self.msg_id
         else:
@@ -43,7 +43,7 @@ class Words:
                 if self.word["to"] != "None":
                     self.msg_id = self.word["to"]
                 else:
-                    if self.word["battle"] != False:
+                    if "battle" in self.word:
                         self.app.in_battle = True
                     self.disp_id = self.msg_id
 
@@ -65,7 +65,7 @@ class Words:
                 self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)
         if self.word["to"] != "None":
             pyxel.tri(self.init_x/2-5,self.init_y-12,self.init_x/2+5,self.init_y-12,self.init_x/2,self.init_y-8,7)
-        if self.word["item"] != False:
+        if "item" in self.word:
             if self.word["item"][0] == "basic":
                 if self.word["item"][1] in self.app.item_codes:
                     self.app.item_codes[self.word["item"][1]]["value"] += self.word["item"][2]
@@ -81,11 +81,11 @@ class Words:
             que_height = len(self.question["questions"]) * 11
             max_str = 0
             for i in self.question["questions"]:
-                if max_str < len(i) * 11:
-                    max_str = len(i) * 11
+                if max_str < len(i) * 10:
+                    max_str = len(i) * 10
             #最大文字数に枠を合わせる
-            pyxel.blt(self.init_x-127,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
-            pyxel.rect(self.init_x-110,self.init_y-61-que_height,105,que_height+2,0)
-            pyxel.rectb(self.init_x-110,self.init_y-61-que_height,105,que_height+2,7)
+            pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
+            pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
+            pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
             for i,h in zip(self.question["questions"],range(0,len(self.question["questions"])*11,11)):
-                self.umplus10.draw_text(self.init_x-108,self.init_y-98+h+(39-que_height),i,7)
+                self.umplus10.draw_text(self.init_x-max_str + 2,self.init_y-98+h+(39-que_height),i,7)
