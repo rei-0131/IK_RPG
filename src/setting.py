@@ -92,18 +92,26 @@ class In_Setting:
         self.chara_keys = list(self.app.chara_data.keys())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+            self.in_st_finger = 0
+            self.in_st_pos = 0
+        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if self.in_st_finger == 0:
+                self.in_st_pos -= 1
+            elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
-            self.in_st_finger += 1
+        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if self.in_st_finger == 3:
+                self.in_st_pos += 1
+            else:
+                self.in_st_finger += 1
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if not self.move_fi:
-                self.move_to = self.in_st_finger
+                self.move_to = self.in_st_finger + self.in_st_pos
                 self.move_fi = True
             else:
                 chara_data_be = {}
-                tmp = self.chara_keys[self.in_st_finger]
-                self.chara_keys[self.in_st_finger] = self.chara_keys[self.move_to]
+                tmp = self.chara_keys[self.in_st_finger + self.in_st_pos]
+                self.chara_keys[self.in_st_finger + self.in_st_pos] = self.chara_keys[self.move_to]
                 self.chara_keys[self.move_to] = tmp
                 for i in self.chara_keys:
                     chara_data_be[i] = self.app.chara_data[i]
@@ -645,12 +653,20 @@ class In_Setting:
         self.umplus10.draw_text(71,126,f"会心率 {chara_data['satisfaction'][0]}% 会心ダメ{chara_data['satisfaction'][1]}%",7)
 
     def sort_draw(self):
-        for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-            if i == self.in_st_finger:
-                pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-            pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-            self.umplus10.draw_text(71,int(6+(49*i)),t,7)
-        pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+        if len(self.app.chara_data.items()) > 4:
+            for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                self.umplus10.draw_text(71,int(6+(49*i)),t,7)
+            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+        else:
+            for i,t in enumerate(self.app.chara_data):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                self.umplus10.draw_text(71,int(6+(49*i)),t,7)
+            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def draw(self):
         pyxel.cls(0)

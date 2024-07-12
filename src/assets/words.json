@@ -1,8 +1,8 @@
 {
     "words":{
         "01":{
-            "speaker":"speaker",
-            "word":"word",
+            "speaker":"桃井",
+            "word":"では、僕が呼んだら教室に入ってきてもらっていいですか？",
             "question":{
                 "exist":false
             },
@@ -11,35 +11,136 @@
             "to":"02"
         },
         "02":{
-            "speaker":"speaker2",
-            "word":["word2","あいうえおかきくけこ"],
+            "speaker":"桃井",
+            "word":"えーみなさん、とりあえず席についてもらってもよろしいでしょうか？",
             "question":{
-                "exist":true,
-                "questions":["はい","いいえ"]
+                "exist":false
             },
             "item":false,
             "battle":false,
-            "to":["03","04"]
+            "to":"03"
         },
         "03":{
-            "speaker":"speaker",
-            "word":"yes",
+            "speaker":"桃井",
+            "word":"ありがとうございます。ではですね、本日の連絡なんですが…",
             "question":{
                 "exist":false
             },
-            "item":["basic","001",10],
+            "item":false,
             "battle":false,
-            "to":"None"
+            "to":"04"
         },
         "04":{
-            "speaker":"speaker",
-            "word":"no",
+            "speaker":"桃井",
+            "word":"なんとですね！このクラスに！なんと！",
             "question":{
                 "exist":false
             },
-            "item":["important","005"],
+            "item":false,
             "battle":false,
-            "to":"None"
+            "to":"05"
+        },
+        "05":{
+            "speaker":"桃井",
+            "word":"転校生が来ます！！！！！",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"06"
+        },
+        "06":{
+            "speaker":"生徒1",
+            "word":"おーまじか",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"07"
+        },
+        "07":{
+            "speaker":"生徒2",
+            "word":"こんな時期に転校か",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"08"
+        },
+        "08":{
+            "speaker":"生徒3",
+            "word":"(そんなことよりおうどん食べたい)",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"09"
+        },
+        "09":{
+            "speaker":"桃井",
+            "word":"はい、はい、そんなわけでね",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"10"
+        },
+        "10":{
+            "speaker":"桃井",
+            "word":"早速ですが！呼びたいと思います！",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"11"
+        },
+        "11":{
+            "speaker":"桃井",
+            "word":"どうぞ！入ってきてください！",
+            "question":{
+                "exist":true,
+                "questions":["初めまして、よろしくお願いします"]
+            },
+            "item":false,
+            "battle":false,
+            "to":"12"
+        },
+        "12":{
+            "speaker":"バカ生徒",
+            "word":"んだよ男かよつまんねー",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"13"
+        },
+        "13":{
+            "speaker":"桃井",
+            "word":"まぁまぁ、そんなこと言わずにね、仲良くしていきましょう",
+            "question":{
+                "exist":false
+            },
+            "item":false,
+            "battle":false,
+            "to":"14"
+        },
+        "14":{
+            "speaker":"桃井",
+            "word":"では席ですが、空いている所があるのでそこにお願いします",
+            "question":{
+                "exist":true,
+                "questions":["はい、わかりました"]
+            },
+            "item":false,
+            "battle":false,
+            "to":"15"
         }
     }
-} 
+}
