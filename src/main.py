@@ -102,6 +102,7 @@ class App:
         self.from_load = False
         self.savedata = None
         self.loaddata = None
+        self.in_battle = False
         self.chara_data = init_data["chara_data"]
         self.item_codes = init_data["item_codes"]
         self.equip_codes = init_data["equip_codes"]
@@ -170,6 +171,10 @@ class App:
             self.player.update()
             if self.in_word:
                 self.msg_id, self.disp_id = self.words.update()
+            if self.in_battle:
+                self.battle.clean()
+                self.battle.set_enemy(words["words"][self.disp_id]["battle"][0],words["words"][self.disp_id]["battle"][1])
+                self.now_scene = 5
         elif self.now_scene == OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()
         elif self.now_scene == IN_SETTING_SCENE:

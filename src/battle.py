@@ -74,6 +74,7 @@ class Battle:
         self.turn = 0
         self.ai_turn = -1
         self.play_effect_info = True
+        self.chara_data = {}
         with open("assets/tools.json","r",encoding="utf-8") as f:
             self.tools = json.load(f)
         with open("assets/magic.json","r",encoding="utf-8") as f:
@@ -126,6 +127,14 @@ class Battle:
         self.turn = 0
         self.ai_turn = -1
         self.play_effect_info = True
+        self.chara_data = {}
+        if len(self.app.chara_data.items()) > 4:
+            for k,v in self.app.chara_data.items():
+                self.chara_data[k] = v
+                if len(self.chara_data) == 4:
+                    break
+        else:
+            self.chara_data = self.app.chara_data
         self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"] == "true"}
         for _ in range(len(self.app.chara_data)):
             self.player_effect.append({
@@ -283,7 +292,7 @@ class Battle:
 
                 self.player_op_over()
                 live_num = 0
-                for i in self.app.chara_data:
+                for i in self.chara_data:
                     if self.app.chara_data[i]["HP"][1] != 0:
                         live_num += 1
                 if len(self.player_op) != live_num:
@@ -320,7 +329,7 @@ class Battle:
 
                     self.player_op_over()
                     live_num = 0
-                    for i in self.app.chara_data:
+                    for i in self.chara_data:
                         if self.app.chara_data[i]["HP"][1] != 0:
                             live_num += 1
                     if len(self.player_op) != live_num:
@@ -343,7 +352,7 @@ class Battle:
             self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
         self.player_op_over()
         live_num = 0
-        for i in self.app.chara_data:
+        for i in self.chara_data:
             if self.app.chara_data[i]["HP"][1] != 0:
                 live_num += 1
         if len(self.player_op) != live_num:
@@ -584,7 +593,7 @@ class Battle:
                                     if  v["HP"][1] > 0:
                                         live_e.append(len_)
                                 live_p = []
-                                for len_,i in enumerate(self.app.chara_data):
+                                for len_,i in enumerate(self.chara_data):
                                     if self.app.chara_data[i]["HP"][1] > 0:
                                         live_p.append(len_)
                                 ran_p = live_p[ran.randint(0,len(live_p) - 1)]
@@ -832,8 +841,8 @@ class Battle:
                                     self.select_num2 = -1
                     else:
                         live_num = 0
-                        for i in self.app.chara_data:
-                            if self.app.chara_data[i]["HP"][1] != 0:
+                        for i in self.chara_data:
+                            if self.app.chara_data[i]["HP"][1] > 0:
                                 live_num += 1
                         if len(self.player_op) == live_num:
                             self.play_effect_info = True
@@ -885,13 +894,13 @@ class Battle:
                         if self.enemy_status[i]["HP"][1] > 0:
                             live_enemy.append(i)
                     live_p = []
-                    for len_,i in enumerate(self.app.chara_data):
+                    for len_,i in enumerate(self.chara_data):
                         if self.app.chara_data[i]["HP"][1] > 0:
                             live_p.append(len_)
                     if len(live_enemy) != 0:
                         #以下敵AIの行動をプレイヤーに適用
                         live_p = []
-                        for len_,i in enumerate(self.app.chara_data):
+                        for len_,i in enumerate(self.chara_data):
                             if self.app.chara_data[i]["HP"][1] > 0:
                                 live_p.append(len_)
                         if self.ai_turn != self.turn:
@@ -1080,7 +1089,7 @@ class Battle:
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
         live_num = 0
         live_p = []
-        for len_,i in enumerate(self.app.chara_data):
+        for len_,i in enumerate(self.chara_data):
             if self.app.chara_data[i]["HP"][1] > 0:
                 live_num += 1
                 live_p.append(len_)
@@ -1129,7 +1138,7 @@ class Battle:
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
         live_num = 0
         live_p = []
-        for len_,i in enumerate(self.app.chara_data):
+        for len_,i in enumerate(self.chara_data):
             if self.app.chara_data[i]["HP"][1] > 0:
                 live_num += 1
                 live_p.append(len_)
@@ -1144,7 +1153,7 @@ class Battle:
             self.win = "enemy"
             self.in_battle = False
 
-        for i,data,ch_i in zip(range(1,1+len(self.app.chara_data.items())),enumerate(self.app.chara_data),range(len(self.app.chara_data.keys()))):
+        for i,data,ch_i in zip(range(1,1+len(self.chara_data.items())),enumerate(self.chara_data),range(len(self.chara_data.keys()))):
             height = 18*(i - 1)
             op_player = False
             for i in self.player_op:
