@@ -508,6 +508,8 @@ class Battle:
                         break
             if action["target"] != -1:
                 if action["sm"] != "item":
+                    print(self.player_op)
+                    print(self.player_effect)
                     if action["sm_code"] != "None":
                         int_code = int(action["sm_code"])
                     if action["target_team"] == "enemy":
@@ -524,7 +526,7 @@ class Battle:
                                 self.player_effect[action["player_pos"]]["02_use"] = False
                             self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                         elif action["sm"] == "magic":
-                            if 1 <= int_code <= 15:
+                            if 1 <= int_code <= 15 or int_code == 21:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 magic_atk = atk * sm_info["atk_amount"] / 100
                                 self.enemy_status[action["target"]]["HP"][1] -= magic_atk
@@ -537,10 +539,10 @@ class Battle:
                             self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                         if self.enemy_status[action["target"]]["HP"][1] < 0:
                             self.enemy_status[action["target"]]["HP"][1] = 0
-                        self.enemy_effect[action["player_pos"]]["atk_buff"] = 0
-                        self.enemy_effect[action["player_pos"]]["def_buff"] = 0
-                        self.enemy_effect[action["player_pos"]]["basic_atk_buff"] = 0
-                        self.enemy_effect[action["player_pos"]]["basic_def_buff"] = 0
+                        self.player_effect[action["player_pos"]]["atk_buff"] = 0
+                        self.player_effect[action["player_pos"]]["def_buff"] = 0
+                        self.player_effect[action["player_pos"]]["basic_atk_buff"] = 0
+                        self.player_effect[action["player_pos"]]["basic_def_buff"] = 0
                     elif action["target_team"] == "self":
                         if action["sm"] == "skill":
                             sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
@@ -657,7 +659,6 @@ class Battle:
             for len_,v in enumerate(self.enemy_status):
                 if  v["HP"][1] > 0:
                     live_e.append(len_)
-            print(f"{self.attack_count=} {len(self.player_op)=}")
             if self.attack_count == len(self.player_op):
                 self.operation_player = False
                 self.attack_count = 0
@@ -696,7 +697,7 @@ class Battle:
                         elif action["sm"] == "magic":
                             int_code = int(action["sm_code"])
                             sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                            if 1 <= int_code <= 15:
+                            if 1 <= int_code <= 15 or int_code == 21:
                                 damage = True
                                 magic_atk = atk * sm_info["atk_amount"] / 100
                                 damage_amount = magic_atk
@@ -900,16 +901,20 @@ class Battle:
                             live_p.append(len_)
                     if len(live_enemy) != 0:
                         #以下敵AIの行動をプレイヤーに適用
-                        live_p = []
-                        for len_,i in enumerate(self.chara_data):
-                            if self.app.chara_data[i]["HP"][1] > 0:
-                                live_p.append(len_)
                         if self.ai_turn != self.turn:
                             for x in range(len(live_enemy)):
+                                live_p = []
+                                for len_,i in enumerate(self.chara_data):
+                                    if self.app.chara_data[i]["HP"][1] > 0:
+                                        live_p.append(len_)
+                                live_enemy = []
+                                for i in range(self.enemy_num):
+                                    if self.enemy_status[i]["HP"][1] > 0:
+                                        live_enemy.append(i)
                                 write_str = f"{len(self.chara_data)} "
                                 for i in self.chara_data.keys():
                                     write_str += f'{self.app.chara_data[i]["post"]} {(self.app.chara_data[i]["HP"][1]/self.app.chara_data[i]["HP"][0]):.4f} {(self.app.chara_data[i]["MP"][1]/self.app.chara_data[i]["MP"][0]):.4f} '
-                                write_str += f"{self.enemy_num} "
+                                write_str += f"{len(live_enemy)} "
                                 for i in live_enemy:
                                     write_str += f'{(self.enemy_status[i]["HP"][1]/self.enemy_status[i]["HP"][0]):.4f} {(self.enemy_status[i]["MP"][1]/self.enemy_status[i]["MP"][0]):.4f} '
                                 write_str += f"{x}"
@@ -925,10 +930,8 @@ class Battle:
                                 for i in range(4-pl_):
                                     ai_input_data[tmp_len - 1].append([0,0,0])
                                 en_ = int(write_str[int(write_str[0])*3+1])
-                                print(write_str)
                                 for i in range(en_):
                                     tm = [0,write_str[(len(live_p)*3+2)+i*2],write_str[(len(live_p)*3+2)+i*2+1]]
-                                    print(tm)
                                     ai_input_data[tmp_len - 1].append(tm)
                                 for i in range(3-en_):
                                     ai_input_data[tmp_len - 1].append([0,0,0])
