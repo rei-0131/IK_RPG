@@ -190,7 +190,7 @@ class App:
                 self.setting_in.clean()
                 self.be_scene = self.now_scene
                 self.now_scene = IN_SETTING_SCENE
-        if pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):
+        if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
             if self.now_scene == 5:
                 self.now_scene = self.be_scene
             else:

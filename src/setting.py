@@ -162,12 +162,20 @@ class In_Setting:
             len_ = len(self.app.chara_data.items())
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.enter_pos = -1
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+                self.in_st_finger = 0
+                self.in_st_pos = 0
+            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+                if self.in_st_finger == 0:
+                    self.in_st_pos -= 1
+                elif self.in_st_finger != 0:
                     self.in_st_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
-                self.in_st_finger += 1
+            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+                if self.in_st_finger == 3:
+                    self.in_st_pos += 1
+                else:
+                    self.in_st_finger += 1
             if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-                self.in_eq_enter = self.in_st_finger
+                self.in_eq_enter = self.in_st_finger + self.in_st_pos
                 self.in_eqse_finger = 0
                 self.in_eqse_pos = 0
                 self.equip_men = True
@@ -221,12 +229,20 @@ class In_Setting:
             len_ = len(self.app.chara_data.items())
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.enter_pos = -1
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+                self.in_st_finger = 0
+                self.in_st_pos = 0
+            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+                if self.in_st_finger == 0:
+                    self.in_st_pos -= 1
+                elif self.in_st_finger != 0:
                     self.in_st_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
-                self.in_st_finger += 1
+            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+                if self.in_st_finger == 3:
+                    self.in_st_pos += 1
+                else:
+                    self.in_st_finger += 1
             if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-                self.in_eq_enter = self.in_st_finger
+                self.in_eq_enter = self.in_st_finger + self.in_st_pos
                 self.in_eqse_finger = 0
                 self.in_eqse_pos = 0
                 self.equip_men = True
@@ -310,12 +326,18 @@ class In_Setting:
         len_ = len(self.app.chara_data.items())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger != 0:
+        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if self.in_st_finger == 0:
+                self.in_st_pos -= 1
+            elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger != len_ - 1:
-            self.in_st_finger += 1
+        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if self.in_st_finger == 3:
+                self.in_st_pos += 1
+            else:
+                self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-            self.in_eq_enter = self.in_st_finger
+            self.in_eq_enter = self.in_st_finger + self.in_st_pos
             self.in_eqse_finger = 0
             self.in_eqse_pos = 0
             self.equip_men = True
@@ -411,12 +433,20 @@ class In_Setting:
         pyxel.rect(70,135,self.init_x-70,65,0)
         pyxel.rectb(70,135,self.init_x-70,65,7)
         self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
-        for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-            if i == self.in_st_finger:
-                pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
-            pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
-            self.umplus10.draw_text(71,int(18+(13*i)),t,7)
-        pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
+        if len(self.app.chara_data.keys()) > 4:
+            for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
+                pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
+                self.umplus10.draw_text(71,int(18+(13*i)),t,7)
+            pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
+        else:
+            for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
+                pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
+                self.umplus10.draw_text(71,int(18+(13*i)),t,7)
+            pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
         if self.equip_men:
             chara_data = self.app.chara_data[list(self.app.chara_data.keys())[self.in_eq_enter]]
             if len(chara_data[f"{sm}_codes"]) >= 10:
@@ -447,12 +477,20 @@ class In_Setting:
         pyxel.rectb(70,135,self.init_x-70,65,7)
         if not self.equip_men:
             self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
-            for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-                if i == self.in_st_finger:
-                    pyxel.rect(71,71+(16*i),113,17,1)
-                pyxel.line(70,70+(16*i + 1),185,70+(16*i + 1),7)
-                self.umplus10.draw_text(71,int(71+(17*i)),t,7)
-            pyxel.line(70,70+(16*(i + 1) + 1),185,70+(16*(i + 1) + 1),7)
+            if len(self.app.chara_data) > 4:
+                for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
+                    if i == self.in_st_finger:
+                        pyxel.rect(71,71+(16*i),113,17,1)
+                    pyxel.line(70,70+(16*i + 1),185,70+(16*i + 1),7)
+                    self.umplus10.draw_text(71,int(71+(17*i)),t,7)
+                pyxel.line(70,70+(16*(i + 1) + 1),185,70+(16*(i + 1) + 1),7)
+            else:
+                for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
+                    if i == self.in_st_finger:
+                        pyxel.rect(71,71+(16*i),113,17,1)
+                    pyxel.line(70,70+(16*i + 1),185,70+(16*i + 1),7)
+                    self.umplus10.draw_text(71,int(71+(17*i)),t,7)
+                pyxel.line(70,70+(16*(i + 1) + 1),185,70+(16*(i + 1) + 1),7)
         else:
             chara_data = self.app.chara_data[list(self.app.chara_data.keys())[self.in_eq_enter]]
             self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_eq_enter],7)
@@ -617,14 +655,22 @@ class In_Setting:
     def status_draw(self):
         pyxel.line(70,70,self.init_x,70,7)
         self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
-        for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-            if i == self.in_st_finger:
-                pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
-            pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
-            self.umplus10.draw_text(71,int(18+(13*i)),t,7)
-        pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
+        if len(self.app.chara_data) > 4:
+            for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
+                pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
+                self.umplus10.draw_text(71,int(18+(13*i)),t,7)
+            pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
+        else:
+            for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
+                if i == self.in_st_finger:
+                    pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
+                pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
+                self.umplus10.draw_text(71,int(18+(13*i)),t,7)
+            pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
 
-        chara_data = self.app.chara_data[list(self.app.chara_data.keys())[self.in_st_finger]]
+        chara_data = self.app.chara_data[list(self.app.chara_data.keys())[self.in_st_finger + self.in_st_pos]]
         atk = 0
         def_ = 0
         atk += chara_data["atk_ab"]
@@ -644,7 +690,7 @@ class In_Setting:
                     atk += chara_data["atk_ab"] * (self.tools[i][v][3] / 100)
                     atk *= chara_data["atk_buff"] / 100
                     def_ *= chara_data["def_buff"] / 100
-        self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_st_finger],7)
+        self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_st_finger + self.in_st_pos],7)
         self.umplus10.draw_text(150,71,f"Level {chara_data['Level']}     {chara_data['XP']}/XXXX",7)
         self.umplus10.draw_text(71,82,f"HP {chara_data['HP'][1]}/{chara_data['HP'][0]}",7)
         self.umplus10.draw_text(71,93,f"MP {chara_data['MP'][1]}/{chara_data['MP'][0]}",7)
