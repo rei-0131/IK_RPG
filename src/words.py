@@ -18,6 +18,7 @@ class Words:
             self.tools = json.load(f)
 
     def update(self):
+        #操作
         if self.question["exist"]:
             if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != (len(self.question["questions"]) - 1) * -10:
@@ -50,6 +51,7 @@ class Words:
         return self.msg_id, self.disp_id
 
     def dec_word(self,msg_id):
+        #文字を出力
         self.msg_id = msg_id
         self.word = self.words["words"][msg_id]
         self.question = self.word["question"]
@@ -81,9 +83,8 @@ class Words:
             que_height = len(self.question["questions"]) * 11
             max_str = 0
             for i in self.question["questions"]:
-                if max_str < len(i) * 10:
-                    max_str = len(i) * 10
-            #最大文字数に枠を合わせる
+                if max_str < len(i) * 11:
+                    max_str = len(i) * 11
             pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
             pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
             pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)

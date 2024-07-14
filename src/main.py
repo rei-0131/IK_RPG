@@ -172,7 +172,7 @@ class App:
             if self.in_word:
                 self.msg_id, self.disp_id = self.words.update()
             if self.in_battle:
-                self.battle.clean()
+                self.battle.clean(self.now_scene)
                 self.battle.set_enemy(words["words"][self.disp_id]["battle"][0],words["words"][self.disp_id]["battle"][1])
                 self.now_scene = 5
         elif self.now_scene == OUT_SETTING_SCENE:
@@ -190,12 +190,12 @@ class App:
                 self.setting_in.clean()
                 self.be_scene = self.now_scene
                 self.now_scene = IN_SETTING_SCENE
-        if pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):
+        if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
             if self.now_scene == 5:
                 self.now_scene = self.be_scene
             else:
                 self.be_scene = self.now_scene
-                self.battle.clean()
+                self.battle.clean(self.now_scene)
                 #以下、敵のランダムな数、敵の名称を決定するコード
                 # enemy_num = random.randint(1,3)
                 self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
