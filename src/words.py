@@ -18,6 +18,7 @@ class Words:
             self.tools = json.load(f)
 
     def update(self):
+        #操作
         if self.question["exist"]:
             if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != (len(self.question["questions"]) - 1) * -10:
@@ -50,6 +51,7 @@ class Words:
         return self.msg_id, self.disp_id
 
     def dec_word(self,msg_id):
+        #文字を出力
         self.msg_id = msg_id
         self.word = self.words["words"][msg_id]
         self.question = self.word["question"]

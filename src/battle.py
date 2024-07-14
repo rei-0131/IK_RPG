@@ -7,7 +7,6 @@ from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 
-#攻撃される際の防御力の適用
 
 class Battle:
     """
@@ -236,6 +235,7 @@ class Battle:
         return clf
 
     def player_op_over(self):
+        #同じプレイヤーが行動しようとしていないかチェック
         pl_pos = [i["player_pos"] for i in self.player_op]
         for j,i in enumerate(pl_pos):
             if pl_pos.count(i) >= 2:
@@ -246,6 +246,7 @@ class Battle:
                 pl_pos.pop(j)
 
     def enemy_target_select_update(self):
+        #敵ターゲットを選択
         if self.finger_pos4 == 0:
             self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
         if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -304,6 +305,7 @@ class Battle:
                 self.finger_pos4 = 0
 
     def self_target_select_update(self):
+        #味方ターゲットを選択
         if self.select_num5 == -1:
             if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.finger_pos5 != 0:
@@ -345,6 +347,7 @@ class Battle:
                     self.dis_num = 0
 
     def none_target_select_update(self):
+        #選択のない行動
         if self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3] == "08" or self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3] == "09":
             self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team,"effect_invoke":False,"effect_name":""})
         else:
@@ -363,6 +366,7 @@ class Battle:
         self.select_num3 = -1
 
     def sm_update(self,sm):
+        #魔法・スキルの表示と選択
         if self.select_num3 == -1:
             if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_num2 = -1
@@ -425,24 +429,8 @@ class Battle:
                         self.finger_pos4 = 0
                         print(use_sm["name"])
 
-    def play_magic(self,magic_code,atk,action):
-        if 1 <= magic_code <= 15:
-            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-            magic_atk = atk * ((100 + sm_info["atk_amount"]) / 100)
-            self.enemy_status[action["target"]]["HP"][1] -= magic_atk
-            self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
-        elif magic_code == 16:
-            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-            if sm_info["recovery_amount"][0] == "p":
-                self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][1] += self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
-            else:
-                self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][1] += sm_info["recovery_amount"][1]
-        elif 17 <= magic_code <= 18:
-            pass
-        elif 19 <= magic_code <= 20:
-            pass
-
     def hp_int(self,target) -> str:
+        #HPをint型に変更
         if target != "none":
             self.app.chara_data[list(self.chara_data.keys())[target]]["HP"][1] = int(self.app.chara_data[list(self.chara_data.keys())[target]]["HP"][1])
         else:
@@ -450,6 +438,7 @@ class Battle:
                 self.app.chara_data[i]["HP"][1] = int(self.app.chara_data[i]["HP"][1])
 
     def atk_sum(self,action) -> tuple[float,float]:
+        #攻撃力を計算
         action_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]
         atk = 0
         def_ = 0
@@ -473,6 +462,7 @@ class Battle:
         return atk
 
     def target_attack_update(self):
+        #敵を攻撃
         try:
             action = self.player_op[self.attack_count]
             if action["target"] != "None":
@@ -506,8 +496,6 @@ class Battle:
                         break
             if action["target"] != -1:
                 if action["sm"] != "item":
-                    print(self.player_op)
-                    print(self.player_effect)
                     if action["sm_code"] != "None":
                         int_code = int(action["sm_code"])
                     if action["target_team"] == "enemy":
@@ -732,6 +720,7 @@ class Battle:
                         vibe["total"] += 1
 
     def item_update(self):
+        #アイテムの表示・選択
         if self.select_num2 == -1:
             if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.finger_pos5 != 0:
@@ -809,6 +798,7 @@ class Battle:
                         self.select_num5 = -1
 
     def update(self):
+        #基本画面
         if self.in_battle:
             if self.operation_player:
                 if self.select_num1 == -1:
