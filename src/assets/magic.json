@@ -7,7 +7,7 @@
             "content":"atk",
             "atk_amount":10,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の10%のダメージを与える"
+            "info":"敵に攻撃力の10%の火属性ダメージを与える"
         },
         "02":{
             "attribute":"火",
@@ -17,7 +17,7 @@
             "atk_amount":18,
             "req_post":["atk","heal"]
             ,
-            "info":"敵に攻撃力の18%のダメージを与える"
+            "info":"敵に攻撃力の18%の火属性ダメージを与える"
         },
         "03":{
             "attribute":"火",
@@ -26,7 +26,7 @@
             "content":"atk",
             "atk_amount":23,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の23%のダメージを与える"
+            "info":"敵に攻撃力の23%の火属性ダメージを与える"
         },
         "04":{
             "attribute":"水",
@@ -35,7 +35,7 @@
             "content":"atk",
             "atk_amount":10,
             "req_post":["heal"],
-            "info":"敵に攻撃力の10%のダメージを与える"
+            "info":"敵に攻撃力の10%の水属性ダメージを与える"
         },
         "05":{
             "attribute":"水",
@@ -44,7 +44,7 @@
             "content":"atk",
             "atk_amount":18,
             "req_post":["heal"],
-            "info":"敵に攻撃力の18%のダメージを与える"
+            "info":"敵に攻撃力の18%の水属性ダメージを与える"
         },
         "06":{
             "attribute":"水",
@@ -53,7 +53,7 @@
             "content":"atk",
             "atk_amount":23,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の23%のダメージを与える"
+            "info":"敵に攻撃力の23%の水属性ダメージを与える"
         },
         "07":{
             "attribute":"雷",
@@ -62,7 +62,7 @@
             "content":"atk",
             "atk_amount":10,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の10%のダメージを与える"
+            "info":"敵に攻撃力の10%の雷属性ダメージを与える"
         },
         "08":{
             "attribute":"雷",
@@ -71,7 +71,7 @@
             "content":"atk",
             "atk_amount":18,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の18%のダメージを与える"
+            "info":"敵に攻撃力の18%の雷属性ダメージを与える"
         },
         "09":{
             "attribute":"雷",
@@ -80,7 +80,7 @@
             "content":"atk",
             "atk_amount":23,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の23%のダメージを与える"
+            "info":"敵に攻撃力の23%の雷属性ダメージを与える"
         },
         "10":{
             "attribute":"土",
@@ -89,7 +89,7 @@
             "content":"atk",
             "atk_amount":10,
             "req_post":["heal"],
-            "info":"敵に攻撃力の10%のダメージを与える"
+            "info":"敵に攻撃力の10%の土属性ダメージを与える"
         },
         "11":{
             "attribute":"土",
@@ -98,7 +98,7 @@
             "content":"atk",
             "atk_amount":18,
             "req_post":["heal"],
-            "info":"敵に攻撃力の18%のダメージを与える"
+            "info":"敵に攻撃力の18%の土属性ダメージを与える"
         },
         "12":{
             "attribute":"土",
@@ -107,7 +107,7 @@
             "content":"atk",
             "atk_amount":23,
             "req_post":["heal"],
-            "info":"敵に攻撃力の23%のダメージを与える"
+            "info":"敵に攻撃力の23%の土属性ダメージを与える"
         },
         "13":{
             "attribute":"風",
@@ -116,7 +116,7 @@
             "content":"atk",
             "atk_amount":10,
             "req_post":["heal"],
-            "info":"敵に攻撃力の10%のダメージを与える"
+            "info":"敵に攻撃力の10%の風属性ダメージを与える"
         },
         "14":{
             "attribute":"風",
@@ -125,7 +125,7 @@
             "content":"atk",
             "atk_amount":18,
             "req_post":["heal"],
-            "info":"敵に攻撃力の18%のダメージを与える"
+            "info":"敵に攻撃力の18%の風属性ダメージを与える"
         },
         "15":{
             "attribute":"風",
@@ -134,7 +134,16 @@
             "content":"atk",
             "atk_amount":23,
             "req_post":["heal"],
-            "info":"敵に攻撃力の23%のダメージを与える"
+            "info":"敵に攻撃力の23%の風属性ダメージを与える"
+        },
+        "21":{
+            "attribute":"エクスプロージョン",
+            "name":"エクスプロージョン",
+            "req_MP":1,
+            "content":"atk",
+            "atk_amount":10000000000000000,
+            "req_post":["heal"],
+            "info":"敵に攻撃力の10000000000000000%のエクスプロージョンダメージを与える"
         },
         "16":{
             "attribute":"回",
