@@ -15,7 +15,6 @@
 * urllib.request
 * os
 * scikit-learn
-* Nuitka
 
 ## 進捗
 - [ ] メイン画面
