@@ -161,17 +161,7 @@ class Battle:
         self.enemy_code = enemy_code
         for i in range(self.enemy_num):
             #以下、enemy_infoから敵の情報を引っ張って来て書き込む
-            self.enemy_status.append({
-                "enemy_name":self.enemy_code[i],
-                "HP":[1000,1000],
-                "MP":[100,100],
-                "atk_ab": 100,
-                "def_ab": 100,
-                "satisfaction": [
-                    1.5,
-                    120
-                ]
-                })
+            self.enemy_status.append(self.enemy_info[self.enemy_code[i]["enemy_type"]][self.enemy_code[i]["enemy_code"]]["status"])
             self.enemy_effect.append({
                 "atk_buff":0,
                 "def_buff":0,
@@ -1215,7 +1205,7 @@ class Battle:
             pyxel.text(279,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
         for n,i in enumerate(self.enemy_code):
             if n in live_e:
-                enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]
+                enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]["basis"]
                 enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
                 pyxel.text(enemy_interval[n] - 34,14,"HP",7)
                 pyxel.rect(enemy_interval[n] - 25,15,(self.enemy_status[n]["HP"][1] / self.enemy_status[n]["HP"][0]) * 100 / 2,3,11)
