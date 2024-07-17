@@ -55,7 +55,7 @@ class Title:
 
     def draw(self):
         pyxel.cls(0)
-        self.umplus10.draw_text(103,100,"     Title     ",7)
+        self.umplus10.draw_text(90,100,"     一工クエスト     ",7)
         self.umplus10.draw_text(103,110,"-   New Game   -",7)
         self.umplus10.draw_text(103,120,"-   Continue   -",7)
         self.umplus10.draw_text(103,130,"-   Settings   -",7)
