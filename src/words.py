@@ -29,10 +29,17 @@ class Words:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if self.word["to"] != "None":
                     if type(self.word["to"]) == list:
-                        if self.word["to"][int(self.finger_pos // 18)] != "None":
-                            self.msg_id = self.word["to"][int(self.finger_pos // 18)]
+                        if "requirement" not in self.word:
+                            if self.word["to"][int(self.finger_pos // 18)] != "None":
+                                self.msg_id = self.word["to"][int(self.finger_pos // 18)]
+                            else:
+                                self.disp_id = self.msg_id
                         else:
-                            self.disp_id = self.msg_id
+                            chara = list(self.app.chara_data.keys())
+                            if self.word["requirement"] in chara:
+                                self.msg_id = self.word["to"][0]
+                            else:
+                                self.msg_id = self.word["to"][1]
                     elif type(self.word["to"]) == str:
                         self.msg_id = self.word["to"]
                 else:
@@ -80,13 +87,13 @@ class Words:
                 self.app.imp_item_codes.append(self.word["item"][1])
             self.word["item"] = False
         if self.question["exist"]:
-            que_height = len(self.question["questions"]) * 11
+            que_height = len(self.question["questions"]) * 12
             max_str = 0
             for i in self.question["questions"]:
-                if max_str < len(i) * 11:
-                    max_str = len(i) * 11
+                if max_str < len(i) * 12:
+                    max_str = len(i) * 12
             pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
             pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
             pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
-            for i,h in zip(self.question["questions"],range(0,len(self.question["questions"])*11,11)):
+            for i,h in zip(self.question["questions"],range(0,len(self.question["questions"])*12,11)):
                 self.umplus10.draw_text(self.init_x-max_str + 2,self.init_y-98+h+(39-que_height),i,7)
