@@ -6,6 +6,7 @@ from sklearn.decomposition import PCA
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
+import copy
 
 
 class Battle:
@@ -161,7 +162,7 @@ class Battle:
         self.enemy_code = enemy_code
         for i in range(self.enemy_num):
             #以下、enemy_infoから敵の情報を引っ張って来て書き込む
-            self.enemy_status.append(self.enemy_info[self.enemy_code[i]["enemy_type"]][self.enemy_code[i]["enemy_code"]]["status"])
+            self.enemy_status.append(copy.deepcopy(self.enemy_info[self.enemy_code[i]["enemy_type"]][self.enemy_code[i]["enemy_code"]]["status"]))
             self.enemy_effect.append({
                 "atk_buff":0,
                 "def_buff":0,
@@ -176,7 +177,6 @@ class Battle:
 
     def create_AI(self):
         #first_aiに入っているデータはセットアップデータ
-        #continueではfirst_ai+プレイヤーから取得した学習データを使用
         data = []
         ai_answer =[]
         with open("assets/first_ai.txt","r",encoding="utf-8") as f:
@@ -272,11 +272,11 @@ class Battle:
             if self.enemy_status[self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4)]["HP"][1] > 0:
                 k_ran = ran.randint(1,1000)
                 kaisin = False
-                if self.app.chara_data[list(self.chara_data.keys())[self.select_num2]]["satisfaction"][0] * 10 <= k_ran:
+                if self.app.chara_data[list(self.chara_data.keys())[self.select_num2]]["satisfaction"][0] * 10 >= k_ran:
                     kaisin = True
                 if self.select_num1 == 0:
                     sm = "None"
-                    self.player_op.append({"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None","target_team":"enemy"})
+                    self.player_op.append({"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":"None","sm_code":"None","target_team":"enemy","kaisin":kaisin})
                 elif self.select_num1 == 1:
                     sm = "skill"
                     self.player_op.append({"player_pos":self.select_num2,"target":self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4),"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team,"kaisin":kaisin})
@@ -489,13 +489,13 @@ class Battle:
                         if action["kaisin"]:
                             kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
                         if action["sm"] == "None":
-                            if atk - def_ >= 0:
+                            if (atk - def_) * kaisin_p >= 0:
                                 self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
                         elif action["sm"] == "skill":
                             sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                             if action["sm_code"] == "01":
                                 for _ in range(sm_info["other"]["atk_num"]):
-                                    if atk - def_ >= 0:
+                                    if (atk - def_) * kaisin_p >= 0:
                                         self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
                             elif action["sm_code"] == "02":
                                 cri_atk = atk * (self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
@@ -507,8 +507,8 @@ class Battle:
                             if 1 <= int_code <= 15 or int_code == 21:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 magic_atk = atk * sm_info["atk_amount"] / 100
-                                if magic_atk - def_ >= 0:
-                                    self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
+                                if (atk - def_) * kaisin_p >= 0:
+                                    self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
                             elif 17 <= int_code <= 18:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 if sm_info["dbuff_type"] == "atk":
