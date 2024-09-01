@@ -15,6 +15,7 @@
 * urllib.request
 * os
 * scikit-learn
+* copy
 
 ## 進捗
 - [ ] メイン画面
