@@ -173,7 +173,7 @@ class App:
                 self.msg_id, self.disp_id = self.words.update()
             if self.in_battle:
                 self.battle.clean(self.now_scene)
-                self.battle.set_enemy(words["words"][self.disp_id]["battle"][0],words["words"][self.disp_id]["battle"][1])
+                self.battle.set_enemy(words["story"][self.disp_id]["battle"][0],words["story"][self.disp_id]["battle"][1])
                 self.now_scene = 5
         elif self.now_scene == OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()

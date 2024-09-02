@@ -57,10 +57,12 @@ class Words:
 
         return self.msg_id, self.disp_id
 
+    #引数にstoryかどうかのstr型を作成 01
     def dec_word(self,msg_id):
         #文字を出力
         self.msg_id = msg_id
-        self.word = self.words["words"][msg_id]
+        #01 変更
+        self.word = self.words["story"][msg_id]
         self.question = self.word["question"]
         pyxel.rect(5,self.init_y-60,self.init_x-10,55,0)
         pyxel.rectb(5,self.init_y-60,self.init_x-10,55,7)
