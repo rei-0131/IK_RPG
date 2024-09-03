@@ -16,9 +16,9 @@
 * scikit-learn
 * copy
 
-##外部
-*BDFRenderer
-*[pyxel-tracker](https://github.com/shiromofufactory/pyxel-tracker)
+## 外部
+* BDFRenderer
+* [pyxel-tracker](https://github.com/shiromofufactory/pyxel-tracker)
 
 ## 進捗
 - [ ] メイン画面
