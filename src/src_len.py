@@ -10,7 +10,6 @@ def count_lines_chars(filename):
 
 filenames = [
     'src/battle.py',
-    'src/BDFRenderer.py',
     'src/cloud_data.py',
     'src/main.py',
     'src/Map.py',

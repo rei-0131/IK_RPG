@@ -2,7 +2,7 @@ import pyxel
 import configparser
 import json
 import time
-from BDFRenderer import BDFRenderer
+from external.BDFRenderer import BDFRenderer
 from title import Title
 from save import Save
 from save_load import SaveLoad
@@ -26,7 +26,7 @@ with open("src/assets/init_data.json",encoding="utf-8") as f:
 
 if local:
     config = configparser.ConfigParser(interpolation=None)
-    config.read("src/configs/config.ini")
+    config.read("src/configs/config.ini",encoding="utf-8_sig")
 else:
     config = cloud.config_load()
 

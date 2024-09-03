@@ -197,7 +197,7 @@ class In_Setting:
                     self.in_eqst_item -= 2
             if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.in_pqse_finger != 8 and self.in_pqse_finger != 9:
-                    if self.in_pqse_finger + 2 < dis_num:
+                    if self.in_pqse_finger + 2 < dis_num and len_eq >= self.in_pqse_finger + self.in_eqst_item + 3:
                         self.in_pqse_finger += 2
                 else:
                     if self.in_pqse_finger + self.in_eqst_item + 2 < len_eq:
@@ -359,7 +359,7 @@ class In_Setting:
             elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != 99:
                     self.finger_pos += 11
-            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
                 print(self.enter_pos)
@@ -463,6 +463,11 @@ class In_Setting:
                     if i == self.in_pqse_finger:
                         pyxel.rect(71+(115*w),71+(13*h),115,13,1)
                     self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v]["name"],7)
+            if len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"]) > 22:
+                for i,j in zip(range(0,len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"]),22),range(5)):
+                    self.umplus10.draw_text(71,137 + 11 * j,self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"][i:i + 22],7)
+            else:
+                self.umplus10.draw_text(71,137,self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"],7)
             self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def equip_draw(self):
