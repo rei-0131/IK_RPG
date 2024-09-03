@@ -70,10 +70,15 @@ class Words:
         pyxel.rectb(5,self.init_y-71,60,12,7)
         self.umplus10.draw_text(7,self.init_y-70,self.word["speaker"],7)
         if type(self.word["word"]) == str:
-            self.umplus10.draw_text(7,self.init_y-59,self.word["word"],7)
-        elif type(self.word["word"]) == list:
-            for i,n in enumerate(self.word["word"]):
-                self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)
+            # self.umplus10.draw_text(7,self.init_y-59,self.word["word"],7)
+            if len(self.word["word"]) > 28:
+                for i,j in zip(range(0,len(self.word["word"]),28),range(5)):
+                    self.umplus10.draw_text(7,self.init_y-59 + 11 * j,self.word["word"][i:i + 28],7)
+            else:
+                self.umplus10.draw_text(7,self.init_y-59,self.word["word"],7)
+        # elif type(self.word["word"]) == list:
+        #     for i,n in enumerate(self.word["word"]):
+        #         self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)
         if self.word["to"] != "None":
             pyxel.tri(self.init_x/2-5,self.init_y-12,self.init_x/2+5,self.init_y-12,self.init_x/2,self.init_y-8,7)
         if "item" in self.word:

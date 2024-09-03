@@ -1,7 +1,7 @@
 import pyxel
 import json
 import time
-from BDFRenderer import BDFRenderer
+from external.BDFRenderer import BDFRenderer
 from save_load import SaveLoad
 from setting import Out_Setting
 

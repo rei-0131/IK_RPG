@@ -693,12 +693,17 @@ class Battle:
                                 magic_atk = atk * sm_info["atk_amount"] / 100
                                 damage_amount = (magic_atk - def_) * kaisin_p
                         if damage:
-                            #会心だったときの表記変更
                             enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
                             if damage_amount >= 0:
-                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),8)
+                                if action["kaisin"]:
+                                    self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),10)
+                                else:
+                                    self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),8)
                             else:
-                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
+                                if action["kaisin"]:
+                                    self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",10)
+                                else:
+                                    self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
                             self.damage_pos -= 2
                         vibe = self.vibe_enemy[self.vibe_count]
                         if vibe["move"] == "p":

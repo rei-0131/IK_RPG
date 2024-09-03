@@ -27,7 +27,7 @@ class Option:
         self.cloud = cloud_data(is_test=self.app.is_test)
         if self.app.local:
             self.config = configparser.ConfigParser(interpolation=None)
-            self.config.read("configs/config.ini")
+            self.config.read("configs/config.ini",encoding="utf-8_sig")
             self.now_volume = int(self.config.get("basic","volume"))
         else:
             self.config = self.cloud.config_load()
