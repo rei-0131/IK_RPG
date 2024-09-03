@@ -9,13 +9,16 @@
 * json
 * time
 * random
-* BDFRenderer
 * js
 * pyodide.http
 * urllib.request
 * os
 * scikit-learn
 * copy
+
+##外部
+*BDFRenderer
+*[pyxel-tracker](https://github.com/shiromofufactory/pyxel-tracker)
 
 ## 進捗
 - [ ] メイン画面
