@@ -9,7 +9,7 @@ class Title:
     """
     タイトルに関するクラス
 
-    Parameters:
+    Parameters
     ----------
     app : Any
         Appクラスのインスタンス

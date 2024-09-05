@@ -18,7 +18,7 @@ class Map:
         """
         当たり判定の判定
 
-        Parameters:
+        Parameters
         ----------
         x : float
             プレイヤーの現在位置x
@@ -34,7 +34,7 @@ class Map:
             wasdのどれが押されたか
             スマホやゲームパッドの場合はキーボードに相当するキー
 
-        Returns:
+        Returns
         ----------
         Any : bool
             あたっている場合はTrue、そうでない場合はFalse
@@ -67,7 +67,7 @@ class Map:
 
     def cd_debug(self):
         """
-        当たり判定のデバッグ\n
+        当たり判定のデバッグ
         現在のフレームの当たり判定の場所を表示
         """
         if self.key == "w":

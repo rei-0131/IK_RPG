@@ -62,9 +62,9 @@ class Words:
         """
         言葉を装飾
 
-        Parameters:
+        Parameters
         -----------
-        msg_id:int
+        msg_id : int
             メッセージID
         """
         #文字を出力

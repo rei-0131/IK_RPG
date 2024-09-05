@@ -80,7 +80,7 @@ class App:
     """
     アプリケーションに関するクラス
 
-    Parameters:
+    Parameters
     ----------
     x : int
         画面の大きさx
