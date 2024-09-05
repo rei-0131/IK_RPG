@@ -45,6 +45,7 @@ class Option:
                 self.vol_finger += 1
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             print(self.vol_finger)
+            self.now_volume = self.vol_finger
             if self.app.local:
                 self.config.set("basic","volume",str(self.now_volume))
                 with open("configs/config.ini","w",encoding="utf-8") as f:
