@@ -127,11 +127,10 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        ###battle画面制作中につきコメントアウト###
+        """基本処理"""
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.now_scene = self.title_s.update()
         elif self.now_scene == MAIN_SCENE:
-            #savedata.jsonを初期化しないように変更すること
             if self.new_game:
                 if self.from_load:
                     if self.local:
@@ -206,6 +205,7 @@ class App:
             pyxel.quit()
 
     def draw(self):
+        """基本描画"""
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:

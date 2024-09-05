@@ -37,6 +37,7 @@ class Title:
         self.setting = Out_Setting(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
+        """基本処理"""
         if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
             if self.question_mark != -18:
                 self.question_mark -= 9
@@ -54,6 +55,7 @@ class Title:
                 return self.setting_scene
 
     def draw(self):
+        """基本描画"""
         pyxel.cls(0)
         self.umplus10.draw_text(90,100,"     一工クエスト     ",7)
         self.umplus10.draw_text(103,110,"-   New Game   -",7)

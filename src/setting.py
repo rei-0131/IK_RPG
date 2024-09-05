@@ -64,6 +64,7 @@ class In_Setting:
         self.title_ac = self.scenes["TITLE_SCENE"]
 
     def clean(self):
+        """初期化"""
         self.finger_pos = 0
         self.enter_pos = -1
         self.setting_finger = 1
@@ -88,6 +89,7 @@ class In_Setting:
         self.time_s = 0
 
     def sort_update(self):
+        """並び替え処理"""
         len_ = len(self.app.chara_data.items())
         self.chara_keys = list(self.app.chara_data.keys())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -119,6 +121,7 @@ class In_Setting:
                 self.move_fi = False
 
     def item_update(self):
+        """アイテム処理"""
         len_ = len(self.app.item_codes.items())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
@@ -139,6 +142,7 @@ class In_Setting:
             print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]][0])
 
     def imp_update(self):
+        """大切なもの処理"""
         len_ = len(self.app.imp_item_codes)
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
@@ -158,6 +162,14 @@ class In_Setting:
             print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger + self.in_st_pos]][0])
 
     def sm_update(self,sm):
+        """
+        魔法・スキル処理
+
+        Parameters:
+        -----------
+        sm:str
+            魔法かスキル
+        """
         if not self.equip_men:
             len_ = len(self.app.chara_data.items())
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -225,6 +237,7 @@ class In_Setting:
                         self.in_pqse_finger -= 1
 
     def equip_update(self):
+        """装備処理"""
         if not self.equip_men:
             len_ = len(self.app.chara_data.items())
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -323,6 +336,7 @@ class In_Setting:
                     self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"][self.tool_names[self.equip_part]] = select_equip[0]
 
     def status_update(self):
+        """ステータス処理"""
         len_ = len(self.app.chara_data.items())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
@@ -344,6 +358,7 @@ class In_Setting:
             self.equip_select = True
 
     def update(self):
+        """基本処理"""
         time_time = int(time.time() - self.app.game_time_start)
         old_time_h,old_time_m,old_time_s = map(int,self.app.game_time.split(":"))
         time_time += old_time_h * 3600
@@ -390,6 +405,7 @@ class In_Setting:
             self.enter_pos = -1
 
     def item_draw(self):
+        """アイテム描画"""
         if len(self.app.item_codes) > 4:
             for i,kv in enumerate(list(self.app.item_codes.items())[self.in_st_pos:self.in_st_pos + 4]):
                 if i == self.in_st_finger:
@@ -409,6 +425,7 @@ class In_Setting:
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def imp_draw(self):
+        """大切なもの描画"""
         if len(self.app.imp_item_codes) > 4:
             for i,v in enumerate(self.app.imp_item_codes[self.in_st_pos:self.in_st_pos + 4]):
                 if i == self.in_st_finger:
@@ -425,6 +442,14 @@ class In_Setting:
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def sm_draw(self,sm):
+        """
+        魔法・スキル描画
+
+        Parameters:
+        -----------
+        sm:str
+            魔法かスキル
+        """
         pyxel.rect(71,5,self.init_x-70,self.init_y-5,0)
         pyxel.rect(70,5,self.init_x-70,65,0)
         pyxel.rectb(70,5,self.init_x-70,65,7)
@@ -463,14 +488,15 @@ class In_Setting:
                     if i == self.in_pqse_finger:
                         pyxel.rect(71+(115*w),71+(13*h),115,13,1)
                     self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v]["name"],7)
-            if len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"]) > 22:
-                for i,j in zip(range(0,len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"]),22),range(5)):
-                    self.umplus10.draw_text(71,137 + 11 * j,self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"][i:i + 22],7)
+            if len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"]) > 22:
+                for i,j in zip(range(0,len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"]),22),range(5)):
+                    self.umplus10.draw_text(71,137 + 11 * j,self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"][i:i + 22],7)
             else:
-                self.umplus10.draw_text(71,137,self.magic[sm][chara_data[f"{sm}_codes"][self.in_pqse_finger]]["info"],7)
+                self.umplus10.draw_text(71,137,self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"],7)
             self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def equip_draw(self):
+        """装備描画"""
         pyxel.rect(71,5,self.init_x-70,self.init_y-5,0)
         pyxel.rect(70,5,self.init_x-70,65,0)
         pyxel.rectb(70,5,self.init_x-70,65,7)
@@ -658,6 +684,7 @@ class In_Setting:
                 self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def status_draw(self):
+        """ステータス描画"""
         pyxel.line(70,70,self.init_x,70,7)
         self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
         if len(self.app.chara_data) > 4:
@@ -704,6 +731,7 @@ class In_Setting:
         self.umplus10.draw_text(71,126,f"会心率 {chara_data['satisfaction'][0]}% 会心ダメ{chara_data['satisfaction'][1]}%",7)
 
     def sort_draw(self):
+        """並び替え描画"""
         if len(self.app.chara_data.items()) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
                 if i == self.in_st_finger:
@@ -720,6 +748,7 @@ class In_Setting:
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def draw(self):
+        """基本描画"""
         pyxel.cls(0)
         pyxel.rect(18,5,65,116,0)
         pyxel.rectb(18,5,65,116,7)
@@ -790,6 +819,7 @@ class Out_Setting:
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
+        """基本処理"""
         if self.enter_pos == -1:
             if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
                 if self.finger_pos != 0:
@@ -809,6 +839,7 @@ class Out_Setting:
             return self.setting_sc
 
     def draw(self):
+        """基本描画"""
         pyxel.cls(0)
         pyxel.rect(18,5,65,95,0)
         pyxel.rectb(18,5,65,95,7)

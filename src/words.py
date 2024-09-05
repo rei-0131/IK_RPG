@@ -18,6 +18,7 @@ class Words:
             self.tools = json.load(f)
 
     def update(self):
+        """基本処理"""
         #操作
         if self.question["exist"]:
             if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
@@ -57,8 +58,15 @@ class Words:
 
         return self.msg_id, self.disp_id
 
-    #引数にstoryかどうかのstr型を作成 01
     def dec_word(self,msg_id):
+        """
+        言葉を装飾
+
+        Parameters:
+        -----------
+        msg_id:int
+            メッセージID
+        """
         #文字を出力
         self.msg_id = msg_id
         #01 変更
