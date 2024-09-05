@@ -9,7 +9,7 @@ class In_Setting:
     """
     プレイしているときの設定のクラス
 
-    Parameters:
+    Parameters
     ----------
     app : Any
         Appクラスのインスタンス
@@ -165,9 +165,9 @@ class In_Setting:
         """
         魔法・スキル処理
 
-        Parameters:
+        Parameters
         -----------
-        sm:str
+        sm : str
             魔法かスキル
         """
         if not self.equip_men:
@@ -445,9 +445,9 @@ class In_Setting:
         """
         魔法・スキル描画
 
-        Parameters:
+        Parameters
         -----------
-        sm:str
+        sm : str
             魔法かスキル
         """
         pyxel.rect(71,5,self.init_x-70,self.init_y-5,0)
@@ -792,7 +792,7 @@ class Out_Setting:
     """
     プレイしていないときの設定
 
-    Parameters:
+    Parameters
     ----------
     app : Any
         Appクラスのインスタンス

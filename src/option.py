@@ -6,7 +6,7 @@ class Option:
     """
     詳細設定に関するクラス
 
-    Parameters:
+    Parameters
     ----------
     app : Any
         Appクラスのインスタンス

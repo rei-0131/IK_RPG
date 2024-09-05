@@ -8,7 +8,7 @@ class SaveLoad:
     """
     セーブデータロード画面を表示
 
-    Parameters:
+    Parameters
     ----------
     x : int
         画面のinit_x
@@ -55,7 +55,7 @@ class SaveLoad:
         """
         基本処理
 
-        Parameters:
+        Parameters
         ent:int
             不明
         """

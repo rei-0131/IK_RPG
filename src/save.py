@@ -7,7 +7,7 @@ class Save:
     """
     セーブに関するクラス
 
-    Parameters:
+    Parameters
     ----------
     app : Any
         Appクラスのインスタンス

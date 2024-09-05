@@ -13,8 +13,8 @@ class Battle:
     """
     バトルに関するクラス
 
-    Parameters:
-    x :int
+    Parameters
+    x : int
         画面の大きさx
     y : int
         画面の大きさy
@@ -159,7 +159,16 @@ class Battle:
             })
 
     def set_enemy(self,enemy_num,enemy_code):
-        """敵設定"""
+        """
+        敵設定
+
+        Parameters
+        ----------
+        enemy_num : int
+            敵の数
+        enemy_code : Any
+            敵の情報
+        """
         self.enemy_num = enemy_num
         self.enemy_code = enemy_code
         for i in range(self.enemy_num):
@@ -370,9 +379,9 @@ class Battle:
         """
         魔法・スキルの表示と選択
 
-        Parameters:
+        Parameters
         -----------
-        sm:str
+        sm : str
             魔法かスキル
         """
         #魔法・スキルの表示と選択
@@ -442,9 +451,9 @@ class Battle:
         """
         HPをint型に変換
 
-        Parameters:
+        Parameters
         ---------------
-        target:string
+        target : string
             HPを変換するターゲット
         """
         #HPをint型に変更
@@ -458,13 +467,13 @@ class Battle:
         """
         攻撃力計算
 
-        Parameters:
+        Parameters
         -----------
-        action:dict
+        action : dict
             アクションデータ
-        Returns:
+        Returns
         -----------
-        atk:tuple[float,float]
+        atk : tuple[float,float]
             攻撃力
         """
         #攻撃力を計算
@@ -1094,9 +1103,9 @@ class Battle:
         """
         魔法・スキル描画
 
-        Parameters:
+        Parameters
         -----------
-        sm:str
+        sm : str
             魔法かスキル
         """
         pyxel.rect(110,self.init_y//2+10,185,75,0)
@@ -1183,9 +1192,9 @@ class Battle:
         """
         味方ターゲット選択描画
 
-        Parameters:
+        Parameters
         -----------
-        fin:Any
+        fin : Any
             不明
         """
         pyxel.rect(110,self.init_y//2+10,185,75,0)
