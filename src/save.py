@@ -19,6 +19,7 @@ class Save:
             self.scenes = json.load(f)
 
     def newsave(self,pos):
+        """新しいセーブ"""
         if self.app.local:
             with open("configs/savedata.json",encoding="utf-8") as f:
                 save_data = json.load(f)

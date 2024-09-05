@@ -52,6 +52,13 @@ class SaveLoad:
         self.main = self.scenes["MAIN_SCENE"]
 
     def update(self,ent=None):
+        """
+        基本処理
+
+        Parameters:
+        ent:int
+            不明
+        """
         if self.left:
             enter_pos = ent
             if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.setting_finger != 1:
@@ -89,6 +96,7 @@ class SaveLoad:
             return enter_pos
 
     def draw(self):
+        """基本描画"""
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
         if self.setting_finger == self.save_pos + 4:
