@@ -1103,7 +1103,11 @@ class Battle:
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
         pyxel.rect(25,self.init_y//2-20,270,25,0)
         pyxel.rectb(25,self.init_y//2-20,270,25,7)
-        self.umplus10.draw_text(26,self.init_y//2-19,self.magic_codes[sm][self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"],7)
+        if len(self.magic_codes[sm][self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"]) > 27:
+            for i,j in zip(range(0,len(self.magic_codes[sm][self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"]),27),range(5)):
+                self.umplus10.draw_text(26,self.init_y//2-19 + 11 * j,self.magic_codes[sm][self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"][i:i + 27],7)
+        else:
+            self.umplus10.draw_text(26,self.init_y//2-19,self.magic_codes[sm][self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"],7)
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
         self.item_num = len(self.chara_data[self.select_chara][f"{sm}_codes"])
         if self.item_num >= self.item_pos + 11:

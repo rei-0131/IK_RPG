@@ -2,7 +2,7 @@ import pyxel
 import configparser
 import json
 import time
-from external.BDFRenderer import BDFRenderer
+from utils.BDFRenderer import BDFRenderer
 from title import Title
 from save import Save
 from save_load import SaveLoad
@@ -210,7 +210,8 @@ class App:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
-            self.map.draw_map(self.now_map)
+            pyxel.camera()
+            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0)
             self.player.draw()
             if self.msg_id != self.disp_id:
                 self.in_word = True
