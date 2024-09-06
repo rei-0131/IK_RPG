@@ -9,12 +9,16 @@
 * json
 * time
 * random
-* BDFRenderer
 * js
 * pyodide.http
 * urllib.request
 * os
 * scikit-learn
+* copy
+
+## 外部
+* BDFRenderer
+* [pyxel-tracker](https://github.com/shiromofufactory/pyxel-tracker)
 
 ## 進捗
 - [ ] メイン画面
@@ -35,11 +39,11 @@
 - - [x] ゲーム終了
 - [x] 質問機能
 - [x] セーブ・ロード
-- [ ] 戦闘画面
-- - [ ] たたかう
-- - [ ] まほう
-- - [ ] どうぐ
-- - [ ] にげる
+- [x] 戦闘画面
+- - [x] たたかう
+- - [x] まほう
+- - [x] どうぐ
+- - [x] にげる
 - - [x] 敵AI
 - [ ] セーブデータで何を保存するかの設定
 
