@@ -553,7 +553,7 @@ class Battle:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 magic_atk = atk * sm_info["atk_amount"] / 100
                                 if (atk - def_) * kaisin_p >= 0:
-                                    self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
+                                    self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
                             elif 17 <= int_code <= 18:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 if sm_info["dbuff_type"] == "atk":
@@ -739,7 +739,6 @@ class Battle:
                                 damage_amount = (magic_atk - def_) * kaisin_p
                         if damage:
                             enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
-                            print(self.damage_pos)
                             if damage_amount > 0:
                                 if action["kaisin"]:
                                     if self.damage_pos < -30:
