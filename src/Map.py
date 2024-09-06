@@ -6,8 +6,8 @@ class Map:
     マップに関するクラス
     """
     def __init__(self):
-        with open("assets/map.json",encoding="utf-8") as f:
-            self.map_data = json.load(f)
+        with open("assets/cd_block.json",encoding="utf-8") as f:
+            self.collision_data = json.load(f)
         self.map_x = 19
         self.map_y = 13
         self.key = ""
@@ -46,21 +46,21 @@ class Map:
         check_y = [self.next_y,self.next_y]
         if self.key == "w":
             check_x[0] += 2
-            check_x[1] += 14
+            check_x[1] += 12
         elif self.key == "s":
             check_x[0] += 2
-            check_x[1] += 14
+            check_x[1] += 12
             check_y[0] += 14
             check_y[1] += 14
         elif self.key == "a":
             check_y[0] += 3
             check_y[1] += 13
         elif self.key == "d":
-            check_x[0] += 14
-            check_x[1] += 14
+            check_x[0] += 12
+            check_x[1] += 12
             check_y[0] += 3
             check_y[1] += 13
-        if pyxel.tilemaps[num].pget(check_x[0]//8, check_y[0]//8) != (0,2) and pyxel.tilemaps[num].pget(check_x[1]//8, check_y[1]//8) != (0,2):
+        if list(pyxel.tilemaps[num].pget(check_x[0]//8, check_y[0]//8)) not in self.collision_data[str(num)] and list(pyxel.tilemaps[num].pget(check_x[1]//8, check_y[1]//8)) not in self.collision_data[str(num)]:
             return False
         else:
             return True
@@ -72,7 +72,7 @@ class Map:
         """
         if self.key == "w":
             pyxel.line(self.next_x+2,self.next_y,self.next_x+2,self.next_y,0)
-            pyxel.line(self.next_x+16-2,self.next_y,self.next_x+16-2,self.next_y,0)
+            pyxel.line(self.next_x+16-4,self.next_y,self.next_x+16-4,self.next_y,0)
         elif self.key == "s":
             pyxel.line(self.next_x+2,self.next_y+14,self.next_x+2,self.next_y+14,0)
             pyxel.line(self.next_x+16-2,self.next_y+14,self.next_x+16-2,self.next_y+14,0)
@@ -80,5 +80,5 @@ class Map:
             pyxel.line(self.next_x,self.next_y+3,self.next_x,self.next_y+3,0)
             pyxel.line(self.next_x,self.next_y+16-3,self.next_x,self.next_y+16-3,0)
         elif self.key == "d":
-            pyxel.line(self.next_x+14,self.next_y+3,self.next_x+14,self.next_y+3,0)
-            pyxel.line(self.next_x+14,self.next_y+16-3,self.next_x+14,self.next_y+16-3,0)
+            pyxel.line(self.next_x+12,self.next_y+3,self.next_x+12,self.next_y+3,0)
+            pyxel.line(self.next_x+12,self.next_y+16-3,self.next_x+12,self.next_y+16-3,0)
