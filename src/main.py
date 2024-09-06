@@ -2,7 +2,7 @@ import pyxel
 import configparser
 import json
 import time
-from BDFRenderer import BDFRenderer
+from utils.BDFRenderer import BDFRenderer
 from title import Title
 from save import Save
 from save_load import SaveLoad
@@ -26,7 +26,7 @@ with open("src/assets/init_data.json",encoding="utf-8") as f:
 
 if local:
     config = configparser.ConfigParser(interpolation=None)
-    config.read("src/configs/config.ini")
+    config.read("src/configs/config.ini",encoding="utf-8_sig")
 else:
     config = cloud.config_load()
 
@@ -80,7 +80,7 @@ class App:
     """
     アプリケーションに関するクラス
 
-    Parameters:
+    Parameters
     ----------
     x : int
         画面の大きさx
@@ -127,11 +127,10 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        ###battle画面制作中につきコメントアウト###
+        """基本処理"""
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.now_scene = self.title_s.update()
         elif self.now_scene == MAIN_SCENE:
-            #savedata.jsonを初期化しないように変更すること
             if self.new_game:
                 if self.from_load:
                     if self.local:
@@ -173,7 +172,7 @@ class App:
                 self.msg_id, self.disp_id = self.words.update()
             if self.in_battle:
                 self.battle.clean(self.now_scene)
-                self.battle.set_enemy(words["words"][self.disp_id]["battle"][0],words["words"][self.disp_id]["battle"][1])
+                self.battle.set_enemy(words["story"][self.disp_id]["battle"][0],words["story"][self.disp_id]["battle"][1])
                 self.now_scene = 5
         elif self.now_scene == OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()
@@ -206,11 +205,13 @@ class App:
             pyxel.quit()
 
     def draw(self):
+        """基本描画"""
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
-            self.map.draw_map(self.now_map)
+            pyxel.camera()
+            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0)
             self.player.draw()
             if self.msg_id != self.disp_id:
                 self.in_word = True

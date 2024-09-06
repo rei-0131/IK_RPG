@@ -1,7 +1,7 @@
 import pyxel
 import json
 import time
-from BDFRenderer import BDFRenderer
+from utils.BDFRenderer import BDFRenderer
 from save_load import SaveLoad
 from setting import Out_Setting
 
@@ -9,7 +9,7 @@ class Title:
     """
     タイトルに関するクラス
 
-    Parameters:
+    Parameters
     ----------
     app : Any
         Appクラスのインスタンス
@@ -37,6 +37,7 @@ class Title:
         self.setting = Out_Setting(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
+        """基本処理"""
         if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
             if self.question_mark != -18:
                 self.question_mark -= 9
@@ -54,8 +55,9 @@ class Title:
                 return self.setting_scene
 
     def draw(self):
+        """基本描画"""
         pyxel.cls(0)
-        self.umplus10.draw_text(103,100,"     Title     ",7)
+        self.umplus10.draw_text(90,100,"     一工クエスト     ",7)
         self.umplus10.draw_text(103,110,"-   New Game   -",7)
         self.umplus10.draw_text(103,120,"-   Continue   -",7)
         self.umplus10.draw_text(103,130,"-   Settings   -",7)

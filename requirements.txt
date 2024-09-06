@@ -1,0 +1,7 @@
+pyxel
+configparser
+js
+scikit-learn
+nuitka
+zstandard
+numpy
