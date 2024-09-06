@@ -21,12 +21,12 @@ filenames = [
     'src/setting.py',
     'src/title.py',
     'src/assets/magic.json',
-    'src/assets/map.json',
     'src/assets/scenes.json',
     'src/assets/tools.json',
     'src/assets/init_data.json',
     'src/configs/config.ini',
-    "src/assets/enemy_info.json"]
+    "src/assets/enemy_info.json",
+    "src/assets/cd_block.json"]
 
 all_line = 0
 all_char = 0
