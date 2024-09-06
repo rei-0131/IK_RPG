@@ -2,8 +2,7 @@ import pyxel
 import configparser
 import json
 import time
-from BDFRenderer import BDFRenderer
-from question import Question
+from utils.BDFRenderer import BDFRenderer
 from title import Title
 from save import Save
 from save_load import SaveLoad
@@ -12,6 +11,7 @@ from player import Player
 from cloud_data import cloud_data
 from Map import Map
 from battle import Battle
+from words import Words
 
 ##########
 is_test = True
@@ -26,7 +26,7 @@ with open("src/assets/init_data.json",encoding="utf-8") as f:
 
 if local:
     config = configparser.ConfigParser(interpolation=None)
-    config.read("src/configs/config.ini")
+    config.read("src/configs/config.ini",encoding="utf-8_sig")
 else:
     config = cloud.config_load()
 
@@ -50,57 +50,6 @@ else:
 #呼び出す自作関数の中にあるファイル読み込みは自作関数があるディレクトリからカウントされる
 #その他は、基本的にはファイルの実行ディレクトリからカウントされる
 
-
-def dec_word(msg_dis:int,msg_num:int,question,is_question:bool) -> tuple[int, int]:
-    """
-    文字を表示するデコレーション
-
-    Parameters:
-    ----------
-    msg_dis : int
-        表示する文字列のDictionaryのKey
-    msg_num : int
-        sのインデックス番号
-    question : Any
-        Questionクラスのインスタンス
-    is_question : bool
-        質問が表示されているか
-    Returns:
-    ----------
-    msg_dis : int
-        表示する文字列のDictionaryのKey
-    msg_num : int
-        sのインデックス番号
-    is_question : bool
-        質問が表示されているか
-    """
-
-    s = words["words"][str(msg_dis)]
-    #テキスト出力の囲いの描画
-    pyxel.rect(5,init_y-60,init_x-10,55,0)
-    pyxel.rectb(5,init_y-60,init_x-10,55,7)
-    pyxel.tri(init_x/2-5,init_y-12,init_x/2+5,init_y-12,init_x/2,init_y-8,7)
-    # 13文字以内 2行以内
-    if "question" in str(s[msg_num]):
-        is_question = True
-        umplus10.draw_text(6,init_y-55,str(s[msg_num]).replace("question",""),7)
-        question.dec_question(msg_dis)
-    else:
-        umplus10.draw_text(6,init_y-55,s[msg_num],7)
-    if (not is_question and pyxel.btnp(pyxel.KEY_SPACE) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) or (is_question and pyxel.btnp(pyxel.KEY_RETURN) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-        is_question = False
-        print(f"{len(words['words'])} {len(s)} {msg_num} {msg_dis}")
-        if msg_num + 1 < len(s):
-            msg_num += 1
-        else:
-            if len(words["words"]) - 1 == msg_dis + 1:
-                msg_dis = -1
-            elif len(words["words"]) - 1 > msg_dis + 1:
-                msg_dis += 1
-            msg_num = 0
-        print(f"{len(words['words'])} {len(s)} {msg_num} {msg_dis}")
-
-    return msg_dis, msg_num, is_question
 
 #各設定の読み込み
 if local:
@@ -131,7 +80,7 @@ class App:
     """
     アプリケーションに関するクラス
 
-    Parameters:
+    Parameters
     ----------
     x : int
         画面の大きさx
@@ -143,24 +92,24 @@ class App:
         self.init_y = y
         self.local = local
         self.now_scene = 0
-        self.msg_dis = 0
-        self.msg_num = 0
+        self.msg_id = "01"
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
-        self.is_question = False
-        self.is_word = False
+        self.disp_id = "None"
+        self.in_word = False
         self.new_game = True
         self.from_load = False
         self.savedata = None
         self.loaddata = None
+        self.in_battle = False
         self.chara_data = init_data["chara_data"]
         self.item_codes = init_data["item_codes"]
         self.equip_codes = init_data["equip_codes"]
         self.imp_item_codes = init_data["imp_item_codes"]
-        self.question = Question(self.init_x,self.init_y,umplus10)
-        self.player = Player(self,self.init_x,self.init_y,self.question)
+        self.player = Player(self,self.init_x,self.init_y)
         self.title_s = Title(self,self.init_x,self.init_y)
+        self.words = Words(self,self.init_x,self.init_y,umplus10)
         self.save = Save()
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
@@ -178,11 +127,10 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self):
-        ###battle画面制作中につきコメントアウト###
+        """基本処理"""
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.now_scene = self.title_s.update()
         elif self.now_scene == MAIN_SCENE:
-            #savedata.jsonを初期化しないように変更すること
             if self.new_game:
                 if self.from_load:
                     if self.local:
@@ -219,7 +167,13 @@ class App:
                         }
                     }
                 self.new_game = False
-            self.player.update(self.is_question,self.is_word)
+            self.player.update()
+            if self.in_word:
+                self.msg_id, self.disp_id = self.words.update()
+            if self.in_battle:
+                self.battle.clean(self.now_scene)
+                self.battle.set_enemy(words["story"][self.disp_id]["battle"][0],words["story"][self.disp_id]["battle"][1])
+                self.now_scene = 5
         elif self.now_scene == OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()
         elif self.now_scene == IN_SETTING_SCENE:
@@ -228,8 +182,6 @@ class App:
             self.now_scene = self.save_load.update()
             if self.save_load.continue_game:
                 self.from_load = True
-        if self.is_question:
-            self.question.update()
         if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
@@ -237,12 +189,12 @@ class App:
                 self.setting_in.clean()
                 self.be_scene = self.now_scene
                 self.now_scene = IN_SETTING_SCENE
-        if pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X):
+        if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
             if self.now_scene == 5:
                 self.now_scene = self.be_scene
             else:
                 self.be_scene = self.now_scene
-                self.battle.clean()
+                self.battle.clean(self.now_scene)
                 #以下、敵のランダムな数、敵の名称を決定するコード
                 # enemy_num = random.randint(1,3)
                 self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
@@ -253,20 +205,20 @@ class App:
             pyxel.quit()
 
     def draw(self):
+        """基本描画"""
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.title_s.draw()
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
-            self.map.draw_map(self.now_map)
-            if (self.msg_dis == 0 and self.player.x < 175) or (self.msg_dis == 1 and self.player.x >= 175):
-                self.is_word = True
-            else:
-                self.is_word = False
+            pyxel.camera()
+            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0)
             self.player.draw()
-            if self.is_word:
-                self.msg_dis,self.msg_num,self.is_question = dec_word(self.msg_dis,self.msg_num,self.question,self.is_question)
-            if self.is_question:
-                self.question.draw()
+            if self.msg_id != self.disp_id:
+                self.in_word = True
+            else:
+                self.in_word = False
+            if self.in_word:
+                self.words.dec_word(self.msg_id)
         elif self.now_scene == OUT_SETTING_SCENE:
             self.setting_out.draw()
         elif self.now_scene == IN_SETTING_SCENE:

@@ -3,12 +3,11 @@ Re-implementation of find_module and get_frozen_object
 from the deprecated imp module.
 """
 
-import os
-import importlib.util
 import importlib.machinery
-
+import importlib.util
+import os
+import tokenize
 from importlib.util import module_from_spec
-
 
 PY_SOURCE = 1
 PY_COMPILED = 2
@@ -60,13 +59,13 @@ def find_module(module, paths=None):
 
         if suffix in importlib.machinery.SOURCE_SUFFIXES:
             kind = PY_SOURCE
+            file = tokenize.open(path)
         elif suffix in importlib.machinery.BYTECODE_SUFFIXES:
             kind = PY_COMPILED
+            file = open(path, 'rb')
         elif suffix in importlib.machinery.EXTENSION_SUFFIXES:
             kind = C_EXTENSION
 
-        if kind in {PY_SOURCE, PY_COMPILED}:
-            file = open(path, mode)
     else:
         path = None
         suffix = mode = ''
