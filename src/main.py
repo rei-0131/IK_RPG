@@ -117,7 +117,7 @@ class App:
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
         self.battle = Battle(self.init_x, self.init_y,umplus10,self)
         self.map = Map()
-        self.sound_ma=""
+        self.sound_manager = SoundManager()
         if self.local:
             self.volume = int(config.get("basic","volume"))
         else:
