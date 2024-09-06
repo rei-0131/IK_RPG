@@ -1,25 +1,53 @@
 {
     "basic":{
         "001":{
-            "name":"エナドリ(緑)"
+            "name":"エナドリ(緑)",
+            "type":"MP",
+            "effect":[20,30],
+            "battle":true,
+            "info":"MPを20～30回復する"
         },
         "002":{
-            "name":"エナドリ(青)"
+            "name":"エナドリ(青)",
+            "type":"MP",
+            "effect":[50,80],
+            "battle":true,
+            "info":"MPを50～80回復する"
         },
         "003":{
-            "name":"エナドリ(黃)"
+            "name":"エナドリ(黃)",
+            "type":"MP",
+            "effect":[100,120],
+            "battle":true,
+            "info":"MPを100～120回復する"
         },
         "004":{
-            "name":"フレンチトースト"
+            "name":"フレンチトースト",
+            "type":"HP",
+            "effect":[600,800],
+            "battle":true,
+            "info":"HPを600～800回復する"
         },
         "005":{
-            "name":"焼きそばパン"
+            "name":"やきそばパン",
+            "type":"HP",
+            "effect":[1000,1400],
+            "battle":true,
+            "info":"HPを1000～1400回復する"
         },
         "006":{
-            "name":"アンパン"
+            "name":"あんぱん",
+            "type":"HP",
+            "effect":[200,300],
+            "battle":true,
+            "info":"HPを200～300回復する"
         },
         "007":{
-            "name":"ナゾノクスリ"
+            "name":"ナゾノクスリ",
+            "type":"revival",
+            "effect":25,
+            "battle":true,
+            "info":"死亡状態から最大HPの25%回復した状態で回復する"
         }
     },
     "important":{
