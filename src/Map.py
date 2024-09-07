@@ -1,13 +1,17 @@
 import pyxel
-import json
 
 class Map:
     """
     マップに関するクラス
+
+    Parameters
+    ----------
+    app : Any
+        Appクラスのインスタンス
     """
-    def __init__(self):
-        with open("assets/cd_block.json",encoding="utf-8") as f:
-            self.collision_data = json.load(f)
+    def __init__(self,app):
+        self.app = app
+        self.collision_data = self.app.collision_data
         self.map_x = 19
         self.map_y = 13
         self.key = ""

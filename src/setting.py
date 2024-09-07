@@ -2,8 +2,6 @@ import pyxel
 import json
 import time
 from save_load import SaveLoad
-from option import Option
-from cloud_data import cloud_data
 
 class In_Setting:
     """
@@ -46,20 +44,13 @@ class In_Setting:
         self.time_h= 0
         self.time_m = 0
         self.time_s = 0
-        self.cloud = cloud_data(is_test=self.app.is_test)
+        self.cloud = self.app.cloud
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
-        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
-        if self.app.local:
-            with open("configs/savedata.json",encoding="utf-8") as f:
-                self.save_data = json.load(f)
-        else:
-            self.save_data = self.cloud.load()
-        with open("assets/scenes.json",encoding="utf-8") as f:
-            self.scenes = json.load(f)
-        with open("assets/tools.json","r",encoding="utf-8") as f:
-            self.tools = json.load(f)
-        with open("assets/magic.json","r",encoding="utf-8") as f:
-            self.magic = json.load(f)
+        self.option = self.app.option
+        self.save_data = self.app.save_data
+        self.scenes = self.app.scenes
+        self.tools = self.app.tools
+        self.magic = self.app.magic_codes
         self.setting_sc = self.scenes["IN_SETTING_SCENE"]
         self.title_ac = self.scenes["TITLE_SCENE"]
 
@@ -816,7 +807,7 @@ class Out_Setting:
             self.scenes = json.load(f)
         self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
         self.title_sc = self.scenes["TITLE_SCENE"]
-        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
+        self.option = self.app.option
 
     def update(self):
         """基本処理"""

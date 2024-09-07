@@ -1,5 +1,4 @@
 import pyxel
-import json
 
 class Words:
     def __init__(self,app,x,y,umplus10):
@@ -12,10 +11,8 @@ class Words:
         self.finger_pos = 0
         self.word = {}
         self.questions = {}
-        with open("assets/words.json",encoding="utf-8") as f:
-            self.words = json.load(f)
-        with open("assets/tools.json","r",encoding="utf-8") as f:
-            self.tools = json.load(f)
+        self.words = self.app.words
+        self.tools = self.app.tools
 
     def update(self):
         """基本処理"""
@@ -47,6 +44,7 @@ class Words:
                     if "battle" in self.word:
                         self.app.in_battle = True
                     self.disp_id = self.msg_id
+                self.finger_pos = 0
         else:
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if self.word["to"] != "None":

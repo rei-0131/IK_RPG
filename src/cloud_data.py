@@ -9,7 +9,7 @@ except:
     LOCAL = True
 import json
 
-class cloud_data:
+class Cloud_data:
     """
     クラウドにデータをセーブ・ロードする際のクラス
 

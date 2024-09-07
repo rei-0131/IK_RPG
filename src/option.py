@@ -1,6 +1,4 @@
 import pyxel
-import configparser
-from cloud_data import cloud_data
 
 class Option:
     """
@@ -24,13 +22,11 @@ class Option:
         self.umplus10 = ump
         self.select_pos = 0
         self.enter_pos = -1
-        self.cloud = cloud_data(is_test=self.app.is_test)
+        self.cloud = self.app.cloud
+        self.config = self.app.config
         if self.app.local:
-            self.config = configparser.ConfigParser(interpolation=None)
-            self.config.read("configs/config.ini",encoding="utf-8_sig")
             self.now_volume = int(self.config.get("basic","volume"))
         else:
-            self.config = self.cloud.config_load()
             self.now_volume = int(self.config["basic"]["volume"])
         self.vol_pos = self.now_volume - 2
         self.vol_finger = self.now_volume
