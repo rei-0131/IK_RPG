@@ -10,7 +10,6 @@
 * time
 * random
 * js
-* pyodide.http
 * urllib.request
 * os
 * scikit-learn
