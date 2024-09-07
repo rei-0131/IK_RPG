@@ -1,5 +1,4 @@
 import pyxel
-from Map import Map
 
 class Player:
     """プレイヤーに関するクラス
@@ -28,7 +27,7 @@ class Player:
         self.walk_num = 0
         self.question_mark = 0
         self.is_word = False
-        self.map = Map()
+        self.map = self.app.map
         self.walk_pos = [0,0,0,0,0,16,16,16,16,16]
 
     def update(self):

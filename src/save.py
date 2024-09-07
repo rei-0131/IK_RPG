@@ -1,7 +1,5 @@
 import json
 import time
-from cloud_data import cloud_data
-
 #新しいセーブデータを作成する
 class Save:
     """
@@ -14,9 +12,8 @@ class Save:
     """
     def __init__(self,app = None):
         self.app = app
-        self.cloud = cloud_data(is_test=True)
-        with open("assets/scenes.json",encoding="utf-8") as f:
-            self.scenes = json.load(f)
+        self.cloud = self.app.cloud
+        self.scenes = self.app.scenes
 
     def newsave(self,pos):
         """新しいセーブ"""

@@ -1,9 +1,6 @@
 import pyxel
-import json
 import time
-from utils.BDFRenderer import BDFRenderer
 from save_load import SaveLoad
-from setting import Out_Setting
 
 class Title:
     """
@@ -17,16 +14,17 @@ class Title:
         画面の大きさx
     y : int
         画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
     """
-    def __init__(self,app,x,y):
+    def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x
         self.init_y = y
         self.question_mark = 0
         self.game_start = -1
-        self.umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
-        with open("assets/scenes.json",encoding="utf-8") as f:
-            self.scenes = json.load(f)
+        self.umplus10 = ump
+        self.scenes = self.app.scenes
         self.MAIN_SCENE = self.scenes["MAIN_SCENE"]
         self.TITLE_SCENE = self.scenes["TITLE_SCENE"]
         self.Continue = self.scenes["LOAD_SCENE"]
@@ -34,7 +32,7 @@ class Title:
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False,app=self.app)
         self.save_data = None
         self.enter_pos = 1
-        self.setting = Out_Setting(self.app,self.init_x,self.init_y,self.umplus10)
+        self.setting = self.app.setting_out
 
     def update(self):
         """基本処理"""

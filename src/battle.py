@@ -1,5 +1,4 @@
 import pyxel
-import json
 import numpy as np
 import random as ran
 from sklearn.decomposition import PCA
@@ -75,12 +74,9 @@ class Battle:
         self.ai_turn = -1
         self.play_effect_info = True
         self.chara_data = {}
-        with open("assets/tools.json","r",encoding="utf-8") as f:
-            self.tools = json.load(f)
-        with open("assets/magic.json","r",encoding="utf-8") as f:
-            self.magic_codes = json.load(f)
-        with open("assets/enemy_info.json",encoding="utf-8") as f:
-            self.enemy_info = json.load(f)
+        self.tools = self.app.tools
+        self.magic_codes = self.app.magic_codes
+        self.enemy_info = self.app.enemy_info
         self.AI = self.create_AI()
         self.ai_data = []
 
