@@ -6,6 +6,7 @@
 ## 使用モジュール
 * pyxel
 * configparser
+* numpy
 * json
 * time
 * random
