@@ -9,7 +9,6 @@
 * numpy
 * json
 * time
-* random
 * js
 * urllib.request
 * os
