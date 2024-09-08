@@ -15,7 +15,7 @@ from battle import Battle
 from words import Words
 from option import Option
 
-##########
+##########テスト環境かのbool
 is_test = True
 ##########
 

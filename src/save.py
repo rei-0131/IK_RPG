@@ -1,5 +1,6 @@
 import json
 import time
+from cloud_data import Cloud_data
 #新しいセーブデータを作成する
 class Save:
     """
@@ -12,7 +13,7 @@ class Save:
     """
     def __init__(self,app = None):
         self.app = app
-        self.cloud = self.app.cloud
+        self.cloud = Cloud_data(self.app.is_test)
         self.scenes = self.app.scenes
 
     def newsave(self,pos):
@@ -48,3 +49,4 @@ class Save:
                 json.dump(save_data,f,indent=4,ensure_ascii=False)
         else:
             self.cloud.save(save_data)
+        self.app.save_data = save_data

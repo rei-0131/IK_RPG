@@ -11,6 +11,7 @@ class Words:
         self.finger_pos = 0
         self.word = {}
         self.questions = {}
+        self.word_tri = [0,True]
         self.words = self.app.words
         self.tools = self.app.tools
 
@@ -54,6 +55,17 @@ class Words:
                         self.app.in_battle = True
                     self.disp_id = self.msg_id
 
+        if self.word_tri[1]:
+            if self.word_tri[0] < 3:
+                self.word_tri[0] += 0.15
+            else:
+                self.word_tri[1] = False
+        else:
+            if self.word_tri[0] > -1:
+                self.word_tri[0] -= 0.15
+            else:
+                self.word_tri[1] = True
+
         return self.msg_id, self.disp_id
 
     def dec_word(self,msg_id):
@@ -70,8 +82,8 @@ class Words:
         #01 変更
         self.word = self.words["story"][msg_id]
         self.question = self.word["question"]
-        pyxel.rect(5,self.init_y-60,self.init_x-10,55,0)
-        pyxel.rectb(5,self.init_y-60,self.init_x-10,55,7)
+        pyxel.rect(5,self.init_y-60,self.init_x-10,60,0)
+        pyxel.rectb(5,self.init_y-60,self.init_x-10,60,7)
         pyxel.rect(5,self.init_y-71,60,12,0)
         pyxel.rectb(5,self.init_y-71,60,12,7)
         self.umplus10.draw_text(7,self.init_y-70,self.word["speaker"],7)
@@ -86,7 +98,7 @@ class Words:
         #     for i,n in enumerate(self.word["word"]):
         #         self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)
         if self.word["to"] != "None":
-            pyxel.tri(self.init_x/2-5,self.init_y-12,self.init_x/2+5,self.init_y-12,self.init_x/2,self.init_y-8,7)
+            pyxel.tri(self.init_x/2-5,self.init_y-10+self.word_tri[0],self.init_x/2+5,self.init_y-10+self.word_tri[0],self.init_x/2,self.init_y-6+self.word_tri[0],7)
         if "item" in self.word:
             if self.word["item"][0] == "basic":
                 if self.word["item"][1] in self.app.item_codes:

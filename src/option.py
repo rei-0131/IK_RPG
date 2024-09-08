@@ -1,4 +1,6 @@
 import pyxel
+from cloud_data import Cloud_data
+import configparser
 
 class Option:
     """
@@ -22,11 +24,14 @@ class Option:
         self.umplus10 = ump
         self.select_pos = 0
         self.enter_pos = -1
-        self.cloud = self.app.cloud
+        self.cloud = Cloud_data(self.app.is_test)
         self.config = self.app.config
         if self.app.local:
+            self.config = configparser.ConfigParser(interpolation=None)
+            self.config.read("configs/config.ini",encoding="utf-8_sig")
             self.now_volume = int(self.config.get("basic","volume"))
         else:
+            self.config = self.cloud.config_load()
             self.now_volume = int(self.config["basic"]["volume"])
         self.vol_pos = self.now_volume - 2
         self.vol_finger = self.now_volume
@@ -49,6 +54,7 @@ class Option:
             else:
                 self.config["basic"]["volume"] = self.now_volume
                 self.cloud.config_save(self.config)
+            self.app.cloud = self.cloud
             self.app.volume = self.now_volume
             self.enter_pos = -1
 
@@ -74,20 +80,13 @@ class Option:
         pyxel.rect(71,6+self.select_pos,self.init_x-72,11,1)
         self.umplus10.draw_text(70,6,"音量",7)
         self.umplus10.draw_text(self.init_x-15,6,str(self.vol_finger),7)
-        # pyxel.rect(self.init_x//2-29,self.init_y//2-25,66,50,0)
-        # pyxel.rectb(self.init_x//2-29,self.init_y//2-25,66,50,7)
-        # if self.vol_finger == self.vol_pos + 3:
-        #     self.vol_pos += 1
-        # elif self.vol_finger == self.vol_pos - 1:
-        #     self.vol_pos -= 1
-        # for i,l in zip(range(0,3),range(self.vol_pos,4+self.vol_pos)):
-        #     if l == self.vol_finger:
-        #         pyxel.rect(self.init_x//2-29,self.init_y//2-25+(16.66*(i)),66,16.66,1)
-        #         pyxel.rectb(self.init_x//2-29,self.init_y//2-25+(16.66*(i)),66,16.66,7)
-        #     else:
-        #         pyxel.rect(self.init_x//2-29,self.init_y//2-25+(16.66*(i)),66,16.66,0)
-        #         pyxel.rectb(self.init_x//2-29,self.init_y//2-25+(16.66*(i)),66,16.66,7)
-        #     self.umplus10.draw_text(self.init_x//2-29,self.init_y//2-22+int(16.66*(i)),f"     {l}     ",7)
+        if self.vol_finger == 7:
+            pyxel.tri(self.init_x-18,6,self.init_x-8,6,self.init_x-13,3,7)
+        elif self.vol_finger == 0:
+            pyxel.tri(self.init_x-18,16,self.init_x-8,16,self.init_x-13,18,7)
+        else:
+            pyxel.tri(self.init_x-18,6,self.init_x-8,6,self.init_x-13,3,7)
+            pyxel.tri(self.init_x-18,16,self.init_x-8,16,self.init_x-13,18,7)
 
     def draw(self):
         """オプション描画"""
