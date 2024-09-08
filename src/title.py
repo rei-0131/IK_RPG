@@ -1,5 +1,6 @@
 import pyxel
 import time
+import json
 from save_load import SaveLoad
 
 class Title:
@@ -42,14 +43,19 @@ class Title:
         if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
             if self.question_mark != 0:
                 self.question_mark += 9
-        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
             self.enter_pos = self.question_mark // 9
             if self.enter_pos == 0:
+                self.app.new_game = True
                 self.app.game_time_start = time.time()
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
+                self.app.save_load.save_data = self.app.save_data
+                self.app.new_game = True
                 return self.Continue
             elif self.enter_pos == -2:
+                self.app.setting_out.option.now_volume = self.app.volume
+                self.app.setting_out.option.vol_finger = self.app.volume
                 return self.setting_scene
 
     def draw(self):

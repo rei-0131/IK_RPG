@@ -2,6 +2,8 @@ import json
 import pyxel
 import sys
 
+sound_file_path = "../assets/sounds"
+
 class SoundManager:
     def __init__(self):
         self.bgms = {}  # BGMを格納する辞書
@@ -20,7 +22,7 @@ class SoundManager:
     def load_bgm(self, path: str, name: str):
         """指定されたパスからBGMを読み込み、辞書に格納する"""
         try:
-            with open(f"./sounds/{path}.json", "rt") as fin:
+            with open(f"{sound_file_path}/{path}.json", "rt") as fin:
                 self.bgms[name] = json.loads(fin.read())
         except FileNotFoundError:
             raise FileNotFoundError(f"Error: File '{path}.json' not found")

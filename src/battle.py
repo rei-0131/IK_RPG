@@ -1,6 +1,5 @@
 import pyxel
 import numpy as np
-import random as ran
 from sklearn.decomposition import PCA
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
@@ -280,7 +279,7 @@ class Battle:
 
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if self.enemy_status[self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4)]["HP"][1] > 0:
-                k_ran = ran.randint(1,1000)
+                k_ran = pyxel.rndi(1,1000)
                 kaisin = False
                 if self.app.chara_data[list(self.chara_data.keys())[self.select_num2]]["satisfaction"][0] * 10 >= k_ran:
                     kaisin = True
@@ -500,7 +499,7 @@ class Battle:
                     if len(live_e) == 0:
                         action["target"] = -1
                     else:
-                        action["target"] = live_e[ran.randint(0,len(live_e) - 1)]
+                        action["target"] = live_e[pyxel.rndi(0,len(live_e) - 1)]
         except Exception:
             pass
         if not self.enemy_animation:
@@ -517,7 +516,7 @@ class Battle:
                         if len(live_e) == 0:
                             action["target"] = -1
                         else:
-                            action["target"] = live_e[ran.randint(0,len(live_e) - 1)]
+                            action["target"] = live_e[pyxel.rndi(0,len(live_e) - 1)]
                     else:
                         break
             if action["target"] != -1:
@@ -608,8 +607,8 @@ class Battle:
                             for i in range(len(self.player_effect)):
                                 self.player_effect[i]["atk_invalid"] = True
                         elif action["sm_code"] == "08":
-                            if 1 <= ran.randint(1,100) <= 10:
-                                random_magic = ran.randint(1,20)
+                            if 1 <= pyxel.rndi(1,100) <= 10:
+                                random_magic = pyxel.rndi(1,20)
                                 if random_magic < 10:
                                     random_magic = f"0{random_magic}"
                                 else:
@@ -622,8 +621,8 @@ class Battle:
                                 for len_,i in enumerate(self.chara_data):
                                     if self.app.chara_data[i]["HP"][1] > 0:
                                         live_p.append(len_)
-                                ran_p = live_p[ran.randint(0,len(live_p) - 1)]
-                                ran_e = live_e[ran.randint(0,len(live_e) - 1)]
+                                ran_p = live_p[pyxel.rndi(0,len(live_p) - 1)]
+                                ran_e = live_e[pyxel.rndi(0,len(live_e) - 1)]
                                 int_code = int(random_magic)
                                 sm_info = self.magic_codes["magic"][random_magic]
                                 if 1 <= int_code <= 15:
@@ -652,7 +651,7 @@ class Battle:
                                 self.player_op[self.attack_count]["effect_invoke"] = True
                                 self.player_op[self.attack_count]["effect_name"] = random_magic
                         elif action["sm_code"] == "09":
-                            if 1 <= ran.randint(1,100) <= 5:
+                            if 1 <= pyxel.rndi(1,100) <= 5:
                                 self.player_op[self.attack_count]["effect_invoke"] = True
                                 self.player_op[self.attack_count]["effect_name"] = "atk_buff"
                                 self.player_effect[action["player_pos"]]["atk_buff"] += 3
@@ -660,12 +659,12 @@ class Battle:
                 else:
                     if (action["sm_code"]["type"] == "revival" and self.chara_data[action["target"]]["HP"][1] <= 0) or action["sm_code"]["type"] != "revival":
                         if action["sm_code"]["type"] == "HP":
-                            size = ran.randint(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
+                            size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
                             self.chara_data[action["target"]]["HP"][1] += size
                             if self.chara_data[action["target"]]["HP"][1] > self.chara_data[action["target"]]["HP"][0]:
                                 self.chara_data[action["target"]]["HP"][1] = self.chara_data[action["target"]]["HP"][0]
                         elif action["sm_code"]["type"] == "MP":
-                            size = ran.randint(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
+                            size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
                             self.chara_data[action["target"]]["MP"][1] += size
                             if self.chara_data[action["target"]]["MP"][1] > self.chara_data[action["target"]]["MP"][0]:
                                 self.chara_data[action["target"]]["MP"][1] = self.chara_data[action["target"]]["MP"][0]
@@ -1019,7 +1018,7 @@ class Battle:
                         i = self.attack_count
                         ai_ac = self.ai_action[i]
                         if int(ai_ac[0]) >= len(list(self.chara_data.keys())) or self.chara_data[list(self.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
-                            ai_ac[0] = live_p[ran.randint(0,len(live_p) - 1)]
+                            ai_ac[0] = live_p[pyxel.rndi(0,len(live_p) - 1)]
                         if not self.player_animation:
                             if i < len(live_enemy):
                                 if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:

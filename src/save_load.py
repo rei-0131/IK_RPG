@@ -1,6 +1,7 @@
 import pyxel
 import json
 from save import Save
+from cloud_data import Cloud_data
 
 #セーブデータをロードする画面を表示する
 class SaveLoad:
@@ -38,8 +39,12 @@ class SaveLoad:
         self.over_load = over_load
         self.continue_game = False
         self.load = load
-        self.cloud = self.app.cloud
-        self.save_data = self.app.save_data
+        self.cloud = Cloud_data(self.app.is_test)
+        if self.app.local:
+            with open("configs/savedata.json",encoding="utf-8") as f:
+                self.save_data = json.load(f)
+        else:
+            self.save_data = self.cloud.load()
         with open("assets/scenes.json",encoding="utf-8") as f:
             self.scenes = json.load(f)
         self.load = self.scenes["LOAD_SCENE"]

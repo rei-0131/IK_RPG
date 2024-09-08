@@ -2,6 +2,8 @@ import pyxel
 import json
 import time
 from save_load import SaveLoad
+from cloud_data import Cloud_data
+from option import Option
 
 class In_Setting:
     """
@@ -44,10 +46,14 @@ class In_Setting:
         self.time_h= 0
         self.time_m = 0
         self.time_s = 0
-        self.cloud = self.app.cloud
+        self.cloud = Cloud_data(self.app.is_test)
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
-        self.option = self.app.option
-        self.save_data = self.app.save_data
+        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
+        if self.app.local:
+            with open("configs/savedata.json",encoding="utf-8") as f:
+                self.save_data = json.load(f)
+        else:
+            self.save_data = self.cloud.load()
         self.scenes = self.app.scenes
         self.tools = self.app.tools
         self.magic = self.app.magic_codes
@@ -78,6 +84,8 @@ class In_Setting:
         self.time_h= 0
         self.time_m = 0
         self.time_s = 0
+        self.option.now_volume = self.app.volume
+        self.option.vol_finger = self.app.volume
 
     def sort_update(self):
         """並び替え処理"""
@@ -369,6 +377,10 @@ class In_Setting:
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
                 print(self.enter_pos)
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if self.finger_pos//11 == 7:
+                    self.option.now_volume = self.app.volume
+                    self.option.vol_finger = self.app.volume
         elif self.enter_pos == 9:
             self.enter_pos = -1
             self.finger_pos = 0
@@ -747,7 +759,8 @@ class In_Setting:
         pyxel.rectb(5,self.init_y-75,66,75,7)
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
-        pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
+        if self.enter_pos == -1:
+            pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
         self.umplus10.draw_text(19,6,"アイテム",7)
         self.umplus10.draw_text(19,17,"大切なもの",7)
         self.umplus10.draw_text(19,28,"魔法",7)
@@ -759,23 +772,23 @@ class In_Setting:
         self.umplus10.draw_text(19,94,"セーブ",7)
         self.umplus10.draw_text(19,105,"ゲーム終了",7)
         self.umplus10.draw_text(20,self.init_y-11,f"{str(self.time_h).zfill(2)}:{str(self.time_m).zfill(2)}:{str(self.time_s).zfill(2)}")
-        if self.enter_pos == 8:
+        if self.enter_pos == 8 or self.finger_pos//11 == 8:
             self.save_load.draw()
-        elif self.enter_pos == 7:
+        elif self.enter_pos == 7 or self.finger_pos//11 == 7:
             self.option.draw()
-        elif self.enter_pos == 6:
+        elif self.enter_pos == 6 or self.finger_pos//11 == 6:
             self.sort_draw()
-        elif self.enter_pos == 5:
+        elif self.enter_pos == 5 or self.finger_pos//11 == 5:
             self.status_draw()
-        elif self.enter_pos == 4:
+        elif self.enter_pos == 4 or self.finger_pos//11 == 4:
             self.equip_draw()
-        elif self.enter_pos == 3:
+        elif self.enter_pos == 3 or self.finger_pos//11 == 3:
             self.sm_draw("skill")
-        elif self.enter_pos == 2:
+        elif self.enter_pos == 2 or self.finger_pos//11 == 2:
             self.sm_draw("magic")
-        elif self.enter_pos == 1:
+        elif self.enter_pos == 1 or self.finger_pos//11 == 1:
             self.imp_draw()
-        elif self.enter_pos == 0:
+        elif self.enter_pos == 0 or self.finger_pos//11 == 0:
             self.item_draw()
 
 
@@ -807,7 +820,7 @@ class Out_Setting:
             self.scenes = json.load(f)
         self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
         self.title_sc = self.scenes["TITLE_SCENE"]
-        self.option = self.app.option
+        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
         """基本処理"""
@@ -818,10 +831,14 @@ class Out_Setting:
             elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
                 if self.finger_pos != 11:
                     self.finger_pos += 11
-            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.enter_pos = self.finger_pos//11
             elif pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 return self.title_sc
+            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if self.finger_pos//11 == 0:
+                    self.option.now_volume = self.app.volume
+                    self.option.vol_finger = self.app.volume
             return self.setting_sc
         elif self.enter_pos == 1:
             pyxel.quit()
@@ -836,8 +853,9 @@ class Out_Setting:
         pyxel.rectb(18,5,65,95,7)
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
-        pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
+        if self.enter_pos == -1:
+            pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
         self.umplus10.draw_text(19,6,"オプション",7)
         self.umplus10.draw_text(19,17,"ゲーム終了",7)
-        if self.enter_pos == 0:
+        if self.enter_pos == 0 or self.finger_pos//11 == 0:
             self.option.draw()
