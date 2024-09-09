@@ -153,6 +153,11 @@ class Battle:
                 "move":"p"
             })
 
+    def debug_clean(self):
+        for i in range(len(self.chara_data)):
+            self.chara_data[list(self.chara_data.keys())[i]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["HP"][0]
+            self.chara_data[list(self.chara_data.keys())[i]]["MP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["MP"][0]
+
     def set_enemy(self,enemy_num,enemy_code):
         """
         敵設定
