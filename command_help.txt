@@ -1,0 +1,20 @@
+コマンド一覧
+/hp
+/mp
+/give
+
+構文
+/hp (set or add or sub) chara_index value
+/mp (set or add or sub) chara_index value
+/give type(basic or important or equips("head","armor","leggings","boots","sword","shield","staff","other")) code (num)
+
+/hp add 0 50
+/mp sub 3 70
+/give basic 001 5
+/give leggings 005
+
+/hpと/mpに関しては対象設定で@aが使える
+例
+/hp add @a 500
+
+giveのcodeとtypeはsrc/assets/tools.jsonを参照
