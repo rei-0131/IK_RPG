@@ -1,0 +1,6 @@
+pyxel
+configparser
+js
+scikit-learn
+numpy
+copy
