@@ -6,15 +6,18 @@
 ## 使用モジュール
 * pyxel
 * configparser
+* numpy
 * json
 * time
-* random
-* BDFRenderer
 * js
-* pyodide.http
 * urllib.request
 * os
 * scikit-learn
+* copy
+
+## 外部
+* BDFRenderer
+* [pyxel-tracker](https://github.com/shiromofufactory/pyxel-tracker)
 
 ## 進捗
 - [ ] メイン画面
@@ -25,10 +28,10 @@
 - [x] 詳細設定にアクセス
 - [x] 設定画面
 - - [x] キャラクタを選択した際
-- - - [x] 魔法
+- - - [x] 魔法 
 - - - [x] スキル
 - - [x] アイテム一覧
-- - [x] 詳細設定
+- - [ ] 詳細設定
 - - - [x] 音量調節(0 ~ 7)
 - - [x] セーブデータ一覧(20個ほど?)
 - - [x] チーム並び替え
