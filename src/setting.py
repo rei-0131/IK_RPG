@@ -95,12 +95,12 @@ class In_Setting:
             self.enter_pos = -1
             self.in_st_finger = 0
             self.in_st_pos = 0
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+        if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
                 self.in_st_pos -= 1
             elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+        if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
             if self.in_st_finger == 3:
                 self.in_st_pos += 1
             else:
@@ -126,12 +126,12 @@ class In_Setting:
             self.enter_pos = -1
             self.in_st_finger = 0
             self.in_st_pos = 0
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+        if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
                 self.in_st_pos -= 1
             elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+        if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
             if self.in_st_finger == 3:
                 self.in_st_pos += 1
             else:
@@ -147,12 +147,12 @@ class In_Setting:
             self.enter_pos = -1
             self.in_st_finger = 0
             self.in_st_pos = 0
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+        if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
                 self.in_st_pos -= 1
             elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+        if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
             if self.in_st_finger == 3:
                 self.in_st_pos += 1
             else:
@@ -175,12 +175,12 @@ class In_Setting:
                 self.enter_pos = -1
                 self.in_st_finger = 0
                 self.in_st_pos = 0
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
                 if self.in_st_finger == 0:
                     self.in_st_pos -= 1
                 elif self.in_st_finger != 0:
                     self.in_st_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
                 if self.in_st_finger == 3:
                     self.in_st_pos += 1
                 else:
@@ -201,12 +201,12 @@ class In_Setting:
                 self.in_pqse_finger = 0
                 self.in_eqst_item = 0
                 self.equip_men = False
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if not (self.in_pqse_finger == 0 or self.in_pqse_finger == 1):
                     self.in_pqse_finger-=2
                 elif self.in_eqst_item - 2 >= 0:
                     self.in_eqst_item -= 2
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.in_pqse_finger != 8 and self.in_pqse_finger != 9:
                     if self.in_pqse_finger + 2 < dis_num and len_eq >= self.in_pqse_finger + self.in_eqst_item + 3:
                         self.in_pqse_finger += 2
@@ -216,7 +216,7 @@ class In_Setting:
                     elif self.in_pqse_finger + self.in_eqst_item + 2 == len_eq and len_eq > 10:
                         self.in_eqst_item += 2
                         self.in_pqse_finger -= 1
-            if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+            if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                 if self.in_pqse_finger + 1 < dis_num and self.in_pqse_finger + self.in_eqst_item + 1 != len_eq:
                     self.in_pqse_finger += 1
                 elif not self.in_eqst_item + 12 <= len_eq and self.in_eqst_item + 11 <= len_eq:
@@ -224,7 +224,7 @@ class In_Setting:
                     self.in_eqst_item += 2
                 elif self.in_eqst_item + 12 <= len_eq:
                     self.in_eqst_item += 2
-            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+            if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                 if self.in_eqst_item != 0:
                     if self.in_pqse_finger == 0:
                         self.in_pqse_finger += 1
@@ -243,12 +243,12 @@ class In_Setting:
                 self.enter_pos = -1
                 self.in_st_finger = 0
                 self.in_st_pos = 0
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
                 if self.in_st_finger == 0:
                     self.in_st_pos -= 1
                 elif self.in_st_finger != 0:
                     self.in_st_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
                 if self.in_st_finger == 3:
                     self.in_st_pos += 1
                 else:
@@ -264,12 +264,12 @@ class In_Setting:
                 if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.in_eq_enter = 0
                     self.equip_men = False
-                if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)):
+                if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
                     if self.in_eqse_finger == 0 and self.in_eqse_pos != 0:
                         self.in_eqse_pos -= 1
                     elif self.in_eqse_finger != 0:
                         self.in_eqse_finger -= 1
-                if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+                if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
                     if self.in_eqse_finger == 3 and self.in_eqse_pos != 1:
                         self.in_eqse_pos += 1
                     elif self.in_eqse_finger != 3:
@@ -285,12 +285,12 @@ class In_Setting:
                     self.in_eqst_item = 0
                     self.equip_select = True
                 if len_eq > 2:
-                    if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)):
+                    if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
                         if self.in_pqse_finger != 0 and self.in_pqse_finger != 1:
                             self.in_pqse_finger -= 2
                         elif self.in_eqst_item != 0:
                             self.in_eqst_item -= 2
-                    if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+                    if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
                         if len_eq // 2 + len_eq % 2 >= self.in_pqse_finger + 1:
                             self.in_pqse_finger += 2
                         else:
@@ -301,7 +301,7 @@ class In_Setting:
                             elif self.in_eqst_item + self.in_pqse_finger + 2 == len_eq and self.in_pqse_finger % 2 != 0:
                                 self.in_eqst_item += 2
                                 self.in_pqse_finger -= 1
-                    if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                    if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                         if self.in_pqse_finger - 1 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
                             self.in_pqse_finger += 1
                         elif self.in_eqst_item + self.in_pqse_finger != len_eq + 1 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
@@ -310,7 +310,7 @@ class In_Setting:
                                 self.in_pqse_finger += 1
                             else:
                                 self.in_pqse_finger -= 1
-                    if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                    if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                         if self.in_pqse_finger == 0 and self.in_eqst_item != 0:
                             self.in_eqst_item -= 2
                             self.in_pqse_finger += 1
@@ -319,10 +319,10 @@ class In_Setting:
                         elif self.in_pqse_finger != 0:
                             self.in_pqse_finger -= 1
                 else:
-                    if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                    if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                         if self.in_pqse_finger != 1:
                             self.in_pqse_finger += 1
-                    if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                    if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                         if self.in_pqse_finger != 0:
                             self.in_pqse_finger -= 1
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
@@ -339,12 +339,12 @@ class In_Setting:
         len_ = len(self.app.chara_data.items())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+        if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
                 self.in_st_pos -= 1
             elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+        if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
             if self.in_st_finger == 3:
                 self.in_st_pos += 1
             else:
@@ -367,17 +367,17 @@ class In_Setting:
         self.time_m = (time_time % 3600) // 60
         self.time_s = (time_time % 3600 % 60)
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos != 99:
                     self.finger_pos += 11
             elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
                 print(self.enter_pos)
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos//11 == 7:
                     self.option.now_volume = self.app.volume
                     self.option.vol_finger = self.app.volume
@@ -825,17 +825,17 @@ class Out_Setting:
     def update(self):
         """基本処理"""
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos != 11:
                     self.finger_pos += 11
             elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.enter_pos = self.finger_pos//11
             elif pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 return self.title_sc
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos//11 == 0:
                     self.option.now_volume = self.app.volume
                     self.option.vol_finger = self.app.volume
