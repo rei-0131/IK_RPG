@@ -258,12 +258,12 @@ class Battle:
             self.select_num3 = -1
             self.finger_pos2 = 0
             self.finger_pos4 = 0
-        if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+        if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
             if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != self.enemy_num - 1:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) + 1]
             else:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
-        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+        if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
             live_e = []
             for len_,v in enumerate(self.enemy_status):
                 if  v["HP"][1] > 0:
@@ -316,12 +316,16 @@ class Battle:
         """味方ターゲット設定"""
         #味方ターゲットを選択
         if self.select_num5 == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos5 != 0:
                     self.finger_pos5 -= 18
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                else:
+                    self.finger_pos5 = (len(self.chara_data.items()) - 1) * 18
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                     self.finger_pos5 += 18
+                else:
+                    self.finger_pos5 = 0
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_num5 = -1
                 self.finger_pos5 = 0
@@ -390,12 +394,12 @@ class Battle:
                 self.select_num2 = -1
                 self.finger_pos3 = 0
                 self.item_pos = 0
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
                     self.finger_pos3-=2
                 elif self.item_pos - 2 >= 0:
                     self.item_pos -= 2
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos3 != 8 and self.finger_pos3 != 9:
                     if self.finger_pos3 + 2 < self.dis_num:
                         self.finger_pos3 += 2
@@ -405,7 +409,7 @@ class Battle:
                     elif self.finger_pos3 + self.item_pos + 3 == self.item_num and self.item_num > 10:
                         self.item_pos += 2
                         self.finger_pos3 -= 1
-            if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+            if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                 if self.finger_pos3 + 1 < self.dis_num:
                     self.finger_pos3 += 1
                 elif not self.item_pos + 12 <= self.item_num and self.item_pos + 11 <= self.item_num:
@@ -413,7 +417,7 @@ class Battle:
                     self.item_pos += 2
                 elif self.item_pos + 12 <= self.item_num:
                     self.item_pos += 2
-            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+            if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                 if self.item_pos != 0:
                     if self.finger_pos3 == 0:
                         self.finger_pos3 += 1
@@ -781,10 +785,10 @@ class Battle:
         """アイテム表示・選択"""
         #アイテムの表示・選択
         if self.select_num2 == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos5 != 0:
                     self.finger_pos5 -= 18
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                     self.finger_pos5 += 18
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -796,12 +800,12 @@ class Battle:
             if self.select_num3 == -1:
                 if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.select_num1 = -1
-                if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
                         self.finger_pos3-=2
                     elif self.item_pos - 2 >= 0:
                         self.item_pos -= 2
-                if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                     if self.finger_pos3 != 8 and self.finger_pos3 != 9:
                         if self.finger_pos3 + 2 < self.dis_num:
                             self.finger_pos3 += 2
@@ -811,7 +815,7 @@ class Battle:
                         elif self.finger_pos3 + self.item_pos + 3 == self.item_num and self.item_num > 10:
                             self.item_pos += 2
                             self.finger_pos3 -= 1
-                if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                     if self.finger_pos3 + 1 < self.dis_num:
                         self.finger_pos3 += 1
                     elif not self.item_pos + 12 <= self.item_num and self.item_pos + 11 <= self.item_num:
@@ -819,7 +823,7 @@ class Battle:
                         self.item_pos += 2
                     elif self.item_pos + 12 <= self.item_num:
                         self.item_pos += 2
-                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                     if self.item_pos != 0:
                         if self.finger_pos3 == 0:
                             self.finger_pos3 += 1
@@ -832,16 +836,16 @@ class Battle:
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     self.select_num3 = self.item_pos + self.finger_pos3
             else:
-                if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if self.finger_pos5 != 0:
                         self.finger_pos5 -= 18
-                if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                     if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                         self.finger_pos5 += 18
-                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A,hold = 8,repeat=8):
                     self.finger_pos5 = 0
                     self.select_num3 = -1
-                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if pyxel.btnp(pyxel.KEY_RETURN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B,hold = 8,repeat=8):
                     use_item = self.tools["basic"][list(self.battle_item.items())[self.select_num3][0]]
                     use_player = list(self.chara_data.keys())[int(self.finger_pos5 // 18)]
                     if (use_item["type"] == "revival" and self.chara_data[use_player]["HP"][1] <= 0) or (use_item["type"] != "revival" and self.chara_data[use_player]["HP"][1] > 0):
@@ -862,12 +866,12 @@ class Battle:
         if self.in_battle:
             if self.operation_player:
                 if self.select_num1 == -1:
-                    if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                    if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                         if self.finger_pos1 != 0:
                             self.finger_pos1 -= 15
                         else:
                             self.finger_pos1 = 60
-                    if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                    if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                         if self.finger_pos1 != 60:
                             self.finger_pos1 += 15
                         else:
@@ -879,12 +883,12 @@ class Battle:
                 elif self.select_num1 != 4:
                     if self.select_num2 == -1:
                         if 0 <= self.select_num1 <= 3:
-                            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                                 if self.finger_pos2 != 0:
                                     self.finger_pos2 -= 18
                                 else:
                                     self.finger_pos2 = (len(self.chara_data.items()) - 1) * 18
-                            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                                 if self.finger_pos2 != (len(self.chara_data.items()) - 1) * 18:
                                     self.finger_pos2 += 18
                                 else:

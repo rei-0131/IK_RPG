@@ -94,6 +94,11 @@ class CMD:
                 print(self.app.equip_codes)
                 self.app.equip_codes[arg[1]].append(arg[2])
                 print(self.app.equip_codes)
+            if arg[1] == "basic":
+                self.log = f"{arg[1]}の{arg[2]}を{arg[3]}個与えました。"
+            else:
+                self.log = f"{arg[1]}の{arg[2]}を与えました。"
+            self.log_type = "str"
         except Exception as e:
             print(e)
             self.log = str(e)

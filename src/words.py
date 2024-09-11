@@ -10,7 +10,7 @@ class Words:
         self.disp_id = ""
         self.finger_pos = 0
         self.word = {}
-        self.questions = {}
+        self.questions = "None"
         self.word_tri = [0,True]
         self.words = self.app.words
         self.tools = self.app.tools
@@ -18,13 +18,17 @@ class Words:
     def update(self):
         """基本処理"""
         #操作
-        if self.question["exist"]:
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
-                if self.finger_pos != (len(self.question["questions"]) - 1) * -10:
+        if self.question != "None":
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
+                if self.finger_pos != (len(self.question) - 1) * -10:
                     self.finger_pos -= 10
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                else:
+                    self.finger_pos = 0
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos != 0:
                     self.finger_pos += 10
+                else:
+                    self.finger_pos = (len(self.question) - 1) * -10
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if self.word["to"] != "None":
                     if type(self.word["to"]) == list:
@@ -81,7 +85,10 @@ class Words:
         self.msg_id = msg_id
         #01 変更
         self.word = self.words["story"][msg_id]
-        self.question = self.word["question"]
+        if "questions" in self.word:
+            self.question = self.word["questions"]
+        else:
+            self.question = "None"
         pyxel.rect(5,self.init_y-60,self.init_x-10,60,0)
         pyxel.rectb(5,self.init_y-60,self.init_x-10,60,7)
         pyxel.rect(5,self.init_y-71,60,12,0)
@@ -111,14 +118,14 @@ class Words:
             elif self.word["item"][0] == "important":
                 self.app.imp_item_codes.append(self.word["item"][1])
             self.word["item"] = False
-        if self.question["exist"]:
-            que_height = len(self.question["questions"]) * 12
+        if self.question != "None":
+            que_height = len(self.question) * 12
             max_str = 0
-            for i in self.question["questions"]:
+            for i in self.question:
                 if max_str < len(i) * 12:
                     max_str = len(i) * 12
             pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
             pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
             pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
-            for i,h in zip(self.question["questions"],range(0,len(self.question["questions"])*12,11)):
+            for i,h in zip(self.question,range(0,len(self.question)*12,11)):
                 self.umplus10.draw_text(self.init_x-max_str + 2,self.init_y-98+h+(39-que_height),i,7)
