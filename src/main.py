@@ -2,6 +2,8 @@ import pyxel
 import configparser
 import json
 import time
+import datetime as dt
+from zoneinfo import ZoneInfo
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 from title import Title
@@ -21,6 +23,7 @@ from rpg_cmd import CMD
 is_test = True
 ##########
 
+#各ファイル読み込み
 cloud = Cloud_data(is_test=is_test)
 local = cloud.import_()
 
@@ -78,6 +81,7 @@ pyxel.init(init_x,init_y,name,fps=FPS)
 #文字コードの読み込み
 umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
 
+START_SCENE = scenes["START_SCENE"]
 TITLE_SCENE = scenes["TITLE_SCENE"]
 MAIN_SCENE = scenes["MAIN_SCENE"]
 IN_SETTING_SCENE = scenes["IN_SETTING_SCENE"]
@@ -102,7 +106,7 @@ class App:
         self.init_x = x
         self.init_y = y
         self.local = local
-        self.now_scene = 0
+        self.now_scene = -1
         self.msg_id = "01"
         self.be_scene = 0
         self.now_map = 0
@@ -127,18 +131,23 @@ class App:
         self.magic_codes = magic_codes
         self.enemy_info = enemy_info
         self.collision_data = collision_data
+        self.start_loading = False
+        self.load_msg = ""
         if self.local:
             self.volume = int(config.get("basic","volume"))
         else:
             self.volume = int(config["basic"]["volume"])
         self.game_time = "00:00:00"
         self.game_time_start = None
-        self.my_modules()
         pyxel.load("assets/player.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
 
     def my_modules(self):
+        """各クラスのインスタンス作成"""
+        ld_st = time.time()
+        self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
+        print(self.load_msg)
         self.map = Map(self)
         self.sound_manager = SoundManager()
         self.cloud = cloud
@@ -152,6 +161,9 @@ class App:
         self.words = Words(self,self.init_x,self.init_y,umplus10)
         self.battle = Battle(self.init_x, self.init_y,umplus10,self)
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
+        self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
+        print(self.load_msg)
+        print(f"Load Time:{time.time() - ld_st}s")
 
     def update(self):
         """基本処理"""
@@ -178,8 +190,6 @@ class App:
                     self.equip_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
                     self.from_load = False
                 else:
-                    # with open("../assets/savedata.json","w",encoding="utf-8") as f:
-                    #     json.dump({},f,indent=4)
                     print("new game")
                     self.loaddata = {
                         "play_data": {
@@ -211,6 +221,11 @@ class App:
             self.now_scene = self.save_load.update()
             if self.save_load.continue_game:
                 self.from_load = True
+        elif self.now_scene == START_SCENE:
+            if not self.start_loading:
+                self.start_loading = True
+                self.my_modules()
+                self.now_scene = 0
         if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:
                 self.now_scene = self.be_scene
@@ -228,7 +243,7 @@ class App:
                 # enemy_num = random.randint(1,3)
                 self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
                 self.now_scene = 5
-        if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL):
+        if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
             if self.now_scene == "cmd":
                 self.now_scene = self.be_scene
             else:
@@ -263,6 +278,10 @@ class App:
             self.setting_in.draw()
         elif self.now_scene == LOAD_SCENE:
             self.save_load.draw()
+        elif self.now_scene == START_SCENE:
+            pyxel.cls(0)
+            pyxel.text(125,90,"Now Loading...",7)
+            pyxel.text(150,190,self.load_msg,7)
         # pyxel.blt(0,0,0,0,0,63,79,10)
         if self.now_scene == 5:
             self.battle.draw()
