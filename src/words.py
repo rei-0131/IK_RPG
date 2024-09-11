@@ -15,7 +15,7 @@ class Words:
         self.words = self.app.words
         self.tools = self.app.tools
 
-    def update(self):
+    def update(self) -> tuple[str,str]:
         """基本処理"""
         #操作
         if self.question != "None":
@@ -83,7 +83,6 @@ class Words:
         """
         #文字を出力
         self.msg_id = msg_id
-        #01 変更
         self.word = self.words["story"][msg_id]
         if "questions" in self.word:
             self.question = self.word["questions"]

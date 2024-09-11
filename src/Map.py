@@ -18,7 +18,7 @@ class Map:
         self.next_x = 0
         self.next_y = 0
 
-    def cd_check(self,x,y,dx,dy,num,key):
+    def cd_check(self,x,y,dx,dy,num,key) -> bool:
         """
         当たり判定の判定
 

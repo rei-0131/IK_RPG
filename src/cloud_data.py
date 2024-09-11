@@ -21,7 +21,7 @@ class Cloud_data:
     def __init__(self,is_test):
         self.is_test = is_test
 
-    def import_(self):
+    def import_(self) -> bool:
         """
         ローカルかクラウドかの判断
 
@@ -55,7 +55,7 @@ class Cloud_data:
 
         Returns
         ----------
-        savedata : dict
+        savedata : Any
             セーブデータ
         """
         save_name = ""

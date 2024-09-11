@@ -57,7 +57,6 @@ class Battle:
         self.damage_pos = 0
         self.in_battle = True
         self.battle_item = {}
-        #防御などターンを通しての効果などを表記
         self.sp_now = {}
         self.attack_count = 0
         self.enemy_animation = True
@@ -186,8 +185,15 @@ class Battle:
                 "move":"p"
             })
 
-    def create_AI(self):
-        """AI作成"""
+    def create_AI(self) -> MultiOutputRegressor:
+        """
+        AI作成
+
+        Returns
+        -------
+        clf : MultiOutputRegressor
+            AI
+        """
         #first_aiに入っているデータはセットアップデータ
         data = []
         ai_answer =[]

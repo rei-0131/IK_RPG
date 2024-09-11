@@ -58,7 +58,7 @@ class Option:
             self.app.volume = self.now_volume
             self.enter_pos = -1
 
-    def update(self,enter_pos):
+    def update(self,enter_pos) -> int:
         """オプション更新"""
         if self.enter_pos == -1:
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
