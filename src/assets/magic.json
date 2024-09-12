@@ -178,8 +178,8 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"def",
-            "buff_amount":15,
-            "info":"任意の味方の防御力を１５%アップ"
+            "buff_amount":30,
+            "info":"任意の味方の防御力を３０%アップ"
         },
         "20":{
             "attribute":"バフ",
@@ -187,8 +187,8 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"atk",
-            "buff_amount":15,
-            "info":"任意の味方の攻撃力を１５%アップ"
+            "buff_amount":30,
+            "info":"任意の味方の攻撃力を３０%アップ"
         }
     },
     "skill":{
