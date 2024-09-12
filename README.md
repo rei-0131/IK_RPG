@@ -18,6 +18,7 @@
 - scikit-learn
 - copy
 
+
 ## 外部
 
 - BDFRenderer
@@ -52,6 +53,9 @@
 - [ ] セーブデータで何を保存するかの設定
 
 . . . . . **今後も追加予定**
+
+## コマンドの使い方
+[説明ファイル](https://github.com/rei-0131/IK_RPG/blob/master/command_help.txt)
 
 ## セーブデータのフォーマット
 
