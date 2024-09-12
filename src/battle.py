@@ -123,6 +123,7 @@ class Battle:
         self.turn = 0
         self.ai_turn = -1
         self.play_effect_info = True
+        self.random_range = 0
         self.chara_data = {}
         if len(self.app.chara_data.items()) > 4:
             for k,v in self.app.chara_data.items():
@@ -562,7 +563,7 @@ class Battle:
                             if 1 <= int_code <= 15 or int_code == 21:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 magic_atk = atk * sm_info["atk_amount"] / 100
-                                if (atk - def_) * kaisin_p >= 0:
+                                if (magic_atk - def_) * kaisin_p >= 0:
                                     self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
                             elif 17 <= int_code <= 18:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
@@ -622,6 +623,7 @@ class Battle:
                             for i in range(len(self.player_effect)):
                                 self.player_effect[i]["atk_invalid"] = True
                         elif action["sm_code"] == "08":
+                            self.random_range = pyxel.rndi(1,100)
                             if 1 <= pyxel.rndi(1,100) <= 10:
                                 random_magic = pyxel.rndi(1,20)
                                 if random_magic < 10:
@@ -646,7 +648,8 @@ class Battle:
                                     kaisin_p = 1
                                     if action["kaisin"]:
                                         kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
-                                    self.enemy_status[ran_e]["HP"][1] -= (magic_atk - def_) * kaisin_p
+                                    if (magic_atk - def_) * kaisin_p >= 0:
+                                        self.enemy_status[ran_e]["HP"][1] -= (magic_atk - def_) * kaisin_p
                                 elif int_code == 16:
                                     if sm_info["recovery_amount"][0] == "p":
                                         self.app.chara_data[list(self.chara_data.keys())[ran_p]]["HP"][1] += self.app.chara_data[list(self.chara_data.keys())[ran_p]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
@@ -726,8 +729,12 @@ class Battle:
                         damage = False
                         damage_amount = 0
                         kaisin_p = 1
+                        ####
+                        #ダメージ計算
+                        #遊び人のスキルによる魔法発動時のダメージ
+                        ####
                         if action["kaisin"]:
-                            kaisin_p = kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
+                            kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100
                         if action["sm"] == "None":
                             damage = True
                             damage_amount = (atk - def_) * kaisin_p
