@@ -133,7 +133,7 @@ def get_str():
             return "z"
     elif pyxel.btnp(pyxel.KEY_0):
         if pyxel.btn(pyxel.KEY_SHIFT) or pyxel.btn(pyxel.KEY_LSHIFT) or pyxel.btn(pyxel.KEY_RSHIFT):
-            pass
+            return "@"
         else:
             return "0"
     elif pyxel.btnp(pyxel.KEY_1):
