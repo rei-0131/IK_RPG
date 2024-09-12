@@ -624,7 +624,7 @@ class Battle:
                                 self.player_effect[i]["atk_invalid"] = True
                         elif action["sm_code"] == "08":
                             self.random_range = pyxel.rndi(1,100)
-                            if 1 <= pyxel.rndi(1,100) <= 10:
+                            if 1 <= self.random_range <= 10:
                                 random_magic = pyxel.rndi(1,20)
                                 if random_magic < 10:
                                     random_magic = f"0{random_magic}"
@@ -669,7 +669,8 @@ class Battle:
                                 self.player_op[self.attack_count]["effect_invoke"] = True
                                 self.player_op[self.attack_count]["effect_name"] = random_magic
                         elif action["sm_code"] == "09":
-                            if 1 <= pyxel.rndi(1,100) <= 5:
+                            self.random_range = pyxel.rndi(1,100)
+                            if 1 <= self.random_range <= 5:
                                 self.player_op[self.attack_count]["effect_invoke"] = True
                                 self.player_op[self.attack_count]["effect_name"] = "atk_buff"
                                 self.player_effect[action["player_pos"]]["atk_buff"] += 3
@@ -689,10 +690,10 @@ class Battle:
                         elif action["sm_code"]["type"] == "revival":
                             self.chara_data[action["target"]]["HP"][1] = int(self.chara_data[action["target"]]["HP"][0] * (action["sm_code"]["effect"] / 100))
                             self.player_op.append({"player_pos":list(self.chara_data.keys()).index(action["target"]),"target":-1,"sm":"None","sm_code":"None"})
-                        self.battle_item[list(self.battle_item.keys())[self.select_num3]]["value"] -= 1
-                        if self.app.item_codes[list(self.battle_item.keys())[self.select_num3]]["value"] == 0:
-                            self.app.item_codes.pop(list(self.battle_item.keys())[self.select_num3])
-                            self.battle_item.pop(list(self.battle_item.keys())[self.select_num3])
+                        self.battle_item[list(self.battle_item.keys())[action["use_num"]]]["value"] -= 1
+                        if self.app.item_codes[list(self.battle_item.keys())[action["use_num"]]]["value"] == 0:
+                            self.app.item_codes.pop(list(self.battle_item.keys())[action["use_num"]])
+                            self.battle_item.pop(list(self.battle_item.keys())[action["use_num"]])
                         print(action["sm_code"])
             for i in self.app.chara_data.keys():
                 if self.app.chara_data[i]["HP"][1] > self.app.chara_data[i]["HP"][0]:
@@ -754,6 +755,15 @@ class Battle:
                                 damage = True
                                 magic_atk = atk * sm_info["atk_amount"] / 100
                                 damage_amount = (magic_atk - def_) * kaisin_p
+                        elif action["sm"] == "skill":
+                            int_code = int(action["sm_code"])
+                            if int_code == 8:
+                                sm_info = self.magic_codes["magic"][random_magic]
+                                int_code_magic = int(random_magic)
+                                if 1 <= int_code_magic <= 15 or int_code_magic == 21:
+                                    damage = True
+                                    magic_atk = atk * sm_info["atk_amount"] / 100
+                                    damage_amount = (magic_atk - def_) * kaisin_p
                         if damage:
                             enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
                             if damage_amount > 0:
@@ -862,7 +872,7 @@ class Battle:
                     use_item = self.tools["basic"][list(self.battle_item.items())[self.select_num3][0]]
                     use_player = list(self.chara_data.keys())[int(self.finger_pos5 // 18)]
                     if (use_item["type"] == "revival" and self.chara_data[use_player]["HP"][1] <= 0) or (use_item["type"] != "revival" and self.chara_data[use_player]["HP"][1] > 0):
-                        self.player_op.append({"player_pos":self.select_num2,"target":use_player,"sm":"item","sm_code":use_item,"target_team":"self"})
+                        self.player_op.append({"player_pos":self.select_num2,"target":use_player,"sm":"item","sm_code":use_item,"target_team":"self","use_num":self.select_num3})
                         self.player_op_over()
                         self.finger_pos1 = 0
                         self.select_num1 = -1
@@ -1351,16 +1361,16 @@ class Battle:
                                 for i,n in enumerate(use_magic):
                                     if n["sm"] == "skill":
                                         if n["sm_code"] == "05":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}への攻撃を1ターン無効",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}への攻撃を１ターン無効",7)
                                         elif n["sm_code"] == "06":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"全ての味方への攻撃を1ターン無効",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"全ての味方への攻撃を１ターン無効",7)
                                         elif n["sm_code"] == "07":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"魔法ののステータスアップ率を+3%",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"魔法ののステータスアップ率を＋３％",7)
                                     elif n["sm"] == "magic":
                                         if n["sm_code"] == "19":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の防御力を15%アップ",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の防御力を３０％アップ",7)
                                         elif n["sm_code"] == "20":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の攻撃力を15%アップ",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の攻撃力を３０％アップ",7)
                                     elif n["sm"] == "item":
                                         self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['player_pos']]}が{[n['target']][0]}に{n['sm_code']['name']}を使用した",7)
                             else:
@@ -1426,7 +1436,7 @@ class Battle:
                             p_name = list(self.chara_data.keys())[n[2]]
                             magic_name = self.magic_codes["skill"][n[1]]["name"]
                             if n[0] == "atk_buff":
-                                self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いて攻撃力が3%アップした",7)
+                                self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いて攻撃力が３％アップした",7)
                             elif n[0] == "none":
                                 if magic_name == "口笛":
                                     self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いたが何も起こらなかった",7)

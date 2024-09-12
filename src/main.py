@@ -79,7 +79,7 @@ else:
     FPS = int(config["basic"]["fps"])
     name = config["basic"]["name"]
 #BDFRendererのインスタンス作成より前にinitしないとエラーが発生する
-pyxel.init(init_x,init_y,title=name,fps=FPS)
+pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 #文字コードの読み込み
 umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
 
@@ -109,11 +109,13 @@ class App:
         self.init_y = y
         self.local = local
         self.now_scene = -1
+        self.back_scene = -1
         self.msg_id = "01"
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
-        self.disp_id = "None"
+        # self.disp_id = "None"
+        self.disp_id = "01"
         self.in_word = False
         self.new_game = True
         self.from_load = False
@@ -242,9 +244,16 @@ class App:
                 self.be_scene = self.now_scene
                 self.now_scene = IN_SETTING_SCENE
         if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
-            if self.now_scene == 5:
+            if not self.now_scene == "cmd" and self.now_scene == 5:
                 self.now_scene = self.be_scene
-            elif self.now_scene != "cmd":
+            elif self.now_scene == "cmd" and self.back_scene == 5:
+                self.now_scene = self.be_scene
+                self.battle.clean(self.now_scene)
+                #以下、敵のランダムな数、敵の名称を決定するコード
+                # enemy_num = random.randint(1,3)
+                self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
+                self.now_scene = 5
+            else:
                 self.be_scene = self.now_scene
                 self.battle.clean(self.now_scene)
                 #以下、敵のランダムな数、敵の名称を決定するコード
@@ -253,17 +262,15 @@ class App:
                 self.now_scene = 5
         if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
             if self.now_scene == "cmd":
-                self.now_scene = self.be_scene
+                self.now_scene = self.back_scene
             else:
                 self.cmd.start = True
-                self.be_scene = self.now_scene
+                self.back_scene = self.now_scene
                 self.now_scene = "cmd"
         if self.now_scene == 5:
             self.battle.update()
         elif self.now_scene == "cmd":
             self.cmd.update()
-        if pyxel.btnp(pyxel.KEY_Q) and not self.now_scene == "cmd":
-            pyxel.quit()
 
     def draw(self):
         """基本描画"""
