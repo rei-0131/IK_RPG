@@ -2,8 +2,6 @@ import pyxel
 import configparser
 import json
 import time
-import datetime as dt
-from zoneinfo import ZoneInfo
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 from title import Title
@@ -17,6 +15,7 @@ from battle import Battle
 from words import Words
 from option import Option
 
+#dev only
 from rpg_cmd import CMD
 
 ##########テスト環境かのbool
@@ -27,10 +26,10 @@ is_test = True
 cloud = Cloud_data(is_test=is_test)
 local = cloud.import_()
 
-with open("src/assets/init_data.json",encoding="utf-8") as f:
-    init_data = json.load(f)
-
 if local:
+    import datetime as dt
+    from zoneinfo import ZoneInfo
+
     config = configparser.ConfigParser(interpolation=None)
     config.read("src/configs/config.ini",encoding="utf-8_sig")
     with open("src/configs/savedata.json",encoding="utf-8") as f:
@@ -38,6 +37,9 @@ if local:
 else:
     config = cloud.config_load()
     save_data = cloud.load()
+
+with open("src/assets/init_data.json",encoding="utf-8") as f:
+    init_data = json.load(f)
 
 with open("src/assets/scenes.json",encoding="utf-8") as f:
     scenes = json.load(f)
@@ -77,7 +79,7 @@ else:
     FPS = int(config["basic"]["fps"])
     name = config["basic"]["name"]
 #BDFRendererのインスタンス作成より前にinitしないとエラーが発生する
-pyxel.init(init_x,init_y,name,fps=FPS)
+pyxel.init(init_x,init_y,title=name,fps=FPS)
 #文字コードの読み込み
 umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
 
@@ -145,8 +147,11 @@ class App:
 
     def my_modules(self):
         """各クラスのインスタンス作成"""
-        ld_st = time.time()
-        self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
+        if local:
+            ld_st = time.time()
+            self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
+        else:
+            self.load_msg = "Load start"
         print(self.load_msg)
         self.map = Map(self)
         self.sound_manager = SoundManager()
@@ -161,9 +166,12 @@ class App:
         self.words = Words(self,self.init_x,self.init_y,umplus10)
         self.battle = Battle(self.init_x, self.init_y,umplus10,self)
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
-        self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
-        print(self.load_msg)
-        print(f"Load Time:{time.time() - ld_st}s")
+        if local:
+            self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
+            print(self.load_msg)
+            print(f"Load Time:{time.time() - ld_st}s")
+        else:
+            self.load_msg = "Load end"
 
     def update(self):
         """基本処理"""
