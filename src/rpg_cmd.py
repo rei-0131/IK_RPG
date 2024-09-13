@@ -118,6 +118,7 @@ class CMD:
         else:
             tmp = rpg_str.get_str()
             if tmp != None:
+                print(tmp)
                 if tmp == "back":
                     self.in_str = self.in_str[:len(self.in_str) - 1]
                 else:

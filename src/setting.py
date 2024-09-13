@@ -138,7 +138,7 @@ class In_Setting:
                 self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
             #アイテムを使用するときの処理など
-            print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]][0])
+            print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]]["name"])
 
     def imp_update(self):
         """大切なもの処理"""
@@ -302,7 +302,7 @@ class In_Setting:
                                 self.in_eqst_item += 2
                                 self.in_pqse_finger -= 1
                     if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
-                        if self.in_pqse_finger - 1 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
+                        if self.in_pqse_finger - 2 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
                             self.in_pqse_finger += 1
                         elif self.in_eqst_item + self.in_pqse_finger != len_eq + 1 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
                             self.in_eqst_item += 2
@@ -683,7 +683,11 @@ class In_Setting:
                                     self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",7)
                                 else:
                                     self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",8)
-                        self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
+                        try:
+                            self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
+                        except IndexError:
+                            self.in_pqse_finger = 0
+                            self.in_eqst_item = 0
                 self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def status_draw(self):

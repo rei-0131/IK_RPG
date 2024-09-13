@@ -78,7 +78,7 @@ class Option:
     def volume_draw(self):
         """音量操作の描画"""
         pyxel.rect(71,6+self.select_pos,self.init_x-72,11,1)
-        self.umplus10.draw_text(70,6,"音量",7)
+        self.umplus10.draw_text(70,6,"音量(無効)",7)
         self.umplus10.draw_text(self.init_x-15,6,str(self.vol_finger),7)
         if self.vol_finger == 7:
             pyxel.tri(self.init_x-18,6,self.init_x-8,6,self.init_x-13,3,7)
@@ -91,7 +91,7 @@ class Option:
     def draw(self):
         """オプション描画"""
         pyxel.rect(71,6+self.select_pos,self.init_x-72,11,1)
-        self.umplus10.draw_text(70,6,"音量",7)
+        self.umplus10.draw_text(70,6,"音量(無効)",7)
         self.umplus10.draw_text(self.init_x-15,6,str(self.now_volume),7)
         if self.enter_pos == 0:
             self.volume_draw()

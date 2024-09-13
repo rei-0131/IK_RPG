@@ -155,8 +155,8 @@ class App:
         else:
             self.load_msg = "Load start"
         print(self.load_msg)
-        self.map = Map(self)
         self.sound_manager = SoundManager()
+        self.map = Map(self)
         self.cloud = cloud
         self.save = Save(self)
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
@@ -168,12 +168,15 @@ class App:
         self.words = Words(self,self.init_x,self.init_y,umplus10)
         self.battle = Battle(self.init_x, self.init_y,umplus10,self)
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
+        self.load_msg = "Load end"
         if local:
             self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
-            print(self.load_msg)
             print(f"Load Time:{time.time() - ld_st}s")
-        else:
-            self.load_msg = "Load end"
+        print(self.load_msg)
+
+    def load_bgms(self):
+        self.sound_manager.load_bgm("qnoheya","test")
+        # self.sound_manager.play_bgm("test")
 
     def update(self):
         """基本処理"""
@@ -213,6 +216,13 @@ class App:
                         "equip_codes":self.equip_codes
                         }
                     }
+                    self.game_time = self.loaddata["play_data"]["time"]
+                    self.player.x = self.loaddata["play_data"]["x"]
+                    self.player.y = self.loaddata["play_data"]["y"]
+                    self.chara_data = init_data["chara_data"]
+                    self.item_codes = init_data["item_codes"]
+                    self.equip_codes = init_data["equip_codes"]
+                    self.imp_item_codes = init_data["imp_item_codes"]
                 self.new_game = False
             self.player.update()
             if self.in_word:
@@ -235,6 +245,7 @@ class App:
             if not self.start_loading:
                 self.start_loading = True
                 self.my_modules()
+                self.load_bgms()
                 self.now_scene = 0
         if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:

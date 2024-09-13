@@ -413,16 +413,17 @@ class Battle:
                 else:
                     if self.finger_pos3 + self.item_pos + 2 < self.item_num:
                         self.item_pos += 2
-                    elif self.finger_pos3 + self.item_pos + 3 == self.item_num and self.item_num > 10:
+                    elif self.finger_pos3 + self.item_pos + 2 == self.item_num and self.item_num > 10:
                         self.item_pos += 2
                         self.finger_pos3 -= 1
             if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                 if self.finger_pos3 + 1 < self.dis_num:
                     self.finger_pos3 += 1
-                elif not self.item_pos + 12 <= self.item_num and self.item_pos + 11 <= self.item_num:
+                elif not self.item_pos + 13 <= self.item_num and self.finger_pos3 % 2 != 0:
                     self.finger_pos3 -= 1
                     self.item_pos += 2
                 elif self.item_pos + 12 <= self.item_num:
+                    self.finger_pos3 -= 1
                     self.item_pos += 2
             if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                 if self.item_pos != 0:
