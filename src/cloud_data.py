@@ -102,7 +102,7 @@ class Cloud_data:
         if window.localStorage.getItem(config_name) == None:
             config = {
                 "basic":{
-                        "screen_x":300,"screen_y":200,"name":"一工クエスト","fps":30,"volume":7
+                        "screen_x":300,"screen_y":200,"name":"一工クエスト","fps":30
                         }
                 }
             window.localStorage.setItem(config_name,config)

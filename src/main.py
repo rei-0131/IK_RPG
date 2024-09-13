@@ -137,10 +137,6 @@ class App:
         self.collision_data = collision_data
         self.start_loading = False
         self.load_msg = ""
-        if self.local:
-            self.volume = int(config.get("basic","volume"))
-        else:
-            self.volume = int(config["basic"]["volume"])
         self.game_time = "00:00:00"
         self.game_time_start = None
         pyxel.load("assets/player.pyxres")

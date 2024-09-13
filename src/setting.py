@@ -84,8 +84,6 @@ class In_Setting:
         self.time_h= 0
         self.time_m = 0
         self.time_s = 0
-        self.option.now_volume = self.app.volume
-        self.option.vol_finger = self.app.volume
 
     def sort_update(self):
         """並び替え処理"""
@@ -377,10 +375,6 @@ class In_Setting:
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
                 print(self.enter_pos)
-            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                if self.finger_pos//11 == 7:
-                    self.option.now_volume = self.app.volume
-                    self.option.vol_finger = self.app.volume
         elif self.enter_pos == 9:
             self.enter_pos = -1
             self.finger_pos = 0
@@ -839,10 +833,6 @@ class Out_Setting:
                 self.enter_pos = self.finger_pos//11
             elif pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 return self.title_sc
-            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                if self.finger_pos//11 == 0:
-                    self.option.now_volume = self.app.volume
-                    self.option.vol_finger = self.app.volume
             return self.setting_sc
         elif self.enter_pos == 1:
             pyxel.quit()
