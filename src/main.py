@@ -82,6 +82,7 @@ else:
 pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 #文字コードの読み込み
 umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
+umplus24 = BDFRenderer("assets/b24.bdf")
 
 START_SCENE = scenes["START_SCENE"]
 TITLE_SCENE = scenes["TITLE_SCENE"]
@@ -115,13 +116,14 @@ class App:
         self.now_map = 0
         self.is_test = is_test
         # self.disp_id = "None"
-        self.disp_id = "01"
+        self.disp_id = "None"
         self.in_word = False
         self.new_game = True
         self.from_load = False
         self.savedata = None
         self.loaddata = None
         self.in_battle = False
+        self.load_write = False
         self.chara_data = init_data["chara_data"]
         self.item_codes = init_data["item_codes"]
         self.equip_codes = init_data["equip_codes"]
@@ -137,10 +139,6 @@ class App:
         self.collision_data = collision_data
         self.start_loading = False
         self.load_msg = ""
-        if self.local:
-            self.volume = int(config.get("basic","volume"))
-        else:
-            self.volume = int(config["basic"]["volume"])
         self.game_time = "00:00:00"
         self.game_time_start = None
         pyxel.load("assets/player.pyxres")
@@ -149,14 +147,14 @@ class App:
 
     def my_modules(self):
         """各クラスのインスタンス作成"""
+        ld_st = time.time()
         if local:
-            ld_st = time.time()
             self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
         else:
             self.load_msg = "Load start"
         print(self.load_msg)
-        self.map = Map(self)
         self.sound_manager = SoundManager()
+        self.map = Map(self)
         self.cloud = cloud
         self.save = Save(self)
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
@@ -168,12 +166,15 @@ class App:
         self.words = Words(self,self.init_x,self.init_y,umplus10)
         self.battle = Battle(self.init_x, self.init_y,umplus10,self)
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
+        self.load_msg = "Load end"
         if local:
             self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
-            print(self.load_msg)
-            print(f"Load Time:{time.time() - ld_st}s")
-        else:
-            self.load_msg = "Load end"
+        print(f"Load Time:{time.time() - ld_st}s")
+        print(self.load_msg)
+
+    def load_bgms(self):
+        self.sound_manager.load_bgm("qnoheya","test")
+        # self.sound_manager.play_bgm("test")
 
     def update(self):
         """基本処理"""
@@ -213,6 +214,13 @@ class App:
                         "equip_codes":self.equip_codes
                         }
                     }
+                    self.game_time = self.loaddata["play_data"]["time"]
+                    self.player.x = self.loaddata["play_data"]["x"]
+                    self.player.y = self.loaddata["play_data"]["y"]
+                    self.chara_data = init_data["chara_data"]
+                    self.item_codes = init_data["item_codes"]
+                    self.equip_codes = init_data["equip_codes"]
+                    self.imp_item_codes = init_data["imp_item_codes"]
                 self.new_game = False
             self.player.update()
             if self.in_word:
@@ -232,9 +240,10 @@ class App:
             if self.save_load.continue_game:
                 self.from_load = True
         elif self.now_scene == START_SCENE:
-            if not self.start_loading:
+            if not self.start_loading and self.load_write:
                 self.start_loading = True
                 self.my_modules()
+                self.load_bgms()
                 self.now_scene = 0
         if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
             if self.now_scene == IN_SETTING_SCENE:
@@ -295,8 +304,9 @@ class App:
             self.save_load.draw()
         elif self.now_scene == START_SCENE:
             pyxel.cls(0)
-            pyxel.text(125,90,"Now Loading...",7)
+            umplus24.draw_text(70,90,"Now Loading...",7)
             pyxel.text(150,190,self.load_msg,7)
+            self.load_write = True
         # pyxel.blt(0,0,0,0,0,63,79,10)
         if self.now_scene == 5:
             self.battle.draw()

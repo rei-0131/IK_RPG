@@ -58,8 +58,6 @@ class Title:
                 self.app.new_game = True
                 return self.Continue
             elif self.enter_pos == -2:
-                self.app.setting_out.option.now_volume = self.app.volume
-                self.app.setting_out.option.vol_finger = self.app.volume
                 return self.setting_scene
 
     def draw(self):

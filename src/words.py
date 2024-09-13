@@ -14,6 +14,9 @@ class Words:
         self.word_tri = [0,True]
         self.words = self.app.words
         self.tools = self.app.tools
+        self.equip_codes = self.app.equip_codes
+        self.imp_item_codes = self.app.imp_item_codes
+        self.item_codes = self.app.item_codes
 
     def update(self) -> tuple[str,str]:
         """基本処理"""
@@ -52,6 +55,21 @@ class Words:
                 self.finger_pos = 0
         else:
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if "item" in self.word:
+                    if self.word["item"][0] == "basic":
+                        if self.word["item"][1] in self.item_codes.keys():
+                            self.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
+                        else:
+                            self.item_codes[self.word["item"][1]] = {
+                                "value": int(self.word["item"][2]),
+                                "battle": self.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
+                            }
+                    elif self.word["item"][0] == "important":
+                        self.imp_item_codes.append(self.word["item"][1])
+                    elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
+                        self.equip_codes[self.word["item"][0]].append(self.word["item"][1])
+                if "chara" in self.word:
+                    pass
                 if self.word["to"] != "None":
                     self.msg_id = self.word["to"]
                 else:
@@ -105,18 +123,6 @@ class Words:
         #         self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)
         if self.word["to"] != "None":
             pyxel.tri(self.init_x/2-5,self.init_y-10+self.word_tri[0],self.init_x/2+5,self.init_y-10+self.word_tri[0],self.init_x/2,self.init_y-6+self.word_tri[0],7)
-        if "item" in self.word:
-            if self.word["item"][0] == "basic":
-                if self.word["item"][1] in self.app.item_codes:
-                    self.app.item_codes[self.word["item"][1]]["value"] += self.word["item"][2]
-                else:
-                    self.app.item_codes[self.word["item"][1]] = {
-                        "value":self.word["item"][2],
-                        "battle":self.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
-                    }
-            elif self.word["item"][0] == "important":
-                self.app.imp_item_codes.append(self.word["item"][1])
-            self.word["item"] = False
         if self.question != "None":
             que_height = len(self.question) * 12
             max_str = 0
