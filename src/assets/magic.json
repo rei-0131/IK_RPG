@@ -152,7 +152,7 @@
             "content":"heal",
             "recovery_amount":["p",10],
             "req_post":["atk","heal","tank"],
-            "info":"任意の味方のHPを１０%分回復させる"
+            "info":"任意の味方のHPを１０％分回復させる"
         },
         "17":{
             "attribute":"デバフ",
@@ -161,7 +161,7 @@
             "content":"dbf",
             "dbuff_type":"def",
             "dbuff_amount":15,
-            "info":"任意の敵の防御力を１５%ダウン"
+            "info":"任意の敵の防御力を１５％ダウン"
         },
         "18":{
             "attribute":"デバフ",
@@ -170,7 +170,7 @@
             "content":"dbf",
             "dbuff_type":"atk",
             "dbuff_amount":15,
-            "info":"任意の敵の攻撃力を１５%ダウン"
+            "info":"任意の敵の攻撃力を１５％ダウン"
         },
         "19":{
             "attribute":"バフ",
@@ -179,7 +179,7 @@
             "content":"buff",
             "buff_type":"def",
             "buff_amount":30,
-            "info":"任意の味方の防御力を３０%アップ"
+            "info":"任意の味方の防御力を３０％アップ"
         },
         "20":{
             "attribute":"バフ",
@@ -188,7 +188,7 @@
             "content":"buff",
             "buff_type":"atk",
             "buff_amount":30,
-            "info":"任意の味方の攻撃力を３０%アップ"
+            "info":"任意の味方の攻撃力を３０％アップ"
         }
     },
     "skill":{
@@ -217,7 +217,7 @@
             "content":"heal",
             "req_MP":20,
             "recovery_amount":["p",20],
-            "info":"任意の味方のHPを２０%分回復させる"
+            "info":"任意の味方のHPを２０％分回復させる"
         },
         "04":{
             "name":"オートケイル",
@@ -227,7 +227,7 @@
             "other":{
                 "continue_turn":5
             },
-            "info":"5ターンの間、任意の味方のHPを５%分回復させる"
+            "info":"5ターンの間、任意の味方のHPを５％分回復させる"
         },
         "05":{
             "name":"かばう",
@@ -246,19 +246,19 @@
             "content":"buff_up",
             "req_MP":30,
             "buff_amount":3,
-            "info":"（ソウル、パワーのステータスアップ量増加）＋３%"
+            "info":"（ソウル、パワーのステータスアップ量増加）＋３％"
         },
         "08":{
             "name":"あそぶ",
             "content":"play",
             "req_MP":10,
-            "info":"１０%の確率でランダムな魔法発動"
+            "info":"１０％の確率でランダムな魔法発動"
         },
         "09":{
             "name":"口笛",
             "content":"play",
             "req_MP":10,
-            "info":"５%の確率で３%攻撃力アップ"
+            "info":"５％の確率で３％攻撃力アップ"
         }
     }
 }
