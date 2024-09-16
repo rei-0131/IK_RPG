@@ -59,6 +59,9 @@ with open("src/assets/enemy_info.json",encoding="utf-8") as f:
 with open("src/assets/cd_block.json",encoding="utf-8") as f:
     collision_data = json.load(f)
 
+with open("src/assets/character_data.json",encoding="utf-8") as f:
+    character_data = json.load(f)
+
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
 
@@ -137,6 +140,7 @@ class App:
         self.magic_codes = magic_codes
         self.enemy_info = enemy_info
         self.collision_data = collision_data
+        self.character_data = character_data
         self.start_loading = False
         self.load_msg = ""
         self.game_time = "00:00:00"
