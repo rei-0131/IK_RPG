@@ -506,7 +506,7 @@ class Battle:
                     atk += self.tools[i][v][3]
                 else:
                     atk += action_p["atk_ab"] * (self.tools[i][v][3] / 100)
-            atk *= (action_p["atk_buff"] + self.player_effect[action["player_pos"]]["atk_buff"] - self.player_effect[action["player_pos"]]["atk_dbuff"]) / 100
+        atk *= (action_p["atk_buff"] + self.player_effect[action["player_pos"]]["atk_buff"] - self.player_effect[action["player_pos"]]["atk_dbuff"]) / 100
         return atk
 
     def target_attack_update(self):
@@ -548,7 +548,7 @@ class Battle:
                     if action["sm_code"] != "None":
                         int_code = int(action["sm_code"])
                     if action["target_team"] == "enemy":
-                        def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
+                        def_ = self.enemy_status[action["target"]]["def_ab"] * ((100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100)
                         kaisin_p = 1
                         if action["kaisin"]:
                             kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
@@ -598,7 +598,7 @@ class Battle:
                             elif action["sm_code"] == "04":
                                 self.player_effect[action["target"]]["recovery_turn"] = sm_info["other"]["continue_turn"]
                                 self.player_effect[action["target"]]["recovery_info"] = sm_info["recovery_amount"]
-                                self.player_effect[action["target"]]["recovery_info"][1] -= 1
+                                self.player_effect[action["target"]]["recovery_turn"] -= 1
                                 if self.player_effect[action["target"]]["recovery_info"][0] == "p":
                                     self.app.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][0] * (self.player_effect[action["target"]]["recovery_info"][1] / 100)
                                 else:
@@ -764,7 +764,7 @@ class Battle:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 if action["sm_code"] == "01":
                                     damage = True
-                                    damage_amount = (atk * 2 - def_) * kaisin_p
+                                    damage_amount = (atk - def_) * kaisin_p * 2
                                 elif action["sm_code"] == "02":
                                     damage = True
                                     cri_atk = atk * (self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
@@ -885,27 +885,32 @@ class Battle:
                     if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                         self.finger_pos5 += 18
                 if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A,hold = 8,repeat=8):
-                    self.finger_pos5 = 0
+                    self.finger_pos5 = 0;
                     self.select_num3 = -1
                 if pyxel.btnp(pyxel.KEY_RETURN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B,hold = 8,repeat=8):
                     use_item = self.tools["basic"][list(self.battle_item.items())[self.select_num3][0]]
                     use_player = list(self.chara_data.keys())[int(self.finger_pos5 // 18)]
                     if (use_item["type"] == "revival" and self.chara_data[use_player]["HP"][1] <= 0) or (use_item["type"] != "revival" and self.chara_data[use_player]["HP"][1] > 0):
-                        self.player_op.append({"player_pos":self.select_num2,"target":use_player,"sm":"item","sm_code":use_item,"target_team":"self","use_num":self.select_num3})
-                        self.player_op_over()
-                        live_num = 0
-                        for i in self.chara_data:
-                            if self.app.chara_data[i]["HP"][1] != 0:
-                                live_num += 1
-                        if len(self.player_op) != live_num:
-                            self.select_num1 = -1
-                            self.select_num2 = -1
-                        self.finger_pos1 = 0
-                        self.finger_pos2 = 0
-                        self.finger_pos3 = 0
-                        self.select_num3 = -1
-                        self.finger_pos5 = 0
-                        self.select_num5 = -1
+                        tf = True
+                        for x in self.player_op:
+                            if x["target"] == use_player and x["sm_code"]["type"] == "revival":
+                                tf = False
+                        if tf:
+                            self.player_op.append({"player_pos":self.select_num2,"target":use_player,"sm":"item","sm_code":use_item,"target_team":"self","use_num":self.select_num3})
+                            self.player_op_over()
+                            live_num = 0
+                            for i in self.chara_data:
+                                if self.app.chara_data[i]["HP"][1] != 0:
+                                    live_num += 1
+                            if len(self.player_op) != live_num:
+                                self.select_num1 = -1
+                                self.select_num2 = -1
+                            self.finger_pos1 = 0
+                            self.finger_pos2 = 0
+                            self.finger_pos3 = 0
+                            self.select_num3 = -1
+                            self.finger_pos5 = 0
+                            self.select_num5 = -1
 
     def update(self):
         """基本処理"""
