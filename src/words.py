@@ -69,7 +69,7 @@ class Words:
                     elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
                         self.equip_codes[self.word["item"][0]].append(self.word["item"][1])
                 if "chara" in self.word:
-                    pass
+                    self.app.chara_data[self.word["chara"]] = self.app.character_data[self.word["chara"]]
                 if self.word["to"] != "None":
                     self.msg_id = self.word["to"]
                 else:

@@ -477,14 +477,14 @@ class In_Setting:
                     w = i % 2
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
-                        pyxel.rect(71+(115*w),71+(13*h),114,13,1)
+                        pyxel.rect(71+(115*w),71+(13*h),113,11,1)
                     self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v[1]]["name"],7)
             else:
                 for i,v in enumerate(chara_data[f"{sm}_codes"]):
                     w = i % 2
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
-                        pyxel.rect(71+(115*w),71+(13*h),115,13,1)
+                        pyxel.rect(71+(115*w),71+(13*h),113,11,1)
                     self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v]["name"],7)
             try:
                 if len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"]) > 22:
@@ -609,7 +609,7 @@ class In_Setting:
                                 h = int(i[0] // 2)
                                 w = i[0] % 2
                                 if j == self.in_pqse_finger + self.in_eqst_item:
-                                    pyxel.rect(71+(114*w),136+(16*h),114,16,1)
+                                    pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                                 if i[1][1] == 9:
                                     self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
                                 self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
@@ -618,7 +618,7 @@ class In_Setting:
                                 h = int(i[0] // 2)
                                 w = i[0] % 2
                                 if j == self.in_pqse_finger + self.in_eqst_item:
-                                    pyxel.rect(71+(114*w),136+(16*h),114,16,1)
+                                    pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                                 if i[1][1] == 9:
                                     self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
                                 self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
@@ -627,7 +627,7 @@ class In_Setting:
                             h = int(i[0] // 2)
                             w = i[0] % 2
                             if j == self.in_pqse_finger + self.in_eqst_item:
-                                pyxel.rect(71+(114*w),136+(16*h),114,16,1)
+                                pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                             if i[1][1] == 9:
                                     self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
                             self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
