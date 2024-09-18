@@ -140,9 +140,10 @@ class In_Setting:
                     else:
                         self.in_st_finger += 1
                 if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-                    #アイテムを使用するときの処理など
-                    self.enter_pos2 = self.in_st_finger + self.in_st_pos
-                    print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]]["name"])
+                    if len(list(self.app.item_codes.keys())) > 0:
+                        #アイテムを使用するときの処理など
+                        self.enter_pos2 = self.in_st_finger + self.in_st_pos
+                        print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]]["name"])
             else:
                 if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.finger_pos1 = 0
@@ -170,7 +171,9 @@ class In_Setting:
                             self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][1] = int(self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][0] * (self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["effect"] / 100))
                         self.app.item_codes[list(self.app.item_codes.keys())[self.enter_pos2]]["value"] -= 1
                         if self.app.item_codes[list(self.app.item_codes.keys())[self.enter_pos2]]["value"] == 0:
-                            self.app.item_codes.pop([list(self.app.item_codes.keys())[self.enter_pos2]])
+                            self.app.item_codes.pop(list(self.app.item_codes.keys())[self.enter_pos2])
+                            self.finger_pos1 -= 1
+                            self.enter_pos2 = -1
                         for i in self.app.chara_data.keys():
                             if self.app.chara_data[i]["HP"][1] > self.app.chara_data[i]["HP"][0]:
                                 self.app.chara_data[i]["HP"][1] = self.app.chara_data[i]["HP"][0]
@@ -199,7 +202,8 @@ class In_Setting:
             else:
                 self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-            print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger + self.in_st_pos]][0])
+            if len(self.app.imp_item_codes) > 0:
+                print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger + self.in_st_pos]][0])
 
     def sm_update(self,sm):
         """
@@ -456,13 +460,14 @@ class In_Setting:
                 self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
-            for i,kv in enumerate(self.app.item_codes.items()):
-                if i == self.in_st_finger:
-                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
-                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
-            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+            if len(list(self.app.item_codes.keys())) > 0:
+                for i,kv in enumerate(self.app.item_codes.items()):
+                    if i == self.in_st_finger:
+                        pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                    pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                    self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+                    self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+                pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         if self.enter_pos2 != -1:
             pyxel.rect(50,50,200,108,0)
             pyxel.rectb(50,50,200,108,7)
@@ -497,12 +502,13 @@ class In_Setting:
                 self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
-            for i,v in enumerate(self.app.imp_item_codes):
-                if i == self.in_st_finger:
-                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
-            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+            if len(self.app.imp_item_codes) > 0:
+                for i,v in enumerate(self.app.imp_item_codes):
+                    if i == self.in_st_finger:
+                        pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                    pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                    self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
+                pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def sm_draw(self,sm):
         """

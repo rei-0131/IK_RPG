@@ -876,7 +876,8 @@ class Battle:
                         if self.finger_pos3 != 0:
                             self.finger_pos3 -= 1
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                    self.select_num3 = self.item_pos + self.finger_pos3
+                    if len(list(self.battle_item.keys())) > 0:
+                        self.select_num3 = self.item_pos + self.finger_pos3
             else:
                 if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if self.finger_pos5 != 0:
@@ -1206,27 +1207,28 @@ class Battle:
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
         pyxel.rect(25,self.init_y//2-20,270,25,0)
         pyxel.rectb(25,self.init_y//2-20,270,25,7)
-        self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
-        self.item_num = len(self.battle_item.items())
-        if self.item_num >= self.item_pos + 11:
-            self.dis_num = 10
-            for i,item in enumerate(self.battle_item.items()):
-                h = int(i // 2)
-                w = i % 2
-                if i == self.finger_pos3:
-                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
-        else:
-            self.dis_num = self.item_num - self.item_pos
-            for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
-                h = int(i // 2)
-                w = i % 2
-                if i == self.finger_pos3:
-                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
+        if len(list(self.battle_item.keys())) > 0:
+            self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
+            self.item_num = len(self.battle_item.items())
+            if self.item_num >= self.item_pos + 11:
+                self.dis_num = 10
+                for i,item in enumerate(self.battle_item.items()):
+                    h = int(i // 2)
+                    w = i % 2
+                    if i == self.finger_pos3:
+                        pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                    self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
+            else:
+                self.dis_num = self.item_num - self.item_pos
+                for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
+                    h = int(i // 2)
+                    w = i % 2
+                    if i == self.finger_pos3:
+                        pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                    self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
 
 
     def enemy_target_select_draw(self):
