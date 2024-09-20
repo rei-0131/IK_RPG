@@ -464,7 +464,7 @@ class Battle:
                         #魔法名出力
                         self.select_num3 = 0
                         self.finger_pos4 = 0
-                        print(f"{use_sm["name"]=}")
+                        print(f"{use_sm['name']=}")
 
     def hp_int(self,target):
         """
@@ -683,7 +683,7 @@ class Battle:
                         if self.app.item_codes[list(self.battle_item.keys())[action["use_num"]]]["value"] == 0:
                             self.app.item_codes.pop(list(self.battle_item.keys())[action["use_num"]])
                             self.battle_item.pop(list(self.battle_item.keys())[action["use_num"]])
-                        print(f"{action["sm_code"]=}")
+                        print(f"{action['sm_code']=}")
             for i in self.app.chara_data.keys():
                 if self.app.chara_data[i]["HP"][1] > self.app.chara_data[i]["HP"][0]:
                     self.app.chara_data[i]["HP"][1] = self.app.chara_data[i]["HP"][0]
