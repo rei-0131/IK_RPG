@@ -156,6 +156,17 @@ class CMD:
         self.log_type = "str"
         self.log = "正常に実行されました"
 
+    def main_(self):
+        #appクラス
+        pass
+
+    def setting(self):
+        #settingクラス
+        pass
+
+    def xp(self,arg):
+        self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
             print(self.in_str)
@@ -168,6 +179,12 @@ class CMD:
                     self.give(cmd_config)
                 elif cmd_config[0] == "battle":
                     self.battle()
+                elif cmd_config[0] == "main":
+                    self.main_()
+                elif cmd_config[0] == "setting":
+                    self.setting()
+                elif cmd_config[0] == "xp":
+                    self.xp(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"

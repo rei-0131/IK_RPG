@@ -70,7 +70,7 @@ class SaveLoad:
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 enter_pos = -1
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                print(self.setting_finger)
+                print(f"{self.setting_finger=}")
                 if self.over_load:
                     self.save.newsave(self.setting_finger)
                 if self.app.local:
@@ -90,7 +90,7 @@ class SaveLoad:
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 enter_pos = self.title
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                print(self.setting_finger)
+                print(f"{self.setting_finger=}")
                 if self.load:
                     if str(self.setting_finger) in self.save_data:
                         self.continue_game = True

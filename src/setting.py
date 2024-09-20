@@ -422,7 +422,7 @@ class In_Setting:
             elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
-                print(self.enter_pos)
+                print(f"{self.enter_pos=}")
         elif self.enter_pos == 9:
             self.enter_pos = -1
             self.finger_pos = 0
@@ -800,11 +800,19 @@ class In_Setting:
                     atk *= chara_data["atk_buff"] / 100
                     def_ *= chara_data["def_buff"] / 100
         self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_st_finger + self.in_st_pos],7)
-        self.umplus10.draw_text(150,71,f"Level {chara_data['Level']}     {chara_data['XP']}/XXXX",7)
+        xp = 0
+        level = chara_data["Level"] + 1
+        if 0 <= level <= 16:
+            xp = level ** 2 + 6 * level
+        elif 17 <= level <= 30:
+            xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+        elif 31 <= level:
+            xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+        self.umplus10.draw_text(140,71,f"Level {chara_data['Level']}  {int(chara_data['XP'])}/{int(xp)}",7)
         self.umplus10.draw_text(71,82,f"HP {chara_data['HP'][1]}/{chara_data['HP'][0]}",7)
         self.umplus10.draw_text(71,93,f"MP {chara_data['MP'][1]}/{chara_data['MP'][0]}",7)
-        self.umplus10.draw_text(71,104,f"ATK {atk}",7)
-        self.umplus10.draw_text(71,115,f"DEF {def_}",7)
+        self.umplus10.draw_text(71,104,f"ATK {int(atk)}",7)
+        self.umplus10.draw_text(71,115,f"DEF {int(def_)}",7)
         self.umplus10.draw_text(71,126,f"会心率 {chara_data['satisfaction'][0]}% 会心ダメ{chara_data['satisfaction'][1]}%",7)
 
     def sort_draw(self):

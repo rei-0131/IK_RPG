@@ -177,11 +177,34 @@ class App:
         print(self.load_msg)
 
     def load_bgms(self):
-        self.sound_manager.load_bgm("qnoheya","test")
-        # self.sound_manager.play_bgm("test")
+        self.sound_manager.load_bgm("q_c","test")
+
+    def check_level(self):
+        def xp_ck(cr):
+            xp = 0
+            level = self.chara_data[cr]["Level"] + 1
+            if 0 <= level <= 16:
+                xp = level ** 2 + 6 * level
+            elif 17 <= level <= 30:
+                xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+            elif 31 <= self.chara_data[cr]["Level"]:
+                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+            return xp
+        for i in self.chara_data.keys():
+            try:
+                while self.chara_data[i]["XP"] >= xp_ck(i):
+                    xp_ = xp_ck(i)
+                    self.chara_data[i]["XP"] -= xp_
+                    self.chara_data[i]["Level"] += 1
+                    # print(f"{self.chara_data[i]['Level']} {self.chara_data[i]['XP']} {xp_ck(i)}")
+            except Exception:
+                print("Check XP Error")
 
     def update(self):
         """基本処理"""
+        #10秒に一回の検知
+        if pyxel.frame_count % 300 == 0:
+            self.check_level()
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.now_scene = self.title_s.update()
         elif self.now_scene == MAIN_SCENE:
@@ -194,7 +217,7 @@ class App:
                         self.savedata = cloud.load()
                         time.sleep(0.3)
                     self.game_time_start = time.time()
-                    print(self.save_load.setting_finger)
+                    print(f"{self.save_load.setting_finger=}")
                     self.loaddata = self.savedata[str(self.save_load.setting_finger)]
                     self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
@@ -260,6 +283,7 @@ class App:
             if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
                 if not self.now_scene == "cmd" and self.now_scene == 5:
                     self.now_scene = self.be_scene
+                    self.sound_manager.stop()
                 elif self.now_scene == "cmd" and self.back_scene == 5:
                     self.now_scene = self.be_scene
                     self.battle.clean(self.now_scene)
@@ -274,6 +298,7 @@ class App:
                     # enemy_num = random.randint(1,3)
                     self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
                     self.now_scene = 5
+                    self.sound_manager.play_bgm("test")
             if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
                 if self.now_scene == "cmd":
                     self.now_scene = self.back_scene

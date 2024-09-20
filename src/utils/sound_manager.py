@@ -69,6 +69,7 @@ class SoundManager:
     def stop(self):
         """全てのサウンドを停止する"""
         pyxel.stop()
+        self.tick = None
 
     def _back_to_bgm(self):
         """SE再生後にBGMに戻る"""
