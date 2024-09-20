@@ -10,7 +10,8 @@
 - configparser
 - json
 - time
-- random
+- datetime
+- tzdata
 - js
 - pyodide.http
 - urllib.request
