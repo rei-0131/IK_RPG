@@ -114,11 +114,10 @@ class App:
         self.local = local
         self.now_scene = -1
         self.back_scene = -1
-        self.msg_id = "01"
+        self.msg_id = "None"
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
-        # self.disp_id = "None"
         self.disp_id = "None"
         self.in_word = False
         self.new_game = True
@@ -256,7 +255,7 @@ class App:
                 self.battle.clean(self.now_scene)
                 if self.is_test:
                     self.battle.debug_clean()
-                self.battle.set_enemy(words["story"][self.disp_id]["battle"][0],words["story"][self.disp_id]["battle"][1])
+                self.battle.set_enemy(len(words["story"][self.disp_id]["battle"]),words["story"][self.disp_id]["battle"])
                 self.now_scene = 5
         elif self.now_scene == OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()
