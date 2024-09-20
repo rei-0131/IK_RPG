@@ -33,21 +33,21 @@ class Words:
                 else:
                     self.finger_pos = (len(self.question) - 1) * -10
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                if self.word["to"] != "None":
-                    if type(self.word["to"]) == list:
-                        if "requirement" not in self.word:
-                            if self.word["to"][int(self.finger_pos // 18)] != "None":
-                                self.msg_id = self.word["to"][int(self.finger_pos // 18)]
-                            else:
-                                self.disp_id = self.msg_id
+                if "item" in self.word:
+                    if self.word["item"][0] == "basic":
+                        if self.word["item"][1] in self.item_codes.keys():
+                            self.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
                         else:
-                            chara = list(self.app.chara_data.keys())
-                            if self.word["requirement"] in chara:
-                                self.msg_id = self.word["to"][0]
-                            else:
-                                self.msg_id = self.word["to"][1]
-                    elif type(self.word["to"]) == str:
-                        self.msg_id = self.word["to"]
+                            self.item_codes[self.word["item"][1]] = {
+                                "value": int(self.word["item"][2]),
+                                "battle": self.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
+                            }
+                    elif self.word["item"][0] == "important":
+                        self.imp_item_codes.append(self.word["item"][1])
+                    elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
+                        self.equip_codes[self.word["item"][0]].append(self.word["item"][1])
+                if self.word["to"] != "None":
+                    self.msg_id = self.word["to"]
                 else:
                     if "battle" in self.word:
                         self.app.in_battle = True

@@ -165,7 +165,7 @@ class CMD:
         pass
 
     def xp(self,arg):
-        self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["Level"] = int(arg[2])
+        self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
