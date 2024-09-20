@@ -1,0 +1,9 @@
+{
+    "START_SCENE":-1,
+    "TITLE_SCENE":0,
+    "MAIN_SCENE":1,
+    "IN_SETTING_SCENE":2,
+    "OUT_SETTING_SCENE":3,
+    "LOAD_SCENE":4,
+    "BATTLE_SCENE":5
+}
