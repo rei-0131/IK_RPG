@@ -422,7 +422,7 @@ class In_Setting:
             elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
-                print(self.enter_pos)
+                print(f"{self.enter_pos=}")
         elif self.enter_pos == 9:
             self.enter_pos = -1
             self.finger_pos = 0

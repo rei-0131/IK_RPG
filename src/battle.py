@@ -343,7 +343,7 @@ class Battle:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 if self.app.chara_data[list(self.chara_data.keys())[self.finger_pos5//18]]["HP"][1] > 0:
                     self.select_num5 = int(self.finger_pos5 // 18)
-                    print(self.select_num5)
+                    print(f"{self.select_num5=}")
                     if self.select_num1 == 1:
                         sm = "skill"
                         self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
@@ -464,7 +464,7 @@ class Battle:
                         #魔法名出力
                         self.select_num3 = 0
                         self.finger_pos4 = 0
-                        print(use_sm["name"])
+                        print(f"{use_sm["name"]=}")
 
     def hp_int(self,target):
         """
@@ -683,7 +683,7 @@ class Battle:
                         if self.app.item_codes[list(self.battle_item.keys())[action["use_num"]]]["value"] == 0:
                             self.app.item_codes.pop(list(self.battle_item.keys())[action["use_num"]])
                             self.battle_item.pop(list(self.battle_item.keys())[action["use_num"]])
-                        print(action["sm_code"])
+                        print(f"{action["sm_code"]=}")
             for i in self.app.chara_data.keys():
                 if self.app.chara_data[i]["HP"][1] > self.app.chara_data[i]["HP"][0]:
                     self.app.chara_data[i]["HP"][1] = self.app.chara_data[i]["HP"][0]
@@ -931,7 +931,7 @@ class Battle:
                             self.finger_pos1 = 0
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                         self.select_num1 = int(self.finger_pos1 // 15)
-                        print(self.select_num1)
+                        print(f"{self.select_num1=}")
                         self.select_num2 = -1
                 elif self.select_num1 != 4:
                     if self.select_num2 == -1:
@@ -1107,7 +1107,7 @@ class Battle:
                                 self.attack_count = 0
                                 self.attack_count = 0
                                 self.turn += 1
-                                print(self.player_effect)
+                                print(f"{self.player_effect=}")
                                 for n,effect in enumerate(self.player_effect):
                                     if effect["recovery_turn"] != 0:
                                         if effect["recovery_info"][0] == "p":

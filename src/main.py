@@ -202,7 +202,8 @@ class App:
 
     def update(self):
         """基本処理"""
-        if pyxel.frame_count % 600 == 0:
+        #10秒に一回の検知
+        if pyxel.frame_count % 300 == 0:
             self.check_level()
         if self.now_scene == TITLE_SCENE or self.now_scene == None:
             self.now_scene = self.title_s.update()
@@ -216,7 +217,7 @@ class App:
                         self.savedata = cloud.load()
                         time.sleep(0.3)
                     self.game_time_start = time.time()
-                    print(self.save_load.setting_finger)
+                    print(f"{self.save_load.setting_finger=}")
                     self.loaddata = self.savedata[str(self.save_load.setting_finger)]
                     self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
