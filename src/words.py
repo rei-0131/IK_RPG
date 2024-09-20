@@ -108,8 +108,9 @@ class Words:
             self.question = "None"
         pyxel.rect(5,self.init_y-60,self.init_x-10,60,0)
         pyxel.rectb(5,self.init_y-60,self.init_x-10,60,7)
-        pyxel.rect(5,self.init_y-71,60,12,0)
-        pyxel.rectb(5,self.init_y-71,60,12,7)
+        sp_len = len(self.word["speaker"]) * 11
+        pyxel.rect(5,self.init_y-71,sp_len,12,0)
+        pyxel.rectb(5,self.init_y-71,sp_len,12,7)
         self.umplus10.draw_text(7,self.init_y-70,self.word["speaker"],7)
         if type(self.word["word"]) == str:
             # self.umplus10.draw_text(7,self.init_y-59,self.word["word"],7)
@@ -127,8 +128,8 @@ class Words:
             que_height = len(self.question) * 12
             max_str = 0
             for i in self.question:
-                if max_str < len(i) * 12:
-                    max_str = len(i) * 12
+                if max_str < len(i) * 11:
+                    max_str = len(i) * 11
             pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
             pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
             pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
