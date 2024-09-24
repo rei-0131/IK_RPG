@@ -1,7 +1,5 @@
 import pyxel
-import json
 import numpy as np
-import random as ran
 from sklearn.decomposition import PCA
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
@@ -14,16 +12,17 @@ class Battle:
     バトルに関するクラス
 
     Parameters
+    ----------
+    app : Any
+        Appクラスのインスタンス
     x : int
         画面の大きさx
     y : int
         画面の大きさy
     ump : Any
         umplus10(日本語出力)
-    app : Any
-        Appクラスのインスタンス
     """
-    def __init__(self,x,y,ump,app):
+    def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x
         self.init_y = y
@@ -59,7 +58,6 @@ class Battle:
         self.damage_pos = 0
         self.in_battle = True
         self.battle_item = {}
-        #防御などターンを通しての効果などを表記
         self.sp_now = {}
         self.attack_count = 0
         self.enemy_animation = True
@@ -75,12 +73,9 @@ class Battle:
         self.ai_turn = -1
         self.play_effect_info = True
         self.chara_data = {}
-        with open("assets/tools.json","r",encoding="utf-8") as f:
-            self.tools = json.load(f)
-        with open("assets/magic.json","r",encoding="utf-8") as f:
-            self.magic_codes = json.load(f)
-        with open("assets/enemy_info.json",encoding="utf-8") as f:
-            self.enemy_info = json.load(f)
+        self.tools = self.app.tools
+        self.magic_codes = self.app.magic_codes
+        self.enemy_info = self.app.enemy_info
         self.AI = self.create_AI()
         self.ai_data = []
 
@@ -129,6 +124,7 @@ class Battle:
         self.turn = 0
         self.ai_turn = -1
         self.play_effect_info = True
+        self.random_range = 0
         self.chara_data = {}
         if len(self.app.chara_data.items()) > 4:
             for k,v in self.app.chara_data.items():
@@ -158,6 +154,11 @@ class Battle:
                 "move":"p"
             })
 
+    def debug_clean(self):
+        for i in range(len(self.chara_data)):
+            self.chara_data[list(self.chara_data.keys())[i]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["HP"][0]
+            self.chara_data[list(self.chara_data.keys())[i]]["MP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["MP"][0]
+
     def set_enemy(self,enemy_num,enemy_code):
         """
         敵設定
@@ -186,8 +187,15 @@ class Battle:
                 "move":"p"
             })
 
-    def create_AI(self):
-        """AI作成"""
+    def create_AI(self) -> MultiOutputRegressor:
+        """
+        AI作成
+
+        Returns
+        -------
+        clf : MultiOutputRegressor
+            AI
+        """
         #first_aiに入っているデータはセットアップデータ
         data = []
         ai_answer =[]
@@ -203,15 +211,17 @@ class Battle:
                 pl_ = int(tmp[0])
                 tmp_len_ = len(tmp)
                 tmp_len = len(ai_data_)
+                ai_data_[tmp_len - 1].append([0,0,pl_])
                 for i in range(pl_):
                     ai_data_[tmp_len - 1].append(tmp[1+i*3:1+(i+1)*3])
                 for i in range(4-pl_):
                     ai_data_[tmp_len - 1].append([0,0,0])
                 en_ = int(tmp[int(tmp[0])*3+1])
+                ai_data_[tmp_len - 1].append([0,0,en_])
                 for i in range(en_):
                     tm = [0,tmp[(int(tmp[0])*3+2)+i*2],tmp[(int(tmp[0])*3+2)+i*2+1]]
                     ai_data_[tmp_len - 1].append(tm)
-                for i in range(3-en_):
+                for i in range(4-en_):
                     ai_data_[tmp_len - 1].append([0,0,0])
                 c = tmp[tmp_len_ - 3]
                 c = [0,0,c]
@@ -231,7 +241,7 @@ class Battle:
         data = scaler.fit_transform(data)
 
 
-        clf = MultiOutputRegressor(MLPClassifier(alpha=0.00001, hidden_layer_sizes=(300,100,300),max_iter=1000,random_state=0,early_stopping=True))
+        clf = MultiOutputRegressor(MLPClassifier(alpha=0.00001, hidden_layer_sizes=(400,200,100,50),max_iter=1000,random_state=0,early_stopping=True))
         clf.fit(data , data_answer)
 
         return clf
@@ -258,12 +268,12 @@ class Battle:
             self.select_num3 = -1
             self.finger_pos2 = 0
             self.finger_pos4 = 0
-        if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+        if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
             if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != self.enemy_num - 1:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) + 1]
             else:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
-        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+        if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
             live_e = []
             for len_,v in enumerate(self.enemy_status):
                 if  v["HP"][1] > 0:
@@ -284,7 +294,7 @@ class Battle:
 
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if self.enemy_status[self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4)]["HP"][1] > 0:
-                k_ran = ran.randint(1,1000)
+                k_ran = pyxel.rndi(1,1000)
                 kaisin = False
                 if self.app.chara_data[list(self.chara_data.keys())[self.select_num2]]["satisfaction"][0] * 10 >= k_ran:
                     kaisin = True
@@ -316,12 +326,16 @@ class Battle:
         """味方ターゲット設定"""
         #味方ターゲットを選択
         if self.select_num5 == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos5 != 0:
                     self.finger_pos5 -= 18
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                else:
+                    self.finger_pos5 = (len(self.chara_data.items()) - 1) * 18
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                     self.finger_pos5 += 18
+                else:
+                    self.finger_pos5 = 0
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_num5 = -1
                 self.finger_pos5 = 0
@@ -329,7 +343,7 @@ class Battle:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 if self.app.chara_data[list(self.chara_data.keys())[self.finger_pos5//18]]["HP"][1] > 0:
                     self.select_num5 = int(self.finger_pos5 // 18)
-                    print(self.select_num5)
+                    print(f"{self.select_num5=}")
                     if self.select_num1 == 1:
                         sm = "skill"
                         self.player_op.append({"player_pos":self.select_num2,"target":self.select_num5,"sm":sm,"sm_code":self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
@@ -358,10 +372,14 @@ class Battle:
     def none_target_select_update(self):
         """選択のない行動"""
         #選択のない行動
+        k_ran = pyxel.rndi(1,1000)
+        kaisin = False
+        if self.app.chara_data[list(self.chara_data.keys())[self.select_num2]]["satisfaction"][0] * 10 >= k_ran:
+            kaisin = True
         if self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3] == "08" or self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3] == "09":
-            self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team,"effect_invoke":False,"effect_name":""})
+            self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team,"effect_invoke":False,"effect_name":"","effect_check":False,"effect_type":"","kaisin":kaisin})
         else:
-            self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team})
+            self.player_op.append({"player_pos":self.select_num2,"target":"None","sm":"skill","sm_code":self.app.chara_data[self.select_chara][f"skill_codes"][self.item_pos + self.finger_pos3],"target_team":self.target_team,"kaisin":kaisin})
         self.player_op_over()
         live_num = 0
         for i in self.chara_data:
@@ -390,30 +408,31 @@ class Battle:
                 self.select_num2 = -1
                 self.finger_pos3 = 0
                 self.item_pos = 0
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
                     self.finger_pos3-=2
                 elif self.item_pos - 2 >= 0:
                     self.item_pos -= 2
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos3 != 8 and self.finger_pos3 != 9:
                     if self.finger_pos3 + 2 < self.dis_num:
                         self.finger_pos3 += 2
                 else:
                     if self.finger_pos3 + self.item_pos + 2 < self.item_num:
                         self.item_pos += 2
-                    elif self.finger_pos3 + self.item_pos + 3 == self.item_num and self.item_num > 10:
+                    elif self.finger_pos3 + self.item_pos + 2 == self.item_num and self.item_num > 10:
                         self.item_pos += 2
                         self.finger_pos3 -= 1
-            if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+            if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                 if self.finger_pos3 + 1 < self.dis_num:
                     self.finger_pos3 += 1
-                elif not self.item_pos + 12 <= self.item_num and self.item_pos + 11 <= self.item_num:
+                elif not self.item_pos + 13 <= self.item_num and self.finger_pos3 % 2 != 0:
                     self.finger_pos3 -= 1
                     self.item_pos += 2
                 elif self.item_pos + 12 <= self.item_num:
+                    self.finger_pos3 -= 1
                     self.item_pos += 2
-            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+            if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                 if self.item_pos != 0:
                     if self.finger_pos3 == 0:
                         self.finger_pos3 += 1
@@ -445,7 +464,7 @@ class Battle:
                         #魔法名出力
                         self.select_num3 = 0
                         self.finger_pos4 = 0
-                        print(use_sm["name"])
+                        print(f"{use_sm['name']=}")
 
     def hp_int(self,target):
         """
@@ -487,7 +506,7 @@ class Battle:
                     atk += self.tools[i][v][3]
                 else:
                     atk += action_p["atk_ab"] * (self.tools[i][v][3] / 100)
-            atk *= (action_p["atk_buff"] + self.player_effect[action["player_pos"]]["atk_buff"] - self.player_effect[action["player_pos"]]["atk_dbuff"]) / 100
+        atk *= (action_p["atk_buff"] + self.player_effect[action["player_pos"]]["atk_buff"] - self.player_effect[action["player_pos"]]["atk_dbuff"]) / 100
         return atk
 
     def target_attack_update(self):
@@ -504,7 +523,7 @@ class Battle:
                     if len(live_e) == 0:
                         action["target"] = -1
                     else:
-                        action["target"] = live_e[ran.randint(0,len(live_e) - 1)]
+                        action["target"] = live_e[pyxel.rndi(0,len(live_e) - 1)]
         except Exception:
             pass
         if not self.enemy_animation:
@@ -521,7 +540,7 @@ class Battle:
                         if len(live_e) == 0:
                             action["target"] = -1
                         else:
-                            action["target"] = live_e[ran.randint(0,len(live_e) - 1)]
+                            action["target"] = live_e[pyxel.rndi(0,len(live_e) - 1)]
                     else:
                         break
             if action["target"] != -1:
@@ -529,7 +548,7 @@ class Battle:
                     if action["sm_code"] != "None":
                         int_code = int(action["sm_code"])
                     if action["target_team"] == "enemy":
-                        def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
+                        def_ = self.enemy_status[action["target"]]["def_ab"] * ((100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100)
                         kaisin_p = 1
                         if action["kaisin"]:
                             kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
@@ -552,8 +571,8 @@ class Battle:
                             if 1 <= int_code <= 15 or int_code == 21:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 magic_atk = atk * sm_info["atk_amount"] / 100
-                                if (atk - def_) * kaisin_p >= 0:
-                                    self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
+                                if (magic_atk - def_) * kaisin_p >= 0:
+                                    self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
                             elif 17 <= int_code <= 18:
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                 if sm_info["dbuff_type"] == "atk":
@@ -579,7 +598,7 @@ class Battle:
                             elif action["sm_code"] == "04":
                                 self.player_effect[action["target"]]["recovery_turn"] = sm_info["other"]["continue_turn"]
                                 self.player_effect[action["target"]]["recovery_info"] = sm_info["recovery_amount"]
-                                self.player_effect[action["target"]]["recovery_info"][1] -= 1
+                                self.player_effect[action["target"]]["recovery_turn"] -= 1
                                 if self.player_effect[action["target"]]["recovery_info"][0] == "p":
                                     self.app.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][0] * (self.player_effect[action["target"]]["recovery_info"][1] / 100)
                                 else:
@@ -612,51 +631,35 @@ class Battle:
                             for i in range(len(self.player_effect)):
                                 self.player_effect[i]["atk_invalid"] = True
                         elif action["sm_code"] == "08":
-                            if 1 <= ran.randint(1,100) <= 10:
-                                random_magic = ran.randint(1,20)
-                                if random_magic < 10:
-                                    random_magic = f"0{random_magic}"
-                                else:
-                                    random_magic = str(random_magic)
-                                live_e = []
-                                for len_,v in enumerate(self.enemy_status):
-                                    if  v["HP"][1] > 0:
-                                        live_e.append(len_)
-                                live_p = []
-                                for len_,i in enumerate(self.chara_data):
-                                    if self.app.chara_data[i]["HP"][1] > 0:
-                                        live_p.append(len_)
-                                ran_p = live_p[ran.randint(0,len(live_p) - 1)]
-                                ran_e = live_e[ran.randint(0,len(live_e) - 1)]
-                                int_code = int(random_magic)
-                                sm_info = self.magic_codes["magic"][random_magic]
-                                if 1 <= int_code <= 15:
-                                    def_ = self.enemy_status[ran_e]["def_ab"] * (100 + self.enemy_effect[ran_e]["def_buff"] - self.enemy_effect[ran_e]["def_dbuff"]) / 100
+                            if action["effect_invoke"]:
+                                sm_info = self.magic_codes["magic"][action["effect_name"]]
+                                if action["effect_type"] == "atk":
+                                    def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
                                     magic_atk = atk * sm_info["atk_amount"] / 100
                                     kaisin_p = 1
                                     if action["kaisin"]:
                                         kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
-                                    self.enemy_status[ran_e]["HP"][1] -= (magic_atk - def_) * kaisin_p
-                                elif int_code == 16:
+                                    if (magic_atk - def_) * kaisin_p >= 0:
+                                        self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
+                                elif action["effect_type"] == "rec":
                                     if sm_info["recovery_amount"][0] == "p":
-                                        self.app.chara_data[list(self.chara_data.keys())[ran_p]]["HP"][1] += self.app.chara_data[list(self.chara_data.keys())[ran_p]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
+                                        self.app.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.app.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
                                     else:
-                                        self.app.chara_data[list(self.chara_data.keys())[ran_p]]["HP"][1] += sm_info["recovery_amount"][1]
-                                elif 17 <= int_code <= 18:
+                                        self.app.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
+                                elif action["effect_type"] == "dbuff":
                                     if sm_info["dbuff_type"] == "atk":
-                                        self.enemy_effect[ran_e]["atk_dbuff"] += sm_info["dbuff_amount"]
+                                        self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
                                     elif sm_info["dbuff_type"] == "def":
-                                        self.enemy_effect[ran_e]["def_dbuff"] += sm_info["dbuff_amount"]
-                                elif 19 <= int_code <= 20:
+                                        self.enemy_effect[action["target"]]["def_dbuff"] += sm_info["dbuff_amount"]
+                                elif action["effect_type"] == "buff":
                                     if sm_info["buff_type"] == "atk":
-                                        self.player_effect[ran_p]["basic_atk_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
+                                        self.player_effect[action["target"]]["basic_atk_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
                                     elif sm_info["buff_type"] == "def":
-                                        self.player_effect[ran_p]["basic_def_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
+                                        self.player_effect[action["target"]]["basic_def_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
                                     self.battle_effect["buff_up"] = 0
-                                self.player_op[self.attack_count]["effect_invoke"] = True
-                                self.player_op[self.attack_count]["effect_name"] = random_magic
                         elif action["sm_code"] == "09":
-                            if 1 <= ran.randint(1,100) <= 5:
+                            self.random_range = pyxel.rndi(1,100)
+                            if 1 <= self.random_range <= 5:
                                 self.player_op[self.attack_count]["effect_invoke"] = True
                                 self.player_op[self.attack_count]["effect_name"] = "atk_buff"
                                 self.player_effect[action["player_pos"]]["atk_buff"] += 3
@@ -664,128 +667,169 @@ class Battle:
                 else:
                     if (action["sm_code"]["type"] == "revival" and self.chara_data[action["target"]]["HP"][1] <= 0) or action["sm_code"]["type"] != "revival":
                         if action["sm_code"]["type"] == "HP":
-                            size = ran.randint(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
+                            size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
                             self.chara_data[action["target"]]["HP"][1] += size
                             if self.chara_data[action["target"]]["HP"][1] > self.chara_data[action["target"]]["HP"][0]:
                                 self.chara_data[action["target"]]["HP"][1] = self.chara_data[action["target"]]["HP"][0]
                         elif action["sm_code"]["type"] == "MP":
-                            size = ran.randint(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
+                            size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
                             self.chara_data[action["target"]]["MP"][1] += size
                             if self.chara_data[action["target"]]["MP"][1] > self.chara_data[action["target"]]["MP"][0]:
                                 self.chara_data[action["target"]]["MP"][1] = self.chara_data[action["target"]]["MP"][0]
                         elif action["sm_code"]["type"] == "revival":
                             self.chara_data[action["target"]]["HP"][1] = int(self.chara_data[action["target"]]["HP"][0] * (action["sm_code"]["effect"] / 100))
                             self.player_op.append({"player_pos":list(self.chara_data.keys()).index(action["target"]),"target":-1,"sm":"None","sm_code":"None"})
-                        self.battle_item[list(self.battle_item.keys())[self.select_num3]]["value"] -= 1
-                        if self.app.item_codes[list(self.battle_item.keys())[self.select_num3]]["value"] == 0:
-                            self.app.item_codes.pop(list(self.battle_item.keys())[self.select_num3])
-                            self.battle_item.pop(list(self.battle_item.keys())[self.select_num3])
-                        print(action["sm_code"])
+                        self.battle_item[list(self.battle_item.keys())[action["use_num"]]]["value"] -= 1
+                        if self.app.item_codes[list(self.battle_item.keys())[action["use_num"]]]["value"] == 0:
+                            self.app.item_codes.pop(list(self.battle_item.keys())[action["use_num"]])
+                            self.battle_item.pop(list(self.battle_item.keys())[action["use_num"]])
+                        print(f"{action['sm_code']=}")
             for i in self.app.chara_data.keys():
                 if self.app.chara_data[i]["HP"][1] > self.app.chara_data[i]["HP"][0]:
                     self.app.chara_data[i]["HP"][1] = self.app.chara_data[i]["HP"][0]
             self.attack_count += 1
             self.enemy_animation = True
         else:
-            live_e = []
-            for len_,v in enumerate(self.enemy_status):
-                if  v["HP"][1] > 0:
-                    live_e.append(len_)
+            live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
             if self.attack_count == len(self.player_op):
                 self.operation_player = False
                 self.attack_count = 0
                 self.select_num1 = -1
                 self.select_num2 = -1
             if self.operation_player:
-                if not (self.player_op[self.attack_count]["target"] != -1 and self.player_op[self.attack_count]["target_team"] == "enemy"):
+                if not (self.player_op[self.attack_count]["target"] != -1 and self.player_op[self.attack_count]["target_team"] == "enemy") and not (self.player_op[self.attack_count]["sm"] == "skill" and self.player_op[self.attack_count]["sm_code"] == "08"):
                     self.enemy_animation = False
                 else:
-                    self.vibe_count = self.player_op[self.attack_count]["target"]
-                    if self.vibe_enemy[self.vibe_count]["total"] >= 30:
-                        self.enemy_animation = False
-                        self.vibe_enemy[self.vibe_count] = {
-                            "total":0,
-                            "value":0,
-                            "move":"p"
-                        }
-                        self.damage_pos = 0
-                    elif self.vibe_enemy[self.vibe_count]["total"] < 30:
-                        action = self.player_op[self.attack_count]
-                        atk = self.atk_sum(action)
-                        def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
-                        damage = False
-                        damage_amount = 0
-                        kaisin_p = 1
-                        if action["kaisin"]:
-                            kaisin_p = kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
-                        if action["sm"] == "None":
-                            damage = True
-                            damage_amount = (atk - def_) * kaisin_p
-                        elif action["sm"] == "skill":
-                            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                            if action["sm_code"] == "01":
-                                damage = True
-                                damage_amount = (atk * 2 - def_) * kaisin_p
-                            elif action["sm_code"] == "02":
-                                damage = True
-                                cri_atk = atk * (self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
-                                damage_amount = cri_atk - def_
-                        elif action["sm"] == "magic":
-                            int_code = int(action["sm_code"])
-                            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                    if self.player_op[self.attack_count]["sm"] == "skill" and self.player_op[self.attack_count]["sm_code"] == "08" and not self.player_op[self.attack_count]["effect_check"]:
+                        self.random_range = pyxel.rndi(1,100)
+                        if 1 <= self.random_range <= 10:
+                            random_magic = pyxel.rndi(1,20)
+                            if random_magic < 10:
+                                random_magic = f"0{random_magic}"
+                            else:
+                                random_magic = str(random_magic)
+                            live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
+                            live_p = [len_ for len_,i in enumerate(self.chara_data) if self.app.chara_data[i]["HP"][1] > 0]
+                            ran_p = live_p[pyxel.rndi(0,len(live_p) - 1)]
+                            ran_e = live_e[pyxel.rndi(0,len(live_e) - 1)]
+                            int_code = int(random_magic)
+                            self.player_op[self.attack_count]["effect_invoke"] = True
+                            self.player_op[self.attack_count]["effect_name"] = random_magic
                             if 1 <= int_code <= 15 or int_code == 21:
-                                damage = True
-                                magic_atk = atk * sm_info["atk_amount"] / 100
-                                damage_amount = (magic_atk - def_) * kaisin_p
-                        if damage:
-                            enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
-                            print(self.damage_pos)
-                            if damage_amount > 0:
-                                if action["kaisin"]:
-                                    if self.damage_pos < -30:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),10)
-                                    else:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),10)
-                                else:
-                                    if self.damage_pos < -30:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),8)
-                                    else:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),8)
-                            else:
-                                if action["kaisin"]:
-                                    if self.damage_pos < -30:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",10)
-                                    else:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",10)
-                                else:
-                                    if self.damage_pos < -30:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",8)
-                                    else:
-                                        self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
-                            self.damage_pos -= 2
-                        vibe = self.vibe_enemy[self.vibe_count]
-                        if vibe["move"] == "p":
-                            if vibe["value"] < 2:
-                                vibe["value"] += 2
-                            else:
-                                vibe["move"] = "m"
-                                vibe["value"] -= 2
+                                self.player_op[self.attack_count]["effect_type"] = "atk"
+                                self.player_op[self.attack_count]["target"] = ran_e
+                            elif int_code == 16:
+                                self.player_op[self.attack_count]["effect_type"] = "rec"
+                                self.player_op[self.attack_count]["target"] = ran_p
+                            elif 17 <= int_code <= 18:
+                                self.player_op[self.attack_count]["effect_type"] = "dbuff"
+                                self.player_op[self.attack_count]["target"] = ran_e
+                            elif 19 <= int_code <= 20:
+                                self.player_op[self.attack_count]["effect_type"] = "buff"
+                                self.player_op[self.attack_count]["target"] = ran_p
+                        self.player_op[self.attack_count]["effect_check"] = True
+                        if self.player_op[self.attack_count]["effect_type"] == "atk":
+                            self.vibe_count = self.player_op[self.attack_count]["target"]
                         else:
-                            if vibe["value"] > -2:
-                                vibe["value"] -= 2
+                            self.vibe_count = "none"
+                            self.enemy_animation = False
+                    else:
+                        self.vibe_count = self.player_op[self.attack_count]["target"]
+                    if type(self.vibe_count) == int:
+                        if self.vibe_enemy[self.vibe_count]["total"] >= 30:
+                            self.enemy_animation = False
+                            self.vibe_enemy[self.vibe_count] = {
+                                "total":0,
+                                "value":0,
+                                "move":"p"
+                            }
+                            self.damage_pos = 0
+                        elif self.vibe_enemy[self.vibe_count]["total"] < 30:
+                            action = self.player_op[self.attack_count]
+                            atk = self.atk_sum(action)
+                            def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
+                            damage = False
+                            damage_amount = 0
+                            kaisin_p = 1
+                            ####
+                            #ダメージ計算
+                            #遊び人のスキルによる魔法発動時のダメージ
+                            ####
+                            if action["kaisin"]:
+                                kaisin_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100
+                            if action["sm"] == "None":
+                                damage = True
+                                damage_amount = (atk - def_) * kaisin_p
+                            elif action["sm"] == "skill":
+                                sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                                if action["sm_code"] == "01":
+                                    damage = True
+                                    damage_amount = (atk - def_) * kaisin_p * 2
+                                elif action["sm_code"] == "02":
+                                    damage = True
+                                    cri_atk = atk * (self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
+                                    damage_amount = cri_atk - def_
+                                elif action["sm_code"] == "08":
+                                    if action["effect_invoke"] and action["effect_type"] == "atk":
+                                        sm_info = self.magic_codes["magic"][action["effect_name"]]
+                                        damage = True
+                                        magic_atk = atk * sm_info["atk_amount"] / 100
+                                        damage_amount = (magic_atk - def_) * kaisin_p
+                            elif action["sm"] == "magic":
+                                int_code = int(action["sm_code"])
+                                sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                                if 1 <= int_code <= 15 or int_code == 21:
+                                    damage = True
+                                    magic_atk = atk * sm_info["atk_amount"] / 100
+                                    damage_amount = (magic_atk - def_) * kaisin_p
+                            if damage:
+                                enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
+                                if damage_amount > 0:
+                                    if action["kaisin"]:
+                                        if self.damage_pos < -30:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),10)
+                                        else:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),10)
+                                    else:
+                                        if self.damage_pos < -30:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),8)
+                                        else:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),8)
+                                else:
+                                    if action["kaisin"]:
+                                        if self.damage_pos < -30:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",10)
+                                        else:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",10)
+                                    else:
+                                        if self.damage_pos < -30:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",8)
+                                        else:
+                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
+                                self.damage_pos -= 2
+                            vibe = self.vibe_enemy[self.vibe_count]
+                            if vibe["move"] == "p":
+                                if vibe["value"] < 2:
+                                    vibe["value"] += 2
+                                else:
+                                    vibe["move"] = "m"
+                                    vibe["value"] -= 2
                             else:
-                                vibe["move"] = "p"
-                                vibe["value"] += 2
-                        vibe["total"] += 1
+                                if vibe["value"] > -2:
+                                    vibe["value"] -= 2
+                                else:
+                                    vibe["move"] = "p"
+                                    vibe["value"] += 2
+                            vibe["total"] += 1
 
     def item_update(self):
         """アイテム表示・選択"""
         #アイテムの表示・選択
         if self.select_num2 == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos5 != 0:
                     self.finger_pos5 -= 18
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                     self.finger_pos5 += 18
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -797,30 +841,31 @@ class Battle:
             if self.select_num3 == -1:
                 if pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.select_num1 = -1
-                if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
-                        self.finger_pos3-=2
+                        self.finger_pos3 -= 2
                     elif self.item_pos - 2 >= 0:
                         self.item_pos -= 2
-                if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                     if self.finger_pos3 != 8 and self.finger_pos3 != 9:
                         if self.finger_pos3 + 2 < self.dis_num:
                             self.finger_pos3 += 2
                     else:
                         if self.finger_pos3 + self.item_pos + 2 < self.item_num:
                             self.item_pos += 2
-                        elif self.finger_pos3 + self.item_pos + 3 == self.item_num and self.item_num > 10:
+                        elif self.finger_pos3 + self.item_pos + 2 == self.item_num and self.item_num > 10:
                             self.item_pos += 2
                             self.finger_pos3 -= 1
-                if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                     if self.finger_pos3 + 1 < self.dis_num:
                         self.finger_pos3 += 1
-                    elif not self.item_pos + 12 <= self.item_num and self.item_pos + 11 <= self.item_num:
+                    elif not self.item_pos + 13 <= self.item_num and self.finger_pos3 % 2 != 0:
                         self.finger_pos3 -= 1
                         self.item_pos += 2
                     elif self.item_pos + 12 <= self.item_num:
+                        self.finger_pos3 -= 1
                         self.item_pos += 2
-                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                     if self.item_pos != 0:
                         if self.finger_pos3 == 0:
                             self.finger_pos3 += 1
@@ -831,31 +876,42 @@ class Battle:
                         if self.finger_pos3 != 0:
                             self.finger_pos3 -= 1
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                    self.select_num3 = self.item_pos + self.finger_pos3
+                    if len(list(self.battle_item.keys())) > 0:
+                        self.select_num3 = self.item_pos + self.finger_pos3
             else:
-                if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if self.finger_pos5 != 0:
                         self.finger_pos5 -= 18
-                if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                     if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                         self.finger_pos5 += 18
-                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-                    self.finger_pos5 = 0
+                if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A,hold = 8,repeat=8):
+                    self.finger_pos5 = 0;
                     self.select_num3 = -1
-                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if pyxel.btnp(pyxel.KEY_RETURN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B,hold = 8,repeat=8):
                     use_item = self.tools["basic"][list(self.battle_item.items())[self.select_num3][0]]
                     use_player = list(self.chara_data.keys())[int(self.finger_pos5 // 18)]
                     if (use_item["type"] == "revival" and self.chara_data[use_player]["HP"][1] <= 0) or (use_item["type"] != "revival" and self.chara_data[use_player]["HP"][1] > 0):
-                        self.player_op.append({"player_pos":self.select_num2,"target":use_player,"sm":"item","sm_code":use_item,"target_team":"self"})
-                        self.player_op_over()
-                        self.finger_pos1 = 0
-                        self.select_num1 = -1
-                        self.finger_pos2 = 0
-                        self.select_num2 = -1
-                        self.finger_pos3 = 0
-                        self.select_num3 = -1
-                        self.finger_pos5 = 0
-                        self.select_num5 = -1
+                        tf = True
+                        for x in self.player_op:
+                            if x["target"] == use_player and x["sm_code"]["type"] == "revival":
+                                tf = False
+                        if tf:
+                            self.player_op.append({"player_pos":self.select_num2,"target":use_player,"sm":"item","sm_code":use_item,"target_team":"self","use_num":self.select_num3})
+                            self.player_op_over()
+                            live_num = 0
+                            for i in self.chara_data:
+                                if self.app.chara_data[i]["HP"][1] != 0:
+                                    live_num += 1
+                            if len(self.player_op) != live_num:
+                                self.select_num1 = -1
+                                self.select_num2 = -1
+                            self.finger_pos1 = 0
+                            self.finger_pos2 = 0
+                            self.finger_pos3 = 0
+                            self.select_num3 = -1
+                            self.finger_pos5 = 0
+                            self.select_num5 = -1
 
     def update(self):
         """基本処理"""
@@ -863,29 +919,29 @@ class Battle:
         if self.in_battle:
             if self.operation_player:
                 if self.select_num1 == -1:
-                    if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                    if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                         if self.finger_pos1 != 0:
                             self.finger_pos1 -= 15
                         else:
                             self.finger_pos1 = 60
-                    if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                    if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                         if self.finger_pos1 != 60:
                             self.finger_pos1 += 15
                         else:
                             self.finger_pos1 = 0
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                         self.select_num1 = int(self.finger_pos1 // 15)
-                        print(self.select_num1)
+                        print(f"{self.select_num1=}")
                         self.select_num2 = -1
                 elif self.select_num1 != 4:
                     if self.select_num2 == -1:
                         if 0 <= self.select_num1 <= 3:
-                            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                                 if self.finger_pos2 != 0:
                                     self.finger_pos2 -= 18
                                 else:
                                     self.finger_pos2 = (len(self.chara_data.items()) - 1) * 18
-                            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+                            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                                 if self.finger_pos2 != (len(self.chara_data.items()) - 1) * 18:
                                     self.finger_pos2 += 18
                                 else:
@@ -955,26 +1011,14 @@ class Battle:
                         self.player_op = []
                 else:
                     ai_input_data = []
-                    live_enemy = []
-                    for i in range(self.enemy_num):
-                        if self.enemy_status[i]["HP"][1] > 0:
-                            live_enemy.append(i)
-                    live_p = []
-                    for len_,i in enumerate(self.chara_data):
-                        if self.app.chara_data[i]["HP"][1] > 0:
-                            live_p.append(len_)
+                    live_enemy = [i for i in range(self.enemy_num) if self.enemy_status[i]["HP"][1] > 0]
+                    live_p = [len_ for len_,i in enumerate(self.chara_data) if self.app.chara_data[i]["HP"][1] > 0]
                     if len(live_enemy) != 0:
                         #以下敵AIの行動をプレイヤーに適用
                         if self.ai_turn != self.turn:
                             for x in range(len(live_enemy)):
-                                live_p = []
-                                for len_,i in enumerate(self.chara_data):
-                                    if self.app.chara_data[i]["HP"][1] > 0:
-                                        live_p.append(len_)
-                                live_enemy = []
-                                for i in range(self.enemy_num):
-                                    if self.enemy_status[i]["HP"][1] > 0:
-                                        live_enemy.append(i)
+                                live_p = [len_ for len_,i in enumerate(self.chara_data) if self.app.chara_data[i]["HP"][1] > 0]
+                                live_enemy = [i for i in range(self.enemy_num) if self.enemy_status[i]["HP"][1] > 0]
                                 write_str = f"{len(self.chara_data)} "
                                 for i in self.chara_data.keys():
                                     write_str += f'{self.app.chara_data[i]["post"]} {(self.app.chara_data[i]["HP"][1]/self.app.chara_data[i]["HP"][0]):.4f} {(self.app.chara_data[i]["MP"][1]/self.app.chara_data[i]["MP"][0]):.4f} '
@@ -989,15 +1033,17 @@ class Battle:
                                 pl_ = int(write_str[0])
                                 tmp_len_ = len(write_str)
                                 tmp_len = len(ai_input_data)
+                                ai_input_data[tmp_len - 1].append([0,0,pl_])
                                 for i in range(pl_):
                                     ai_input_data[tmp_len - 1].append(write_str[1+i*3:1+(i+1)*3])
                                 for i in range(4-pl_):
                                     ai_input_data[tmp_len - 1].append([0,0,0])
                                 en_ = int(write_str[int(write_str[0])*3+1])
+                                ai_input_data[tmp_len - 1].append([0,0,en_])
                                 for i in range(en_):
                                     tm = [0,write_str[(len(live_p)*3+2)+i*2],write_str[(len(live_p)*3+2)+i*2+1]]
                                     ai_input_data[tmp_len - 1].append(tm)
-                                for i in range(3-en_):
+                                for i in range(4-en_):
                                     ai_input_data[tmp_len - 1].append([0,0,0])
                                 c = write_str[tmp_len_ - 3]
                                 c = [0,0,c]
@@ -1019,12 +1065,13 @@ class Battle:
                             scaler = StandardScaler()
                             ai_input_data = scaler.fit_transform(ai_input_data)
                             self.ai_action = self.AI.predict(ai_input_data)
+                            self.ai_action[:,0] -= 1
                             self.ai_turn = self.turn
                             print(self.ai_action)
                         i = self.attack_count
                         ai_ac = self.ai_action[i]
                         if int(ai_ac[0]) >= len(list(self.chara_data.keys())) or self.chara_data[list(self.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
-                            ai_ac[0] = live_p[ran.randint(0,len(live_p) - 1)]
+                            ai_ac[0] = live_p[pyxel.rndi(0,len(live_p) - 1)]
                         if not self.player_animation:
                             if i < len(live_enemy):
                                 if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:
@@ -1060,7 +1107,7 @@ class Battle:
                                 self.attack_count = 0
                                 self.attack_count = 0
                                 self.turn += 1
-                                print(self.player_effect)
+                                print(f"{self.player_effect=}")
                                 for n,effect in enumerate(self.player_effect):
                                     if effect["recovery_turn"] != 0:
                                         if effect["recovery_info"][0] == "p":
@@ -1160,27 +1207,28 @@ class Battle:
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
         pyxel.rect(25,self.init_y//2-20,270,25,0)
         pyxel.rectb(25,self.init_y//2-20,270,25,7)
-        self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
-        self.item_num = len(self.battle_item.items())
-        if self.item_num >= self.item_pos + 11:
-            self.dis_num = 10
-            for i,item in enumerate(self.battle_item.items()):
-                h = int(i // 2)
-                w = i % 2
-                if i == self.finger_pos3:
-                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
-        else:
-            self.dis_num = self.item_num - self.item_pos
-            for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
-                h = int(i // 2)
-                w = i % 2
-                if i == self.finger_pos3:
-                    pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
+        if len(list(self.battle_item.keys())) > 0:
+            self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
+            self.item_num = len(self.battle_item.items())
+            if self.item_num >= self.item_pos + 11:
+                self.dis_num = 10
+                for i,item in enumerate(self.battle_item.items()):
+                    h = int(i // 2)
+                    w = i % 2
+                    if i == self.finger_pos3:
+                        pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                    self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
+            else:
+                self.dis_num = self.item_num - self.item_pos
+                for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
+                    h = int(i // 2)
+                    w = i % 2
+                    if i == self.finger_pos3:
+                        pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                    self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
 
 
     def enemy_target_select_draw(self):
@@ -1207,15 +1255,26 @@ class Battle:
                 live_p.append(len_)
 
         for i,data in zip(range(1,1+len(self.chara_data.items())),enumerate(self.chara_data)):
+            op_player = False
+            for j in self.player_op:
+                if j["player_pos"] == data[0]:
+                    op_player = True
+                    break
             height = 18*(i - 1)
             if self.select_num1 != 0 and self.select_num1 != 1 and self.select_num1 != 2 and self.select_num1 != 3:
                 if data[0] in live_p:
-                    self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],7)
+                    if op_player:
+                        self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],10)
+                    else:
+                        self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],7)
                 else:
                     self.umplus10.draw_text(115,self.init_y//2+15+height,data[1],8)
             else:
                 if data[0] in live_p:
-                    self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],7)
+                    if op_player:
+                        self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],10)
+                    else:
+                        self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],7)
                 else:
                     self.umplus10.draw_text(130,self.init_y//2+15+height,data[1],8)
             pyxel.text(170,self.init_y//2+14+height,"HP",7)
@@ -1255,10 +1314,7 @@ class Battle:
             if self.app.chara_data[i]["HP"][1] > 0:
                 live_num += 1
                 live_p.append(len_)
-        live_e = []
-        for len_,v in enumerate(self.enemy_status):
-            if  v["HP"][1] > 0:
-                live_e.append(len_)
+        live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
         if len(live_e) == 0:
             self.win = "player"
             self.in_battle = False
@@ -1335,16 +1391,16 @@ class Battle:
                                 for i,n in enumerate(use_magic):
                                     if n["sm"] == "skill":
                                         if n["sm_code"] == "05":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}への攻撃を1ターン無効",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}への攻撃を１ターン無効",7)
                                         elif n["sm_code"] == "06":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"全ての味方への攻撃を1ターン無効",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"全ての味方への攻撃を１ターン無効",7)
                                         elif n["sm_code"] == "07":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"魔法ののステータスアップ率を+3%",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),"魔法ののステータスアップ率を＋３％",7)
                                     elif n["sm"] == "magic":
                                         if n["sm_code"] == "19":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の防御力を15%アップ",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の防御力を３０％アップ",7)
                                         elif n["sm_code"] == "20":
-                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の攻撃力を15%アップ",7)
+                                            self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['target']]}の攻撃力を３０％アップ",7)
                                     elif n["sm"] == "item":
                                         self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{list(self.chara_data.keys())[n['player_pos']]}が{[n['target']][0]}に{n['sm_code']['name']}を使用した",7)
                             else:
@@ -1410,7 +1466,7 @@ class Battle:
                             p_name = list(self.chara_data.keys())[n[2]]
                             magic_name = self.magic_codes["skill"][n[1]]["name"]
                             if n[0] == "atk_buff":
-                                self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いて攻撃力が3%アップした",7)
+                                self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いて攻撃力が３％アップした",7)
                             elif n[0] == "none":
                                 if magic_name == "口笛":
                                     self.umplus10.draw_text(36,self.init_y//2+20+(i*15),f"{p_name}が口笛を吹いたが何も起こらなかった",7)

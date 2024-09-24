@@ -9,7 +9,7 @@ except:
     LOCAL = True
 import json
 
-class cloud_data:
+class Cloud_data:
     """
     クラウドにデータをセーブ・ロードする際のクラス
 
@@ -21,7 +21,7 @@ class cloud_data:
     def __init__(self,is_test):
         self.is_test = is_test
 
-    def import_(self):
+    def import_(self) -> bool:
         """
         ローカルかクラウドかの判断
 
@@ -55,7 +55,7 @@ class cloud_data:
 
         Returns
         ----------
-        savedata : dict
+        savedata : Any
             セーブデータ
         """
         save_name = ""
@@ -102,7 +102,7 @@ class cloud_data:
         if window.localStorage.getItem(config_name) == None:
             config = {
                 "basic":{
-                        "screen_x":300,"screen_y":200,"name":"test","fps":30,"volume":7
+                        "screen_x":300,"screen_y":200,"name":"一工クエスト","fps":30
                         }
                 }
             window.localStorage.setItem(config_name,config)
