@@ -1,24 +1,23 @@
 import json
 import time
-from cloud_data import cloud_data
-
+from cloud_data import Cloud_data
 #新しいセーブデータを作成する
 class Save:
     """
     セーブに関するクラス
 
-    Parameters:
+    Parameters
     ----------
     app : Any
         Appクラスのインスタンス
     """
     def __init__(self,app = None):
         self.app = app
-        self.cloud = cloud_data(is_test=True)
-        with open("assets/scenes.json",encoding="utf-8") as f:
-            self.scenes = json.load(f)
+        self.cloud = Cloud_data(self.app.is_test)
+        self.scenes = self.app.scenes
 
     def newsave(self,pos):
+        """新しいセーブ"""
         if self.app.local:
             with open("configs/savedata.json",encoding="utf-8") as f:
                 save_data = json.load(f)
@@ -45,8 +44,10 @@ class Save:
             "imp_item_codes":self.app.imp_item_codes,
             "equip_codes":self.app.equip_codes
         }
+        print(f"{save_data[str(pos)]['play_data']=}")
         if self.app.local:
             with open("configs/savedata.json","w",encoding="utf-8") as f:
                 json.dump(save_data,f,indent=4,ensure_ascii=False)
         else:
             self.cloud.save(save_data)
+        self.app.save_data = save_data

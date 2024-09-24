@@ -1,5 +1,4 @@
 import pyxel
-from Map import Map
 
 class Player:
     """プレイヤーに関するクラス
@@ -28,10 +27,11 @@ class Player:
         self.walk_num = 0
         self.question_mark = 0
         self.is_word = False
-        self.map = Map()
+        self.map = self.app.map
         self.walk_pos = [0,0,0,0,0,16,16,16,16,16]
 
     def update(self):
+        """基本処理"""
         self.dx = 0
         self.dy = 0
         key = ""
@@ -68,5 +68,6 @@ class Player:
             self.y += self.dy
 
     def draw(self):
+        """基本描画"""
         pyxel.blt(self.x,self.y,self.walk_img,self.walk_pos[self.walk_num],0, 14 * self.rl,15,0)
         self.map.cd_debug()
