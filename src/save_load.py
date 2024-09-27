@@ -1,7 +1,7 @@
 import pyxel
 import json
 from save import Save
-from cloud_data import cloud_data
+from cloud_data import Cloud_data
 
 #セーブデータをロードする画面を表示する
 class SaveLoad:
@@ -39,7 +39,7 @@ class SaveLoad:
         self.over_load = over_load
         self.continue_game = False
         self.load = load
-        self.cloud = cloud_data(is_test=self.app.is_test)
+        self.cloud = Cloud_data(self.app.is_test)
         if self.app.local:
             with open("configs/savedata.json",encoding="utf-8") as f:
                 self.save_data = json.load(f)
@@ -61,14 +61,16 @@ class SaveLoad:
         """
         if self.left:
             enter_pos = ent
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.setting_finger != 1:
-                self.setting_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.setting_finger != 20:
-                self.setting_finger += 1
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
+                if self.setting_finger != 1:
+                    self.setting_finger -= 1
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
+                if self.setting_finger != 20:
+                    self.setting_finger += 1
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 enter_pos = -1
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                print(self.setting_finger)
+                print(f"{self.setting_finger=}")
                 if self.over_load:
                     self.save.newsave(self.setting_finger)
                 if self.app.local:
@@ -79,14 +81,16 @@ class SaveLoad:
             return enter_pos
         else:
             enter_pos = self.load
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.setting_finger != 1:
-                self.setting_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.setting_finger != 20:
-                self.setting_finger += 1
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
+                if self.setting_finger != 1:
+                    self.setting_finger -= 1
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
+                if self.setting_finger != 20:
+                    self.setting_finger += 1
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 enter_pos = self.title
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                print(self.setting_finger)
+                print(f"{self.setting_finger=}")
                 if self.load:
                     if str(self.setting_finger) in self.save_data:
                         self.continue_game = True

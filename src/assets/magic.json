@@ -5,145 +5,145 @@
             "name":"イーグ",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10,
+            "atk_amount":95,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の１０%の火属性ダメージを与える"
+            "info":"敵に火属性の小ダメージを与える"
         },
         "02":{
             "attribute":"火",
             "name":"イグニア",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18,
+            "atk_amount":103,
             "req_post":["atk","heal"]
             ,
-            "info":"敵に攻撃力の１８%の火属性ダメージを与える"
+            "info":"敵に火属性の中ダメージを与える"
         },
         "03":{
             "attribute":"火",
             "name":"イグニシア",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23,
+            "atk_amount":108,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の２３%の火属性ダメージを与える"
+            "info":"敵に火属性の大ダメージを与える"
         },
         "04":{
             "attribute":"水",
             "name":"ポード",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10,
+            "atk_amount":95,
             "req_post":["heal"],
-            "info":"敵に攻撃力の１０%の水属性ダメージを与える"
+            "info":"敵に水属性の小ダメージを与える"
         },
         "05":{
             "attribute":"水",
             "name":"ポセリア",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18,
+            "atk_amount":103,
             "req_post":["heal"],
-            "info":"敵に攻撃力の１８%の水属性ダメージを与える"
+            "info":"敵に水属性の中ダメージを与える"
         },
         "06":{
             "attribute":"水",
             "name":"ポセイディア",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23,
+            "atk_amount":108,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の２３%の水属性ダメージを与える"
+            "info":"敵に水属性の大ダメージを与える"
         },
         "07":{
             "attribute":"雷",
             "name":"ライガ",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10,
+            "atk_amount":95,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の１０%の雷属性ダメージを与える"
+            "info":"敵に雷属性の小ダメージを与える"
         },
         "08":{
             "attribute":"雷",
             "name":"リライガ",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18,
+            "atk_amount":103,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の１８%の雷属性ダメージを与える"
+            "info":"敵に雷属性の中ダメージを与える"
         },
         "09":{
             "attribute":"雷",
             "name":"リライガス",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23,
+            "atk_amount":108,
             "req_post":["atk","heal"],
-            "info":"敵に攻撃力の２３%の雷属性ダメージを与える"
+            "info":"敵に雷属性の大ダメージを与える"
         },
         "10":{
             "attribute":"土",
             "name":"ガイア",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10,
+            "atk_amount":95,
             "req_post":["heal"],
-            "info":"敵に攻撃力の１０%の土属性ダメージを与える"
+            "info":"敵に土属性の小ダメージを与える"
         },
         "11":{
             "attribute":"土",
             "name":"メガイア",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18,
+            "atk_amount":103,
             "req_post":["heal"],
-            "info":"敵に攻撃力の１８%の土属性ダメージを与える"
+            "info":"敵に土属性の中ダメージを与える"
         },
         "12":{
             "attribute":"土",
             "name":"ギガイア",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23,
+            "atk_amount":108,
             "req_post":["heal"],
-            "info":"敵に攻撃力の２３%の土属性ダメージを与える"
+            "info":"敵に土属性の大ダメージを与える"
         },
         "13":{
             "attribute":"風",
             "name":"アラオ",
             "req_MP":10,
             "content":"atk",
-            "atk_amount":10,
+            "atk_amount":95,
             "req_post":["heal"],
-            "info":"敵に攻撃力の１０%の風属性ダメージを与える"
+            "info":"敵に風属性の小ダメージを与える"
         },
         "14":{
             "attribute":"風",
             "name":"アラリオ",
             "req_MP":15,
             "content":"atk",
-            "atk_amount":18,
+            "atk_amount":103,
             "req_post":["heal"],
-            "info":"敵に攻撃力の１８%の風属性ダメージを与える"
+            "info":"敵に風属性の中ダメージを与える"
         },
         "15":{
             "attribute":"風",
             "name":"アラリオン",
             "req_MP":30,
             "content":"atk",
-            "atk_amount":23,
+            "atk_amount":108,
             "req_post":["heal"],
-            "info":"敵に攻撃力の２３%の風属性ダメージを与える"
+            "info":"敵に風属性の大ダメージを与える"
         },
         "21":{
             "attribute":"エクスプロージョン",
             "name":"エクスプロージョン",
             "req_MP":1,
             "content":"atk",
-            "atk_amount":10000000000000000,
+            "atk_amount":10000000000000095,
             "req_post":["heal"],
-            "info":"敵に攻撃力の１００００００００００００００００%のエクスプロージョンダメージを与える"
+            "info":"敵にエクスプロージョン属性のすごいダメージを与える"
         },
         "16":{
             "attribute":"回",
@@ -152,7 +152,7 @@
             "content":"heal",
             "recovery_amount":["p",10],
             "req_post":["atk","heal","tank"],
-            "info":"任意の味方のHPを１０%分回復させる"
+            "info":"任意の味方のHPを１０％分回復させる"
         },
         "17":{
             "attribute":"デバフ",
@@ -161,7 +161,7 @@
             "content":"dbf",
             "dbuff_type":"def",
             "dbuff_amount":15,
-            "info":"任意の敵の防御力を１５%ダウン"
+            "info":"任意の敵の防御力を１５％ダウン"
         },
         "18":{
             "attribute":"デバフ",
@@ -170,7 +170,7 @@
             "content":"dbf",
             "dbuff_type":"atk",
             "dbuff_amount":15,
-            "info":"任意の敵の攻撃力を１５%ダウン"
+            "info":"任意の敵の攻撃力を１５％ダウン"
         },
         "19":{
             "attribute":"バフ",
@@ -178,8 +178,8 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"def",
-            "buff_amount":15,
-            "info":"任意の味方の防御力を１５%アップ"
+            "buff_amount":30,
+            "info":"任意の味方の防御力を３０％アップ"
         },
         "20":{
             "attribute":"バフ",
@@ -187,8 +187,8 @@
             "req_MP":15,
             "content":"buff",
             "buff_type":"atk",
-            "buff_amount":15,
-            "info":"任意の味方の攻撃力を１５%アップ"
+            "buff_amount":30,
+            "info":"任意の味方の攻撃力を３０％アップ"
         }
     },
     "skill":{
@@ -217,7 +217,7 @@
             "content":"heal",
             "req_MP":20,
             "recovery_amount":["p",20],
-            "info":"任意の味方のHPを２０%分回復させる"
+            "info":"任意の味方のHPを２０％分回復させる"
         },
         "04":{
             "name":"オートケイル",
@@ -227,7 +227,7 @@
             "other":{
                 "continue_turn":5
             },
-            "info":"5ターンの間、任意の味方のHPを５%分回復させる"
+            "info":"5ターンの間、任意の味方のHPを５％分回復させる"
         },
         "05":{
             "name":"かばう",
@@ -246,19 +246,19 @@
             "content":"buff_up",
             "req_MP":30,
             "buff_amount":3,
-            "info":"（ソウル、パワーのステータスアップ量増加）＋３%"
+            "info":"バフ系魔法の上昇率を３％増加させる"
         },
         "08":{
             "name":"あそぶ",
             "content":"play",
             "req_MP":10,
-            "info":"１０%の確率でランダムで魔法発動"
+            "info":"１０％の確率でランダムな魔法発動"
         },
         "09":{
             "name":"口笛",
             "content":"play",
             "req_MP":10,
-            "info":"５%の確率で３%攻撃力アップ"
+            "info":"５％の確率で３％攻撃力アップ"
         }
     }
 }
