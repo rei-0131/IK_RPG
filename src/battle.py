@@ -78,6 +78,9 @@ class Battle:
         self.enemy_info = self.app.enemy_info
         self.AI = self.create_AI()
         self.ai_data = []
+        self.xp_up = {}
+        self.xp_get = False
+        self.xp_stop = False
 
     def clean(self,scene):
         """初期化"""
@@ -153,11 +156,37 @@ class Battle:
                 "value":0,
                 "move":"p"
             })
+        self.xp_get = False
+        self.xp_up = {i:0 for i in self.chara_data.keys()}
+        self.xp_stop = False
+        self.in_battle = False
+        self.win = "player"
 
     def debug_clean(self):
         for i in range(len(self.chara_data)):
             self.chara_data[list(self.chara_data.keys())[i]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["HP"][0]
             self.chara_data[list(self.chara_data.keys())[i]]["MP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["MP"][0]
+
+    def check_level(self):
+        def xp_ck(cr):
+            xp = 0
+            level = self.chara_data[cr]["Level"] + 1
+            if 0 <= level <= 16:
+                xp = level ** 2 + 6 * level
+            elif 17 <= level <= 30:
+                xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+            elif 31 <= self.chara_data[cr]["Level"]:
+                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+            return xp
+        for i in self.chara_data.keys():
+            try:
+                while self.chara_data[i]["XP"] >= xp_ck(i):
+                    xp_ = xp_ck(i)
+                    self.chara_data[i]["XP"] -= xp_
+                    self.chara_data[i]["Level"] += 1
+                    # print(f"{self.chara_data[i]['Level']} {self.chara_data[i]['XP']} {xp_ck(i)}")
+            except Exception:
+                print("Check XP Error")
 
     def set_enemy(self,enemy_num,enemy_code):
         """
@@ -1145,6 +1174,14 @@ class Battle:
                                                 vibe["value"] += 2
                                     vibe["total"] += 1
                         self.hp_int("none")
+        else:
+            if not self.xp_stop:
+                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                    for i in self.xp_up:
+                        self.chara_data[i]["XP"] += self.xp_up[i]
+                        self.xp_up[i] -= 0
+                    self.check_level()
+                    self.xp_stop = True
 
     def sm_draw(self,sm):
         """
@@ -1483,5 +1520,40 @@ class Battle:
                 pyxel.rect(self.init_x//2 - 90, self.init_y//2 - 30,180,60,0)
                 self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Enemy Win",7)
             else:
-                pyxel.rect(self.init_x//2 - 90, self.init_y//2 - 30,180,60,0)
-                self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
+                pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
+                pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
+                if not self.xp_get:
+                    for i in self.enemy_status:
+                        for j in self.xp_up:
+                            self.xp_up[j] += i["xp"]
+                    self.xp_get = True
+                for i,k in enumerate(self.chara_data.keys()):
+                    self.umplus10.draw_text(72 * i + 10,6,str(k).center(6,"　"),7)
+                    xp = 0
+                    level = self.chara_data[k]["Level"] + 1
+                    if 0 <= level <= 16:
+                        xp = level ** 2 + 6 * level
+                    elif 17 <= level <= 30:
+                        xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+                    elif 31 <= level:
+                        xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                    if self.chara_data[k]["XP"] >= xp:
+                        self.chara_data[k]["Level"] += 1
+                        self.chara_data[k]["XP"] -= xp
+                    self.umplus10.draw_text(73 * i + 6,17,"Lv ",7)
+                    self.umplus10.draw_text(73 * i + 21,17,str(self.chara_data[k]['Level']),7)
+                    pyxel.rect(72 * i + 6,28,int(self.chara_data[k]["XP"] / xp * 100 * 0.71),4,11)
+                    pyxel.rectb(72 * i + 6,28,71,4,7)
+                    if not self.xp_stop:
+                        if self.xp_up[k] >= 15:
+                            self.chara_data[k]["XP"] += 15
+                            self.xp_up[k] -= 15
+                        else:
+                            self.chara_data[k]["XP"] += self.xp_up[k]
+                            self.xp_up[k] = 0
+                        for j in self.xp_up:
+                            if self.xp_up[j] == 0:
+                                self.xp_stop = True
+                            else:
+                                self.xp_stop = False
+                # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
