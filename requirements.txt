@@ -3,4 +3,5 @@ configparser
 js
 scikit-learn
 numpy
-copy
+tzdata
+mido

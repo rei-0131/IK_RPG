@@ -317,7 +317,7 @@ class App:
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
             pyxel.camera()
-            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0)
+            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale=0.5)
             self.player.draw()
             if self.msg_id != self.disp_id:
                 self.in_word = True
