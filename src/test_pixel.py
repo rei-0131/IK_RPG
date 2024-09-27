@@ -22,3 +22,5 @@ class App:
 
     def draw(self):
         pyxel.bltm(0,0,0,0,0,init_x,init_y,0)
+
+App()
