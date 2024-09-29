@@ -37,12 +37,16 @@ class Title:
 
     def update(self):
         """基本処理"""
-        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+        if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
             if self.question_mark != -18:
                 self.question_mark -= 9
-        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            else:
+                self.question_mark = 0
+        if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
             if self.question_mark != 0:
                 self.question_mark += 9
+            else:
+                self.question_mark = -18
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
             self.enter_pos = self.question_mark // 9
             if self.enter_pos == 0:
@@ -54,8 +58,6 @@ class Title:
                 self.app.new_game = True
                 return self.Continue
             elif self.enter_pos == -2:
-                self.app.setting_out.option.now_volume = self.app.volume
-                self.app.setting_out.option.vol_finger = self.app.volume
                 return self.setting_scene
 
     def draw(self):

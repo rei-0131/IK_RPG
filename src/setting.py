@@ -35,6 +35,7 @@ class In_Setting:
         self.in_eqst_item = 0
         self.in_pqse_finger = 0
         self.in_eq_enter = -1
+        self.finger_pos1 = 0
         self.equip_men = False
         self.equip_select = False
         self.equip_part = -1
@@ -64,6 +65,7 @@ class In_Setting:
         """初期化"""
         self.finger_pos = 0
         self.enter_pos = -1
+        self.enter_pos2 = -1
         self.setting_finger = 1
         self.in_st_finger = 0
         self.in_st_pos = 0
@@ -73,6 +75,7 @@ class In_Setting:
         self.in_eqst_item = 0
         self.in_pqse_finger = 0
         self.in_eq_enter = -1
+        self.finger_pos1 = 0
         self.equip_men = False
         self.equip_select = False
         self.equip_part = -1
@@ -84,8 +87,6 @@ class In_Setting:
         self.time_h= 0
         self.time_m = 0
         self.time_s = 0
-        self.option.now_volume = self.app.volume
-        self.option.vol_finger = self.app.volume
 
     def sort_update(self):
         """並び替え処理"""
@@ -95,12 +96,12 @@ class In_Setting:
             self.enter_pos = -1
             self.in_st_finger = 0
             self.in_st_pos = 0
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+        if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
                 self.in_st_pos -= 1
             elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+        if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
             if self.in_st_finger == 3:
                 self.in_st_pos += 1
             else:
@@ -121,24 +122,67 @@ class In_Setting:
 
     def item_update(self):
         """アイテム処理"""
-        len_ = len(self.app.item_codes.items())
-        if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-            self.enter_pos = -1
-            self.in_st_finger = 0
-            self.in_st_pos = 0
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
-            if self.in_st_finger == 0:
-                self.in_st_pos -= 1
-            elif self.in_st_finger != 0:
-                self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
-            if self.in_st_finger == 3:
-                self.in_st_pos += 1
+        if self.enter_pos != -1:
+            if self.enter_pos2 == -1:
+                len_ = len(self.app.item_codes.items())
+                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                    self.enter_pos = -1
+                    self.in_st_finger = 0
+                    self.in_st_pos = 0
+                if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
+                    if self.in_st_finger == 0:
+                        self.in_st_pos -= 1
+                    elif self.in_st_finger != 0:
+                        self.in_st_finger -= 1
+                if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+                    if self.in_st_finger == 3:
+                        self.in_st_pos += 1
+                    else:
+                        self.in_st_finger += 1
+                if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
+                    if len(list(self.app.item_codes.keys())) > 0:
+                        #アイテムを使用するときの処理など
+                        self.enter_pos2 = self.in_st_finger + self.in_st_pos
+                        print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]]["name"])
             else:
-                self.in_st_finger += 1
-        if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-            #アイテムを使用するときの処理など
-            print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]][0])
+                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                    self.finger_pos1 = 0
+                    self.enter_pos2 = -1
+                if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
+                    if self.finger_pos1 != 0:
+                        self.finger_pos1 -= 18
+                if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
+                    if self.finger_pos1 != (len(list(self.app.chara_data.keys())) - 1) * 18:
+                        self.finger_pos1 += 18
+                if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
+                    pos = self.finger_pos1 // 18
+                    if (self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["type"] == "revival" and self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][1] <= 0) or (self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["type"] != "revival" and self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][1] > 0):
+                        if self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["type"] == "HP":
+                            size = pyxel.rndi(self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["effect"][0],self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["effect"][1])
+                            self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][1] += size
+                            if self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][1] > self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][0]:
+                                self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][1] = self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][0]
+                        elif self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["type"] == "MP":
+                            size = pyxel.rndi(self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["effect"][0],self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["effect"][1])
+                            self.app.chara_data[list(self.app.chara_data.keys())[pos]]["MP"][1] += size
+                            if self.app.chara_data[list(self.app.chara_data.keys())[pos]]["MP"][1] > self.app.chara_data[list(self.app.chara_data.keys())[pos]]["MP"][0]:
+                                self.app.chara_data[list(self.app.chara_data.keys())[pos]]["MP"][1] = self.app.chara_data[list(self.app.chara_data.keys())[pos]]["MP"][0]
+                        elif self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["type"] == "revival":
+                            self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][1] = int(self.app.chara_data[list(self.app.chara_data.keys())[pos]]["HP"][0] * (self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["effect"] / 100))
+                        self.app.item_codes[list(self.app.item_codes.keys())[self.enter_pos2]]["value"] -= 1
+                        if self.app.item_codes[list(self.app.item_codes.keys())[self.enter_pos2]]["value"] == 0:
+                            self.app.item_codes.pop(list(self.app.item_codes.keys())[self.enter_pos2])
+                            self.finger_pos1 -= 1
+                            self.enter_pos2 = -1
+                        for i in self.app.chara_data.keys():
+                            if self.app.chara_data[i]["HP"][1] > self.app.chara_data[i]["HP"][0]:
+                                self.app.chara_data[i]["HP"][1] = self.app.chara_data[i]["HP"][0]
+                            elif self.app.chara_data[i]["HP"][1] < 0:
+                                self.app.chara_data[i]["HP"][1] = 0
+                            if self.app.chara_data[i]["MP"][1] > self.app.chara_data[i]["MP"][0]:
+                                self.app.chara_data[i]["MP"][1] = self.app.chara_data[i]["MP"][0]
+                            elif self.app.chara_data[i]["MP"][1] < 0:
+                                self.app.chara_data[i]["MP"][1] = 0
 
     def imp_update(self):
         """大切なもの処理"""
@@ -147,18 +191,19 @@ class In_Setting:
             self.enter_pos = -1
             self.in_st_finger = 0
             self.in_st_pos = 0
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+        if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
                 self.in_st_pos -= 1
             elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+        if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
             if self.in_st_finger == 3:
                 self.in_st_pos += 1
             else:
                 self.in_st_finger += 1
         if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-            print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger + self.in_st_pos]][0])
+            if len(self.app.imp_item_codes) > 0:
+                print(self.tools["important"][self.app.imp_item_codes[self.in_st_finger + self.in_st_pos]][0])
 
     def sm_update(self,sm):
         """
@@ -175,12 +220,12 @@ class In_Setting:
                 self.enter_pos = -1
                 self.in_st_finger = 0
                 self.in_st_pos = 0
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
                 if self.in_st_finger == 0:
                     self.in_st_pos -= 1
                 elif self.in_st_finger != 0:
                     self.in_st_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
                 if self.in_st_finger == 3:
                     self.in_st_pos += 1
                 else:
@@ -193,7 +238,7 @@ class In_Setting:
                 self.equip_select = True
         else:
             len_eq = len(self.app.chara_data[list(self.app.chara_data.keys())[self.in_eq_enter]][f"{sm}_codes"])
-            if len_eq >= 10:
+            if len_eq >= self.in_eqst_item + 11:
                 dis_num = 10
             else:
                 dis_num = len_eq - self.in_eqst_item
@@ -201,14 +246,14 @@ class In_Setting:
                 self.in_pqse_finger = 0
                 self.in_eqst_item = 0
                 self.equip_men = False
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if not (self.in_pqse_finger == 0 or self.in_pqse_finger == 1):
-                    self.in_pqse_finger-=2
+                    self.in_pqse_finger -= 2
                 elif self.in_eqst_item - 2 >= 0:
                     self.in_eqst_item -= 2
-            if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.in_pqse_finger != 8 and self.in_pqse_finger != 9:
-                    if self.in_pqse_finger + 2 < dis_num and len_eq >= self.in_pqse_finger + self.in_eqst_item + 3:
+                    if self.in_pqse_finger + 2 < dis_num:
                         self.in_pqse_finger += 2
                 else:
                     if self.in_pqse_finger + self.in_eqst_item + 2 < len_eq:
@@ -216,15 +261,16 @@ class In_Setting:
                     elif self.in_pqse_finger + self.in_eqst_item + 2 == len_eq and len_eq > 10:
                         self.in_eqst_item += 2
                         self.in_pqse_finger -= 1
-            if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-                if self.in_pqse_finger + 1 < dis_num and self.in_pqse_finger + self.in_eqst_item + 1 != len_eq:
+            if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
+                if self.in_pqse_finger + 1 < dis_num:
                     self.in_pqse_finger += 1
-                elif not self.in_eqst_item + 12 <= len_eq and self.in_eqst_item + 11 <= len_eq:
+                elif not self.in_eqst_item + 13 <= len_eq and self.in_pqse_finger % 2 != 0:
                     self.in_pqse_finger -= 1
                     self.in_eqst_item += 2
                 elif self.in_eqst_item + 12 <= len_eq:
+                    self.in_pqse_finger -= 1
                     self.in_eqst_item += 2
-            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+            if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                 if self.in_eqst_item != 0:
                     if self.in_pqse_finger == 0:
                         self.in_pqse_finger += 1
@@ -243,12 +289,12 @@ class In_Setting:
                 self.enter_pos = -1
                 self.in_st_finger = 0
                 self.in_st_pos = 0
-            if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+            if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
                 if self.in_st_finger == 0:
                     self.in_st_pos -= 1
                 elif self.in_st_finger != 0:
                     self.in_st_finger -= 1
-            if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+            if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
                 if self.in_st_finger == 3:
                     self.in_st_pos += 1
                 else:
@@ -264,12 +310,12 @@ class In_Setting:
                 if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.in_eq_enter = 0
                     self.equip_men = False
-                if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)):
+                if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
                     if self.in_eqse_finger == 0 and self.in_eqse_pos != 0:
                         self.in_eqse_pos -= 1
                     elif self.in_eqse_finger != 0:
                         self.in_eqse_finger -= 1
-                if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+                if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
                     if self.in_eqse_finger == 3 and self.in_eqse_pos != 1:
                         self.in_eqse_pos += 1
                     elif self.in_eqse_finger != 3:
@@ -285,12 +331,12 @@ class In_Setting:
                     self.in_eqst_item = 0
                     self.equip_select = True
                 if len_eq > 2:
-                    if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)):
+                    if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
                         if self.in_pqse_finger != 0 and self.in_pqse_finger != 1:
                             self.in_pqse_finger -= 2
                         elif self.in_eqst_item != 0:
                             self.in_eqst_item -= 2
-                    if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+                    if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
                         if len_eq // 2 + len_eq % 2 >= self.in_pqse_finger + 1:
                             self.in_pqse_finger += 2
                         else:
@@ -301,8 +347,8 @@ class In_Setting:
                             elif self.in_eqst_item + self.in_pqse_finger + 2 == len_eq and self.in_pqse_finger % 2 != 0:
                                 self.in_eqst_item += 2
                                 self.in_pqse_finger -= 1
-                    if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-                        if self.in_pqse_finger - 1 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
+                    if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
+                        if self.in_pqse_finger - 2 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
                             self.in_pqse_finger += 1
                         elif self.in_eqst_item + self.in_pqse_finger != len_eq + 1 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
                             self.in_eqst_item += 2
@@ -310,7 +356,7 @@ class In_Setting:
                                 self.in_pqse_finger += 1
                             else:
                                 self.in_pqse_finger -= 1
-                    if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                    if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                         if self.in_pqse_finger == 0 and self.in_eqst_item != 0:
                             self.in_eqst_item -= 2
                             self.in_pqse_finger += 1
@@ -319,10 +365,10 @@ class In_Setting:
                         elif self.in_pqse_finger != 0:
                             self.in_pqse_finger -= 1
                 else:
-                    if pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
+                    if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                         if self.in_pqse_finger != 1:
                             self.in_pqse_finger += 1
-                    if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT):
+                    if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                         if self.in_pqse_finger != 0:
                             self.in_pqse_finger -= 1
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
@@ -339,12 +385,12 @@ class In_Setting:
         len_ = len(self.app.chara_data.items())
         if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
-        if (pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP)) and self.in_st_finger + self.in_st_pos != 0:
+        if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
                 self.in_st_pos -= 1
             elif self.in_st_finger != 0:
                 self.in_st_finger -= 1
-        if (pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)) and self.in_st_finger + self.in_st_pos != len_ - 1:
+        if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != len_ - 1:
             if self.in_st_finger == 3:
                 self.in_st_pos += 1
             else:
@@ -367,20 +413,16 @@ class In_Setting:
         self.time_m = (time_time % 3600) // 60
         self.time_s = (time_time % 3600 % 60)
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos != 99:
                     self.finger_pos += 11
             elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
-                print(self.enter_pos)
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
-                if self.finger_pos//11 == 7:
-                    self.option.now_volume = self.app.volume
-                    self.option.vol_finger = self.app.volume
+                print(f"{self.enter_pos=}")
         elif self.enter_pos == 9:
             self.enter_pos = -1
             self.finger_pos = 0
@@ -414,18 +456,51 @@ class In_Setting:
                 if i == self.in_st_finger:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+                self.umplus10.draw_text(72,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+                if len(self.tools["basic"][kv[0]]["info"]) > 23:
+                    for n,j in zip(range(0,len(self.tools["basic"][kv[0]]["info"]),23),range(5)):
+                        self.umplus10.draw_text(72,int(26+(49*i)) + 11 * j,self.tools["basic"][kv[0]]["info"][n:n + 23],7)
+                else:
+                    self.umplus10.draw_text(72,int(26+(49*i)),self.tools["basic"][kv[0]]["info"],7)
                 self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
-
         else:
-            for i,kv in enumerate(self.app.item_codes.items()):
-                if i == self.in_st_finger:
-                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
-                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
-            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+            if len(list(self.app.item_codes.keys())) > 0:
+                for i,kv in enumerate(self.app.item_codes.items()):
+                    if i == self.in_st_finger:
+                        pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                    pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                    self.umplus10.draw_text(72,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
+                    if len(self.tools["basic"][kv[0]]["info"]) > 23:
+                        for n,j in zip(range(0,len(self.tools["basic"][kv[0]]["info"]),23),range(5)):
+                            self.umplus10.draw_text(72,int(26+(49*i)) + 11 * j,self.tools["basic"][kv[0]]["info"][n:n + 23],7)
+                    else:
+                        self.umplus10.draw_text(72,int(26+(49*i)),self.tools["basic"][kv[0]]["info"],7)
+                    self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+                pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+        if self.enter_pos2 != -1:
+            pyxel.rect(50,50,200,108,0)
+            pyxel.rectb(50,50,200,108,7)
+            pyxel.rect(50,0,200,50,0)
+            pyxel.rectb(50,0,200,50,7)
+            self.umplus10.draw_text(51,1,self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["name"],7)
+            self.umplus10.draw_text(150,1,f"個数: {self.app.item_codes[list(self.app.item_codes.keys())[self.enter_pos2]]['value']}",7)
+            pyxel.blt(51,51+(self.finger_pos1),0,16,0,16,16,0)
+            for i,v in enumerate(self.app.chara_data.keys()):
+                chara_data = self.app.chara_data[v]
+                height = 18*i
+                if chara_data["HP"][1] <= 0:
+                    self.umplus10.draw_text(66,51+height,v,8)
+                else:
+                    self.umplus10.draw_text(66,51+height,v,7)
+                pyxel.text(121,51+height,"HP",7)
+                pyxel.text(121,58+height,"MP",7)
+                pyxel.rect(129,51+height,(chara_data["HP"][1] / chara_data["HP"][0]) * 100,5,11)
+                pyxel.rectb(129,51+height,100,5,7)
+                pyxel.text(229,51+height,f"{chara_data['HP'][1]}",11)
+                pyxel.rect(129,58+height,(chara_data["MP"][1] / chara_data["MP"][0]) * 100,5,5)
+                pyxel.rectb(129,58+height,100,5,7)
+                pyxel.text(229,58+height,f"{chara_data['MP'][1]}",5)
 
     def imp_draw(self):
         """大切なもの描画"""
@@ -437,12 +512,13 @@ class In_Setting:
                 self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
-            for i,v in enumerate(self.app.imp_item_codes):
-                if i == self.in_st_finger:
-                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
-                self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
-            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+            if len(self.app.imp_item_codes) > 0:
+                for i,v in enumerate(self.app.imp_item_codes):
+                    if i == self.in_st_finger:
+                        pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
+                    pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                    self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
+                pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def sm_draw(self,sm):
         """
@@ -482,20 +558,24 @@ class In_Setting:
                     w = i % 2
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
-                        pyxel.rect(71+(115*w),71+(13*h),114,13,1)
+                        pyxel.rect(71+(115*w),71+(13*h),113,11,1)
                     self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v[1]]["name"],7)
             else:
                 for i,v in enumerate(chara_data[f"{sm}_codes"]):
                     w = i % 2
                     h = int(i // 2)
                     if i == self.in_pqse_finger:
-                        pyxel.rect(71+(115*w),71+(13*h),115,13,1)
+                        pyxel.rect(71+(115*w),71+(13*h),113,11,1)
                     self.umplus10.draw_text(71+(115*w),71+(13*h),self.magic[sm][v]["name"],7)
-            if len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"]) > 22:
-                for i,j in zip(range(0,len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"]),22),range(5)):
-                    self.umplus10.draw_text(71,137 + 11 * j,self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"][i:i + 22],7)
-            else:
-                self.umplus10.draw_text(71,137,self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"],7)
+            try:
+                if len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"]) > 22:
+                    for i,j in zip(range(0,len(self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"]),22),range(5)):
+                        self.umplus10.draw_text(71,137 + 11 * j,self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"][i:i + 22],7)
+                else:
+                    self.umplus10.draw_text(71,137,self.magic[sm][chara_data[f"{sm}_codes"][self.in_eqst_item + self.in_pqse_finger]]["info"],7)
+            except IndexError:
+                self.in_pqse_finger = 0
+                self.in_eqst_item = 0
             self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def equip_draw(self):
@@ -610,7 +690,7 @@ class In_Setting:
                                 h = int(i[0] // 2)
                                 w = i[0] % 2
                                 if j == self.in_pqse_finger + self.in_eqst_item:
-                                    pyxel.rect(71+(114*w),136+(16*h),114,16,1)
+                                    pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                                 if i[1][1] == 9:
                                     self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
                                 self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
@@ -619,7 +699,7 @@ class In_Setting:
                                 h = int(i[0] // 2)
                                 w = i[0] % 2
                                 if j == self.in_pqse_finger + self.in_eqst_item:
-                                    pyxel.rect(71+(114*w),136+(16*h),114,16,1)
+                                    pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                                 if i[1][1] == 9:
                                     self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
                                 self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
@@ -628,7 +708,7 @@ class In_Setting:
                             h = int(i[0] // 2)
                             w = i[0] % 2
                             if j == self.in_pqse_finger + self.in_eqst_item:
-                                pyxel.rect(71+(114*w),136+(16*h),114,16,1)
+                                pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                             if i[1][1] == 9:
                                     self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
                             self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
@@ -683,7 +763,11 @@ class In_Setting:
                                     self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",7)
                                 else:
                                     self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",8)
-                        self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
+                        try:
+                            self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
+                        except IndexError:
+                            self.in_pqse_finger = 0
+                            self.in_eqst_item = 0
                 self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def status_draw(self):
@@ -726,11 +810,19 @@ class In_Setting:
                     atk *= chara_data["atk_buff"] / 100
                     def_ *= chara_data["def_buff"] / 100
         self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_st_finger + self.in_st_pos],7)
-        self.umplus10.draw_text(150,71,f"Level {chara_data['Level']}     {chara_data['XP']}/XXXX",7)
+        xp = 0
+        level = chara_data["Level"] + 1
+        if 0 <= level <= 16:
+            xp = level ** 2 + 6 * level
+        elif 17 <= level <= 30:
+            xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+        elif 31 <= level:
+            xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+        self.umplus10.draw_text(140,71,f"Level {chara_data['Level']}  {int(chara_data['XP'])}/{int(xp)}",7)
         self.umplus10.draw_text(71,82,f"HP {chara_data['HP'][1]}/{chara_data['HP'][0]}",7)
         self.umplus10.draw_text(71,93,f"MP {chara_data['MP'][1]}/{chara_data['MP'][0]}",7)
-        self.umplus10.draw_text(71,104,f"ATK {atk}",7)
-        self.umplus10.draw_text(71,115,f"DEF {def_}",7)
+        self.umplus10.draw_text(71,104,f"ATK {int(atk)}",7)
+        self.umplus10.draw_text(71,115,f"DEF {int(def_)}",7)
         self.umplus10.draw_text(71,126,f"会心率 {chara_data['satisfaction'][0]}% 会心ダメ{chara_data['satisfaction'][1]}%",7)
 
     def sort_draw(self):
@@ -825,20 +917,16 @@ class Out_Setting:
     def update(self):
         """基本処理"""
         if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos != 0:
                     self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+            elif pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos != 11:
                     self.finger_pos += 11
             elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 self.enter_pos = self.finger_pos//11
             elif pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 return self.title_sc
-            if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
-                if self.finger_pos//11 == 0:
-                    self.option.now_volume = self.app.volume
-                    self.option.vol_finger = self.app.volume
             return self.setting_sc
         elif self.enter_pos == 1:
             pyxel.quit()

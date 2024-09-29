@@ -44,6 +44,7 @@ class Save:
             "imp_item_codes":self.app.imp_item_codes,
             "equip_codes":self.app.equip_codes
         }
+        print(f"{save_data[str(pos)]['play_data']=}")
         if self.app.local:
             with open("configs/savedata.json","w",encoding="utf-8") as f:
                 json.dump(save_data,f,indent=4,ensure_ascii=False)
