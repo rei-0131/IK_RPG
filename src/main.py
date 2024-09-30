@@ -38,6 +38,7 @@ else:
     config = cloud.config_load()
     save_data = cloud.load()
 
+#["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
 with open("src/assets/init_data.json",encoding="utf-8") as f:
     init_data = json.load(f)
 
