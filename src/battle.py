@@ -157,7 +157,7 @@ class Battle:
                 "move":"p"
             })
         self.xp_get = False
-        self.xp_up = {i:0 for i in self.chara_data.keys()}
+        self.xp_up = {i:[0,False] for i in self.chara_data.keys()}
         self.xp_stop = False
         self.in_battle = False
         self.win = "player"
@@ -1522,13 +1522,36 @@ class Battle:
             else:
                 pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
                 pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
+                self.umplus10.draw_text(6,33,"ＨＰ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,44,"ＭＰ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,55,"ＡＴＫ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,66,"ＤＥＦ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,77,"会心率".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,88,"会心ダメ".rjust(5,"　"),7)
                 if not self.xp_get:
                     for i in self.enemy_status:
                         for j in self.xp_up:
-                            self.xp_up[j] += i["xp"]
-                    self.xp_get = True
+                            self.xp_up[j][0] += i["xp"]
+                            xp = 0
+                            level = self.chara_data[k]["Level"] + 1
+                            if 0 <= level <= 16:
+                                xp = level ** 2 + 6 * level
+                            elif 17 <= level <= 30:
+                                xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+                            elif 31 <= level:
+                                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                            if self.chara_data[k]["XP"] + self.xp_up[j][0] >= xp:
+                                self.xp_up[j][1] = True
                 for i,k in enumerate(self.chara_data.keys()):
-                    self.umplus10.draw_text(72 * i + 10,6,str(k).center(6,"　"),7)
+                    chara = self.chara_data[k]
+                    self.umplus10.draw_text(58 + 61 * i,33,str(chara["HP"][1]),7)
+                    self.umplus10.draw_text(58 + 61 * i,44,str(chara["MP"][1]),7)
+                    self.umplus10.draw_text(58 + 61 * i,55,str(chara["atk_ab"]),7)
+                    self.umplus10.draw_text(58 + 61 * i,66,str(chara["def_ab"]),7)
+                    self.umplus10.draw_text(58 + 61 * i,77,str(chara["satisfaction"][0]),7)
+                    self.umplus10.draw_text(58 + 61 * i,88,str(chara["satisfaction"][1]),7)
+                    self.umplus10.draw_text(62 * i + 51,6,str(k).center(5,"　"),7)
+                    
                     xp = 0
                     level = self.chara_data[k]["Level"] + 1
                     if 0 <= level <= 16:
@@ -1540,19 +1563,19 @@ class Battle:
                     if self.chara_data[k]["XP"] >= xp:
                         self.chara_data[k]["Level"] += 1
                         self.chara_data[k]["XP"] -= xp
-                    self.umplus10.draw_text(73 * i + 6,17,"Lv ",7)
-                    self.umplus10.draw_text(73 * i + 21,17,str(self.chara_data[k]['Level']),7)
-                    pyxel.rect(72 * i + 6,28,int(self.chara_data[k]["XP"] / xp * 100 * 0.71),4,11)
-                    pyxel.rectb(72 * i + 6,28,71,4,7)
+                    self.umplus10.draw_text(61 * i + 56,17,"Lv ",7)
+                    self.umplus10.draw_text(61 * i + 71,17,str(self.chara_data[k]['Level']),7)
+                    pyxel.rect(61 * i + 56,28,int(self.chara_data[k]["XP"] / xp * 100 * 0.5),4,11)
+                    pyxel.rectb(61 * i + 56,28,50,4,7)
                     if not self.xp_stop:
-                        if self.xp_up[k] >= 15:
+                        if self.xp_up[k][0] >= 15:
                             self.chara_data[k]["XP"] += 15
-                            self.xp_up[k] -= 15
+                            self.xp_up[k][0] -= 15
                         else:
-                            self.chara_data[k]["XP"] += self.xp_up[k]
-                            self.xp_up[k] = 0
+                            self.chara_data[k]["XP"] += self.xp_up[k][0]
+                            self.xp_up[k][0] = 0
                         for j in self.xp_up:
-                            if self.xp_up[j] == 0:
+                            if self.xp_up[j][0] == 0:
                                 self.xp_stop = True
                             else:
                                 self.xp_stop = False
