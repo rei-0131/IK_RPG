@@ -81,6 +81,8 @@ class Battle:
         self.xp_up = {}
         self.xp_get = False
         self.xp_stop = False
+        self.status_diff = {}
+        self.levelup_data = self.app.init_data["levelup"]
 
     def clean(self,scene):
         """初期化"""
@@ -157,9 +159,19 @@ class Battle:
                 "move":"p"
             })
         self.xp_get = False
-        self.xp_up = {i:[0,False] for i in self.chara_data.keys()}
+        self.xp_up = {i:[0,False,None] for i in self.chara_data.keys()}
         self.xp_stop = False
         self.in_battle = False
+        self.status_diff = {i:{
+            "HP":0,
+            "MP":0,
+            "atk_ab":0,
+            "def_ab":0,
+            "satisfaction":[
+                0,
+                0
+            ]} for i in self.chara_data.keys()}
+        self.levelup_data = self.app.init_data["levelup"]
         self.win = "player"
 
     def debug_clean(self):
@@ -1177,11 +1189,60 @@ class Battle:
         else:
             if not self.xp_stop:
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                    for i in self.xp_up:
-                        self.chara_data[i]["XP"] += self.xp_up[i]
-                        self.xp_up[i] -= 0
+                    while not self.xp_stop:
+                        for i,k in enumerate(self.chara_data.keys()):
+                            be_level_ten = 0
+                            no_level_ten = 0
+                            if not self.xp_get:
+                                self.xp_up[k][2] = self.chara_data[k]["Level"]
+                            xp = 0
+                            level = self.chara_data[k]["Level"] + 1
+                            if 0 <= level <= 16:
+                                xp = level ** 2 + 6 * level
+                            elif 17 <= level <= 30:
+                                xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+                            elif 31 <= level:
+                                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                            if self.chara_data[k]["XP"] >= xp:
+                                self.chara_data[k]["Level"] += 1
+                                self.chara_data[k]["XP"] -= xp
+                                if len(str(self.xp_up[k][2])) > 1:
+                                    be_level_ten = int(str(self.xp_up[k][2])[-2])
+                                if len(str(self.chara_data[k]["Level"])) > 1:
+                                    no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
+                                if be_level_ten < no_level_ten:
+                                    ten_level = no_level_ten - be_level_ten
+                                    self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
+                                    self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
+                                self.status_diff[k]["HP"] += self.levelup_data["HP"]
+                                self.status_diff[k]["MP"] += self.levelup_data["MP"]
+                                self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
+                                self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
+                            if not self.xp_stop:
+                                if self.xp_up[k][0] >= 15:
+                                    self.chara_data[k]["XP"] += 15
+                                    self.xp_up[k][0] -= 15
+                                else:
+                                    self.chara_data[k]["XP"] += self.xp_up[k][0]
+                                    self.xp_up[k][0] = 0
+                                for j in self.xp_up:
+                                    if self.xp_up[j][0] == 0:
+                                        self.xp_stop = True
+                                    else:
+                                        self.xp_stop = False
                     self.check_level()
                     self.xp_stop = True
+            else:
+                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                    for i in self.xp_up:
+                        self.chara_data[i]["XP"] += self.xp_up[i][0]
+                        self.xp_up[i][0] -= 0
+                        self.chara_data[i]["HP"][0] += self.status_diff[i]["HP"]
+                        self.chara_data[i]["MP"][0] += self.status_diff[i]["MP"]
+                        self.chara_data[i]["atk_ab"] += self.status_diff[i]["atk_ab"]
+                        self.chara_data[i]["def_ab"] += self.status_diff[i]["def_ab"]
+                        self.chara_data[i]["satisfaction"][0] += self.status_diff[i]["satisfaction"][0]
+                        self.chara_data[i]["satisfaction"][1] += self.status_diff[i]["satisfaction"][1]
 
     def sm_draw(self,sm):
         """
@@ -1533,25 +1594,29 @@ class Battle:
                         for j in self.xp_up:
                             self.xp_up[j][0] += i["xp"]
                             xp = 0
-                            level = self.chara_data[k]["Level"] + 1
+                            level = self.chara_data[j]["Level"] + 1
                             if 0 <= level <= 16:
                                 xp = level ** 2 + 6 * level
                             elif 17 <= level <= 30:
                                 xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
                             elif 31 <= level:
                                 xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
-                            if self.chara_data[k]["XP"] + self.xp_up[j][0] >= xp:
+                            if self.chara_data[j]["XP"] + self.xp_up[j][0] >= xp:
                                 self.xp_up[j][1] = True
+                    print(f"get xp:{self.xp_up}")
                 for i,k in enumerate(self.chara_data.keys()):
+                    be_level_ten = 0
+                    no_level_ten = 0
+                    if not self.xp_get:
+                        self.xp_up[k][2] = self.chara_data[k]["Level"]
                     chara = self.chara_data[k]
-                    self.umplus10.draw_text(58 + 61 * i,33,str(chara["HP"][1]),7)
-                    self.umplus10.draw_text(58 + 61 * i,44,str(chara["MP"][1]),7)
-                    self.umplus10.draw_text(58 + 61 * i,55,str(chara["atk_ab"]),7)
-                    self.umplus10.draw_text(58 + 61 * i,66,str(chara["def_ab"]),7)
-                    self.umplus10.draw_text(58 + 61 * i,77,str(chara["satisfaction"][0]),7)
-                    self.umplus10.draw_text(58 + 61 * i,88,str(chara["satisfaction"][1]),7)
+                    self.umplus10.draw_text(58 + 61 * i,33,str(chara["HP"][1]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,44,str(chara["MP"][1]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,55,str(chara["atk_ab"]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,66,str(chara["def_ab"]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,77,str(chara["satisfaction"][0]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,88,str(chara["satisfaction"][1]).rjust(4,' '),7)
                     self.umplus10.draw_text(62 * i + 51,6,str(k).center(5,"　"),7)
-                    
                     xp = 0
                     level = self.chara_data[k]["Level"] + 1
                     if 0 <= level <= 16:
@@ -1563,6 +1628,26 @@ class Battle:
                     if self.chara_data[k]["XP"] >= xp:
                         self.chara_data[k]["Level"] += 1
                         self.chara_data[k]["XP"] -= xp
+                        if len(str(self.xp_up[k][2])) > 1:
+                            be_level_ten = int(str(self.xp_up[k][2])[-2])
+                        if len(str(self.chara_data[k]["Level"])) > 1:
+                            no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
+                        if be_level_ten < no_level_ten:
+                            ten_level = no_level_ten - be_level_ten
+                            self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
+                            self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
+                        self.status_diff[k]["HP"] += self.levelup_data["HP"]
+                        self.status_diff[k]["MP"] += self.levelup_data["MP"]
+                        self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
+                        self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
+                    if self.xp_up[k][2] != None:
+                        if self.status_diff[k]["satisfaction"][0] != 0:
+                            self.umplus10.draw_text(88 + 61 * i,77,f"→{str(self.status_diff[k]['satisfaction'][0]).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(88 + 61 * i,88,f"→{str(self.status_diff[k]['satisfaction'][1]).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,33,f"→{str(self.status_diff[k]['HP']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,44,f"→{str(self.status_diff[k]['MP']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,55,f"→{str(self.status_diff[k]['atk_ab']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,66,f"→{str(self.status_diff[k]['def_ab']).rjust(2,' ')}",11)
                     self.umplus10.draw_text(61 * i + 56,17,"Lv ",7)
                     self.umplus10.draw_text(61 * i + 71,17,str(self.chara_data[k]['Level']),7)
                     pyxel.rect(61 * i + 56,28,int(self.chara_data[k]["XP"] / xp * 100 * 0.5),4,11)
@@ -1579,4 +1664,5 @@ class Battle:
                                 self.xp_stop = True
                             else:
                                 self.xp_stop = False
+                self.xp_get = True
                 # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
