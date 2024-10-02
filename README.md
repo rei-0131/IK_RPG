@@ -19,7 +19,6 @@
 - scikit-learn
 - copy
 
-
 ## 外部
 
 - BDFRenderer
@@ -56,6 +55,7 @@
 . . . . . **今後も追加予定**
 
 ## コマンドの使い方
+
 [説明ファイル](https://github.com/rei-0131/IK_RPG/blob/master/command_help.txt)
 
 ## セーブデータのフォーマット
@@ -118,8 +118,8 @@
 |       data_number       |                データ番号                 |
 |        play_time        |                プレイ時間                 |
 |      scene_number       |                シーン番号                 |
-|        msg_id           |                表示予定メッセージID        |
-|       disp_id           |               表示メッセージID            |
+|         msg_id          |           表示予定メッセージ ID           |
+|         disp_id         |             表示メッセージ ID             |
 |        player_x         |            プレイヤーの座標 x             |
 |        player_y         |            プレイヤーの座標 y             |
 |       chara_name        |            キャラクターの名前             |
