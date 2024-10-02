@@ -38,6 +38,7 @@ else:
     config = cloud.config_load()
     save_data = cloud.load()
 
+#["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
 with open("src/assets/init_data.json",encoding="utf-8") as f:
     init_data = json.load(f)
 
@@ -144,6 +145,7 @@ class App:
         self.load_msg = ""
         self.game_time = "00:00:00"
         self.game_time_start = None
+        self.bgm_run = True
         pyxel.load("assets/player.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -185,7 +187,7 @@ class App:
             if 0 <= level <= 16:
                 xp = level ** 2 + 6 * level
             elif 17 <= level <= 30:
-                xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+                xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
             elif 31 <= self.chara_data[cr]["Level"]:
                 xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
             return xp
@@ -282,7 +284,7 @@ class App:
             if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
                 if not self.now_scene == "cmd" and self.now_scene == 5:
                     self.now_scene = self.be_scene
-                    self.sound_manager.stop()
+                    print("BGM STOP")
                 elif self.now_scene == "cmd" and self.back_scene == 5:
                     self.now_scene = self.be_scene
                     self.battle.clean(self.now_scene)
@@ -297,7 +299,10 @@ class App:
                     # enemy_num = random.randint(1,3)
                     self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
                     self.now_scene = 5
-                    self.sound_manager.play_bgm("test")
+                    print(self.battle.win)
+                    if self.battle.win == "":
+                        self.bgm_run = True
+                        self.sound_manager.play_bgm("test")
             if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
                 if self.now_scene == "cmd":
                     self.now_scene = self.back_scene
@@ -307,6 +312,10 @@ class App:
                     self.now_scene = "cmd"
         if self.now_scene == 5:
             self.battle.update()
+            if self.bgm_run and self.battle.win != "":
+                self.sound_manager.stop()
+                print("BGM STOP")
+                self.bgm_run = False
         elif self.now_scene == "cmd":
             self.cmd.update()
 

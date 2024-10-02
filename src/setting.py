@@ -453,7 +453,7 @@ class In_Setting:
         """アイテム描画"""
         if len(self.app.item_codes) > 4:
             for i,kv in enumerate(list(self.app.item_codes.items())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(72,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
@@ -462,12 +462,12 @@ class In_Setting:
                         self.umplus10.draw_text(72,int(26+(49*i)) + 11 * j,self.tools["basic"][kv[0]]["info"][n:n + 23],7)
                 else:
                     self.umplus10.draw_text(72,int(26+(49*i)),self.tools["basic"][kv[0]]["info"],7)
-                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {str(kv[1]['value']).rjust(2,' ')}")
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
             if len(list(self.app.item_codes.keys())) > 0:
                 for i,kv in enumerate(self.app.item_codes.items()):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                     pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                     self.umplus10.draw_text(72,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
@@ -476,7 +476,7 @@ class In_Setting:
                             self.umplus10.draw_text(72,int(26+(49*i)) + 11 * j,self.tools["basic"][kv[0]]["info"][n:n + 23],7)
                     else:
                         self.umplus10.draw_text(72,int(26+(49*i)),self.tools["basic"][kv[0]]["info"],7)
-                    self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+                    self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {str(kv[1]['value']).rjust(2,' ')}")
                 pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         if self.enter_pos2 != -1:
             pyxel.rect(50,50,200,108,0)
@@ -506,7 +506,7 @@ class In_Setting:
         """大切なもの描画"""
         if len(self.app.imp_item_codes) > 4:
             for i,v in enumerate(self.app.imp_item_codes[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
@@ -514,7 +514,7 @@ class In_Setting:
         else:
             if len(self.app.imp_item_codes) > 0:
                 for i,v in enumerate(self.app.imp_item_codes):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                     pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                     self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
@@ -539,14 +539,14 @@ class In_Setting:
         self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
         if len(self.app.chara_data.keys()) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
             pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
         else:
             for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
@@ -593,14 +593,14 @@ class In_Setting:
             self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
             if len(self.app.chara_data) > 4:
                 for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,71+(16*i),113,17,1)
                     pyxel.line(70,70+(16*i + 1),185,70+(16*i + 1),7)
                     self.umplus10.draw_text(71,int(71+(17*i)),t,7)
                 pyxel.line(70,70+(16*(i + 1) + 1),185,70+(16*(i + 1) + 1),7)
             else:
                 for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,71+(16*i),113,17,1)
                     pyxel.line(70,70+(16*i + 1),185,70+(16*i + 1),7)
                     self.umplus10.draw_text(71,int(71+(17*i)),t,7)
@@ -776,14 +776,14 @@ class In_Setting:
         self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
         if len(self.app.chara_data) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
             pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
         else:
             for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
@@ -815,7 +815,7 @@ class In_Setting:
         if 0 <= level <= 16:
             xp = level ** 2 + 6 * level
         elif 17 <= level <= 30:
-            xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+            xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
         elif 31 <= level:
             xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
         self.umplus10.draw_text(140,71,f"Level {chara_data['Level']}  {int(chara_data['XP'])}/{int(xp)}",7)
@@ -829,14 +829,14 @@ class In_Setting:
         """並び替え描画"""
         if len(self.app.chara_data.items()) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
             for i,t in enumerate(self.app.chara_data):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
