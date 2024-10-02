@@ -168,6 +168,28 @@ class CMD:
         self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
         self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
 
+    def kill(self,arg):
+        if arg[1] == "self":
+            if arg[2] == "@a":
+                for i in range(len(list(self.app.chara_data.keys()))):
+                    self.app.chara_data[list(self.app.chara_data.keys())[i]]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = "すべての味方をキルしました"
+            else:
+                self.app.chara_data[list(self.app.chara_data.keys())[int(arg[2])]]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = f"{list(self.app.chara_data.keys())[int(arg[2])]}をキルしました"
+        elif arg[1] == "enemy":
+            if arg[2] == "@a":
+                for i in range(len(self.app.battle.enemy_status)):
+                    self.app.battle.enemy_status[i]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = "すべての敵をキルしました"
+            else:
+                self.app.battle.enemy_status[int(arg[2])]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = f"インデックス{arg[2]}の敵ををキルしました"
+
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
             print(self.in_str)
@@ -186,6 +208,8 @@ class CMD:
                     self.setting()
                 elif cmd_config[0] == "xp":
                     self.xp(cmd_config)
+                elif cmd_config[0] == "kill":
+                    self.kill(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"
