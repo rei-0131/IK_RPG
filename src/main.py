@@ -115,7 +115,7 @@ class App:
         self.local = local
         self.now_scene = -1
         self.back_scene = -1
-        self.msg_id = "None"
+        self.msg_id = "01"
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
@@ -227,12 +227,18 @@ class App:
                     self.item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["item_codes"]
                     self.imp_item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["imp_item_codes"]
                     self.equip_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
+                    self.msg_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["msg_id"]
+                    self.disp_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["disp_id"]
                     self.from_load = False
                 else:
                     print("new game")
                     self.loaddata = {
                         "play_data": {
                         "time": "00:00:00",
+                        "words":{
+                            "msg_id":None,
+                            "disp_id":None
+                        },
                         "scene": 1,
                         "x":136,
                         "y": 182,
@@ -245,14 +251,17 @@ class App:
                     self.game_time = self.loaddata["play_data"]["time"]
                     self.player.x = self.loaddata["play_data"]["x"]
                     self.player.y = self.loaddata["play_data"]["y"]
+                    self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
+                    self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
                     self.chara_data = init_data["chara_data"]
                     self.item_codes = init_data["item_codes"]
                     self.equip_codes = init_data["equip_codes"]
                     self.imp_item_codes = init_data["imp_item_codes"]
                 self.new_game = False
             self.player.update()
-            if self.in_word:
-                self.msg_id, self.disp_id = self.words.update()
+            if not self.new_game:
+                if self.in_word:
+                    self.msg_id, self.disp_id = self.words.update()
             if self.in_battle:
                 self.battle.clean(self.now_scene)
                 if self.is_test:
@@ -284,6 +293,7 @@ class App:
             if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
                 if not self.now_scene == "cmd" and self.now_scene == 5:
                     self.now_scene = self.be_scene
+                    self.sound_manager.stop()
                     print("BGM STOP")
                 elif self.now_scene == "cmd" and self.back_scene == 5:
                     self.now_scene = self.be_scene
@@ -328,12 +338,13 @@ class App:
             pyxel.camera()
             pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale=0.5)
             self.player.draw()
-            if self.msg_id != self.disp_id:
-                self.in_word = True
-            else:
-                self.in_word = False
-            if self.in_word:
-                self.words.dec_word(self.msg_id)
+            if not self.new_game:
+                if self.msg_id != self.disp_id:
+                    self.in_word = True
+                else:
+                    self.in_word = False
+                if self.in_word:
+                    self.words.dec_word(self.msg_id)
         elif self.now_scene == OUT_SETTING_SCENE:
             self.setting_out.draw()
         elif self.now_scene == IN_SETTING_SCENE:
