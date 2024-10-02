@@ -66,6 +66,10 @@
     "player_data":{
       "time":play_time,
       "scene":scene_number,
+      "words":{
+          "msg_id":msg_id,
+          "disp_id":disp_id
+      },
       "x":player_x,
       "y":player_y,
       "chara_data":{
@@ -114,6 +118,8 @@
 |       data_number       |                データ番号                 |
 |        play_time        |                プレイ時間                 |
 |      scene_number       |                シーン番号                 |
+|        msg_id           |                表示予定メッセージID        |
+|       disp_id           |               表示メッセージID            |
 |        player_x         |            プレイヤーの座標 x             |
 |        player_y         |            プレイヤーの座標 y             |
 |       chara_name        |            キャラクターの名前             |
