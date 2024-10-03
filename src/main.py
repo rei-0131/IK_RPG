@@ -18,8 +18,9 @@ from option import Option
 #dev only
 from rpg_cmd import CMD
 
-##########テスト環境かのbool
+##########テスト環境
 is_test = True
+mode = "debug"
 ##########
 
 #各ファイル読み込み
@@ -127,11 +128,13 @@ class App:
         self.loaddata = None
         self.in_battle = False
         self.load_write = False
-        self.chara_data = init_data["chara_data"]
-        self.item_codes = init_data["item_codes"]
-        self.equip_codes = init_data["equip_codes"]
-        self.imp_item_codes = init_data["imp_item_codes"]
-        self.init_data = init_data
+        self.mode = mode
+        self.INIT_DATA = init_data
+        self.chara_data = init_data[mode]["chara_data"]
+        self.item_codes = init_data[mode]["item_codes"]
+        self.equip_codes = init_data[mode]["equip_codes"]
+        self.imp_item_codes = init_data[mode]["imp_item_codes"]
+        self.init_data = init_data[mode]
         self.config = config
         self.save_data = save_data
         self.scenes = scenes
@@ -253,10 +256,10 @@ class App:
                     self.player.y = self.loaddata["play_data"]["y"]
                     self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
                     self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
-                    self.chara_data = init_data["chara_data"]
-                    self.item_codes = init_data["item_codes"]
-                    self.equip_codes = init_data["equip_codes"]
-                    self.imp_item_codes = init_data["imp_item_codes"]
+                    self.chara_data = init_data[self.mode]["chara_data"]
+                    self.item_codes = init_data[self.mode]["item_codes"]
+                    self.equip_codes = init_data[self.mode]["equip_codes"]
+                    self.imp_item_codes = init_data[self.mode]["imp_item_codes"]
                 self.new_game = False
             self.player.update()
             if not self.new_game:
