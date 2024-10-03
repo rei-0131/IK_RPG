@@ -82,7 +82,7 @@ class Battle:
         self.xp_get = False
         self.xp_stop = False
         self.status_diff = {}
-        self.levelup_data = self.app.init_data["levelup"]
+        self.levelup_data = self.app.INIT_DATA["levelup"]
 
     def clean(self,scene):
         """初期化"""
