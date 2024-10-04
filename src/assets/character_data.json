@@ -1,15 +1,15 @@
 {
     "リョウガ":{
-        "post":0,
-        "Level":0,
+        "post":3,
+        "Level":1,
         "XP":0,
         "HP":[
-            0,
-            0
+            90,
+            90
         ],
         "MP":[
-            0,
-            0
+            100,
+            100
         ],
         "magic_codes":[
             "00"
@@ -17,14 +17,14 @@
         "skill_codes":[
             "00"
         ],
-        "atk_ab":0,
-        "def_ab":0,
+        "atk_ab":17,
+        "def_ab":18,
         "satisfaction":[
-            0,
-            0
+            10,
+            110
         ],
-        "atk_buff":0,
-        "def_buff":0,
+        "atk_buff":100,
+        "def_buff":100,
         "equipments":{
             "head":"000",
             "armor":"000",
@@ -34,16 +34,16 @@
         }
     },
     "マナト":{
-        "post":0,
-        "Level":0,
+        "post":2,
+        "Level":1,
         "XP":0,
         "HP":[
-            0,
-            0
+            90,
+            90
         ],
         "MP":[
-            0,
-            0
+            100,
+            100
         ],
         "magic_codes":[
             "00"
@@ -51,14 +51,14 @@
         "skill_codes":[
             "00"
         ],
-        "atk_ab":0,
-        "def_ab":0,
+        "atk_ab":17,
+        "def_ab":18,
         "satisfaction":[
-            0,
-            0
+            10,
+            110
         ],
-        "atk_buff":0,
-        "def_buff":0,
+        "atk_buff":100,
+        "def_buff":100,
         "equipments":{
             "head":"000",
             "armor":"000",
@@ -68,16 +68,16 @@
         }
     },
     "キラ":{
-        "post":0,
-        "Level":0,
+        "post":4,
+        "Level":1,
         "XP":0,
         "HP":[
-            0,
-            0
+            150,
+            150
         ],
         "MP":[
-            0,
-            0
+            50,
+            50
         ],
         "magic_codes":[
             "00"
@@ -85,14 +85,14 @@
         "skill_codes":[
             "00"
         ],
-        "atk_ab":0,
-        "def_ab":0,
+        "atk_ab":18,
+        "def_ab":25,
         "satisfaction":[
-            0,
-            0
+            10,
+            110
         ],
-        "atk_buff":0,
-        "def_buff":0,
+        "atk_buff":100,
+        "def_buff":100,
         "equipments":{
             "head":"000",
             "armor":"000",
@@ -102,16 +102,16 @@
         }
     },
     "ユウタ":{
-        "post":0,
-        "Level":0,
+        "post":4,
+        "Level":1,
         "XP":0,
         "HP":[
-            0,
-            0
+            150,
+            150
         ],
         "MP":[
-            0,
-            0
+            50,
+            50
         ],
         "magic_codes":[
             "00"
@@ -119,14 +119,14 @@
         "skill_codes":[
             "00"
         ],
-        "atk_ab":0,
-        "def_ab":0,
+        "atk_ab":18,
+        "def_ab":25,
         "satisfaction":[
-            0,
-            0
+            10,
+            110
         ],
-        "atk_buff":0,
-        "def_buff":0,
+        "atk_buff":100,
+        "def_buff":100,
         "equipments":{
             "head":"000",
             "armor":"000",
@@ -136,16 +136,16 @@
         }
     },
     "カイト":{
-        "post":0,
-        "Level":0,
+        "post":5,
+        "Level":1,
         "XP":0,
         "HP":[
-            0,
-            0
+            100,
+            100
         ],
         "MP":[
-            0,
-            0
+            50,
+            50
         ],
         "magic_codes":[
             "00"
@@ -153,14 +153,14 @@
         "skill_codes":[
             "00"
         ],
-        "atk_ab":0,
-        "def_ab":0,
+        "atk_ab":10,
+        "def_ab":15,
         "satisfaction":[
-            0,
-            0
+            1,
+            101
         ],
-        "atk_buff":0,
-        "def_buff":0,
+        "atk_buff":100,
+        "def_buff":100,
         "equipments":{
             "head":"000",
             "armor":"000",

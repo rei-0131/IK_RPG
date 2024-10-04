@@ -147,6 +147,7 @@ class App:
         self.start_loading = False
         self.load_msg = ""
         self.game_time = "00:00:00"
+        self.money = 0
         self.game_time_start = None
         self.bgm_run = True
         pyxel.load("assets/player.pyxres")
@@ -199,6 +200,7 @@ class App:
                 while self.chara_data[i]["XP"] >= xp_ck(i):
                     xp_ = xp_ck(i)
                     self.chara_data[i]["XP"] -= xp_
+                    print(self.chara_data[i]["XP"])
                     self.chara_data[i]["Level"] += 1
                     # print(f"{self.chara_data[i]['Level']} {self.chara_data[i]['XP']} {xp_ck(i)}")
             except Exception:
@@ -224,6 +226,7 @@ class App:
                     print(f"{self.save_load.setting_finger=}")
                     self.loaddata = self.savedata[str(self.save_load.setting_finger)]
                     self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
+                    self.money = self.savedata[str(self.save_load.setting_finger)]["play_data"]["money"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
                     self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
                     self.chara_data = self.savedata[str(self.save_load.setting_finger)]["play_data"]["chara_data"]
@@ -238,6 +241,7 @@ class App:
                     self.loaddata = {
                         "play_data": {
                         "time": "00:00:00",
+                        "money": 1000,
                         "words":{
                             "msg_id":None,
                             "disp_id":None
@@ -252,6 +256,7 @@ class App:
                         }
                     }
                     self.game_time = self.loaddata["play_data"]["time"]
+                    self.money = self.loaddata["play_data"]["money"]
                     self.player.x = self.loaddata["play_data"]["x"]
                     self.player.y = self.loaddata["play_data"]["y"]
                     self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]

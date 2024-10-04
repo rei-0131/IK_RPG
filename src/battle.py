@@ -170,7 +170,7 @@ class Battle:
                 0,
                 0
             ]} for i in self.chara_data.keys()}
-        self.levelup_data = self.app.init_data["levelup"]
+        self.levelup_data = self.app.INIT_DATA["levelup"]
 
         # 経験値確認用
         # self.in_battle = False
@@ -1244,6 +1244,11 @@ class Battle:
                         self.chara_data[i]["def_ab"] += self.status_diff[i]["def_ab"]
                         self.chara_data[i]["satisfaction"][0] += self.status_diff[i]["satisfaction"][0]
                         self.chara_data[i]["satisfaction"][1] += self.status_diff[i]["satisfaction"][1]
+                    money = 0
+                    for i in self.enemy_status:
+                        money += i["money"]
+                    self.app.money += money
+                    self.app.now_scene = self.be_scene
 
     def sm_draw(self,sm):
         """
@@ -1586,12 +1591,12 @@ class Battle:
                 pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
                 pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
                 self.umplus10.draw_text(9,6,"勝利メッセージ".center(26,"　"),7)
-                self.umplus10.draw_text(6,33,"ＨＰ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,44,"ＭＰ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,55,"ＡＴＫ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,66,"ＤＥＦ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,77,"会心率".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,88,"会心ダメ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,43,"ＨＰ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,54,"ＭＰ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,65,"ＡＴＫ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,76,"ＤＥＦ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,87,"会心率".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,98,"会心ダメ".rjust(5,"　"),7)
                 if not self.xp_get:
                     for i in self.enemy_status:
                         for j in self.xp_up:
@@ -1613,8 +1618,8 @@ class Battle:
                     if not self.xp_get:
                         self.xp_up[k][2] = self.chara_data[k]["Level"]
                     chara = self.chara_data[k]
-                    self.umplus10.draw_text(58 + 61 * i,43,str(chara["HP"][1]).rjust(4,' '),7)
-                    self.umplus10.draw_text(58 + 61 * i,54,str(chara["MP"][1]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,43,str(chara["HP"][0]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,54,str(chara["MP"][0]).rjust(4,' '),7)
                     self.umplus10.draw_text(58 + 61 * i,65,str(chara["atk_ab"]).rjust(4,' '),7)
                     self.umplus10.draw_text(58 + 61 * i,76,str(chara["def_ab"]).rjust(4,' '),7)
                     self.umplus10.draw_text(58 + 61 * i,87,str(chara["satisfaction"][0]).rjust(4,' '),7)
@@ -1645,12 +1650,12 @@ class Battle:
                         self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
                     if self.xp_up[k][2] != None:
                         if self.status_diff[k]["satisfaction"][0] != 0:
-                            self.umplus10.draw_text(88 + 61 * i,87,f"→{str(self.status_diff[k]['satisfaction'][0]).rjust(2,' ')}",11)
-                            self.umplus10.draw_text(88 + 61 * i,98,f"→{str(self.status_diff[k]['satisfaction'][1]).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(88 + 61 * i,43,f"→{str(self.status_diff[k]['HP']).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(88 + 61 * i,54,f"→{str(self.status_diff[k]['MP']).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(88 + 61 * i,65,f"→{str(self.status_diff[k]['atk_ab']).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(88 + 61 * i,76,f"→{str(self.status_diff[k]['def_ab']).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(84 + 61 * i,87,f"→{str(chara['satisfaction'][0] + self.status_diff[k]['satisfaction'][0]).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(84 + 61 * i,98,f"→{str(chara['satisfaction'][1] + self.status_diff[k]['satisfaction'][1]).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(84 + 61 * i,43,f"→{str(chara['HP'][0] + self.status_diff[k]['HP']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(84 + 61 * i,54,f"→{str(chara['MP'][0] + self.status_diff[k]['MP']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(84 + 61 * i,65,f"→{str(chara['atk_ab'] + self.status_diff[k]['atk_ab']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(84 + 61 * i,76,f"→{str(chara['def_ab'] + self.status_diff[k]['def_ab']).rjust(2,' ')}",11)
                     self.umplus10.draw_text(61 * i + 56,28,"Lv ",7)
                     self.umplus10.draw_text(61 * i + 71,28,str(self.chara_data[k]['Level']),7)
                     pyxel.rect(61 * i + 56,39,int(self.chara_data[k]["XP"] / xp * 100 * 0.5),4,11)
@@ -1668,4 +1673,10 @@ class Battle:
                             else:
                                 self.xp_stop = False
                 self.xp_get = True
+                money = 0
+                for i in self.enemy_status:
+                    money += i["money"]
+                self.umplus10.draw_text(100,130,"お金",7)
+                self.umplus10.draw_text(130,130,f"￥{self.app.money}",7)
+                self.umplus10.draw_text(146 + len(str(self.app.money)) * 5,130,f"→￥{self.app.money + money}",11)
                 # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)

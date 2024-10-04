@@ -108,17 +108,19 @@ class In_Setting:
                 self.in_st_finger += 1
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if not self.move_fi:
-                self.move_to = self.in_st_finger + self.in_st_pos
-                self.move_fi = True
+                if self.chara_keys[self.in_st_finger + self.in_st_pos] != "ぼく":
+                    self.move_to = self.in_st_finger + self.in_st_pos
+                    self.move_fi = True
             else:
-                chara_data_be = {}
-                tmp = self.chara_keys[self.in_st_finger + self.in_st_pos]
-                self.chara_keys[self.in_st_finger + self.in_st_pos] = self.chara_keys[self.move_to]
-                self.chara_keys[self.move_to] = tmp
-                for i in self.chara_keys:
-                    chara_data_be[i] = self.app.chara_data[i]
-                self.app.chara_data = chara_data_be
-                self.move_fi = False
+                if self.chara_keys[self.in_st_finger + self.in_st_pos] != "ぼく":
+                    chara_data_be = {}
+                    tmp = self.chara_keys[self.in_st_finger + self.in_st_pos]
+                    self.chara_keys[self.in_st_finger + self.in_st_pos] = self.chara_keys[self.move_to]
+                    self.chara_keys[self.move_to] = tmp
+                    for i in self.chara_keys:
+                        chara_data_be[i] = self.app.chara_data[i]
+                    self.app.chara_data = chara_data_be
+                    self.move_fi = False
 
     def item_update(self):
         """アイテム処理"""
@@ -838,6 +840,8 @@ class In_Setting:
                 if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                if t == "ぼく":
+                    self.umplus10.draw_text(71,int(28+(49*i)),"ぼくの並び替えはできません",7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
@@ -845,6 +849,8 @@ class In_Setting:
                 if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                if t == "ぼく":
+                    self.umplus10.draw_text(71,int(28+(49*i)),"ぼくの並び替えはできません",7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
@@ -869,6 +875,7 @@ class In_Setting:
         self.umplus10.draw_text(19,83,"オプション",7)
         self.umplus10.draw_text(19,94,"セーブ",7)
         self.umplus10.draw_text(19,105,"ゲーム終了",7)
+        self.umplus10.draw_text(5,self.init_y-22,f"￥{self.app.money}".rjust(7,"　"),7)
         self.umplus10.draw_text(20,self.init_y-11,f"{str(self.time_h).zfill(2)}:{str(self.time_m).zfill(2)}:{str(self.time_s).zfill(2)}")
         if self.enter_pos == 8 or self.finger_pos//11 == 8:
             self.save_load.draw()

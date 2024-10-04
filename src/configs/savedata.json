@@ -2,6 +2,7 @@
     "1": {
         "play_data": {
             "time": "02:20:06",
+            "money": 1000,
             "scene": 1,
             "words": {
                 "msg_id": "06",
