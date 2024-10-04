@@ -372,13 +372,16 @@ class In_Setting:
                         if self.in_pqse_finger != 0:
                             self.in_pqse_finger -= 1
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                    select_equip = self.equip_dis[self.in_pqse_finger + self.in_eqst_item]
-                    if select_equip[1] == 9:
-                        if self.tool_names[self.equip_part] in self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"]:
-                            self.app.loaddata["play_data"]["chara_data"][select_equip[2]]["equipments"][self.tool_names[self.equip_part]] = self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"][self.tool_names[self.equip_part]]
-                        else:
-                            del self.app.loaddata["play_data"]["chara_data"][select_equip[2]]["equipments"][self.tool_names[self.equip_part]]
-                    self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"][self.tool_names[self.equip_part]] = select_equip[0]
+                    try:
+                        select_equip = self.equip_dis[self.in_pqse_finger + self.in_eqst_item]
+                        if select_equip[1] == 9:
+                            if self.tool_names[self.equip_part] in self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"]:
+                                self.app.loaddata["play_data"]["chara_data"][select_equip[2]]["equipments"][self.tool_names[self.equip_part]] = self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"][self.tool_names[self.equip_part]]
+                            else:
+                                del self.app.loaddata["play_data"]["chara_data"][select_equip[2]]["equipments"][self.tool_names[self.equip_part]]
+                        self.app.loaddata["play_data"]["chara_data"][list(self.app.chara_data.keys())[self.in_eq_enter]]["equipments"][self.tool_names[self.equip_part]] = select_equip[0]
+                    except IndexError:
+                        pass
 
     def status_update(self):
         """ステータス処理"""
@@ -399,8 +402,6 @@ class In_Setting:
             self.in_eq_enter = self.in_st_finger + self.in_st_pos
             self.in_eqse_finger = 0
             self.in_eqse_pos = 0
-            self.equip_men = True
-            self.equip_select = True
 
     def update(self):
         """基本処理"""
@@ -453,7 +454,7 @@ class In_Setting:
         """アイテム描画"""
         if len(self.app.item_codes) > 4:
             for i,kv in enumerate(list(self.app.item_codes.items())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(72,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
@@ -462,12 +463,12 @@ class In_Setting:
                         self.umplus10.draw_text(72,int(26+(49*i)) + 11 * j,self.tools["basic"][kv[0]]["info"][n:n + 23],7)
                 else:
                     self.umplus10.draw_text(72,int(26+(49*i)),self.tools["basic"][kv[0]]["info"],7)
-                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+                self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {str(kv[1]['value']).rjust(2,' ')}")
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
             if len(list(self.app.item_codes.keys())) > 0:
                 for i,kv in enumerate(self.app.item_codes.items()):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                     pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                     self.umplus10.draw_text(72,int(6+(49*i)),self.tools["basic"][kv[0]]["name"])
@@ -476,7 +477,7 @@ class In_Setting:
                             self.umplus10.draw_text(72,int(26+(49*i)) + 11 * j,self.tools["basic"][kv[0]]["info"][n:n + 23],7)
                     else:
                         self.umplus10.draw_text(72,int(26+(49*i)),self.tools["basic"][kv[0]]["info"],7)
-                    self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {kv[1]['value']}")
+                    self.umplus10.draw_text(170,int(6+(49*i)),f"個数: {str(kv[1]['value']).rjust(2,' ')}")
                 pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         if self.enter_pos2 != -1:
             pyxel.rect(50,50,200,108,0)
@@ -506,7 +507,7 @@ class In_Setting:
         """大切なもの描画"""
         if len(self.app.imp_item_codes) > 4:
             for i,v in enumerate(self.app.imp_item_codes[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
@@ -514,7 +515,7 @@ class In_Setting:
         else:
             if len(self.app.imp_item_codes) > 0:
                 for i,v in enumerate(self.app.imp_item_codes):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                     pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                     self.umplus10.draw_text(71,int(6+(49*i)),self.tools["important"][v][0])
@@ -539,14 +540,14 @@ class In_Setting:
         self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
         if len(self.app.chara_data.keys()) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
             pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
         else:
             for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
@@ -593,14 +594,14 @@ class In_Setting:
             self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
             if len(self.app.chara_data) > 4:
                 for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,71+(16*i),113,17,1)
                     pyxel.line(70,70+(16*i + 1),185,70+(16*i + 1),7)
                     self.umplus10.draw_text(71,int(71+(17*i)),t,7)
                 pyxel.line(70,70+(16*(i + 1) + 1),185,70+(16*(i + 1) + 1),7)
             else:
                 for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-                    if i == self.in_st_finger:
+                    if i == self.in_st_finger and self.enter_pos != -1:
                         pyxel.rect(71,71+(16*i),113,17,1)
                     pyxel.line(70,70+(16*i + 1),185,70+(16*i + 1),7)
                     self.umplus10.draw_text(71,int(71+(17*i)),t,7)
@@ -624,17 +625,18 @@ class In_Setting:
                         def_p += tool[3]
             for i in weapon_names:
                 if i in chara_data["equipments"]:
-                    weapon = self.tools[i][chara_data["equipments"][i]]
-                    if i != "shield":
-                        if weapon[2] == "p":
-                            atk_p += int(atk * (weapon[3] / 100))
-                        elif weapon[2] == "f":
-                            atk_p += weapon[3]
-                    else:
-                        if weapon[2] == "p":
-                            def_p += int(def_ * (weapon[3] / 100))
-                        elif weapon[2] == "f":
-                            def_p += weapon[3]
+                    if chara_data["equipments"][i] != "":
+                        weapon = self.tools[i][chara_data["equipments"][i]]
+                        if i != "shield":
+                            if weapon[2] == "p":
+                                atk_p += int(atk * (weapon[3] / 100))
+                            elif weapon[2] == "f":
+                                atk_p += weapon[3]
+                        else:
+                            if weapon[2] == "p":
+                                def_p += int(def_ * (weapon[3] / 100))
+                            elif weapon[2] == "f":
+                                def_p += weapon[3]
             self.umplus10.draw_text(71,93,f"ATK {atk + atk_p}",7)
             self.umplus10.draw_text(71,104,f"DEF {def_ + def_p}",7)
             self.tool_names_ = ["頭","胴","脚","足"]
@@ -653,11 +655,13 @@ class In_Setting:
             for i,v in zip(zip(range(0,4),range(self.in_eqse_pos,len(self.tool_names_)+self.in_eqse_pos)),self.tool_names[self.in_eqse_pos:len(self.tool_names)+self.in_eqse_pos]):
                 tool = f"{self.tool_names_[i[1]]} "
                 if v in chara_data["equipments"]:
-                    tool += self.tools[v][chara_data["equipments"][v]][0]
+                    if chara_data["equipments"][v] != "":
+                        tool += self.tools[v][chara_data["equipments"][v]][0]
                 if i[0] == self.in_eqse_finger:
                     if v in chara_data["equipments"]:
                         if self.equip_select:
-                            self.umplus10.draw_text(71,6,self.tools[v][chara_data["equipments"][v]][4],7)
+                            if chara_data["equipments"][v] != "":
+                                self.umplus10.draw_text(71,6,self.tools[v][chara_data["equipments"][v]][4],7)
                     pyxel.rect(186,71+(16*i[0]),113,17,1)
                 pyxel.line(186,70+(16*i[0] + 1),300,70+(16*i[0] + 1),7)
                 self.umplus10.draw_text(186,int(72+(17*i[0])),tool,7)
@@ -721,53 +725,54 @@ class In_Setting:
                         equip_sum = self.in_eqst_item + self.in_pqse_finger
 
                     if self.tool_names[self.equip_part] in chara_data["equipments"]:
-                        if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][1] == "DEF":
-                            if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][2] == "p":
-                                mai_s = int(def_ * (self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3] / 100))
+                        if chara_data["equipments"][self.tool_names[self.equip_part]] != "":
+                            if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][1] == "DEF":
+                                if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][2] == "p":
+                                    mai_s = int(def_ * (self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3] / 100))
+                                else:
+                                    mai_s = self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3]
                             else:
-                                mai_s = self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3]
-                        else:
-                            if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][2] == "p":
-                                mai_s = int(atk * (self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3] / 100))
-                            else:
-                                mai_s = self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3]
+                                if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][2] == "p":
+                                    mai_s = int(atk * (self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3] / 100))
+                                else:
+                                    mai_s = self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3]
 
-                        equip_ = self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]
-                        if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][1] == "DEF":
-                            if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
-                                if int(def_ + def_p + def_ * (equip_ / 100)) - mai_s > def_ + def_p:
-                                    self.umplus10.draw_text(125,104,f"{int(def_ + def_p + def_ * (equip_ / 100)) - mai_s}",11)
-                                elif int(def_ + def_p + def_ * (equip_ / 100)) - mai_s == def_ + def_p:
-                                    self.umplus10.draw_text(125,104,f"{int(def_ + def_p + def_ * (equip_ / 100)) - mai_s}",7)
+                            equip_ = self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]
+                            if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][1] == "DEF":
+                                if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
+                                    if int(def_ + def_p + def_ * (equip_ / 100)) - mai_s > def_ + def_p:
+                                        self.umplus10.draw_text(125,104,f"{int(def_ + def_p + def_ * (equip_ / 100)) - mai_s}",11)
+                                    elif int(def_ + def_p + def_ * (equip_ / 100)) - mai_s == def_ + def_p:
+                                        self.umplus10.draw_text(125,104,f"{int(def_ + def_p + def_ * (equip_ / 100)) - mai_s}",7)
+                                    else:
+                                        self.umplus10.draw_text(125,104,f"{int(def_ + def_p + def_ * (equip_ / 100)) - mai_s}",8)
                                 else:
-                                    self.umplus10.draw_text(125,104,f"{int(def_ + def_p + def_ * (equip_ / 100)) - mai_s}",8)
+                                    if int(def_ + def_p + equip_) - mai_s > def_ + def_p:
+                                        self.umplus10.draw_text(125,104,f"{int(def_ + def_p + equip_) - mai_s}",11)
+                                    elif int(def_ + def_p + equip_) - mai_s == def_ + def_p:
+                                        self.umplus10.draw_text(125,104,f"{int(def_ + def_p + equip_) - mai_s}",7)
+                                    else:
+                                        self.umplus10.draw_text(125,104,f"{int(def_ + def_p + equip_) - mai_s}",8)
                             else:
-                                if int(def_ + def_p + equip_) - mai_s > def_ + def_p:
-                                    self.umplus10.draw_text(125,104,f"{int(def_ + def_p + equip_) - mai_s}",11)
-                                elif int(def_ + def_p + equip_) - mai_s == def_ + def_p:
-                                    self.umplus10.draw_text(125,104,f"{int(def_ + def_p + equip_) - mai_s}",7)
+                                if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
+                                    if int(atk + atk_p + atk * (equip_ / 100)) - mai_s > atk + atk_p:
+                                        self.umplus10.draw_text(125,93,f"{int(atk + atk_p + atk * (equip_ / 100)) - mai_s}",11)
+                                    elif int(atk + atk_p + atk * (equip_ / 100)) - mai_s == atk + atk_p:
+                                        self.umplus10.draw_text(125,93,f"{int(atk + atk_p + atk * (equip_ / 100)) - mai_s}",7)
+                                    else:
+                                        self.umplus10.draw_text(125,93,f"{int(atk + atk_p + atk * (equip_ / 100)) - mai_s}",8)
                                 else:
-                                    self.umplus10.draw_text(125,104,f"{int(def_ + def_p + equip_) - mai_s}",8)
-                        else:
-                            if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
-                                if int(atk + atk_p + atk * (equip_ / 100)) - mai_s > atk + atk_p:
-                                    self.umplus10.draw_text(125,93,f"{int(atk + atk_p + atk * (equip_ / 100)) - mai_s}",11)
-                                elif int(atk + atk_p + atk * (equip_ / 100)) - mai_s == atk + atk_p:
-                                    self.umplus10.draw_text(125,93,f"{int(atk + atk_p + atk * (equip_ / 100)) - mai_s}",7)
-                                else:
-                                    self.umplus10.draw_text(125,93,f"{int(atk + atk_p + atk * (equip_ / 100)) - mai_s}",8)
-                            else:
-                                if int(atk + atk_p + equip_) - mai_s > atk + atk_p:
-                                    self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",11)
-                                elif int(atk + atk_p + equip_) - mai_s == atk + atk_p:
-                                    self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",7)
-                                else:
-                                    self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",8)
-                        try:
-                            self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
-                        except IndexError:
-                            self.in_pqse_finger = 0
-                            self.in_eqst_item = 0
+                                    if int(atk + atk_p + equip_) - mai_s > atk + atk_p:
+                                        self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",11)
+                                    elif int(atk + atk_p + equip_) - mai_s == atk + atk_p:
+                                        self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",7)
+                                    else:
+                                        self.umplus10.draw_text(125,93,f"{int(atk + atk_p + equip_) - mai_s}",8)
+                            try:
+                                self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
+                            except IndexError:
+                                self.in_pqse_finger = 0
+                                self.in_eqst_item = 0
                 self.umplus10.draw_text(190,59,"※戻るにはAキーを押す",8)
 
     def status_draw(self):
@@ -776,14 +781,14 @@ class In_Setting:
         self.umplus10.draw_text(71,6,"操作するキャラを選択",7)
         if len(self.app.chara_data) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
             pyxel.line(70,16+(13*(i + 1) + 1),300,16+(13*(i + 1) + 1),7)
         else:
             for i,t in zip(range(len(self.app.chara_data.items())),self.app.chara_data):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,17+(13*i),self.init_x-72,13,1)
                 pyxel.line(70,16+(13*i + 1),300,16+(13*i + 1),7)
                 self.umplus10.draw_text(71,int(18+(13*i)),t,7)
@@ -797,25 +802,26 @@ class In_Setting:
         isd_ = ["head","armor","leggings","boots","shield"]
         isa_ = ["sword","staff","other"]
         for i,v in chara_data["equipments"].items():
-            if i in isd_:
-                if self.tools[i][v][2] == "f":
-                    def_ += self.tools[i][v][3]
-                else:
-                    def_ += chara_data["def_ab"] * (self.tools[i][v][3] / 100)
-            elif i in isa_:
-                if self.tools[i][v][2] == "f":
-                    atk += self.tools[i][v][3]
-                else:
-                    atk += chara_data["atk_ab"] * (self.tools[i][v][3] / 100)
-                    atk *= chara_data["atk_buff"] / 100
-                    def_ *= chara_data["def_buff"] / 100
+            if v != "":
+                if i in isd_:
+                    if self.tools[i][v][2] == "f":
+                        def_ += self.tools[i][v][3]
+                    else:
+                        def_ += chara_data["def_ab"] * (self.tools[i][v][3] / 100)
+                elif i in isa_:
+                    if self.tools[i][v][2] == "f":
+                        atk += self.tools[i][v][3]
+                    else:
+                        atk += chara_data["atk_ab"] * (self.tools[i][v][3] / 100)
+                        atk *= chara_data["atk_buff"] / 100
+                        def_ *= chara_data["def_buff"] / 100
         self.umplus10.draw_text(71,71,list(self.app.chara_data.keys())[self.in_st_finger + self.in_st_pos],7)
         xp = 0
         level = chara_data["Level"] + 1
         if 0 <= level <= 16:
             xp = level ** 2 + 6 * level
         elif 17 <= level <= 30:
-            xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+            xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
         elif 31 <= level:
             xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
         self.umplus10.draw_text(140,71,f"Level {chara_data['Level']}  {int(chara_data['XP'])}/{int(xp)}",7)
@@ -829,14 +835,14 @@ class In_Setting:
         """並び替え描画"""
         if len(self.app.chara_data.items()) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
             for i,t in enumerate(self.app.chara_data):
-                if i == self.in_st_finger:
+                if i == self.in_st_finger and self.enter_pos != -1:
                     pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
                 pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)

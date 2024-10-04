@@ -6,8 +6,8 @@ class Words:
         self.init_x = x
         self.init_y = y
         self.umplus10 = umplus10
-        self.msg_id = ""
-        self.disp_id = ""
+        self.msg_id = self.app.msg_id
+        self.disp_id = self.app.disp_id
         self.finger_pos = 0
         self.word = {}
         self.questions = "None"
@@ -21,9 +21,9 @@ class Words:
     def update(self) -> tuple[str,str]:
         """基本処理"""
         #操作
-        if self.question != "None":
+        if self.questions != "None":
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                if self.finger_pos != (len(self.question) - 1) * -10:
+                if self.finger_pos != (len(self.questions) - 1) * -10:
                     self.finger_pos -= 10
                 else:
                     self.finger_pos = 0
@@ -31,7 +31,7 @@ class Words:
                 if self.finger_pos != 0:
                     self.finger_pos += 10
                 else:
-                    self.finger_pos = (len(self.question) - 1) * -10
+                    self.finger_pos = (len(self.questions) - 1) * -10
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if "item" in self.word:
                     if self.word["item"][0] == "basic":
@@ -103,9 +103,9 @@ class Words:
         self.msg_id = msg_id
         self.word = self.words["story"][msg_id]
         if "questions" in self.word:
-            self.question = self.word["questions"]
+            self.questions = self.word["questions"]
         else:
-            self.question = "None"
+            self.questions = "None"
         pyxel.rect(5,self.init_y-60,self.init_x-10,60,0)
         pyxel.rectb(5,self.init_y-60,self.init_x-10,60,7)
         sp_len = len(self.word["speaker"]) * 11
@@ -124,14 +124,14 @@ class Words:
         #         self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)
         if self.word["to"] != "None":
             pyxel.tri(self.init_x/2-5,self.init_y-10+self.word_tri[0],self.init_x/2+5,self.init_y-10+self.word_tri[0],self.init_x/2,self.init_y-6+self.word_tri[0],7)
-        if self.question != "None":
-            que_height = len(self.question) * 12
+        if self.questions != "None":
+            que_height = len(self.questions) * 12
             max_str = 0
-            for i in self.question:
+            for i in self.questions:
                 if max_str < len(i) * 11:
                     max_str = len(i) * 11
             pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
             pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
             pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
-            for i,h in zip(self.question,range(0,len(self.question)*12,11)):
+            for i,h in zip(self.questions,range(0,len(self.questions)*12,11)):
                 self.umplus10.draw_text(self.init_x-max_str + 2,self.init_y-98+h+(39-que_height),i,7)

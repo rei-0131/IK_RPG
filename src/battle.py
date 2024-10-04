@@ -81,6 +81,8 @@ class Battle:
         self.xp_up = {}
         self.xp_get = False
         self.xp_stop = False
+        self.status_diff = {}
+        self.levelup_data = self.app.INIT_DATA["levelup"]
 
     def clean(self,scene):
         """初期化"""
@@ -157,10 +159,22 @@ class Battle:
                 "move":"p"
             })
         self.xp_get = False
-        self.xp_up = {i:0 for i in self.chara_data.keys()}
+        self.xp_up = {i:[0,False,None] for i in self.chara_data.keys()}
         self.xp_stop = False
-        self.in_battle = False
-        self.win = "player"
+        self.status_diff = {i:{
+            "HP":0,
+            "MP":0,
+            "atk_ab":0,
+            "def_ab":0,
+            "satisfaction":[
+                0,
+                0
+            ]} for i in self.chara_data.keys()}
+        self.levelup_data = self.app.init_data["levelup"]
+
+        # 経験値確認用
+        # self.in_battle = False
+        # self.win = "player"
 
     def debug_clean(self):
         for i in range(len(self.chara_data)):
@@ -174,7 +188,7 @@ class Battle:
             if 0 <= level <= 16:
                 xp = level ** 2 + 6 * level
             elif 17 <= level <= 30:
-                xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+                xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
             elif 31 <= self.chara_data[cr]["Level"]:
                 xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
             return xp
@@ -202,7 +216,6 @@ class Battle:
         self.enemy_num = enemy_num
         self.enemy_code = enemy_code
         for i in range(self.enemy_num):
-            #以下、enemy_infoから敵の情報を引っ張って来て書き込む
             self.enemy_status.append(copy.deepcopy(self.enemy_info[self.enemy_code[i]["enemy_type"]][self.enemy_code[i]["enemy_code"]]["status"]))
             self.enemy_effect.append({
                 "atk_buff":0,
@@ -1177,11 +1190,60 @@ class Battle:
         else:
             if not self.xp_stop:
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                    for i in self.xp_up:
-                        self.chara_data[i]["XP"] += self.xp_up[i]
-                        self.xp_up[i] -= 0
+                    while not self.xp_stop:
+                        for i,k in enumerate(self.chara_data.keys()):
+                            be_level_ten = 0
+                            no_level_ten = 0
+                            if not self.xp_get:
+                                self.xp_up[k][2] = self.chara_data[k]["Level"]
+                            xp = 0
+                            level = self.chara_data[k]["Level"] + 1
+                            if 0 <= level <= 16:
+                                xp = level ** 2 + 6 * level
+                            elif 17 <= level <= 30:
+                                xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
+                            elif 31 <= level:
+                                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                            if self.chara_data[k]["XP"] >= xp:
+                                self.chara_data[k]["Level"] += 1
+                                self.chara_data[k]["XP"] -= xp
+                                if len(str(self.xp_up[k][2])) > 1:
+                                    be_level_ten = int(str(self.xp_up[k][2])[-2])
+                                if len(str(self.chara_data[k]["Level"])) > 1:
+                                    no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
+                                if be_level_ten < no_level_ten:
+                                    ten_level = no_level_ten - be_level_ten
+                                    self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
+                                    self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
+                                self.status_diff[k]["HP"] += self.levelup_data["HP"]
+                                self.status_diff[k]["MP"] += self.levelup_data["MP"]
+                                self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
+                                self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
+                            if not self.xp_stop:
+                                if self.xp_up[k][0] >= 15:
+                                    self.chara_data[k]["XP"] += 15
+                                    self.xp_up[k][0] -= 15
+                                else:
+                                    self.chara_data[k]["XP"] += self.xp_up[k][0]
+                                    self.xp_up[k][0] = 0
+                                for j in self.xp_up:
+                                    if self.xp_up[j][0] == 0:
+                                        self.xp_stop = True
+                                    else:
+                                        self.xp_stop = False
                     self.check_level()
                     self.xp_stop = True
+            else:
+                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                    for i in self.xp_up:
+                        self.chara_data[i]["XP"] += self.xp_up[i][0]
+                        self.xp_up[i][0] -= 0
+                        self.chara_data[i]["HP"][0] += self.status_diff[i]["HP"]
+                        self.chara_data[i]["MP"][0] += self.status_diff[i]["MP"]
+                        self.chara_data[i]["atk_ab"] += self.status_diff[i]["atk_ab"]
+                        self.chara_data[i]["def_ab"] += self.status_diff[i]["def_ab"]
+                        self.chara_data[i]["satisfaction"][0] += self.status_diff[i]["satisfaction"][0]
+                        self.chara_data[i]["satisfaction"][1] += self.status_diff[i]["satisfaction"][1]
 
     def sm_draw(self,sm):
         """
@@ -1217,9 +1279,9 @@ class Battle:
                     self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
 
                 if self.magic_codes[sm][item]["req_MP"] > self.chara_data[self.select_chara]["MP"][1]:
-                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),8)
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]).rjust(2," "),8)
                 else:
-                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),5)
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]).rjust(2," "),5)
         else:
             self.dis_num = self.item_num - self.item_pos
             for i,item in zip(range(self.item_num-self.item_pos),self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos:self.item_num]):
@@ -1234,9 +1296,9 @@ class Battle:
                     self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.magic_codes[sm][item]["name"],7)
 
                 if self.magic_codes[sm][item]["req_MP"] > self.chara_data[self.select_chara]["MP"][1]:
-                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),8)
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]).rjust(2," "),8)
                 else:
-                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]),5)
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+12+(h*15),str(self.magic_codes[sm][item]["req_MP"]).rjust(2," "),5)
 
     def item_draw(self):
         """アイテムの描画"""
@@ -1256,7 +1318,7 @@ class Battle:
                     if i == self.finger_pos3:
                         pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
                     self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                    self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]).rjust(2," "),7)
             else:
                 self.dis_num = self.item_num - self.item_pos
                 for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
@@ -1265,7 +1327,7 @@ class Battle:
                     if i == self.finger_pos3:
                         pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
                     self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                    self.umplus10.draw_text(195+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]),7)
+                    self.umplus10.draw_text(190+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]).rjust(2," "),7)
 
 
     def enemy_target_select_draw(self):
@@ -1517,43 +1579,93 @@ class Battle:
                         self.player_op = []
         else:
             if self.win == "enemy":
-                pyxel.rect(self.init_x//2 - 90, self.init_y//2 - 30,180,60,0)
-                self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Enemy Win",7)
+                pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
+                pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
+                self.umplus10.draw_text(9,6,"敗北メッセージ".center(26,"　"),7)
             else:
                 pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
                 pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
+                self.umplus10.draw_text(9,6,"勝利メッセージ".center(26,"　"),7)
+                self.umplus10.draw_text(6,33,"ＨＰ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,44,"ＭＰ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,55,"ＡＴＫ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,66,"ＤＥＦ".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,77,"会心率".rjust(5,"　"),7)
+                self.umplus10.draw_text(6,88,"会心ダメ".rjust(5,"　"),7)
                 if not self.xp_get:
                     for i in self.enemy_status:
                         for j in self.xp_up:
-                            self.xp_up[j] += i["xp"]
-                    self.xp_get = True
+                            self.xp_up[j][0] += i["xp"]
+                            xp = 0
+                            level = self.chara_data[j]["Level"] + 1
+                            if 0 <= level <= 16:
+                                xp = level ** 2 + 6 * level
+                            elif 17 <= level <= 30:
+                                xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
+                            elif 31 <= level:
+                                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                            if self.chara_data[j]["XP"] + self.xp_up[j][0] >= xp:
+                                self.xp_up[j][1] = True
+                    print(f"get xp:{self.xp_up}")
                 for i,k in enumerate(self.chara_data.keys()):
-                    self.umplus10.draw_text(72 * i + 10,6,str(k).center(6,"　"),7)
+                    be_level_ten = 0
+                    no_level_ten = 0
+                    if not self.xp_get:
+                        self.xp_up[k][2] = self.chara_data[k]["Level"]
+                    chara = self.chara_data[k]
+                    self.umplus10.draw_text(58 + 61 * i,43,str(chara["HP"][1]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,54,str(chara["MP"][1]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,65,str(chara["atk_ab"]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,76,str(chara["def_ab"]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,87,str(chara["satisfaction"][0]).rjust(4,' '),7)
+                    self.umplus10.draw_text(58 + 61 * i,98,str(chara["satisfaction"][1]).rjust(4,' '),7)
+                    self.umplus10.draw_text(62 * i + 51,17,str(k).center(5,"　"),7)
                     xp = 0
                     level = self.chara_data[k]["Level"] + 1
                     if 0 <= level <= 16:
                         xp = level ** 2 + 6 * level
                     elif 17 <= level <= 30:
-                        xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+                        xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
                     elif 31 <= level:
                         xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
                     if self.chara_data[k]["XP"] >= xp:
                         self.chara_data[k]["Level"] += 1
                         self.chara_data[k]["XP"] -= xp
-                    self.umplus10.draw_text(73 * i + 6,17,"Lv ",7)
-                    self.umplus10.draw_text(73 * i + 21,17,str(self.chara_data[k]['Level']),7)
-                    pyxel.rect(72 * i + 6,28,int(self.chara_data[k]["XP"] / xp * 100 * 0.71),4,11)
-                    pyxel.rectb(72 * i + 6,28,71,4,7)
+                        if len(str(self.xp_up[k][2])) > 1:
+                            be_level_ten = int(str(self.xp_up[k][2])[-2])
+                        if len(str(self.chara_data[k]["Level"])) > 1:
+                            no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
+                        if be_level_ten < no_level_ten:
+                            ten_level = no_level_ten - be_level_ten
+                            self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
+                            self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
+                        self.status_diff[k]["HP"] += self.levelup_data["HP"]
+                        self.status_diff[k]["MP"] += self.levelup_data["MP"]
+                        self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
+                        self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
+                    if self.xp_up[k][2] != None:
+                        if self.status_diff[k]["satisfaction"][0] != 0:
+                            self.umplus10.draw_text(88 + 61 * i,87,f"→{str(self.status_diff[k]['satisfaction'][0]).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(88 + 61 * i,98,f"→{str(self.status_diff[k]['satisfaction'][1]).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,43,f"→{str(self.status_diff[k]['HP']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,54,f"→{str(self.status_diff[k]['MP']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,65,f"→{str(self.status_diff[k]['atk_ab']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(88 + 61 * i,76,f"→{str(self.status_diff[k]['def_ab']).rjust(2,' ')}",11)
+                    self.umplus10.draw_text(61 * i + 56,28,"Lv ",7)
+                    self.umplus10.draw_text(61 * i + 71,28,str(self.chara_data[k]['Level']),7)
+                    pyxel.rect(61 * i + 56,39,int(self.chara_data[k]["XP"] / xp * 100 * 0.5),4,11)
+                    pyxel.rectb(61 * i + 56,39,50,4,7)
                     if not self.xp_stop:
-                        if self.xp_up[k] >= 15:
+                        if self.xp_up[k][0] >= 15:
                             self.chara_data[k]["XP"] += 15
-                            self.xp_up[k] -= 15
+                            self.xp_up[k][0] -= 15
                         else:
-                            self.chara_data[k]["XP"] += self.xp_up[k]
-                            self.xp_up[k] = 0
+                            self.chara_data[k]["XP"] += self.xp_up[k][0]
+                            self.xp_up[k][0] = 0
                         for j in self.xp_up:
-                            if self.xp_up[j] == 0:
+                            if self.xp_up[j][0] == 0:
                                 self.xp_stop = True
                             else:
                                 self.xp_stop = False
+                self.xp_get = True
                 # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
