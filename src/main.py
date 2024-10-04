@@ -18,8 +18,9 @@ from option import Option
 #dev only
 from rpg_cmd import CMD
 
-##########テスト環境かのbool
+##########テスト環境
 is_test = True
+mode = "debug"
 ##########
 
 #各ファイル読み込み
@@ -38,6 +39,7 @@ else:
     config = cloud.config_load()
     save_data = cloud.load()
 
+#["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
 with open("src/assets/init_data.json",encoding="utf-8") as f:
     init_data = json.load(f)
 
@@ -114,7 +116,7 @@ class App:
         self.local = local
         self.now_scene = -1
         self.back_scene = -1
-        self.msg_id = "None"
+        self.msg_id = "01"
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
@@ -126,11 +128,13 @@ class App:
         self.loaddata = None
         self.in_battle = False
         self.load_write = False
-        self.chara_data = init_data["chara_data"]
-        self.item_codes = init_data["item_codes"]
-        self.equip_codes = init_data["equip_codes"]
-        self.imp_item_codes = init_data["imp_item_codes"]
-        self.init_data = init_data
+        self.mode = mode
+        self.INIT_DATA = init_data
+        self.chara_data = init_data[mode]["chara_data"]
+        self.item_codes = init_data[mode]["item_codes"]
+        self.equip_codes = init_data[mode]["equip_codes"]
+        self.imp_item_codes = init_data[mode]["imp_item_codes"]
+        self.init_data = init_data[mode]
         self.config = config
         self.save_data = save_data
         self.scenes = scenes
@@ -144,6 +148,7 @@ class App:
         self.load_msg = ""
         self.game_time = "00:00:00"
         self.game_time_start = None
+        self.bgm_run = True
         pyxel.load("assets/player.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -185,7 +190,7 @@ class App:
             if 0 <= level <= 16:
                 xp = level ** 2 + 6 * level
             elif 17 <= level <= 30:
-                xp = (5 / 2) * level ** 2 - (82 / 2) * level + 360
+                xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
             elif 31 <= self.chara_data[cr]["Level"]:
                 xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
             return xp
@@ -225,12 +230,18 @@ class App:
                     self.item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["item_codes"]
                     self.imp_item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["imp_item_codes"]
                     self.equip_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
+                    self.msg_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["msg_id"]
+                    self.disp_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["disp_id"]
                     self.from_load = False
                 else:
                     print("new game")
                     self.loaddata = {
                         "play_data": {
                         "time": "00:00:00",
+                        "words":{
+                            "msg_id":None,
+                            "disp_id":None
+                        },
                         "scene": 1,
                         "x":136,
                         "y": 182,
@@ -243,14 +254,17 @@ class App:
                     self.game_time = self.loaddata["play_data"]["time"]
                     self.player.x = self.loaddata["play_data"]["x"]
                     self.player.y = self.loaddata["play_data"]["y"]
-                    self.chara_data = init_data["chara_data"]
-                    self.item_codes = init_data["item_codes"]
-                    self.equip_codes = init_data["equip_codes"]
-                    self.imp_item_codes = init_data["imp_item_codes"]
+                    self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
+                    self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
+                    self.chara_data = init_data[self.mode]["chara_data"]
+                    self.item_codes = init_data[self.mode]["item_codes"]
+                    self.equip_codes = init_data[self.mode]["equip_codes"]
+                    self.imp_item_codes = init_data[self.mode]["imp_item_codes"]
                 self.new_game = False
             self.player.update()
-            if self.in_word:
-                self.msg_id, self.disp_id = self.words.update()
+            if not self.new_game:
+                if self.in_word:
+                    self.msg_id, self.disp_id = self.words.update()
             if self.in_battle:
                 self.battle.clean(self.now_scene)
                 if self.is_test:
@@ -283,6 +297,7 @@ class App:
                 if not self.now_scene == "cmd" and self.now_scene == 5:
                     self.now_scene = self.be_scene
                     self.sound_manager.stop()
+                    print("BGM STOP")
                 elif self.now_scene == "cmd" and self.back_scene == 5:
                     self.now_scene = self.be_scene
                     self.battle.clean(self.now_scene)
@@ -297,7 +312,10 @@ class App:
                     # enemy_num = random.randint(1,3)
                     self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
                     self.now_scene = 5
-                    self.sound_manager.play_bgm("test")
+                    print(self.battle.win)
+                    if self.battle.win == "":
+                        self.bgm_run = True
+                        self.sound_manager.play_bgm("test")
             if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
                 if self.now_scene == "cmd":
                     self.now_scene = self.back_scene
@@ -307,6 +325,10 @@ class App:
                     self.now_scene = "cmd"
         if self.now_scene == 5:
             self.battle.update()
+            if self.bgm_run and self.battle.win != "":
+                self.sound_manager.stop()
+                print("BGM STOP")
+                self.bgm_run = False
         elif self.now_scene == "cmd":
             self.cmd.update()
 
@@ -319,12 +341,13 @@ class App:
             pyxel.camera()
             pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale=0.5)
             self.player.draw()
-            if self.msg_id != self.disp_id:
-                self.in_word = True
-            else:
-                self.in_word = False
-            if self.in_word:
-                self.words.dec_word(self.msg_id)
+            if not self.new_game:
+                if self.msg_id != self.disp_id:
+                    self.in_word = True
+                else:
+                    self.in_word = False
+                if self.in_word:
+                    self.words.dec_word(self.msg_id)
         elif self.now_scene == OUT_SETTING_SCENE:
             self.setting_out.draw()
         elif self.now_scene == IN_SETTING_SCENE:

@@ -37,6 +37,10 @@ class Save:
         save_data[str(pos)]["play_data"] = {
             "time":f"{str(time_h).zfill(2)}:{str(time_m).zfill(2)}:{str(time_s).zfill(2)}",
             "scene":self.scenes["MAIN_SCENE"],
+            "words":{
+                "msg_id":self.app.msg_id,
+                "disp_id":self.app.disp_id
+            },
             "x":self.app.player.x,
             "y":self.app.player.y,
             "chara_data":self.app.chara_data,
