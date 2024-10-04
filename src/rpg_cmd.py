@@ -166,6 +166,59 @@ class CMD:
 
     def xp(self,arg):
         self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+        self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+
+    def kill(self,arg):
+        if arg[1] == "self":
+            if arg[2] == "@a":
+                for i in range(len(list(self.app.chara_data.keys()))):
+                    self.app.chara_data[list(self.app.chara_data.keys())[i]]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = "すべての味方をキルしました"
+            else:
+                self.app.chara_data[list(self.app.chara_data.keys())[int(arg[2])]]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = f"{list(self.app.chara_data.keys())[int(arg[2])]}をキルしました"
+        elif arg[1] == "enemy":
+            if arg[2] == "@a":
+                for i in range(len(self.app.battle.enemy_status)):
+                    self.app.battle.enemy_status[i]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = "すべての敵をキルしました"
+            else:
+                self.app.battle.enemy_status[int(arg[2])]["HP"][1] = 0
+                self.log_type = "str"
+                self.log = f"インデックス{arg[2]}の敵ををキルしました"
+
+    def mode(self,arg):
+        if arg[1] == "init":
+            self.app.mode = arg[1]
+            self.app.init_data = self.app.INIT_DATA[self.app.mode]
+            self.app.chara_data = self.app.init_data["chara_data"]
+            self.app.item_codes = self.app.init_data["item_codes"]
+            self.app.equip_codes = self.app.init_data["equip_codes"]
+            self.app.imp_item_codes = self.app.init_data["imp_item_codes"]
+            self.app.loaddata = {
+                "play_data": {
+                "time": "00:00:00",
+                "words":{
+                    "msg_id":None,
+                    "disp_id":None
+                },
+                "scene": 1,
+                "x":136,
+                "y": 182,
+                "chara_data":self.app.chara_data,
+                "item_codes":self.app.item_codes,
+                "imp_item_codes":self.app.imp_item_codes,
+                "equip_codes":self.app.equip_codes
+                }
+            }
+            self.app.game_time = self.app.loaddata["play_data"]["time"]
+            self.app.player.x = self.app.loaddata["play_data"]["x"]
+            self.app.player.y = self.app.loaddata["play_data"]["y"]
+            self.app.msg_id = self.app.loaddata["play_data"]["words"]["msg_id"]
+            self.app.disp_id = self.app.loaddata["play_data"]["words"]["disp_id"]
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
@@ -185,6 +238,10 @@ class CMD:
                     self.setting()
                 elif cmd_config[0] == "xp":
                     self.xp(cmd_config)
+                elif cmd_config[0] == "kill":
+                    self.kill(cmd_config)
+                elif cmd_config[0] == "mode":
+                    self.mode(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"
