@@ -76,6 +76,8 @@ class Battle:
         self.tools = self.app.tools
         self.magic_codes = self.app.magic_codes
         self.enemy_info = self.app.enemy_info
+        self.finger_ad = self.app.assets_info["finger_ad"]
+        self.finger_ws = self.app.assets_info["finger_ws"]
         self.AI = self.create_AI()
         self.ai_data = []
         self.xp_up = {}
@@ -1338,7 +1340,7 @@ class Battle:
     def enemy_target_select_draw(self):
         """敵ターゲット選択描画"""
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
-        pyxel.blt(self.finger_pos4 - 8,2,0,32,0,16,16,0)
+        pyxel.blt(self.finger_pos4 - 8,2,self.finger_ws[0],self.finger_ws[1],self.finger_ws[2],self.finger_ws[3],self.finger_ws[4],self.finger_ws[5])
 
     def self_target_select_draw(self,fin = 5):
         """
@@ -1390,13 +1392,13 @@ class Battle:
             pyxel.rectb(178,self.init_y//2+21+height,100,5,7)
             pyxel.text(279,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
         if fin == 5:
-            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),0,16,0,16,16,0)
+            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
         elif fin == "5_":
             self.umplus10.draw_text(210,self.init_y-12,"※対象を選択",8)
-            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),0,16,0,16,16,0)
+            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
         elif fin == 2:
             self.umplus10.draw_text(210,self.init_y-12,"※使用者を選択",8)
-            pyxel.blt(115,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+            pyxel.blt(115,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
 
     def none_target_select_draw(self):
         pass
@@ -1512,13 +1514,13 @@ class Battle:
                         else:
                             self.target_attack_update()
                     else:
-                        pyxel.blt(7,self.init_y//2+15+(self.finger_pos1),0,16,0,16,16,0)
+                        pyxel.blt(7,self.init_y//2+15+(self.finger_pos1),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                         if self.select_num1 == 0:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 self.enemy_target_select_draw()
                         elif self.select_num1 == 1:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 if self.select_num3 == -1:
                                     self.sm_draw("skill")
@@ -1531,7 +1533,7 @@ class Battle:
                                     elif self.target_team == "none":
                                         self.none_target_select_draw()
                         elif self.select_num1 == 2:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 if self.select_num3 == -1:
                                     self.sm_draw("magic")
@@ -1544,7 +1546,7 @@ class Battle:
                                     elif self.target_team == "none":
                                         self.none_target_select_draw()
                         elif self.select_num1 == 3:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 if self.select_num3 == -1:
                                     self.item_draw()

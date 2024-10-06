@@ -34,6 +34,7 @@ class Title:
         self.save_data = None
         self.enter_pos = 1
         self.setting = self.app.setting_out
+        self.finger_ad = self.app.assets_info["finger_ad"]
 
     def update(self):
         """基本処理"""
@@ -68,4 +69,4 @@ class Title:
         self.umplus10.draw_text(103,120,"-   Continue   -",7)
         self.umplus10.draw_text(103,130,"-   Settings   -",7)
         self.umplus10.draw_text(103,150,"-  PRESS Enter -",7)
-        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,0,15,0,15,15,0)
+        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
