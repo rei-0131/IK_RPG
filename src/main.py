@@ -58,8 +58,9 @@ with open("src/assets/magic.json","r",encoding="utf-8") as f:
 with open("src/assets/enemy_info.json",encoding="utf-8") as f:
     enemy_info = json.load(f)
 
-with open("src/assets/cd_block.json",encoding="utf-8") as f:
-    collision_data = json.load(f)
+with open("src/assets/assets_info.json",encoding="utf-8") as f:
+    assets_info = json.load(f)
+collision_data = assets_info["cd_block"]
 
 with open("src/assets/character_data.json",encoding="utf-8") as f:
     character_data = json.load(f)
@@ -116,7 +117,7 @@ class App:
         self.local = local
         self.now_scene = -1
         self.back_scene = -1
-        self.msg_id = "01"
+        self.msg_id = "None"
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
@@ -142,6 +143,7 @@ class App:
         self.tools = tools
         self.magic_codes = magic_codes
         self.enemy_info = enemy_info
+        self.assets_info = assets_info
         self.collision_data = collision_data
         self.character_data = character_data
         self.start_loading = False
@@ -150,7 +152,7 @@ class App:
         self.money = 0
         self.game_time_start = None
         self.bgm_run = True
-        pyxel.load("assets/player.pyxres")
+        pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
 
@@ -344,7 +346,7 @@ class App:
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
             pyxel.camera()
-            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale=0.5)
+            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0)
             self.player.draw()
             if not self.new_game:
                 if self.msg_id != self.disp_id:

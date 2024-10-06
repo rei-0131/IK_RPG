@@ -17,6 +17,7 @@ class Words:
         self.equip_codes = self.app.equip_codes
         self.imp_item_codes = self.app.imp_item_codes
         self.item_codes = self.app.item_codes
+        self.finger_ad = self.app.assets_info["finger_ad"]
 
     def update(self) -> tuple[str,str]:
         """基本処理"""
@@ -130,7 +131,7 @@ class Words:
             for i in self.questions:
                 if max_str < len(i) * 11:
                     max_str = len(i) * 11
-            pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),0,15,0,15,15,0)
+            pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
             pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
             pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
             for i,h in zip(self.questions,range(0,len(self.questions)*12,11)):
