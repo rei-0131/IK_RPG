@@ -355,6 +355,14 @@ class App:
                     self.in_word = False
                 if self.in_word:
                     self.words.dec_word(self.msg_id)
+                pyxel.text(0,0,f"{self.player.x =}",7)
+                pyxel.text(0,11,f"{self.player.y =}",7)
+                pyxel.text(0,22,f"{self.player.dx =}",7)
+                pyxel.text(0,33,f"{self.player.dy =}",7)
+                pyxel.text(0,44,f"{self.player.key =}",7)
+                pyxel.text(0,55,f"{self.player.walk_pm =}",7)
+                pyxel.text(0,66,f"{self.player.walk_pos =}",7)
+                pyxel.text(0,77,f"{self.player.walk_num =}",7)
         elif self.now_scene == OUT_SETTING_SCENE:
             self.setting_out.draw()
         elif self.now_scene == IN_SETTING_SCENE:
