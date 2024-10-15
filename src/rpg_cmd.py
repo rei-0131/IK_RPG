@@ -166,7 +166,10 @@ class CMD:
 
     def xp(self,arg):
         self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
-        self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+        try:
+            self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+        except KeyError:
+            pass
 
     def kill(self,arg):
         if arg[1] == "self":
