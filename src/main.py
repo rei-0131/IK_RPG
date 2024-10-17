@@ -152,6 +152,7 @@ class App:
         self.money = 0
         self.game_time_start = None
         self.bgm_run = True
+        self.scale = 0.4
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -346,7 +347,7 @@ class App:
         elif self.now_scene == MAIN_SCENE:
             pyxel.cls(0)
             pyxel.camera()
-            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0)
+            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
             self.player.draw()
             if not self.new_game:
                 if self.msg_id != self.disp_id:
@@ -363,6 +364,7 @@ class App:
                 pyxel.text(0,55,f"{self.player.walk_pm =}",7)
                 pyxel.text(0,66,f"{self.player.walk_pos =}",7)
                 pyxel.text(0,77,f"{self.player.walk_num =}",7)
+                pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
         elif self.now_scene == OUT_SETTING_SCENE:
             self.setting_out.draw()
         elif self.now_scene == IN_SETTING_SCENE:
