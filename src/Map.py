@@ -49,12 +49,6 @@ class Map:
         self.key = key
         check_x = [self.next_x - (150 * (1 - scale)),self.next_x - (150 * (1 - scale))]
         check_y = [self.next_y - (100 * (1 - scale)),self.next_y - (100 * (1 - scale))]
-        # check_x = [300 * 0.6 - (self.next_x - 300),300 * 0.6 - (self.next_x - 300)]
-        # check_y = [200 * 1.4 - (self.next_y - 200),200 * 1.4 - (self.next_y - 200)]
-        # check_x = numpy.array(check_x,dtype = numpy.float64)
-        # check_y = numpy.array(check_y,dtype = numpy.float64)
-        # check_x *= scale + 1
-        # check_y *= scale + 1
         if self.key == "w":
             check_x[0] += 2
             check_x[1] += 12
