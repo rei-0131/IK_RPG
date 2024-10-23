@@ -2,6 +2,8 @@ import pyxel
 import configparser
 import json
 import time
+import datetime as dt
+from zoneinfo import ZoneInfo
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 from title import Title
@@ -28,9 +30,6 @@ cloud = Cloud_data(is_test=is_test)
 local = cloud.import_()
 
 if local:
-    import datetime as dt
-    from zoneinfo import ZoneInfo
-
     config = configparser.ConfigParser(interpolation=None)
     config.read("src/configs/config.ini",encoding="utf-8_sig")
     with open("src/configs/savedata.json",encoding="utf-8") as f:
@@ -160,10 +159,7 @@ class App:
     def my_modules(self):
         """各クラスのインスタンス作成"""
         ld_st = time.time()
-        if local:
-            self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
-        else:
-            self.load_msg = "Load start"
+        self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
         print(self.load_msg)
         self.sound_manager = SoundManager()
         self.map = Map(self)
@@ -179,12 +175,12 @@ class App:
         self.battle = Battle(self,self.init_x, self.init_y,umplus10)
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
         self.load_msg = "Load end"
-        if local:
-            self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
+        self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
         print(f"Load Time:{time.time() - ld_st}s")
         print(self.load_msg)
 
     def load_bgms(self):
+        """BGMのロード"""
         self.sound_manager.load_bgm("q_c","test")
 
     def check_level(self):
@@ -203,7 +199,6 @@ class App:
                 while self.chara_data[i]["XP"] >= xp_ck(i):
                     xp_ = xp_ck(i)
                     self.chara_data[i]["XP"] -= xp_
-                    print(self.chara_data[i]["XP"])
                     self.chara_data[i]["Level"] += 1
                     # print(f"{self.chara_data[i]['Level']} {self.chara_data[i]['XP']} {xp_ck(i)}")
             except Exception:
