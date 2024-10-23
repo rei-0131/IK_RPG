@@ -78,7 +78,6 @@ class Battle:
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.finger_ws = self.app.assets_info["finger_ws"]
         self.AI = joblib.load("assets/rpg.aib")
-        self.ai_data = []
         self.xp_up = {}
         self.xp_get = False
         self.xp_stop = False

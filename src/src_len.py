@@ -28,7 +28,8 @@ filenames = [
     'src/configs/config.ini',
     'src/assets/enemy_info.json',
     'src/assets/cd_block.json',
-    'src/utils/rpg_str.py']
+    'src/utils/rpg_str.py',
+    'tools/ai_save.py']
 
 all_line = 0
 all_char = 0
