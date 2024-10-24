@@ -4,6 +4,9 @@ import json
 import time
 import datetime as dt
 from zoneinfo import ZoneInfo
+import sklearn
+import joblib
+import numpy as np
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 from title import Title
@@ -156,28 +159,51 @@ class App:
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
 
+    def info(self,msg):
+        print(f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] {msg}")
+
     def my_modules(self):
         """各クラスのインスタンス作成"""
         ld_st = time.time()
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
         print(self.load_msg)
+        self.info("Loading SoundManager...")
         self.sound_manager = SoundManager()
+        self.info("Loading Map...")
         self.map = Map(self)
         self.cloud = cloud
+        self.info("Loading Save...")
         self.save = Save(self)
+        self.info("Loading SaveLoad...")
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
+        self.info("Loading Option...")
         self.option = Option(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading In_Setting...")
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Out_Settting...")
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Player...")
         self.player = Player(self,self.init_x,self.init_y)
+        self.info("Loading Title...")
         self.title_s = Title(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Words...")
         self.words = Words(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Battle...")
         self.battle = Battle(self,self.init_x, self.init_y,umplus10)
+        self.info("Loading CMD...")
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
+        self.version_info()
         self.load_msg = "Load end"
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
         print(f"Load Time:{time.time() - ld_st}s")
         print(self.load_msg)
+
+    def version_info(self):
+        print("----------Module Versions----------")
+        print(f"numpy version:{np.__version__}")
+        print(f"scikit-learn version:{sklearn.__version__}")
+        print(f"joblib version:{joblib.__version__}")
+        print("-----------------------------------")
 
     def load_bgms(self):
         """BGMのロード"""
