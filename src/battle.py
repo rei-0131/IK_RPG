@@ -1,5 +1,6 @@
 import pyxel
 import numpy as np
+import sklearn
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import copy
@@ -77,7 +78,8 @@ class Battle:
         self.enemy_info = self.app.enemy_info
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.finger_ws = self.app.assets_info["finger_ws"]
-        self.AI = joblib.load("assets/rpg.aib")
+        self.AI = joblib.load("assets/rpg.aibi")
+        print(f"scikit-learn version:{sklearn.__version__}")
         self.xp_up = {}
         self.xp_get = False
         self.xp_stop = False
