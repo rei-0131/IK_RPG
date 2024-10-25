@@ -26,6 +26,7 @@ from rpg_cmd import CMD
 ##########テスト環境
 is_test = True
 mode = "debug"
+story = False
 ##########
 
 #各ファイル読み込み
@@ -114,6 +115,7 @@ class App:
         画面の大きさy
     """
     def __init__(self,x,y):
+        self.story = story
         self.init_x = x
         self.init_y = y
         self.local = local
@@ -262,23 +264,26 @@ class App:
                     self.from_load = False
                 else:
                     print("new game")
-                    self.loaddata = {
-                        "play_data": {
-                        "time": "00:00:00",
-                        "money": 1000,
-                        "words":{
-                            "msg_id":None,
-                            "disp_id":None
-                        },
-                        "scene": 1,
-                        "x":136,
-                        "y": 182,
-                        "chara_data":self.chara_data,
-                        "item_codes":self.item_codes,
-                        "imp_item_codes":self.imp_item_codes,
-                        "equip_codes":self.equip_codes
+                    if self.story:
+                        pass
+                    else:
+                        self.loaddata = {
+                            "play_data": {
+                            "time": "00:00:00",
+                            "money": 1000,
+                            "words":{
+                                "msg_id":None,
+                                "disp_id":None
+                            },
+                            "scene": 1,
+                            "x":136,
+                            "y": 182,
+                            "chara_data":self.chara_data,
+                            "item_codes":self.item_codes,
+                            "imp_item_codes":self.imp_item_codes,
+                            "equip_codes":self.equip_codes
+                            }
                         }
-                    }
                     self.game_time = self.loaddata["play_data"]["time"]
                     self.money = self.loaddata["play_data"]["money"]
                     self.player.x = self.loaddata["play_data"]["x"]
@@ -363,44 +368,87 @@ class App:
 
     def draw(self):
         """基本描画"""
-        if self.now_scene == TITLE_SCENE or self.now_scene == None:
-            self.title_s.draw()
-        elif self.now_scene == MAIN_SCENE:
-            pyxel.cls(0)
-            pyxel.camera()
-            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
-            self.player.draw()
-            if not self.new_game:
-                if self.msg_id != self.disp_id:
-                    self.in_word = True
-                else:
-                    self.in_word = False
-                if self.in_word:
-                    self.words.dec_word(self.msg_id)
-                pyxel.text(0,0,f"{self.player.x =}",7)
-                pyxel.text(0,11,f"{self.player.y =}",7)
-                pyxel.text(0,22,f"{self.player.dx =}",7)
-                pyxel.text(0,33,f"{self.player.dy =}",7)
-                pyxel.text(0,44,f"{self.player.key =}",7)
-                pyxel.text(0,55,f"{self.player.walk_pm =}",7)
-                pyxel.text(0,66,f"{self.player.walk_pos =}",7)
-                pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
-        elif self.now_scene == OUT_SETTING_SCENE:
-            self.setting_out.draw()
-        elif self.now_scene == IN_SETTING_SCENE:
-            self.setting_in.draw()
-        elif self.now_scene == LOAD_SCENE:
-            self.save_load.draw()
-        elif self.now_scene == START_SCENE:
-            pyxel.cls(0)
-            umplus24.draw_text(70,90,"Now Loading...",7)
-            pyxel.text(150,190,self.load_msg,7)
-            self.load_write = True
-        # pyxel.blt(0,0,0,0,0,63,79,10)
-        if self.now_scene == 5:
-            self.battle.draw()
-        elif self.now_scene == "cmd":
-            self.cmd.draw()
+        if self.story:
+            if self.now_scene == TITLE_SCENE or self.now_scene == None:
+                self.title_s.draw()
+            elif self.now_scene == MAIN_SCENE:
+                if self.disp_id:
+                    pass
+                pyxel.cls(0)
+                pyxel.camera()
+                pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
+                self.player.draw()
+                if not self.new_game:
+                    if self.msg_id != self.disp_id:
+                        self.in_word = True
+                    else:
+                        self.in_word = False
+                    if self.in_word:
+                        self.words.dec_word(self.msg_id)
+                    pyxel.text(0,0,f"{self.player.x =}",7)
+                    pyxel.text(0,11,f"{self.player.y =}",7)
+                    pyxel.text(0,22,f"{self.player.dx =}",7)
+                    pyxel.text(0,33,f"{self.player.dy =}",7)
+                    pyxel.text(0,44,f"{self.player.key =}",7)
+                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
+                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
+                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
+            elif self.now_scene == OUT_SETTING_SCENE:
+                self.setting_out.draw()
+            elif self.now_scene == IN_SETTING_SCENE:
+                self.setting_in.draw()
+            elif self.now_scene == LOAD_SCENE:
+                self.save_load.draw()
+            elif self.now_scene == START_SCENE:
+                pyxel.cls(0)
+                umplus24.draw_text(70,90,"Now Loading...",7)
+                pyxel.text(150,190,self.load_msg,7)
+                self.load_write = True
+            # pyxel.blt(0,0,0,0,0,63,79,10)
+            if self.now_scene == 5:
+                self.battle.draw()
+            elif self.now_scene == "cmd":
+                self.cmd.draw()
+        else:
+            if self.now_scene == TITLE_SCENE or self.now_scene == None:
+                self.title_s.draw()
+            elif self.now_scene == MAIN_SCENE:
+                pyxel.cls(0)
+                pyxel.camera()
+                pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
+                self.player.draw()
+                if not self.new_game:
+                    if self.msg_id != self.disp_id:
+                        self.in_word = True
+                    else:
+                        self.in_word = False
+                    if self.in_word:
+                        self.words.dec_word(self.msg_id)
+                    pyxel.text(0,0,f"{self.player.x =}",7)
+                    pyxel.text(0,11,f"{self.player.y =}",7)
+                    pyxel.text(0,22,f"{self.player.dx =}",7)
+                    pyxel.text(0,33,f"{self.player.dy =}",7)
+                    pyxel.text(0,44,f"{self.player.key =}",7)
+                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
+                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
+                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
+            elif self.now_scene == OUT_SETTING_SCENE:
+                self.setting_out.draw()
+            elif self.now_scene == IN_SETTING_SCENE:
+                self.setting_in.draw()
+            elif self.now_scene == LOAD_SCENE:
+                self.save_load.draw()
+            elif self.now_scene == START_SCENE:
+                pyxel.cls(0)
+                umplus24.draw_text(70,90,"Now Loading...",7)
+                pyxel.text(150,190,self.load_msg,7)
+                self.load_write = True
+            # pyxel.blt(0,0,0,0,0,63,79,10)
+            if self.now_scene == 5:
+                self.battle.draw()
+            elif self.now_scene == "cmd":
+                self.cmd.draw()
 
 App(init_x,init_y)
