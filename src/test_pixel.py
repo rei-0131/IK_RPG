@@ -23,4 +23,5 @@ class App:
     def draw(self):
         pyxel.bltm(-450,-300,0,0,0,init_x * 4,init_y * 4,0,scale = 0.27)
 
+
 App()
