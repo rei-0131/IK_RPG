@@ -53,6 +53,8 @@ class Title:
             if self.enter_pos == 0:
                 self.app.new_game = True
                 self.app.game_time_start = time.time()
+                if self.app.story:
+                    pass
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
                 self.app.save_load.save_data = self.app.save_data
