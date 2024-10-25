@@ -121,11 +121,11 @@ class App:
         self.local = local
         self.now_scene = -1
         self.back_scene = -1
-        self.msg_id = "None"
+        self.msg_id = None
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
-        self.disp_id = "None"
+        self.disp_id = None
         self.in_word = False
         self.new_game = True
         self.from_load = False
@@ -157,6 +157,7 @@ class App:
         self.game_time_start = None
         self.bgm_run = True
         self.scale = 0.4
+        self.dither_alpha = 0
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -265,7 +266,23 @@ class App:
                 else:
                     print("new game")
                     if self.story:
-                        pass
+                        self.loaddata = {
+                            "play_data": {
+                            "time": "00:00:00",
+                            "money": 1000,
+                            "words":{
+                                "msg_id":"01",
+                                "disp_id":None
+                            },
+                            "scene": 1,
+                            "x":136,
+                            "y": 182,
+                            "chara_data":self.chara_data,
+                            "item_codes":self.item_codes,
+                            "imp_item_codes":self.imp_item_codes,
+                            "equip_codes":self.equip_codes
+                            }
+                        }
                     else:
                         self.loaddata = {
                             "play_data": {
@@ -372,12 +389,8 @@ class App:
             if self.now_scene == TITLE_SCENE or self.now_scene == None:
                 self.title_s.draw()
             elif self.now_scene == MAIN_SCENE:
-                if self.disp_id:
-                    pass
                 pyxel.cls(0)
                 pyxel.camera()
-                pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
-                self.player.draw()
                 if not self.new_game:
                     if self.msg_id != self.disp_id:
                         self.in_word = True
@@ -394,6 +407,9 @@ class App:
                     pyxel.text(0,66,f"{self.player.walk_pos =}",7)
                     pyxel.text(0,77,f"{self.player.walk_num =}",7)
                     pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
+                if not (self.msg_id == None or self.msg_id == "01"):
+                    pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
+                    self.player.draw()
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:
