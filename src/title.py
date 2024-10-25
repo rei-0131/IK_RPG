@@ -34,28 +34,33 @@ class Title:
         self.save_data = None
         self.enter_pos = 1
         self.setting = self.app.setting_out
+        self.finger_ad = self.app.assets_info["finger_ad"]
 
     def update(self):
         """基本処理"""
-        if pyxel.btnp(pyxel.KEY_DOWN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN):
+        if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
             if self.question_mark != -18:
                 self.question_mark -= 9
-        if pyxel.btnp(pyxel.KEY_UP) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+            else:
+                self.question_mark = 0
+        if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
             if self.question_mark != 0:
                 self.question_mark += 9
+            else:
+                self.question_mark = -18
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
             self.enter_pos = self.question_mark // 9
             if self.enter_pos == 0:
                 self.app.new_game = True
                 self.app.game_time_start = time.time()
+                if self.app.story:
+                    pass
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
                 self.app.save_load.save_data = self.app.save_data
                 self.app.new_game = True
                 return self.Continue
             elif self.enter_pos == -2:
-                self.app.setting_out.option.now_volume = self.app.volume
-                self.app.setting_out.option.vol_finger = self.app.volume
                 return self.setting_scene
 
     def draw(self):
@@ -66,4 +71,4 @@ class Title:
         self.umplus10.draw_text(103,120,"-   Continue   -",7)
         self.umplus10.draw_text(103,130,"-   Settings   -",7)
         self.umplus10.draw_text(103,150,"-  PRESS Enter -",7)
-        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,0,15,0,15,15,0)
+        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])

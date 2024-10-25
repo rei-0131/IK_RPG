@@ -5,7 +5,7 @@
             "status":"status"
         },
         "mob1":{
-            "basis":[1,[0,16],[64,80],10],
+            "basis":[1,[0,0],[64,80],10],
             "status":{
                 "enemy_name":{"enemy_type":"general","enemy_code":"mob1"},
                 "HP":[1000,1000],
@@ -15,7 +15,9 @@
                 "satisfaction": [
                     1.5,
                     120
-                ]
+                ],
+                "xp":500,
+                "money":500
             }
         }
     },

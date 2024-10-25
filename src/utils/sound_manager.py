@@ -2,7 +2,7 @@ import json
 import pyxel
 import sys
 
-sound_file_path = "../assets/sounds"
+sound_file_path = "assets/sounds"
 
 class SoundManager:
     def __init__(self):
@@ -63,11 +63,13 @@ class SoundManager:
     def play_se(self, name: str):
         """指定された名前のSEを再生する"""
         if self._isExist(name, self.ses):
+            pyxel.sound(self.seChannel)
             pyxel.play(self.seChannel, self.ses[name])
 
     def stop(self):
         """全てのサウンドを停止する"""
         pyxel.stop()
+        self.tick = None
 
     def _back_to_bgm(self):
         """SE再生後にBGMに戻る"""
@@ -87,4 +89,3 @@ class SoundManager:
         if name not in sound_dict:
             raise KeyError(f"Cannot find '{name}'")
         return True
-
