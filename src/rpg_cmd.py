@@ -166,7 +166,10 @@ class CMD:
 
     def xp(self,arg):
         self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
-        self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+        try:
+            self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+        except KeyError:
+            pass
 
     def kill(self,arg):
         if arg[1] == "self":
@@ -220,6 +223,12 @@ class CMD:
             self.app.msg_id = self.app.loaddata["play_data"]["words"]["msg_id"]
             self.app.disp_id = self.app.loaddata["play_data"]["words"]["disp_id"]
 
+    def story(self,arg):
+        if arg[1] == "true" or arg[1] == "True":
+            self.app.story = True
+        elif arg[1] == "false" or arg[1] == "False":
+            self.app.story = False
+
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
             print(self.in_str)
@@ -242,6 +251,8 @@ class CMD:
                     self.kill(cmd_config)
                 elif cmd_config[0] == "mode":
                     self.mode(cmd_config)
+                elif cmd_config[0] == "story":
+                    self.story(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"

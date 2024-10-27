@@ -1,10 +1,9 @@
 import pyxel
 import numpy as np
 from sklearn.decomposition import PCA
-from sklearn.multioutput import MultiOutputRegressor
-from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 import copy
+import joblib
 
 
 class Battle:
@@ -76,8 +75,9 @@ class Battle:
         self.tools = self.app.tools
         self.magic_codes = self.app.magic_codes
         self.enemy_info = self.app.enemy_info
-        self.AI = self.create_AI()
-        self.ai_data = []
+        self.finger_ad = self.app.assets_info["finger_ad"]
+        self.finger_ws = self.app.assets_info["finger_ws"]
+        self.AI = joblib.load("assets/rpg.aibi")
         self.xp_up = {}
         self.xp_get = False
         self.xp_stop = False
@@ -228,65 +228,6 @@ class Battle:
                 "value":0,
                 "move":"p"
             })
-
-    def create_AI(self) -> MultiOutputRegressor:
-        """
-        AI作成
-
-        Returns
-        -------
-        clf : MultiOutputRegressor
-            AI
-        """
-        #first_aiに入っているデータはセットアップデータ
-        data = []
-        ai_answer =[]
-        with open("assets/first_ai.txt","r",encoding="utf-8") as f:
-            ai_data_ = []
-            for line in f:
-                line = line.rstrip()
-                tmp = line.split()
-                for i in range(len(tmp)):
-                    tmp[i] = float(tmp[i])
-                ai_data_.append([])
-
-                pl_ = int(tmp[0])
-                tmp_len_ = len(tmp)
-                tmp_len = len(ai_data_)
-                ai_data_[tmp_len - 1].append([0,0,pl_])
-                for i in range(pl_):
-                    ai_data_[tmp_len - 1].append(tmp[1+i*3:1+(i+1)*3])
-                for i in range(4-pl_):
-                    ai_data_[tmp_len - 1].append([0,0,0])
-                en_ = int(tmp[int(tmp[0])*3+1])
-                ai_data_[tmp_len - 1].append([0,0,en_])
-                for i in range(en_):
-                    tm = [0,tmp[(int(tmp[0])*3+2)+i*2],tmp[(int(tmp[0])*3+2)+i*2+1]]
-                    ai_data_[tmp_len - 1].append(tm)
-                for i in range(4-en_):
-                    ai_data_[tmp_len - 1].append([0,0,0])
-                c = tmp[tmp_len_ - 3]
-                c = [0,0,c]
-                ai_data_[tmp_len - 1].append(c)
-                d = tmp[tmp_len_ - 2:tmp_len_]
-                nd_ = np.array([])
-                ai_data_[tmp_len - 1] = np.append(nd_,ai_data_[tmp_len-1]).tolist()
-                ai_answer.append(d)
-
-        data = np.array(ai_data_)
-        data_answer = np.array(ai_answer)
-
-        pca = PCA(n_components = 20, whiten = False)
-        pca.fit(data)
-        data = pca.fit_transform(data)
-        scaler = StandardScaler()
-        data = scaler.fit_transform(data)
-
-
-        clf = MultiOutputRegressor(MLPClassifier(alpha=0.00001, hidden_layer_sizes=(400,200,100,50),max_iter=1000,random_state=0,early_stopping=True))
-        clf.fit(data , data_answer)
-
-        return clf
 
     def player_op_over(self):
         """プレイヤー行動チェック"""
@@ -1338,7 +1279,7 @@ class Battle:
     def enemy_target_select_draw(self):
         """敵ターゲット選択描画"""
         self.umplus10.draw_text(190,self.init_y-12,"※戻るにはAキーを押す",8)
-        pyxel.blt(self.finger_pos4 - 8,2,0,32,0,16,16,0)
+        pyxel.blt(self.finger_pos4 - 8,2,self.finger_ws[0],self.finger_ws[1],self.finger_ws[2],self.finger_ws[3],self.finger_ws[4],self.finger_ws[5])
 
     def self_target_select_draw(self,fin = 5):
         """
@@ -1390,13 +1331,13 @@ class Battle:
             pyxel.rectb(178,self.init_y//2+21+height,100,5,7)
             pyxel.text(279,self.init_y//2+21+height,f"{self.app.chara_data[data[1]]['MP'][1]}",5)
         if fin == 5:
-            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),0,16,0,16,16,0)
+            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
         elif fin == "5_":
             self.umplus10.draw_text(210,self.init_y-12,"※対象を選択",8)
-            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),0,16,0,16,16,0)
+            pyxel.blt(115,self.init_y//2+15+(self.finger_pos5),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
         elif fin == 2:
             self.umplus10.draw_text(210,self.init_y-12,"※使用者を選択",8)
-            pyxel.blt(115,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+            pyxel.blt(115,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
 
     def none_target_select_draw(self):
         pass
@@ -1512,13 +1453,13 @@ class Battle:
                         else:
                             self.target_attack_update()
                     else:
-                        pyxel.blt(7,self.init_y//2+15+(self.finger_pos1),0,16,0,16,16,0)
+                        pyxel.blt(7,self.init_y//2+15+(self.finger_pos1),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                         if self.select_num1 == 0:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 self.enemy_target_select_draw()
                         elif self.select_num1 == 1:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 if self.select_num3 == -1:
                                     self.sm_draw("skill")
@@ -1531,7 +1472,7 @@ class Battle:
                                     elif self.target_team == "none":
                                         self.none_target_select_draw()
                         elif self.select_num1 == 2:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 if self.select_num3 == -1:
                                     self.sm_draw("magic")
@@ -1544,7 +1485,7 @@ class Battle:
                                     elif self.target_team == "none":
                                         self.none_target_select_draw()
                         elif self.select_num1 == 3:
-                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),0,16,0,16,16,0)
+                            pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
                                 if self.select_num3 == -1:
                                     self.item_draw()
