@@ -21,6 +21,7 @@ class App:
         pass
 
     def draw(self):
-        pyxel.bltm(0,0,0,0,0,init_x,init_y,0)
+        pyxel.bltm(-450,-300,0,0,0,init_x * 4,init_y * 4,0,scale = 0.27)
+
 
 App()
