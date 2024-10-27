@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 import sklearn
 import joblib
 import numpy as np
+
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 from title import Title
@@ -36,37 +37,21 @@ local = cloud.import_()
 if local:
     config = configparser.ConfigParser(interpolation=None)
     config.read("src/configs/config.ini",encoding="utf-8_sig")
-    with open("src/configs/savedata.json",encoding="utf-8") as f:
-        save_data = json.load(f)
+    save_data = json.load(open("src/configs/savedata.json","r",encoding="utf-8"))
 else:
     config = cloud.config_load()
     save_data = cloud.load()
 
 #["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
-with open("src/assets/init_data.json",encoding="utf-8") as f:
-    init_data = json.load(f)
-
-with open("src/assets/scenes.json",encoding="utf-8") as f:
-    scenes = json.load(f)
-
-with open("src/assets/words.json",encoding="utf-8") as f:
-    words = json.load(f)
-
-with open("src/assets/tools.json","r",encoding="utf-8") as f:
-    tools = json.load(f)
-
-with open("src/assets/magic.json","r",encoding="utf-8") as f:
-    magic_codes = json.load(f)
-
-with open("src/assets/enemy_info.json",encoding="utf-8") as f:
-    enemy_info = json.load(f)
-
-with open("src/assets/assets_info.json",encoding="utf-8") as f:
-    assets_info = json.load(f)
+init_data = json.load(open("src/assets/init_data.json","r",encoding="utf-8"))
+scenes = json.load(open("src/assets/scenes.json","r",encoding="utf-8"))
+words = json.load(open("src/assets/words.json","r",encoding="utf-8"))
+tools = json.load(open("src/assets/tools.json","r",encoding="utf-8"))
+magic_codes = json.load(open("src/assets/magic.json","r",encoding="utf-8"))
+enemy_info = json.load(open("src/assets/enemy_info.json","r",encoding="utf-8"))
+assets_info = json.load(open("src/assets/assets_info.json","r",encoding="utf-8"))
 collision_data = assets_info["cd_block"]
-
-with open("src/assets/character_data.json",encoding="utf-8") as f:
-    character_data = json.load(f)
+character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
 
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
@@ -244,8 +229,7 @@ class App:
             if self.new_game:
                 if self.from_load:
                     if self.local:
-                        with open("configs/savedata.json","r",encoding="utf-8") as f:
-                            self.savedata = json.load(f)
+                        self.savedata = json.load(open("configs/savedata.json","r",encoding="utf-8"))
                     else:
                         self.savedata = cloud.load()
                         time.sleep(0.3)
