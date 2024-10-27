@@ -1,6 +1,7 @@
 import pyxel
-from cloud_data import Cloud_data
 import configparser
+
+from cloud_data import Cloud_data
 
 class Option:
     """

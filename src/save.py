@@ -1,5 +1,6 @@
 import json
 import time
+
 from cloud_data import Cloud_data
 #新しいセーブデータを作成する
 class Save:
@@ -19,8 +20,7 @@ class Save:
     def newsave(self,pos):
         """新しいセーブ"""
         if self.app.local:
-            with open("configs/savedata.json",encoding="utf-8") as f:
-                save_data = json.load(f)
+            save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
         else:
             save_data = self.cloud.load()
 
@@ -51,8 +51,7 @@ class Save:
         }
         print(f"{save_data[str(pos)]['play_data']=}")
         if self.app.local:
-            with open("configs/savedata.json","w",encoding="utf-8") as f:
-                json.dump(save_data,f,indent=4,ensure_ascii=False)
+            json.dump(save_data,open("configs/savedata.json","w",encoding="utf-8"),indent=4,ensure_ascii=False)
         else:
             self.cloud.save(save_data)
         self.app.save_data = save_data

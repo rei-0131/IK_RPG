@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 import sklearn
 import joblib
 import numpy as np
+
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 from title import Title
@@ -36,37 +37,21 @@ local = cloud.import_()
 if local:
     config = configparser.ConfigParser(interpolation=None)
     config.read("src/configs/config.ini",encoding="utf-8_sig")
-    with open("src/configs/savedata.json",encoding="utf-8") as f:
-        save_data = json.load(f)
+    save_data = json.load(open("src/configs/savedata.json","r",encoding="utf-8"))
 else:
     config = cloud.config_load()
     save_data = cloud.load()
 
 #["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
-with open("src/assets/init_data.json",encoding="utf-8") as f:
-    init_data = json.load(f)
-
-with open("src/assets/scenes.json",encoding="utf-8") as f:
-    scenes = json.load(f)
-
-with open("src/assets/words.json",encoding="utf-8") as f:
-    words = json.load(f)
-
-with open("src/assets/tools.json","r",encoding="utf-8") as f:
-    tools = json.load(f)
-
-with open("src/assets/magic.json","r",encoding="utf-8") as f:
-    magic_codes = json.load(f)
-
-with open("src/assets/enemy_info.json",encoding="utf-8") as f:
-    enemy_info = json.load(f)
-
-with open("src/assets/assets_info.json",encoding="utf-8") as f:
-    assets_info = json.load(f)
+init_data = json.load(open("src/assets/init_data.json","r",encoding="utf-8"))
+scenes = json.load(open("src/assets/scenes.json","r",encoding="utf-8"))
+words = json.load(open("src/assets/words.json","r",encoding="utf-8"))
+tools = json.load(open("src/assets/tools.json","r",encoding="utf-8"))
+magic_codes = json.load(open("src/assets/magic.json","r",encoding="utf-8"))
+enemy_info = json.load(open("src/assets/enemy_info.json","r",encoding="utf-8"))
+assets_info = json.load(open("src/assets/assets_info.json","r",encoding="utf-8"))
 collision_data = assets_info["cd_block"]
-
-with open("src/assets/character_data.json",encoding="utf-8") as f:
-    character_data = json.load(f)
+character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
 
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
@@ -121,11 +106,11 @@ class App:
         self.local = local
         self.now_scene = -1
         self.back_scene = -1
-        self.msg_id = "None"
+        self.msg_id = None
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
-        self.disp_id = "None"
+        self.disp_id = None
         self.in_word = False
         self.new_game = True
         self.from_load = False
@@ -157,6 +142,7 @@ class App:
         self.game_time_start = None
         self.bgm_run = True
         self.scale = 0.4
+        self.dither_alpha = 0
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -243,8 +229,7 @@ class App:
             if self.new_game:
                 if self.from_load:
                     if self.local:
-                        with open("configs/savedata.json","r",encoding="utf-8") as f:
-                            self.savedata = json.load(f)
+                        self.savedata = json.load(open("configs/savedata.json","r",encoding="utf-8"))
                     else:
                         self.savedata = cloud.load()
                         time.sleep(0.3)
@@ -265,7 +250,23 @@ class App:
                 else:
                     print("new game")
                     if self.story:
-                        pass
+                        self.loaddata = {
+                            "play_data": {
+                            "time": "00:00:00",
+                            "money": 1000,
+                            "words":{
+                                "msg_id":"01",
+                                "disp_id":None
+                            },
+                            "scene": 1,
+                            "x":136,
+                            "y": 182,
+                            "chara_data":self.chara_data,
+                            "item_codes":self.item_codes,
+                            "imp_item_codes":self.imp_item_codes,
+                            "equip_codes":self.equip_codes
+                            }
+                        }
                     else:
                         self.loaddata = {
                             "play_data": {
@@ -372,12 +373,8 @@ class App:
             if self.now_scene == TITLE_SCENE or self.now_scene == None:
                 self.title_s.draw()
             elif self.now_scene == MAIN_SCENE:
-                if self.disp_id:
-                    pass
                 pyxel.cls(0)
                 pyxel.camera()
-                pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
-                self.player.draw()
                 if not self.new_game:
                     if self.msg_id != self.disp_id:
                         self.in_word = True
@@ -394,6 +391,9 @@ class App:
                     pyxel.text(0,66,f"{self.player.walk_pos =}",7)
                     pyxel.text(0,77,f"{self.player.walk_num =}",7)
                     pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
+                if not (self.msg_id == None or self.msg_id == "01"):
+                    pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
+                    self.player.draw()
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:

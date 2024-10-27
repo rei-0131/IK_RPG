@@ -1,6 +1,6 @@
 import pyxel
 import time
-import json
+
 from save_load import SaveLoad
 
 class Title:
