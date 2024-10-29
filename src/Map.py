@@ -28,13 +28,13 @@ class Map:
 
         Parameters
         ----------
-        x : float
+        x : int
             プレイヤーの現在位置x
-        y : float
+        y : int
             プレイヤーの現在位置y
-        dx : float
+        dx : int
             次のフレームで動く距離x
-        dy : float
+        dy : int
             次のフレームで動く距離y
         num : int
             タイルマップデータ番号
@@ -43,6 +43,10 @@ class Map:
             スマホやゲームパッドの場合はキーボードに相当するキー
         scale : float
             表示しているタイルマップのスケール
+        gap_x : int
+            タイルマップの初期表示座標x
+        gap_y : int
+            タイルマップの初期表示座標y
 
         Returns
         ----------
