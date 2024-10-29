@@ -22,7 +22,7 @@ class Map:
         self.next_x = 0
         self.next_y = 0
 
-    def cd_check(self, x, y, dx, dy, num, key, scale) -> bool:
+    def cd_check(self, x, y, dx, dy, num, key, scale, gap_x = 0,gap_y = 0) -> tuple[bool,str]:
         """
         当たり判定の判定
 
@@ -41,17 +41,22 @@ class Map:
         key : string
             wasdのどれが押されたか
             スマホやゲームパッドの場合はキーボードに相当するキー
+        scale : float
+            表示しているタイルマップのスケール
 
         Returns
         ----------
         Any : bool
             あたっている場合はTrue、そうでない場合はFalse
+        Any : str
+            あたったブロックのタイプ
         """
         self.next_x = x + dx
         self.next_y = y + dy
         self.key = key
-        check_x = [self.next_x - (self.init_x // 2 * (1 - scale)) for _ in range(3)]
-        check_y = [self.next_y - (self.init_y // 2 * (1 - scale)) for _ in range(3)]
+        check_x = [self.next_x - (self.init_x // 2 * (1 - scale) + (gap_x * scale)) for _ in range(3)]
+        check_y = [self.next_y - (self.init_y // 2 * (1 - scale) + (gap_y * scale)) for _ in range(3)]
+        print([check_x[0], check_y[0]],end="\r")
         if self.key == "w":
             check_x[0] += 2
             check_x[1] += 7
@@ -80,12 +85,20 @@ class Map:
         pyxel.text(0,121,f"cd_block3{str(list(pyxel.tilemaps[num].pget(check_x[2]//pixel_size, check_y[2]//pixel_size)))}",7)
         pyxel.text(0, 132, f"{check_x}", 7)
         pyxel.text(0, 143, f"{check_y}", 7)
-        if (list(pyxel.tilemaps[num].pget(check_x[0] // pixel_size, check_y[0] // pixel_size)) not in self.collision_data[str(num)]
-            and list(pyxel.tilemaps[num].pget(check_x[1] // pixel_size, check_y[1] // pixel_size)) not in self.collision_data[str(num)]
-            and list(pyxel.tilemaps[num].pget(check_x[2] // pixel_size, check_y[2] // pixel_size)) not in self.collision_data[str(num)]):
-            return False
+        cd = [i[0] for i in self.collision_data[str(num)]]
+        if (list(pyxel.tilemaps[num].pget(check_x[0] // pixel_size, check_y[0] // pixel_size)) not in cd
+            and list(pyxel.tilemaps[num].pget(check_x[1] // pixel_size, check_y[1] // pixel_size)) not in cd
+            and list(pyxel.tilemaps[num].pget(check_x[2] // pixel_size, check_y[2] // pixel_size)) not in cd):
+            return False,""
         else:
-            return True
+            type_ = ""
+            if list(pyxel.tilemaps[num].pget(check_x[0] // pixel_size, check_y[0] // pixel_size)) in cd:
+                type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[0] // pixel_size, check_y[0] // pixel_size)))][1]
+            elif list(pyxel.tilemaps[num].pget(check_x[1] // pixel_size, check_y[1] // pixel_size)) in cd:
+                type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[1] // pixel_size, check_y[1] // pixel_size)))][1]
+            elif list(pyxel.tilemaps[num].pget(check_x[2] // pixel_size, check_y[2] // pixel_size)) in cd:
+                type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[2] // pixel_size, check_y[2] // pixel_size)))][1]
+            return True,type_
 
     def cd_debug(self):
         """

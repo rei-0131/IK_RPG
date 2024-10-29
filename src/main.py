@@ -78,13 +78,14 @@ pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
 umplus24 = BDFRenderer("assets/b24.bdf")
 
-START_SCENE = scenes["START_SCENE"]
-TITLE_SCENE = scenes["TITLE_SCENE"]
-MAIN_SCENE = scenes["MAIN_SCENE"]
-IN_SETTING_SCENE = scenes["IN_SETTING_SCENE"]
-OUT_SETTING_SCENE = scenes["OUT_SETTING_SCENE"]
-LOAD_SCENE = scenes["LOAD_SCENE"]
-BATTLE_SCENE = scenes["BATTLE_SCENE"]
+START_SCENE = scenes["code"]["START_SCENE"]
+TITLE_SCENE = scenes["code"]["TITLE_SCENE"]
+MAIN_SCENE = scenes["code"]["MAIN_SCENE"]
+IN_SETTING_SCENE = scenes["code"]["IN_SETTING_SCENE"]
+OUT_SETTING_SCENE = scenes["code"]["OUT_SETTING_SCENE"]
+LOAD_SCENE = scenes["code"]["LOAD_SCENE"]
+BATTLE_SCENE = scenes["code"]["BATTLE_SCENE"]
+CLASS_SCENE = scenes["code"]["CLASS_SCENE"]
 
 que_height = 0
 
@@ -142,7 +143,7 @@ class App:
         self.game_time_start = None
         self.bgm_run = True
         self.scale = 0.4
-        self.dither_alpha = 0
+        self.coord = [0] * 8
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -375,6 +376,11 @@ class App:
             elif self.now_scene == MAIN_SCENE:
                 pyxel.cls(0)
                 pyxel.camera()
+                if not (self.msg_id == None or self.msg_id == "01"):
+                    self.coord = self.scenes["coordinate"][str(CLASS_SCENE)]
+                    self.scale = self.coord[8]
+                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.init_x * self.coord[5],self.init_y * self.coord[6],self.coord[7],scale = self.scale)
+                    self.player.draw()
                 if not self.new_game:
                     if self.msg_id != self.disp_id:
                         self.in_word = True
@@ -390,10 +396,7 @@ class App:
                     pyxel.text(0,55,f"{self.player.walk_pm =}",7)
                     pyxel.text(0,66,f"{self.player.walk_pos =}",7)
                     pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
-                if not (self.msg_id == None or self.msg_id == "01"):
-                    pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
-                    self.player.draw()
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord[0],self.coord[1])}",7)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:
@@ -433,7 +436,7 @@ class App:
                     pyxel.text(0,55,f"{self.player.walk_pm =}",7)
                     pyxel.text(0,66,f"{self.player.walk_pos =}",7)
                     pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord[0],self.coord[1])}",7)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:

@@ -26,10 +26,10 @@ class Title:
         self.game_start = -1
         self.umplus10 = ump
         self.scenes = self.app.scenes
-        self.MAIN_SCENE = self.scenes["MAIN_SCENE"]
-        self.TITLE_SCENE = self.scenes["TITLE_SCENE"]
-        self.Continue = self.scenes["LOAD_SCENE"]
-        self.setting_scene = self.scenes["OUT_SETTING_SCENE"]
+        self.MAIN_SCENE = self.scenes["code"]["MAIN_SCENE"]
+        self.TITLE_SCENE = self.scenes["code"]["TITLE_SCENE"]
+        self.Continue = self.scenes["code"]["LOAD_SCENE"]
+        self.setting_scene = self.scenes["code"]["OUT_SETTING_SCENE"]
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False,app=self.app)
         self.save_data = None
         self.enter_pos = 1
