@@ -73,7 +73,7 @@ class Player:
                         self.walk_pos += 1
                         self.walk_pm = "p"
                 self.walk_num += 1
-        if not self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale):
+        if not self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale,self.app.coord[0],self.app.coord[1])[0]:
             self.x += self.dx
             self.y += self.dy
 

@@ -46,9 +46,9 @@ class SaveLoad:
         else:
             self.save_data = self.cloud.load()
         self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
-        self.load = self.scenes["LOAD_SCENE"]
-        self.title = self.scenes["TITLE_SCENE"]
-        self.main = self.scenes["MAIN_SCENE"]
+        self.load = self.scenes["code"]["LOAD_SCENE"]
+        self.title = self.scenes["code"]["TITLE_SCENE"]
+        self.main = self.scenes["code"]["MAIN_SCENE"]
 
     def update(self,ent=None):
         """

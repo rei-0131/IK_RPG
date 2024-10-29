@@ -59,8 +59,8 @@ class In_Setting:
         self.scenes = self.app.scenes
         self.tools = self.app.tools
         self.magic = self.app.magic_codes
-        self.setting_sc = self.scenes["IN_SETTING_SCENE"]
-        self.title_ac = self.scenes["TITLE_SCENE"]
+        self.setting_sc = self.scenes["code"]["IN_SETTING_SCENE"]
+        self.title_ac = self.scenes["code"]["TITLE_SCENE"]
 
     def clean(self):
         """初期化"""
@@ -930,8 +930,8 @@ class Out_Setting:
         self.save_pos = 1
         self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
         self.finger_ad = self.app.assets_info["finger_ad"]
-        self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
-        self.title_sc = self.scenes["TITLE_SCENE"]
+        self.setting_sc = self.scenes["code"]["OUT_SETTING_SCENE"]
+        self.title_sc = self.scenes["code"]["TITLE_SCENE"]
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
