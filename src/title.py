@@ -1,6 +1,6 @@
 import pyxel
 import time
-import json
+
 from save_load import SaveLoad
 
 class Title:
@@ -26,14 +26,15 @@ class Title:
         self.game_start = -1
         self.umplus10 = ump
         self.scenes = self.app.scenes
-        self.MAIN_SCENE = self.scenes["MAIN_SCENE"]
-        self.TITLE_SCENE = self.scenes["TITLE_SCENE"]
-        self.Continue = self.scenes["LOAD_SCENE"]
-        self.setting_scene = self.scenes["OUT_SETTING_SCENE"]
+        self.MAIN_SCENE = self.scenes["code"]["MAIN_SCENE"]
+        self.TITLE_SCENE = self.scenes["code"]["TITLE_SCENE"]
+        self.Continue = self.scenes["code"]["LOAD_SCENE"]
+        self.setting_scene = self.scenes["code"]["OUT_SETTING_SCENE"]
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False,app=self.app)
         self.save_data = None
         self.enter_pos = 1
         self.setting = self.app.setting_out
+        self.finger_ad = self.app.assets_info["finger_ad"]
 
     def update(self):
         """基本処理"""
@@ -52,6 +53,8 @@ class Title:
             if self.enter_pos == 0:
                 self.app.new_game = True
                 self.app.game_time_start = time.time()
+                if self.app.story:
+                    pass
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
                 self.app.save_load.save_data = self.app.save_data
@@ -68,4 +71,4 @@ class Title:
         self.umplus10.draw_text(103,120,"-   Continue   -",7)
         self.umplus10.draw_text(103,130,"-   Settings   -",7)
         self.umplus10.draw_text(103,150,"-  PRESS Enter -",7)
-        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,0,15,0,15,15,0)
+        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])

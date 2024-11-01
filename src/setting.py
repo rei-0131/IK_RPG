@@ -1,6 +1,7 @@
 import pyxel
 import json
 import time
+
 from save_load import SaveLoad
 from cloud_data import Cloud_data
 from option import Option
@@ -47,19 +48,19 @@ class In_Setting:
         self.time_h= 0
         self.time_m = 0
         self.time_s = 0
+        self.finger_ad = self.app.assets_info["finger_ad"]
         self.cloud = Cloud_data(self.app.is_test)
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
         if self.app.local:
-            with open("configs/savedata.json",encoding="utf-8") as f:
-                self.save_data = json.load(f)
+            self.save_data = json.load( open("configs/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
         self.scenes = self.app.scenes
         self.tools = self.app.tools
         self.magic = self.app.magic_codes
-        self.setting_sc = self.scenes["IN_SETTING_SCENE"]
-        self.title_ac = self.scenes["TITLE_SCENE"]
+        self.setting_sc = self.scenes["code"]["IN_SETTING_SCENE"]
+        self.title_ac = self.scenes["code"]["TITLE_SCENE"]
 
     def clean(self):
         """初期化"""
@@ -108,17 +109,19 @@ class In_Setting:
                 self.in_st_finger += 1
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
             if not self.move_fi:
-                self.move_to = self.in_st_finger + self.in_st_pos
-                self.move_fi = True
+                if self.chara_keys[self.in_st_finger + self.in_st_pos] != "ぼく":
+                    self.move_to = self.in_st_finger + self.in_st_pos
+                    self.move_fi = True
             else:
-                chara_data_be = {}
-                tmp = self.chara_keys[self.in_st_finger + self.in_st_pos]
-                self.chara_keys[self.in_st_finger + self.in_st_pos] = self.chara_keys[self.move_to]
-                self.chara_keys[self.move_to] = tmp
-                for i in self.chara_keys:
-                    chara_data_be[i] = self.app.chara_data[i]
-                self.app.chara_data = chara_data_be
-                self.move_fi = False
+                if self.chara_keys[self.in_st_finger + self.in_st_pos] != "ぼく":
+                    chara_data_be = {}
+                    tmp = self.chara_keys[self.in_st_finger + self.in_st_pos]
+                    self.chara_keys[self.in_st_finger + self.in_st_pos] = self.chara_keys[self.move_to]
+                    self.chara_keys[self.move_to] = tmp
+                    for i in self.chara_keys:
+                        chara_data_be[i] = self.app.chara_data[i]
+                    self.app.chara_data = chara_data_be
+                    self.move_fi = False
 
     def item_update(self):
         """アイテム処理"""
@@ -486,7 +489,7 @@ class In_Setting:
             pyxel.rectb(50,0,200,50,7)
             self.umplus10.draw_text(51,1,self.tools["basic"][list(self.app.item_codes.keys())[self.enter_pos2]]["name"],7)
             self.umplus10.draw_text(150,1,f"個数: {self.app.item_codes[list(self.app.item_codes.keys())[self.enter_pos2]]['value']}",7)
-            pyxel.blt(51,51+(self.finger_pos1),0,16,0,16,16,0)
+            pyxel.blt(51,51+(self.finger_pos1),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
             for i,v in enumerate(self.app.chara_data.keys()):
                 chara_data = self.app.chara_data[v]
                 height = 18*i
@@ -836,15 +839,25 @@ class In_Setting:
         if len(self.app.chara_data.items()) > 4:
             for i,t in enumerate(list(self.app.chara_data.keys())[self.in_st_pos:self.in_st_pos + 4]):
                 if i == self.in_st_finger and self.enter_pos != -1:
-                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                    pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,1)
+                    pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
+                else:
+                    pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
+                    pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
+                if t == "ぼく":
+                    self.umplus10.draw_text(71,int(28+(49*i)),"ぼくの並び替えはできません",7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
             for i,t in enumerate(self.app.chara_data):
                 if i == self.in_st_finger and self.enter_pos != -1:
-                    pyxel.rect(71,6+(48.75*i),self.init_x-72,48.75,1)
-                pyxel.line(70,5+(48.75*i + 1),self.init_x,5+(48.75*i + 1),7)
+                    pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,1)
+                    pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
+                else:
+                    pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
+                    pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
+                if t == "ぼく":
+                    self.umplus10.draw_text(71,int(28+(49*i)),"ぼくの並び替えはできません",7)
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
@@ -858,7 +871,7 @@ class In_Setting:
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
         if self.enter_pos == -1:
-            pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
+            pyxel.blt(0,5+self.finger_pos,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
         self.umplus10.draw_text(19,6,"アイテム",7)
         self.umplus10.draw_text(19,17,"大切なもの",7)
         self.umplus10.draw_text(19,28,"魔法",7)
@@ -869,6 +882,7 @@ class In_Setting:
         self.umplus10.draw_text(19,83,"オプション",7)
         self.umplus10.draw_text(19,94,"セーブ",7)
         self.umplus10.draw_text(19,105,"ゲーム終了",7)
+        self.umplus10.draw_text(5,self.init_y-22,f"￥{self.app.money}".rjust(8,"　"),7)
         self.umplus10.draw_text(20,self.init_y-11,f"{str(self.time_h).zfill(2)}:{str(self.time_m).zfill(2)}:{str(self.time_s).zfill(2)}")
         if self.enter_pos == 8 or self.finger_pos//11 == 8:
             self.save_load.draw()
@@ -914,10 +928,10 @@ class Out_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
-        with open("assets/scenes.json",encoding="utf-8") as f:
-            self.scenes = json.load(f)
-        self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
-        self.title_sc = self.scenes["TITLE_SCENE"]
+        self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
+        self.finger_ad = self.app.assets_info["finger_ad"]
+        self.setting_sc = self.scenes["code"]["OUT_SETTING_SCENE"]
+        self.title_sc = self.scenes["code"]["TITLE_SCENE"]
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
@@ -948,7 +962,7 @@ class Out_Setting:
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
         if self.enter_pos == -1:
-            pyxel.blt(0,5+self.finger_pos,0,15,0,15,15,0)
+            pyxel.blt(0,5+self.finger_pos,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
         self.umplus10.draw_text(19,6,"オプション",7)
         self.umplus10.draw_text(19,17,"ゲーム終了",7)
         if self.enter_pos == 0 or self.finger_pos//11 == 0:

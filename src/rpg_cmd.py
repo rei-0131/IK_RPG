@@ -1,4 +1,5 @@
 import pyxel
+
 import utils.rpg_str as rpg_str
 
 
@@ -165,8 +166,18 @@ class CMD:
         pass
 
     def xp(self,arg):
-        self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
-        self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+        try:
+            self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+            self.log = f"{list(self.app.chara_data.keys())[int(arg[1])]}に{int(arg[2])}xp与えました。"
+            self.log_type = "str"
+            try:
+                self.app.battle.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
+            except Exception as e:
+                self.log_type = "ex"
+                self.log = str(e)
+        except Exception as e:
+            self.log_type = "ex"
+            self.log = str(e)
 
     def kill(self,arg):
         if arg[1] == "self":
@@ -191,6 +202,7 @@ class CMD:
                 self.log = f"インデックス{arg[2]}の敵ををキルしました"
 
     def mode(self,arg):
+        self.log_type = "str"
         if arg[1] == "init":
             self.app.mode = arg[1]
             self.app.init_data = self.app.INIT_DATA[self.app.mode]
@@ -219,6 +231,20 @@ class CMD:
             self.app.player.y = self.app.loaddata["play_data"]["y"]
             self.app.msg_id = self.app.loaddata["play_data"]["words"]["msg_id"]
             self.app.disp_id = self.app.loaddata["play_data"]["words"]["disp_id"]
+            self.log = "initに設定しました"
+        else:
+            self.log = "存在しないモードです"
+
+    def story(self,arg):
+        self.log_type = "str"
+        if arg[1] == "true" or arg[1] == "True":
+            self.app.story = True
+            self.log = "storyを有効にしました"
+        elif arg[1] == "false" or arg[1] == "False":
+            self.app.story = False
+            self.log = "storyを無効にしました"
+        else:
+            self.log = "TrueかFalseを入力してください"
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
@@ -242,6 +268,8 @@ class CMD:
                     self.kill(cmd_config)
                 elif cmd_config[0] == "mode":
                     self.mode(cmd_config)
+                elif cmd_config[0] == "story":
+                    self.story(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"
