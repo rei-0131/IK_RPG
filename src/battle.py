@@ -182,7 +182,7 @@ class Battle:
             self.chara_data[list(self.chara_data.keys())[i]]["MP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["MP"][0]
 
     def check_level(self):
-        def xp_ck(cr):
+        def xp_ck(cr) -> float:
             xp = 0
             level = self.chara_data[cr]["Level"] + 1
             if 0 <= level <= 16:
@@ -1050,7 +1050,7 @@ class Battle:
                             self.ai_action = self.AI.predict(ai_input_data)
                             self.ai_action[:,0] -= 1
                             self.ai_turn = self.turn
-                            print(self.ai_action)
+                            print(f"{self.ai_action}")
                         i = self.attack_count
                         ai_ac = self.ai_action[i]
                         if int(ai_ac[0]) >= len(list(self.chara_data.keys())) or self.chara_data[list(self.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:

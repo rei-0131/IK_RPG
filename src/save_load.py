@@ -50,7 +50,7 @@ class SaveLoad:
         self.title = self.scenes["code"]["TITLE_SCENE"]
         self.main = self.scenes["code"]["MAIN_SCENE"]
 
-    def update(self,ent=None):
+    def update(self,ent=None) -> int:
         """
         基本処理
 

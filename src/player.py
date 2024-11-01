@@ -5,12 +5,12 @@ class Player:
 
     Parameter:
     ----------
+    app : Any
+        Appクラスのインスタンス
     x : int
         画面の大きさx
     y : int
         画面の大きさy
-    question : Any
-        Questionクラスのインスタンス
     """
     def __init__(self,app,x,y):
         self.app = app
@@ -30,6 +30,7 @@ class Player:
         self.chara = self.app.assets_info["chara"]["ぼく"]
         self.walk_pos = 0
         self.walk_pm = "p"
+        self.scale = self.app.player_scale
 
     def update(self):
         """基本処理"""
@@ -37,22 +38,18 @@ class Player:
         self.dy = 0
         if not self.app.in_word:
             if (pyxel.btn(pyxel.KEY_RIGHT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
-                if self.x < 286:
-                    self.dx += self.walk_speed
+                self.dx += self.walk_speed
                 self.rl = 1
                 self.key = "d"
             if (pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
-                if self.x > 0:
-                    self.dx -= self.walk_speed
+                self.dx -= self.walk_speed
                 self.rl = -1
                 self.key = "a"
             if (pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
-                if self.y > 0:
-                    self.dy -= self.walk_speed
+                self.dy -= self.walk_speed
                 self.key = "w"
             if (pyxel.btn(pyxel.KEY_DOWN) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
-                if self.y < 184:
-                    self.dy += self.walk_speed
+                self.dy += self.walk_speed
                 self.key = "s"
             if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.walk_num = 0
@@ -81,24 +78,24 @@ class Player:
         """基本描画"""
         if self.key == "d":
             if self.walk_pos == -1:
-                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - (self.walk_pos + 2) * 16,self.chara[1][2],self.chara[1][3],self.chara[1][4],self.chara[1][5])
+                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - (self.walk_pos + 2) * 16,self.chara[1][2],self.chara[1][3],self.chara[1][4],self.chara[1][5],scale=self.scale)
             else:
-                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - self.walk_pos * 16,self.chara[1][2],self.chara[1][3],self.chara[1][4],self.chara[1][5])
+                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - self.walk_pos * 16,self.chara[1][2],self.chara[1][3],self.chara[1][4],self.chara[1][5],scale=self.scale)
         elif self.key == "a":
             if self.walk_pos == -1:
-                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - (self.walk_pos + 2) * 16,self.chara[1][2],self.chara[1][3] * -1,self.chara[1][4],self.chara[1][5])
+                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - (self.walk_pos + 2) * 16,self.chara[1][2],self.chara[1][3] * -1,self.chara[1][4],self.chara[1][5],scale=self.scale)
             else:
-                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - self.walk_pos * 16,self.chara[1][2],self.chara[1][3] * -1,self.chara[1][4],self.chara[1][5])
+                pyxel.blt(self.x,self.y,self.chara[1][0],self.chara[1][1] - self.walk_pos * 16,self.chara[1][2],self.chara[1][3] * -1,self.chara[1][4],self.chara[1][5],scale=self.scale)
         elif self.key == "w":
             if self.walk_pos == -1:
-                pyxel.blt(self.x,self.y,self.chara[2][0],self.chara[2][1] - (self.walk_pos + 2) * 16,self.chara[2][2],self.chara[2][3] * -1,self.chara[2][4],self.chara[2][5])
+                pyxel.blt(self.x,self.y,self.chara[2][0],self.chara[2][1] - (self.walk_pos + 2) * 16,self.chara[2][2],self.chara[2][3] * -1,self.chara[2][4],self.chara[2][5],scale=self.scale)
             else:
-                pyxel.blt(self.x,self.y,self.chara[2][0],self.chara[2][1] - self.walk_pos * 16,self.chara[2][2],self.chara[2][3],self.chara[2][4],self.chara[2][5])
+                pyxel.blt(self.x,self.y,self.chara[2][0],self.chara[2][1] - self.walk_pos * 16,self.chara[2][2],self.chara[2][3],self.chara[2][4],self.chara[2][5],scale=self.scale)
         elif self.key == "s":
             if self.walk_pos == -1:
-                pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - (self.walk_pos + 2) * 16,self.chara[0][2],self.chara[0][3] * -1,self.chara[0][4],self.chara[0][5])
+                pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - (self.walk_pos + 2) * 16,self.chara[0][2],self.chara[0][3] * -1,self.chara[0][4],self.chara[0][5],scale=self.scale)
             else:
-                pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - self.walk_pos * 16,self.chara[0][2],self.chara[0][3],self.chara[0][4],self.chara[0][5])
+                pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - self.walk_pos * 16,self.chara[0][2],self.chara[0][3],self.chara[0][4],self.chara[0][5],scale=self.scale)
         else:
-            pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - self.walk_pos * 16,self.chara[0][2],self.chara[0][3],self.chara[0][4],self.chara[0][5])
-        self.map.cd_debug()
+            pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - self.walk_pos * 16,self.chara[0][2],self.chara[0][3],self.chara[0][4],self.chara[0][5],scale=self.scale)
+        self.map.cd_debug(self.x, self.y, self.key, self.app.scale, self.app.coord[0],self.app.coord[1])

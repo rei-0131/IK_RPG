@@ -143,6 +143,7 @@ class App:
         self.game_time_start = None
         self.bgm_run = True
         self.scale = 0.4
+        self.player_scale = 1
         self.coord = [0] * 8
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
@@ -189,6 +190,9 @@ class App:
 
     def version_info(self):
         print("----------Module Versions----------")
+        if not local:
+            import pyodide # type: ignore
+            print(f"pyodide version:{pyodide.__version__}")
         print(f"numpy version:{np.__version__}")
         print(f"scikit-learn version:{sklearn.__version__}")
         print(f"joblib version:{joblib.__version__}")
@@ -199,7 +203,7 @@ class App:
         self.sound_manager.load_bgm("q_c","test")
 
     def check_level(self):
-        def xp_ck(cr):
+        def xp_ck(cr) -> float:
             xp = 0
             level = self.chara_data[cr]["Level"] + 1
             if 0 <= level <= 16:
