@@ -5,6 +5,19 @@ import utils.rpg_str as rpg_str
 
 #try文の細分化
 class CMD:
+    """プレイヤーに関するクラス
+
+    Parameter:
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
+    """
     def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x
@@ -153,7 +166,6 @@ class CMD:
         print(f"{self.battle_.ai_turn = }")
         print(f"{self.battle_.play_effect_info = }")
         print(f"{self.battle_.chara_data = }")
-        print(f"{self.battle_.ai_data = }")
         self.log_type = "str"
         self.log = "正常に実行されました"
 
