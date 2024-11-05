@@ -14,13 +14,14 @@ pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 
 class App:
     def __init__(self):
-        pyxel.load("../mob2.pyxres")
+        pyxel.load("../kumazawa.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):
         pass
 
     def draw(self):
-        pyxel.bltm(0,0,0,0,0,init_x,init_y,0)
+        pyxel.bltm(-225,-180,0,0,710,init_x * 3,init_y * 3,scale=0.4)
+
 
 App()

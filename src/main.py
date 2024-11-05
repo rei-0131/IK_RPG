@@ -4,6 +4,10 @@ import json
 import time
 import datetime as dt
 from zoneinfo import ZoneInfo
+import sklearn
+import joblib
+import numpy as np
+
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 from title import Title
@@ -23,6 +27,7 @@ from rpg_cmd import CMD
 ##########テスト環境
 is_test = True
 mode = "debug"
+story = False
 ##########
 
 #各ファイル読み込み
@@ -32,37 +37,21 @@ local = cloud.import_()
 if local:
     config = configparser.ConfigParser(interpolation=None)
     config.read("src/configs/config.ini",encoding="utf-8_sig")
-    with open("src/configs/savedata.json",encoding="utf-8") as f:
-        save_data = json.load(f)
+    save_data = json.load(open("src/configs/savedata.json","r",encoding="utf-8"))
 else:
     config = cloud.config_load()
     save_data = cloud.load()
 
 #["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
-with open("src/assets/init_data.json",encoding="utf-8") as f:
-    init_data = json.load(f)
-
-with open("src/assets/scenes.json",encoding="utf-8") as f:
-    scenes = json.load(f)
-
-with open("src/assets/words.json",encoding="utf-8") as f:
-    words = json.load(f)
-
-with open("src/assets/tools.json","r",encoding="utf-8") as f:
-    tools = json.load(f)
-
-with open("src/assets/magic.json","r",encoding="utf-8") as f:
-    magic_codes = json.load(f)
-
-with open("src/assets/enemy_info.json",encoding="utf-8") as f:
-    enemy_info = json.load(f)
-
-with open("src/assets/assets_info.json",encoding="utf-8") as f:
-    assets_info = json.load(f)
+init_data = json.load(open("src/assets/init_data.json","r",encoding="utf-8"))
+scenes = json.load(open("src/assets/scenes.json","r",encoding="utf-8"))
+words = json.load(open("src/assets/words.json","r",encoding="utf-8"))
+tools = json.load(open("src/assets/tools.json","r",encoding="utf-8"))
+magic_codes = json.load(open("src/assets/magic.json","r",encoding="utf-8"))
+enemy_info = json.load(open("src/assets/enemy_info.json","r",encoding="utf-8"))
+assets_info = json.load(open("src/assets/assets_info.json","r",encoding="utf-8"))
 collision_data = assets_info["cd_block"]
-
-with open("src/assets/character_data.json",encoding="utf-8") as f:
-    character_data = json.load(f)
+character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
 
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
@@ -89,13 +78,14 @@ pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
 umplus24 = BDFRenderer("assets/b24.bdf")
 
-START_SCENE = scenes["START_SCENE"]
-TITLE_SCENE = scenes["TITLE_SCENE"]
-MAIN_SCENE = scenes["MAIN_SCENE"]
-IN_SETTING_SCENE = scenes["IN_SETTING_SCENE"]
-OUT_SETTING_SCENE = scenes["OUT_SETTING_SCENE"]
-LOAD_SCENE = scenes["LOAD_SCENE"]
-BATTLE_SCENE = scenes["BATTLE_SCENE"]
+START_SCENE = scenes["code"]["START_SCENE"]
+TITLE_SCENE = scenes["code"]["TITLE_SCENE"]
+MAIN_SCENE = scenes["code"]["MAIN_SCENE"]
+IN_SETTING_SCENE = scenes["code"]["IN_SETTING_SCENE"]
+OUT_SETTING_SCENE = scenes["code"]["OUT_SETTING_SCENE"]
+LOAD_SCENE = scenes["code"]["LOAD_SCENE"]
+BATTLE_SCENE = scenes["code"]["BATTLE_SCENE"]
+CLASS_SCENE = scenes["code"]["CLASS_SCENE"]
 
 que_height = 0
 
@@ -111,16 +101,17 @@ class App:
         画面の大きさy
     """
     def __init__(self,x,y):
+        self.story = story
         self.init_x = x
         self.init_y = y
         self.local = local
         self.now_scene = -1
         self.back_scene = -1
-        self.msg_id = "None"
+        self.msg_id = None
         self.be_scene = 0
         self.now_map = 0
         self.is_test = is_test
-        self.disp_id = "None"
+        self.disp_id = None
         self.in_word = False
         self.new_game = True
         self.from_load = False
@@ -152,39 +143,67 @@ class App:
         self.game_time_start = None
         self.bgm_run = True
         self.scale = 0.4
+        self.player_scale = 1
+        self.coord = [0] * 8
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
+
+    def info(self,msg):
+        print(f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] {msg}")
 
     def my_modules(self):
         """各クラスのインスタンス作成"""
         ld_st = time.time()
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
         print(self.load_msg)
+        self.info("Loading SoundManager...")
         self.sound_manager = SoundManager()
+        self.info("Loading Map...")
         self.map = Map(self)
         self.cloud = cloud
+        self.info("Loading Save...")
         self.save = Save(self)
+        self.info("Loading SaveLoad...")
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
+        self.info("Loading Option...")
         self.option = Option(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading In_Setting...")
         self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Out_Settting...")
         self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Player...")
         self.player = Player(self,self.init_x,self.init_y)
+        self.info("Loading Title...")
         self.title_s = Title(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Words...")
         self.words = Words(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Battle...")
         self.battle = Battle(self,self.init_x, self.init_y,umplus10)
+        self.info("Loading CMD...")
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
+        self.version_info()
         self.load_msg = "Load end"
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
         print(f"Load Time:{time.time() - ld_st}s")
         print(self.load_msg)
+
+    def version_info(self):
+        print("----------Module Versions----------")
+        if not local:
+            import pyodide # type: ignore
+            print(f"pyodide version:{pyodide.__version__}")
+        print(f"numpy version:{np.__version__}")
+        print(f"scikit-learn version:{sklearn.__version__}")
+        print(f"joblib version:{joblib.__version__}")
+        print("-----------------------------------")
 
     def load_bgms(self):
         """BGMのロード"""
         self.sound_manager.load_bgm("q_c","test")
 
     def check_level(self):
-        def xp_ck(cr):
+        def xp_ck(cr) -> float:
             xp = 0
             level = self.chara_data[cr]["Level"] + 1
             if 0 <= level <= 16:
@@ -215,8 +234,7 @@ class App:
             if self.new_game:
                 if self.from_load:
                     if self.local:
-                        with open("configs/savedata.json","r",encoding="utf-8") as f:
-                            self.savedata = json.load(f)
+                        self.savedata = json.load(open("configs/savedata.json","r",encoding="utf-8"))
                     else:
                         self.savedata = cloud.load()
                         time.sleep(0.3)
@@ -236,23 +254,42 @@ class App:
                     self.from_load = False
                 else:
                     print("new game")
-                    self.loaddata = {
-                        "play_data": {
-                        "time": "00:00:00",
-                        "money": 1000,
-                        "words":{
-                            "msg_id":None,
-                            "disp_id":None
-                        },
-                        "scene": 1,
-                        "x":136,
-                        "y": 182,
-                        "chara_data":self.chara_data,
-                        "item_codes":self.item_codes,
-                        "imp_item_codes":self.imp_item_codes,
-                        "equip_codes":self.equip_codes
+                    if self.story:
+                        self.loaddata = {
+                            "play_data": {
+                            "time": "00:00:00",
+                            "money": 1000,
+                            "words":{
+                                "msg_id":"01",
+                                "disp_id":None
+                            },
+                            "scene": 1,
+                            "x":136,
+                            "y": 182,
+                            "chara_data":self.chara_data,
+                            "item_codes":self.item_codes,
+                            "imp_item_codes":self.imp_item_codes,
+                            "equip_codes":self.equip_codes
+                            }
                         }
-                    }
+                    else:
+                        self.loaddata = {
+                            "play_data": {
+                            "time": "00:00:00",
+                            "money": 1000,
+                            "words":{
+                                "msg_id":None,
+                                "disp_id":None
+                            },
+                            "scene": 1,
+                            "x":136,
+                            "y": 182,
+                            "chara_data":self.chara_data,
+                            "item_codes":self.item_codes,
+                            "imp_item_codes":self.imp_item_codes,
+                            "equip_codes":self.equip_codes
+                            }
+                        }
                     self.game_time = self.loaddata["play_data"]["time"]
                     self.money = self.loaddata["play_data"]["money"]
                     self.player.x = self.loaddata["play_data"]["x"]
@@ -337,44 +374,88 @@ class App:
 
     def draw(self):
         """基本描画"""
-        if self.now_scene == TITLE_SCENE or self.now_scene == None:
-            self.title_s.draw()
-        elif self.now_scene == MAIN_SCENE:
-            pyxel.cls(0)
-            pyxel.camera()
-            pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
-            self.player.draw()
-            if not self.new_game:
-                if self.msg_id != self.disp_id:
-                    self.in_word = True
-                else:
-                    self.in_word = False
-                if self.in_word:
-                    self.words.dec_word(self.msg_id)
-                pyxel.text(0,0,f"{self.player.x =}",7)
-                pyxel.text(0,11,f"{self.player.y =}",7)
-                pyxel.text(0,22,f"{self.player.dx =}",7)
-                pyxel.text(0,33,f"{self.player.dy =}",7)
-                pyxel.text(0,44,f"{self.player.key =}",7)
-                pyxel.text(0,55,f"{self.player.walk_pm =}",7)
-                pyxel.text(0,66,f"{self.player.walk_pos =}",7)
-                pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale)}",7)
-        elif self.now_scene == OUT_SETTING_SCENE:
-            self.setting_out.draw()
-        elif self.now_scene == IN_SETTING_SCENE:
-            self.setting_in.draw()
-        elif self.now_scene == LOAD_SCENE:
-            self.save_load.draw()
-        elif self.now_scene == START_SCENE:
-            pyxel.cls(0)
-            umplus24.draw_text(70,90,"Now Loading...",7)
-            pyxel.text(150,190,self.load_msg,7)
-            self.load_write = True
-        # pyxel.blt(0,0,0,0,0,63,79,10)
-        if self.now_scene == 5:
-            self.battle.draw()
-        elif self.now_scene == "cmd":
-            self.cmd.draw()
+        if self.story:
+            if self.now_scene == TITLE_SCENE or self.now_scene == None:
+                self.title_s.draw()
+            elif self.now_scene == MAIN_SCENE:
+                pyxel.cls(0)
+                pyxel.camera()
+                if not (self.msg_id == None or self.msg_id == "01"):
+                    self.coord = self.scenes["coordinate"][str(CLASS_SCENE)]
+                    self.scale = self.coord[8]
+                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.init_x * self.coord[5],self.init_y * self.coord[6],self.coord[7],scale = self.scale)
+                    self.player.draw()
+                if not self.new_game:
+                    if self.msg_id != self.disp_id:
+                        self.in_word = True
+                    else:
+                        self.in_word = False
+                    if self.in_word:
+                        self.words.dec_word(self.msg_id)
+                    pyxel.text(0,0,f"{self.player.x =}",7)
+                    pyxel.text(0,11,f"{self.player.y =}",7)
+                    pyxel.text(0,22,f"{self.player.dx =}",7)
+                    pyxel.text(0,33,f"{self.player.dy =}",7)
+                    pyxel.text(0,44,f"{self.player.key =}",7)
+                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
+                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
+                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord[0],self.coord[1])}",7)
+            elif self.now_scene == OUT_SETTING_SCENE:
+                self.setting_out.draw()
+            elif self.now_scene == IN_SETTING_SCENE:
+                self.setting_in.draw()
+            elif self.now_scene == LOAD_SCENE:
+                self.save_load.draw()
+            elif self.now_scene == START_SCENE:
+                pyxel.cls(0)
+                umplus24.draw_text(70,90,"Now Loading...",7)
+                pyxel.text(150,190,self.load_msg,7)
+                self.load_write = True
+            # pyxel.blt(0,0,0,0,0,63,79,10)
+            if self.now_scene == 5:
+                self.battle.draw()
+            elif self.now_scene == "cmd":
+                self.cmd.draw()
+        else:
+            if self.now_scene == TITLE_SCENE or self.now_scene == None:
+                self.title_s.draw()
+            elif self.now_scene == MAIN_SCENE:
+                pyxel.cls(0)
+                pyxel.camera()
+                pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
+                self.player.draw()
+                if not self.new_game:
+                    if self.msg_id != self.disp_id:
+                        self.in_word = True
+                    else:
+                        self.in_word = False
+                    if self.in_word:
+                        self.words.dec_word(self.msg_id)
+                    pyxel.text(0,0,f"{self.player.x =}",7)
+                    pyxel.text(0,11,f"{self.player.y =}",7)
+                    pyxel.text(0,22,f"{self.player.dx =}",7)
+                    pyxel.text(0,33,f"{self.player.dy =}",7)
+                    pyxel.text(0,44,f"{self.player.key =}",7)
+                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
+                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
+                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord[0],self.coord[1])}",7)
+            elif self.now_scene == OUT_SETTING_SCENE:
+                self.setting_out.draw()
+            elif self.now_scene == IN_SETTING_SCENE:
+                self.setting_in.draw()
+            elif self.now_scene == LOAD_SCENE:
+                self.save_load.draw()
+            elif self.now_scene == START_SCENE:
+                pyxel.cls(0)
+                umplus24.draw_text(70,90,"Now Loading...",7)
+                pyxel.text(150,190,self.load_msg,7)
+                self.load_write = True
+            # pyxel.blt(0,0,0,0,0,63,79,10)
+            if self.now_scene == 5:
+                self.battle.draw()
+            elif self.now_scene == "cmd":
+                self.cmd.draw()
 
 App(init_x,init_y)

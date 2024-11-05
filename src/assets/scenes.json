@@ -1,9 +1,17 @@
 {
-    "START_SCENE":-1,
-    "TITLE_SCENE":0,
-    "MAIN_SCENE":1,
-    "IN_SETTING_SCENE":2,
-    "OUT_SETTING_SCENE":3,
-    "LOAD_SCENE":4,
-    "BATTLE_SCENE":5
+    "code":{
+        "START_SCENE":-1,
+        "TITLE_SCENE":0,
+        "MAIN_SCENE":1,
+        "IN_SETTING_SCENE":2,
+        "OUT_SETTING_SCENE":3,
+        "LOAD_SCENE":4,
+        "BATTLE_SCENE":5,
+        "CLASS_SCENE":6,
+        "STAFF_SCENE":7
+    },
+    "coordinate":{
+        "6":[-450,-300,0,0,0,4,4,0,0.25],
+        "7":[-225,-180,0,0,710,3,3,0.4]
+    }
 }

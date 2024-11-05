@@ -56,7 +56,7 @@
 
 ## コマンドの使い方
 
-[説明ファイル](https://github.com/rei-0131/IK_RPG/blob/master/command_help.txt)
+[説明ファイル](https://github.com/rei-0131/IK_RPG/blob/master/docs/command_help.md)
 
 ## セーブデータのフォーマット
 
