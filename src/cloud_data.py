@@ -49,7 +49,7 @@ class Cloud_data:
             save_name = "savedata"
         window.localStorage.setItem(save_name,savedata)
 
-    def load(self):
+    def load(self) -> dict:
         """
         セーブデータのロード
 
@@ -85,7 +85,7 @@ class Cloud_data:
             config_name = "config"
         window.localStorage.setItem(config_name,config)
 
-    def config_load(self):
+    def config_load(self) -> dict:
         """
         コンフィグのロード
 
