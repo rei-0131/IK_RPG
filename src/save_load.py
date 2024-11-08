@@ -1,5 +1,6 @@
 import pyxel
 import json
+
 from save import Save
 from cloud_data import Cloud_data
 
@@ -41,17 +42,15 @@ class SaveLoad:
         self.load = load
         self.cloud = Cloud_data(self.app.is_test)
         if self.app.local:
-            with open("configs/savedata.json",encoding="utf-8") as f:
-                self.save_data = json.load(f)
+            self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
-        with open("assets/scenes.json",encoding="utf-8") as f:
-            self.scenes = json.load(f)
-        self.load = self.scenes["LOAD_SCENE"]
-        self.title = self.scenes["TITLE_SCENE"]
-        self.main = self.scenes["MAIN_SCENE"]
+        self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
+        self.load = self.scenes["code"]["LOAD_SCENE"]
+        self.title = self.scenes["code"]["TITLE_SCENE"]
+        self.main = self.scenes["code"]["MAIN_SCENE"]
 
-    def update(self,ent=None):
+    def update(self,ent=None) -> int:
         """
         基本処理
 
@@ -74,8 +73,7 @@ class SaveLoad:
                 if self.over_load:
                     self.save.newsave(self.setting_finger)
                 if self.app.local:
-                    with open("configs/savedata.json","r",encoding="utf-8") as f:
-                        self.save_data = json.load(f)
+                    self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
                 else:
                     self.save_data = self.cloud.load()
             return enter_pos

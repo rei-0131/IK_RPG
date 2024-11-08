@@ -1,6 +1,7 @@
 import pyxel
 import json
 import time
+
 from save_load import SaveLoad
 from cloud_data import Cloud_data
 from option import Option
@@ -52,15 +53,14 @@ class In_Setting:
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
         if self.app.local:
-            with open("configs/savedata.json",encoding="utf-8") as f:
-                self.save_data = json.load(f)
+            self.save_data = json.load( open("configs/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
         self.scenes = self.app.scenes
         self.tools = self.app.tools
         self.magic = self.app.magic_codes
-        self.setting_sc = self.scenes["IN_SETTING_SCENE"]
-        self.title_ac = self.scenes["TITLE_SCENE"]
+        self.setting_sc = self.scenes["code"]["IN_SETTING_SCENE"]
+        self.title_ac = self.scenes["code"]["TITLE_SCENE"]
 
     def clean(self):
         """初期化"""
@@ -928,11 +928,10 @@ class Out_Setting:
         self.enter_pos = -1
         self.setting_finger = 1
         self.save_pos = 1
-        with open("assets/scenes.json",encoding="utf-8") as f:
-            self.scenes = json.load(f)
+        self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
         self.finger_ad = self.app.assets_info["finger_ad"]
-        self.setting_sc = self.scenes["OUT_SETTING_SCENE"]
-        self.title_sc = self.scenes["TITLE_SCENE"]
+        self.setting_sc = self.scenes["code"]["OUT_SETTING_SCENE"]
+        self.title_sc = self.scenes["code"]["TITLE_SCENE"]
         self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
 
     def update(self):
