@@ -52,6 +52,7 @@ enemy_info = json.load(open("src/assets/enemy_info.json","r",encoding="utf-8"))
 assets_info = json.load(open("src/assets/assets_info.json","r",encoding="utf-8"))
 collision_data = assets_info["cd_block"]
 character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
+story_flag_names = json.load(open("src/assets/story_flags.json","r",encoding="utf-8"))
 
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
@@ -86,6 +87,8 @@ OUT_SETTING_SCENE = scenes["code"]["OUT_SETTING_SCENE"]
 LOAD_SCENE = scenes["code"]["LOAD_SCENE"]
 BATTLE_SCENE = scenes["code"]["BATTLE_SCENE"]
 CLASS_SCENE = scenes["code"]["CLASS_SCENE"]
+STAFF_SCENE = scenes["code"]["STAFF_SCENE"]
+WAY_SCENE = scenes["code"]["WAY_SCENE"]
 
 que_height = 0
 
@@ -143,8 +146,10 @@ class App:
         self.game_time_start = None
         self.bgm_run = True
         self.scale = 0.4
-        self.player_scale = 1
+        self.player_scale = 2
         self.coord = [0] * 8
+        self.story_flags = {i:False for i in story_flag_names}
+        self.now_location = CLASS_SCENE
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -381,9 +386,21 @@ class App:
                 pyxel.cls(0)
                 pyxel.camera()
                 if not (self.msg_id == None or self.msg_id == "01"):
-                    self.coord = self.scenes["coordinate"][str(CLASS_SCENE)]
+                    self.coord = self.scenes["coordinate"][str(self.now_location)]
                     self.scale = self.coord[8]
-                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.init_x * self.coord[5],self.init_y * self.coord[6],self.coord[7],scale = self.scale)
+                    if pyxel.btnp(pyxel.KEY_O):
+                        self.now_location = WAY_SCENE
+                    elif pyxel.btnp(pyxel.KEY_P):
+                        self.now_location = STAFF_SCENE
+                    if self.now_location == WAY_SCENE:
+                        data = self.assets_info["chara"]["モブ1"][0]
+                        pyxel.blt(10,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
+                        data = self.assets_info["chara"]["モブ2"][0]
+                        pyxel.blt(50,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
+                        if not self.story_flags["ryoga_group"]:
+                            data = self.assets_info["chara"]["リョウガ"][0]
+                            pyxel.blt(80,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
+                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
                     self.player.draw()
                 if not self.new_game:
                     if self.msg_id != self.disp_id:
@@ -400,7 +417,7 @@ class App:
                     pyxel.text(0,55,f"{self.player.walk_pm =}",7)
                     pyxel.text(0,66,f"{self.player.walk_pos =}",7)
                     pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord[0],self.coord[1])}",7)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",7)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:
@@ -440,7 +457,7 @@ class App:
                     pyxel.text(0,55,f"{self.player.walk_pm =}",7)
                     pyxel.text(0,66,f"{self.player.walk_pos =}",7)
                     pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord[0],self.coord[1])}",7)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",7)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:
