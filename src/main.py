@@ -431,6 +431,7 @@ class App:
                     pyxel.text(0,66,f"{self.player.walk_pos =}",0)
                     pyxel.text(0,77,f"{self.player.walk_num =}",0)
                     pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
+                    pyxel.text(0,121,f"{self.msg_id =} {self.disp_id =}",0)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:
@@ -471,6 +472,7 @@ class App:
                     pyxel.text(0,66,f"{self.player.walk_pos =}",0)
                     pyxel.text(0,77,f"{self.player.walk_num =}",0)
                     pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
+                    pyxel.text(0,132,f"{self.msg_id =} {self.disp_id =}",0)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:

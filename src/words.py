@@ -22,6 +22,9 @@ class Words:
     def update(self) -> tuple[str,str]:
         """基本処理"""
         #操作
+        if self.disp_id != None:
+            if int(self.disp_id) >= int(self.msg_id):
+                self.disp_id = str(int(self.msg_id) - 1)
         if self.questions != "None":
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos != (len(self.questions) - 1) * -10:

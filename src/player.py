@@ -78,7 +78,10 @@ class Player:
             if not self.app.in_word:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     if cd_return[1] == "mob":
-                        self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
+                        if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2]) == self.app.msg_id:
+                            self.app.disp_id = str(int(self.app.disp_id) - 1)
+                        else:
+                            self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
 
     def draw(self):
         """基本描画"""
