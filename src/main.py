@@ -20,6 +20,7 @@ from Map import Map
 from battle import Battle
 from words import Words
 from option import Option
+from mob import Mob
 
 #dev only
 from rpg_cmd import CMD
@@ -150,6 +151,8 @@ class App:
         self.coord = [0] * 8
         self.story_flags = {i:False for i in story_flag_names}
         self.now_location = CLASS_SCENE
+        self.mobs = [[] for _ in range(len(list(self.scenes["code"].keys())) - 7)]
+        self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -307,9 +310,24 @@ class App:
                     self.imp_item_codes = init_data[self.mode]["imp_item_codes"]
                 self.new_game = False
             self.player.update()
+            if not self.scene_show[self.now_location - 6]:
+                for k,v in self.assets_info["chara"].items():
+                    for i in v[4]:
+                        if i[0] == self.now_location:
+                            self.mobs[self.now_location - 6].append([Mob(self,self.assets_info["chara"][k][0],i[1],self.player_scale,k),k,i])
+                self.scene_show[self.now_location - 6] = True
+            else:
+                for mob in self.mobs[self.now_location - 6]:
+                    mob[0].update()
+            if 270 <= self.player.x and 80 <= self.player.y <= 140:
+                self.now_location = WAY_SCENE
+                self.player.x = 20
+                self.player.y = 172
             if not self.new_game:
                 if self.in_word:
                     self.msg_id, self.disp_id = self.words.update()
+                    if self.disp_id == "49":
+                        self.story_flags["ryoga_group"] = True
             if self.in_battle:
                 self.battle.clean(self.now_scene)
                 if self.is_test:
@@ -388,19 +406,14 @@ class App:
                 if not (self.msg_id == None or self.msg_id == "01"):
                     self.coord = self.scenes["coordinate"][str(self.now_location)]
                     self.scale = self.coord[8]
+                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
                     if pyxel.btnp(pyxel.KEY_O):
                         self.now_location = WAY_SCENE
                     elif pyxel.btnp(pyxel.KEY_P):
                         self.now_location = STAFF_SCENE
-                    if self.now_location == WAY_SCENE:
-                        data = self.assets_info["chara"]["モブ1"][0]
-                        pyxel.blt(10,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
-                        data = self.assets_info["chara"]["モブ2"][0]
-                        pyxel.blt(50,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
-                        if not self.story_flags["ryoga_group"]:
-                            data = self.assets_info["chara"]["リョウガ"][0]
-                            pyxel.blt(80,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
-                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
+                    if self.scene_show[self.now_location - 6]:
+                        for mob in self.mobs[self.now_location - 6]:
+                            mob[0].draw()
                     self.player.draw()
                 if not self.new_game:
                     if self.msg_id != self.disp_id:
@@ -409,15 +422,15 @@ class App:
                         self.in_word = False
                     if self.in_word:
                         self.words.dec_word(self.msg_id)
-                    pyxel.text(0,0,f"{self.player.x =}",7)
-                    pyxel.text(0,11,f"{self.player.y =}",7)
-                    pyxel.text(0,22,f"{self.player.dx =}",7)
-                    pyxel.text(0,33,f"{self.player.dy =}",7)
-                    pyxel.text(0,44,f"{self.player.key =}",7)
-                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
-                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
-                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",7)
+                    pyxel.text(0,0,f"{self.player.x =}",0)
+                    pyxel.text(0,11,f"{self.player.y =}",0)
+                    pyxel.text(0,22,f"{self.player.dx =}",0)
+                    pyxel.text(0,33,f"{self.player.dy =}",0)
+                    pyxel.text(0,44,f"{self.player.key =}",0)
+                    pyxel.text(0,55,f"{self.player.walk_pm =}",0)
+                    pyxel.text(0,66,f"{self.player.walk_pos =}",0)
+                    pyxel.text(0,77,f"{self.player.walk_num =}",0)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:
@@ -449,15 +462,15 @@ class App:
                         self.in_word = False
                     if self.in_word:
                         self.words.dec_word(self.msg_id)
-                    pyxel.text(0,0,f"{self.player.x =}",7)
-                    pyxel.text(0,11,f"{self.player.y =}",7)
-                    pyxel.text(0,22,f"{self.player.dx =}",7)
-                    pyxel.text(0,33,f"{self.player.dy =}",7)
-                    pyxel.text(0,44,f"{self.player.key =}",7)
-                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
-                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
-                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",7)
+                    pyxel.text(0,0,f"{self.player.x =}",0)
+                    pyxel.text(0,11,f"{self.player.y =}",0)
+                    pyxel.text(0,22,f"{self.player.dx =}",0)
+                    pyxel.text(0,33,f"{self.player.dy =}",0)
+                    pyxel.text(0,44,f"{self.player.key =}",0)
+                    pyxel.text(0,55,f"{self.player.walk_pm =}",0)
+                    pyxel.text(0,66,f"{self.player.walk_pos =}",0)
+                    pyxel.text(0,77,f"{self.player.walk_num =}",0)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
             elif self.now_scene == OUT_SETTING_SCENE:
                 self.setting_out.draw()
             elif self.now_scene == IN_SETTING_SCENE:

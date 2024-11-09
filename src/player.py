@@ -70,9 +70,15 @@ class Player:
                         self.walk_pos += 1
                         self.walk_pm = "p"
                 self.walk_num += 1
-        if not self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale,self.app.coord)[0]:
+        cd_return = self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale,self.app.coord)
+        if not cd_return[0]:
             self.x += self.dx
             self.y += self.dy
+        else:
+            if not self.app.in_word:
+                if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                    if cd_return[1] == "mob":
+                        self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
 
     def draw(self):
         """基本描画"""
