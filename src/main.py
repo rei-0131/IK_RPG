@@ -10,6 +10,7 @@ import numpy as np
 
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
+import utils.scenes as scenes
 from title import Title
 from save import Save
 from save_load import SaveLoad
@@ -20,6 +21,7 @@ from Map import Map
 from battle import Battle
 from words import Words
 from option import Option
+from mob import Mob
 
 #dev only
 from rpg_cmd import CMD
@@ -27,7 +29,6 @@ from rpg_cmd import CMD
 ##########テスト環境
 is_test = True
 mode = "debug"
-story = False
 ##########
 
 #各ファイル読み込み
@@ -44,7 +45,7 @@ else:
 
 #["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
 init_data = json.load(open("src/assets/init_data.json","r",encoding="utf-8"))
-scenes = json.load(open("src/assets/scenes.json","r",encoding="utf-8"))
+scenes_ = json.load(open("src/assets/scenes.json","r",encoding="utf-8"))
 words = json.load(open("src/assets/words.json","r",encoding="utf-8"))
 tools = json.load(open("src/assets/tools.json","r",encoding="utf-8"))
 magic_codes = json.load(open("src/assets/magic.json","r",encoding="utf-8"))
@@ -53,7 +54,6 @@ assets_info = json.load(open("src/assets/assets_info.json","r",encoding="utf-8")
 collision_data = assets_info["cd_block"]
 character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
 story_flag_names = json.load(open("src/assets/story_flags.json","r",encoding="utf-8"))
-
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
 
@@ -79,17 +79,6 @@ pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
 umplus24 = BDFRenderer("assets/b24.bdf")
 
-START_SCENE = scenes["code"]["START_SCENE"]
-TITLE_SCENE = scenes["code"]["TITLE_SCENE"]
-MAIN_SCENE = scenes["code"]["MAIN_SCENE"]
-IN_SETTING_SCENE = scenes["code"]["IN_SETTING_SCENE"]
-OUT_SETTING_SCENE = scenes["code"]["OUT_SETTING_SCENE"]
-LOAD_SCENE = scenes["code"]["LOAD_SCENE"]
-BATTLE_SCENE = scenes["code"]["BATTLE_SCENE"]
-CLASS_SCENE = scenes["code"]["CLASS_SCENE"]
-STAFF_SCENE = scenes["code"]["STAFF_SCENE"]
-WAY_SCENE = scenes["code"]["WAY_SCENE"]
-
 que_height = 0
 
 class App:
@@ -104,7 +93,6 @@ class App:
         画面の大きさy
     """
     def __init__(self,x,y):
-        self.story = story
         self.init_x = x
         self.init_y = y
         self.local = local
@@ -131,8 +119,8 @@ class App:
         self.init_data = init_data[mode]
         self.config = config
         self.save_data = save_data
-        self.scenes = scenes
-        self.words = words
+        self.scenes = scenes_
+        self.words_j = words
         self.tools = tools
         self.magic_codes = magic_codes
         self.enemy_info = enemy_info
@@ -149,7 +137,9 @@ class App:
         self.player_scale = 2
         self.coord = [0] * 8
         self.story_flags = {i:False for i in story_flag_names}
-        self.now_location = CLASS_SCENE
+        self.now_location = scenes.CLASS1_SCENE
+        self.mobs = [[] for _ in range(len(list(self.scenes["code"].keys())) - 7)]
+        self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -233,9 +223,9 @@ class App:
         #10秒に一回の検知
         if pyxel.frame_count % 300 == 0:
             self.check_level()
-        if self.now_scene == TITLE_SCENE or self.now_scene == None:
+        if self.now_scene == scenes.TITLE_SCENE or self.now_scene == None:
             self.now_scene = self.title_s.update()
-        elif self.now_scene == MAIN_SCENE:
+        elif self.now_scene == scenes.MAIN_SCENE:
             if self.new_game:
                 if self.from_load:
                     if self.local:
@@ -248,6 +238,8 @@ class App:
                     self.loaddata = self.savedata[str(self.save_load.setting_finger)]
                     self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
                     self.money = self.savedata[str(self.save_load.setting_finger)]["play_data"]["money"]
+                    self.now_scene = self.savedata[str(self.save_load.setting_finger)]["play_data"]["scene"]
+                    self.now_location = self.savedata[str(self.save_load.setting_finger)]["play_data"]["location"]
                     self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
                     self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
                     self.chara_data = self.savedata[str(self.save_load.setting_finger)]["play_data"]["chara_data"]
@@ -256,45 +248,28 @@ class App:
                     self.equip_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
                     self.msg_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["msg_id"]
                     self.disp_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["disp_id"]
+                    self.story_flags = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags"].items()}
                     self.from_load = False
                 else:
                     print("new game")
-                    if self.story:
-                        self.loaddata = {
-                            "play_data": {
-                            "time": "00:00:00",
-                            "money": 1000,
-                            "words":{
-                                "msg_id":"01",
-                                "disp_id":None
-                            },
-                            "scene": 1,
-                            "x":136,
-                            "y": 182,
-                            "chara_data":self.chara_data,
-                            "item_codes":self.item_codes,
-                            "imp_item_codes":self.imp_item_codes,
-                            "equip_codes":self.equip_codes
-                            }
+                    self.loaddata = {
+                        "play_data": {
+                        "time": "00:00:00",
+                        "money": 1000,
+                        "words":{
+                            "msg_id":"01",
+                            "disp_id":None
+                        },
+                        "scene": 1,
+                        "x":136,
+                        "y": 182,
+                        "chara_data":self.chara_data,
+                        "item_codes":self.item_codes,
+                        "imp_item_codes":self.imp_item_codes,
+                        "equip_codes":self.equip_codes,
+                        "story_flags":self.story_flags
                         }
-                    else:
-                        self.loaddata = {
-                            "play_data": {
-                            "time": "00:00:00",
-                            "money": 1000,
-                            "words":{
-                                "msg_id":None,
-                                "disp_id":None
-                            },
-                            "scene": 1,
-                            "x":136,
-                            "y": 182,
-                            "chara_data":self.chara_data,
-                            "item_codes":self.item_codes,
-                            "imp_item_codes":self.imp_item_codes,
-                            "equip_codes":self.equip_codes
-                            }
-                        }
+                    }
                     self.game_time = self.loaddata["play_data"]["time"]
                     self.money = self.loaddata["play_data"]["money"]
                     self.player.x = self.loaddata["play_data"]["x"]
@@ -307,56 +282,91 @@ class App:
                     self.imp_item_codes = init_data[self.mode]["imp_item_codes"]
                 self.new_game = False
             self.player.update()
+            if not self.scene_show[self.now_location - 6]:
+                for k,v in self.assets_info["chara"].items():
+                    for i in v[4]:
+                        if i[0] == self.now_location:
+                            self.mobs[self.now_location - 6].append([Mob(self,self.assets_info["chara"][k][i[1][2]],i,self.player_scale,k),k,i])
+                self.scene_show[self.now_location - 6] = True
+            else:
+                for mob in self.mobs[self.now_location - 6]:
+                    mob[0].update()
             if not self.new_game:
                 if self.in_word:
                     self.msg_id, self.disp_id = self.words.update()
+                    if self.disp_id == "49":
+                        self.story_flags["ryoga_group"] = True
+                if 270 <= self.player.x and 80 <= self.player.y <= 140 and (self.now_location == scenes.CLASS1_SCENE or self.now_location == scenes.CLASS2_SCENE):
+                    if self.now_location == scenes.CLASS1_SCENE:
+                        self.player.x = 20
+                        self.player.y = 166
+                    elif self.now_location == scenes.CLASS2_SCENE:
+                        self.player.x = 265
+                        self.player.y = 166
+                    self.now_location = scenes.WAY_SCENE
+                elif 12 <= self.player.x <= 55 and 171 <= self.player.y and self.now_location == scenes.WAY_SCENE:
+                    self.now_location = scenes.CLASS1_SCENE
+                    self.player.x = 265
+                    self.player.y = 105
+                elif 250 <= self.player.x <= 278 and 171 <= self.player.y and self.now_location == scenes.WAY_SCENE:
+                    self.now_location = scenes.CLASS2_SCENE
+                    self.player.x = 265
+                    self.player.y = 105
+                    if 36 <= int(self.disp_id) < 52:
+                        if self.story_flags["ryoga_group"]:
+                            self.msg_id = "52"
+                        else:
+                            self.msg_id = "71"
+                        self.player.rl = -1
+                        self.player.walk_num = 0
             if self.in_battle:
                 self.battle.clean(self.now_scene)
                 if self.is_test:
                     self.battle.debug_clean()
-                self.battle.set_enemy(len(words["story"][self.disp_id]["battle"]),words["story"][self.disp_id]["battle"])
-                self.now_scene = 5
-        elif self.now_scene == OUT_SETTING_SCENE:
+                self.battle.set_enemy(len(self.words_j["story"][self.disp_id]["battle"][0]),self.words_j["story"][self.disp_id]["battle"][0])
+                self.be_scene = self.now_scene
+                self.now_scene = scenes.BATTLE_SCENE
+        elif self.now_scene == scenes.OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()
-        elif self.now_scene == IN_SETTING_SCENE:
+        elif self.now_scene == scenes.IN_SETTING_SCENE:
             self.setting_in.update()
-        elif self.now_scene == LOAD_SCENE:
+        elif self.now_scene == scenes.LOAD_SCENE:
             self.now_scene = self.save_load.update()
             if self.save_load.continue_game:
                 self.from_load = True
-        elif self.now_scene == START_SCENE:
+        elif self.now_scene == scenes.START_SCENE:
             if not self.start_loading and self.load_write:
                 self.start_loading = True
                 self.my_modules()
                 self.load_bgms()
                 self.now_scene = 0
-        if not self.now_scene == START_SCENE:
-            if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == MAIN_SCENE or self.now_scene == IN_SETTING_SCENE):
-                if self.now_scene == IN_SETTING_SCENE:
+        if not self.now_scene == scenes.START_SCENE:
+            if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == scenes.MAIN_SCENE or self.now_scene == scenes.IN_SETTING_SCENE):
+                if self.now_scene == scenes.IN_SETTING_SCENE:
                     self.now_scene = self.be_scene
                 elif self.now_scene != "cmd":
                     self.setting_in.clean()
                     self.be_scene = self.now_scene
-                    self.now_scene = IN_SETTING_SCENE
-            if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == MAIN_SCENE or self.now_scene == 5):
-                if not self.now_scene == "cmd" and self.now_scene == 5:
+                    self.now_scene = scenes.IN_SETTING_SCENE
+            if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == scenes.MAIN_SCENE or self.now_scene == 5):
+                if not self.now_scene == "cmd" and self.now_scene == scenes.BATTLE_SCENE:
                     self.now_scene = self.be_scene
                     self.sound_manager.stop()
                     print("BGM STOP")
-                elif self.now_scene == "cmd" and self.back_scene == 5:
+                elif self.now_scene == "cmd" and self.back_scene == scenes.BATTLE_SCENE:
                     self.now_scene = self.be_scene
-                    self.battle.clean(self.now_scene)
+                    self.battle.clean()
                     #以下、敵のランダムな数、敵の名称を決定するコード
                     # enemy_num = random.randint(1,3)
                     self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
-                    self.now_scene = 5
+                    self.now_scene = scenes.BATTLE_SCENE
                 else:
                     self.be_scene = self.now_scene
                     self.battle.clean(self.now_scene)
                     #以下、敵のランダムな数、敵の名称を決定するコード
                     # enemy_num = random.randint(1,3)
                     self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
-                    self.now_scene = 5
+                    self.now_scene = scenes.BATTLE_SCENE
                     print(self.battle.win)
                     if self.battle.win == "":
                         self.bgm_run = True
@@ -368,111 +378,74 @@ class App:
                     self.cmd.start = True
                     self.back_scene = self.now_scene
                     self.now_scene = "cmd"
-        if self.now_scene == 5:
+        if self.now_scene == scenes.BATTLE_SCENE:
             self.battle.update()
             if self.bgm_run and self.battle.win != "":
                 self.sound_manager.stop()
                 print("BGM STOP")
                 self.bgm_run = False
+                if self.battle.win == "player":
+                    self.in_battle = False
+                    self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
         elif self.now_scene == "cmd":
             self.cmd.update()
 
     def draw(self):
         """基本描画"""
-        if self.story:
-            if self.now_scene == TITLE_SCENE or self.now_scene == None:
-                self.title_s.draw()
-            elif self.now_scene == MAIN_SCENE:
-                pyxel.cls(0)
-                pyxel.camera()
-                if not (self.msg_id == None or self.msg_id == "01"):
-                    self.coord = self.scenes["coordinate"][str(self.now_location)]
-                    self.scale = self.coord[8]
-                    if pyxel.btnp(pyxel.KEY_O):
-                        self.now_location = WAY_SCENE
-                    elif pyxel.btnp(pyxel.KEY_P):
-                        self.now_location = STAFF_SCENE
-                    if self.now_location == WAY_SCENE:
-                        data = self.assets_info["chara"]["モブ1"][0]
-                        pyxel.blt(10,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
-                        data = self.assets_info["chara"]["モブ2"][0]
-                        pyxel.blt(50,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
-                        if not self.story_flags["ryoga_group"]:
-                            data = self.assets_info["chara"]["リョウガ"][0]
-                            pyxel.blt(80,100,data[0],data[1],data[2],data[3],data[4],data[5],scale=self.scale)
-                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
-                    self.player.draw()
-                if not self.new_game:
-                    if self.msg_id != self.disp_id:
-                        self.in_word = True
-                    else:
-                        self.in_word = False
-                    if self.in_word:
-                        self.words.dec_word(self.msg_id)
-                    pyxel.text(0,0,f"{self.player.x =}",7)
-                    pyxel.text(0,11,f"{self.player.y =}",7)
-                    pyxel.text(0,22,f"{self.player.dx =}",7)
-                    pyxel.text(0,33,f"{self.player.dy =}",7)
-                    pyxel.text(0,44,f"{self.player.key =}",7)
-                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
-                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
-                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",7)
-            elif self.now_scene == OUT_SETTING_SCENE:
-                self.setting_out.draw()
-            elif self.now_scene == IN_SETTING_SCENE:
-                self.setting_in.draw()
-            elif self.now_scene == LOAD_SCENE:
-                self.save_load.draw()
-            elif self.now_scene == START_SCENE:
-                pyxel.cls(0)
-                umplus24.draw_text(70,90,"Now Loading...",7)
-                pyxel.text(150,190,self.load_msg,7)
-                self.load_write = True
-            # pyxel.blt(0,0,0,0,0,63,79,10)
-            if self.now_scene == 5:
-                self.battle.draw()
-            elif self.now_scene == "cmd":
-                self.cmd.draw()
-        else:
-            if self.now_scene == TITLE_SCENE or self.now_scene == None:
-                self.title_s.draw()
-            elif self.now_scene == MAIN_SCENE:
-                pyxel.cls(0)
-                pyxel.camera()
-                pyxel.bltm(0,0,0,0,0,self.init_x,self.init_y,0,scale = self.scale)
+        if self.now_scene == scenes.TITLE_SCENE or self.now_scene == None:
+            self.title_s.draw()
+        elif self.now_scene == scenes.MAIN_SCENE:
+            pyxel.cls(0)
+            pyxel.camera()
+            if not (self.msg_id == None or self.msg_id == "01"):
+                self.coord = self.scenes["coordinate"][str(self.now_location)]
+                self.scale = self.coord[8]
+                pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
+                if pyxel.btnp(pyxel.KEY_O):
+                    self.now_location = scenes.WAY_SCENE
+                elif pyxel.btnp(pyxel.KEY_P):
+                    self.now_location = scenes.STAFF_SCENE
+                if self.scene_show[self.now_location - 6]:
+                    for mob in self.mobs[self.now_location - 6]:
+                        mob[0].draw()
                 self.player.draw()
-                if not self.new_game:
-                    if self.msg_id != self.disp_id:
-                        self.in_word = True
-                    else:
-                        self.in_word = False
-                    if self.in_word:
-                        self.words.dec_word(self.msg_id)
-                    pyxel.text(0,0,f"{self.player.x =}",7)
-                    pyxel.text(0,11,f"{self.player.y =}",7)
-                    pyxel.text(0,22,f"{self.player.dx =}",7)
-                    pyxel.text(0,33,f"{self.player.dy =}",7)
-                    pyxel.text(0,44,f"{self.player.key =}",7)
-                    pyxel.text(0,55,f"{self.player.walk_pm =}",7)
-                    pyxel.text(0,66,f"{self.player.walk_pos =}",7)
-                    pyxel.text(0,77,f"{self.player.walk_num =}",7)
-                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",7)
-            elif self.now_scene == OUT_SETTING_SCENE:
-                self.setting_out.draw()
-            elif self.now_scene == IN_SETTING_SCENE:
-                self.setting_in.draw()
-            elif self.now_scene == LOAD_SCENE:
-                self.save_load.draw()
-            elif self.now_scene == START_SCENE:
-                pyxel.cls(0)
-                umplus24.draw_text(70,90,"Now Loading...",7)
-                pyxel.text(150,190,self.load_msg,7)
-                self.load_write = True
-            # pyxel.blt(0,0,0,0,0,63,79,10)
-            if self.now_scene == 5:
-                self.battle.draw()
-            elif self.now_scene == "cmd":
-                self.cmd.draw()
+            if not self.new_game:
+                if self.msg_id != self.disp_id:
+                    self.in_word = True
+                else:
+                    self.in_word = False
+                if self.in_word:
+                    self.words.dec_word(self.msg_id)
+                if self.now_location == scenes.WAY_SCENE:
+                    pyxel.text(25,188,"3-1",0)
+                    pyxel.text(265,188,"3-2",0)
+                pyxel.text(0,0,f"{self.player.x = }",0)
+                pyxel.text(0,11,f"{self.player.y = }",0)
+                pyxel.text(0,22,f"{self.player.dx = }",0)
+                pyxel.text(0,33,f"{self.player.dy = }",0)
+                pyxel.text(0,44,f"{self.player.key = }",0)
+                pyxel.text(0,55,f"{self.player.walk_pm = }",0)
+                pyxel.text(0,66,f"{self.player.walk_pos = }",0)
+                pyxel.text(0,77,f"{self.player.walk_num = }",0)
+                pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
+                pyxel.text(0,121,f"{self.msg_id = } {self.disp_id = }",0)
+                pyxel.text(0,132,f"{self.now_location = }",0)
+        elif self.now_scene == scenes.OUT_SETTING_SCENE:
+            self.setting_out.draw()
+        elif self.now_scene == scenes.IN_SETTING_SCENE:
+            self.setting_in.draw()
+        elif self.now_scene == scenes.LOAD_SCENE:
+            self.save_load.draw()
+        elif self.now_scene == scenes.START_SCENE:
+            pyxel.cls(0)
+            umplus24.draw_text(70,90,"Now Loading...",7)
+            pyxel.text(150,190,self.load_msg,7)
+            self.load_write = True
+        # pyxel.blt(0,0,0,0,0,63,79,10)
+        if self.now_scene == scenes.BATTLE_SCENE:
+            self.battle.draw()
+        elif self.now_scene == "cmd":
+            self.cmd.draw()
+
 
 App(init_x,init_y)

@@ -37,7 +37,8 @@ class Save:
         save_data[str(pos)]["play_data"] = {
             "time":f"{str(time_h).zfill(2)}:{str(time_m).zfill(2)}:{str(time_s).zfill(2)}",
             "money":self.app.money,
-            "scene":self.scenes["MAIN_SCENE"],
+            "scene":self.app.be_scene,
+            "location":self.app.now_location,
             "words":{
                 "msg_id":self.app.msg_id,
                 "disp_id":self.app.disp_id
@@ -47,7 +48,8 @@ class Save:
             "chara_data":self.app.chara_data,
             "item_codes":self.app.item_codes,
             "imp_item_codes":self.app.imp_item_codes,
-            "equip_codes":self.app.equip_codes
+            "equip_codes":self.app.equip_codes,
+            "story_flags":{k:int(v) for k,v in self.app.story_flags.items()}
         }
         print(f"{save_data[str(pos)]['play_data']=}")
         if self.app.local:

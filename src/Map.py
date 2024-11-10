@@ -56,7 +56,7 @@ class Map:
             check_y[point_n - 1] += 16 * player_scale
         return check_x, check_y
 
-    def cd_check(self, x, y, dx, dy, num, key, scale, coord) -> tuple[bool,str]:
+    def cd_check(self, x, y, dx, dy, num, key, scale, coord) -> tuple[bool,str,int]:
         """
         当たり判定の判定
 
@@ -92,18 +92,32 @@ class Map:
         self.key = key
         check_x, check_y = self.check_pos(self.key, self.player_scale, self.next_x, self.next_y, scale, coord)
         pixel_size = 8 * scale
-        pyxel.text(0, 99, f"{check_x}", 7)
-        pyxel.text(0, 110, f"{check_y}", 7)
+        pyxel.text(0, 99, f"{check_x}", 0)
+        pyxel.text(0, 110, f"{check_y}", 0)
         cd = [i[0] for i in self.collision_data[str(num)]]
         co_3 = coord[3] * scale
         co_4 = coord[4] * scale
-        cd_tf = [list(pyxel.tilemaps[num].pget(x_ // pixel_size, y_ // pixel_size)) in cd or not 0 + co_3 <= x_ <= 300 + co_3 or not 0 + co_4 <= y_ <= 200 + co_4 for x_,y_ in zip(check_x, check_y)]
+        cd_tf = [list(pyxel.tilemaps[num].pget(x_ // pixel_size, y_ // pixel_size)) in cd or not 0 <= x_ - co_3 <= 300 or not 0 <= y_ - co_4 <= 200 for x_,y_ in zip(check_x, check_y)]
         if True in cd_tf:
             xy_index = cd_tf.index(True)
             try:
                 type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[xy_index] // pixel_size, check_y[xy_index] // pixel_size)))][1]
             except ValueError:
                 type_ = ""
-            return True, type_
+            return True, type_, 0
         else:
-            return False,""
+            check_x, check_y = self.check_pos(self.key, self.player_scale, x, y, scale, coord)
+            for i,mob in enumerate(self.app.mobs[self.app.now_location - 6]):
+                if mob[0].display:
+                    mob_x = [mob[0].show[0] - 6 * (self.player_scale - 1) for _ in range(4)]
+                    mob_y = [mob[0].show[1] - 8 * (self.player_scale - 1) for _ in range(4)]
+                    mob_x[1] += 14 * self.player_scale
+                    mob_x[3] += 14 * self.player_scale
+                    mob_y[2] += 15 * self.player_scale
+                    mob_y[3] += 15 * self.player_scale
+                    for xx, yy in zip(mob_x,mob_y):
+                        pyxel.pset(xx,yy,0)
+                    for x_, y_ in zip(check_x, check_y):
+                        if mob_x[0] <= x_ - co_3 <= mob_x[1] and mob_y[0] <= y_ - co_4 <= mob_y[2]:
+                            return True, "mob", i
+            return False, "" , 0

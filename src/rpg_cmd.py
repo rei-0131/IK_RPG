@@ -122,6 +122,7 @@ class CMD:
         self.battle_ = self.app.battle
         print(f"{self.battle_.init_x = }")
         print(f"{self.battle_.init_y = }")
+        print(f"{self.battle_.be_scene = }")
         print(f"{self.battle_.select_chara = }")
         print(f"{self.battle_.select_num1 = }")
         print(f"{self.battle_.finger_pos1 = }")
@@ -247,17 +248,6 @@ class CMD:
         else:
             self.log = "存在しないモードです"
 
-    def story(self,arg):
-        self.log_type = "str"
-        if arg[1] == "true" or arg[1] == "True":
-            self.app.story = True
-            self.log = "storyを有効にしました"
-        elif arg[1] == "false" or arg[1] == "False":
-            self.app.story = False
-            self.log = "storyを無効にしました"
-        else:
-            self.log = "TrueかFalseを入力してください"
-
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
             print(self.in_str)
@@ -280,8 +270,6 @@ class CMD:
                     self.kill(cmd_config)
                 elif cmd_config[0] == "mode":
                     self.mode(cmd_config)
-                elif cmd_config[0] == "story":
-                    self.story(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"

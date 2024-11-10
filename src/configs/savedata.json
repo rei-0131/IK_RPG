@@ -4,6 +4,7 @@
             "time": "02:20:06",
             "money": 1000,
             "scene": 1,
+            "location": 6,
             "words": {
                 "msg_id": "06",
                 "disp_id": "None"
@@ -245,10 +246,7 @@
                 }
             },
             "imp_item_codes": [
-                "001",
-                "002",
-                "003",
-                "004"
+
             ],
             "equip_codes": {
                 "head": [
@@ -305,6 +303,9 @@
                     "001",
                     "002"
                 ]
+            },
+            "story_flags": {
+                "ryoga_group": 0
             }
         }
     }
