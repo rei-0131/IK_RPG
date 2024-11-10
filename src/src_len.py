@@ -13,6 +13,7 @@ filenames = [
     'src/cloud_data.py',
     'src/main.py',
     'src/Map.py',
+    'src/mob.py',
     'src/option.py',
     'src/player.py',
     'src/words.py',
@@ -28,7 +29,11 @@ filenames = [
     'src/configs/config.ini',
     'src/assets/enemy_info.json',
     'src/assets/cd_block.json',
+    'src/assets/assets_info.json',
+    'src/assets/character_data.json',
+    'src/assets/story_flags.json',
     'src/utils/rpg_str.py',
+    'src/utils/scenes.py',
     'tools/ai_save.py']
 
 all_line = 0

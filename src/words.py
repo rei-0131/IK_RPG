@@ -12,11 +12,7 @@ class Words:
         self.word = {}
         self.questions = "None"
         self.word_tri = [0,True]
-        self.words = self.app.words
-        self.tools = self.app.tools
-        self.equip_codes = self.app.equip_codes
-        self.imp_item_codes = self.app.imp_item_codes
-        self.item_codes = self.app.item_codes
+        self.words = self.app.words_j
         self.finger_ad = self.app.assets_info["finger_ad"]
 
     def update(self) -> tuple[str,str]:
@@ -39,17 +35,17 @@ class Words:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if "item" in self.word:
                     if self.word["item"][0] == "basic":
-                        if self.word["item"][1] in self.item_codes.keys():
-                            self.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
+                        if self.word["item"][1] in self.app.item_codes.keys():
+                            self.app.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
                         else:
-                            self.item_codes[self.word["item"][1]] = {
+                            self.app.item_codes[self.word["item"][1]] = {
                                 "value": int(self.word["item"][2]),
-                                "battle": self.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
+                                "battle": self.app.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
                             }
                     elif self.word["item"][0] == "important":
-                        self.imp_item_codes.append(self.word["item"][1])
+                        self.app.imp_item_codes.append(self.word["item"][1])
                     elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
-                        self.equip_codes[self.word["item"][0]].append(self.word["item"][1])
+                        self.app.equip_codes[self.word["item"][0]].append(self.word["item"][1])
                 if self.word["to"] != "None":
                     self.msg_id = self.word["to"]
                 else:
@@ -61,17 +57,17 @@ class Words:
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if "item" in self.word:
                     if self.word["item"][0] == "basic":
-                        if self.word["item"][1] in self.item_codes.keys():
-                            self.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
+                        if self.word["item"][1] in self.app.item_codes.keys():
+                            self.app.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
                         else:
-                            self.item_codes[self.word["item"][1]] = {
+                            self.app.item_codes[self.word["item"][1]] = {
                                 "value": int(self.word["item"][2]),
-                                "battle": self.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
+                                "battle": self.app.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
                             }
                     elif self.word["item"][0] == "important":
-                        self.imp_item_codes.append(self.word["item"][1])
+                        self.app.imp_item_codes.append(self.word["item"][1])
                     elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
-                        self.equip_codes[self.word["item"][0]].append(self.word["item"][1])
+                        self.app.equip_codes[self.word["item"][0]].append(self.word["item"][1])
                 if "chara" in self.word:
                     self.app.chara_data[self.word["chara"]] = self.app.character_data[self.word["chara"]]
                 if self.word["to"] != "None":
@@ -134,8 +130,8 @@ class Words:
             for i in self.questions:
                 if max_str < len(i) * 11:
                     max_str = len(i) * 11
-            pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
-            pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
-            pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
+            pyxel.blt(self.init_x-max_str - 22,self.init_y-98-self.finger_pos+(39-que_height),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
+            pyxel.rect(self.init_x-max_str-5,self.init_y-61-que_height,max_str,que_height+2,0)
+            pyxel.rectb(self.init_x-max_str-5,self.init_y-61-que_height,max_str,que_height+2,7)
             for i,h in zip(self.questions,range(0,len(self.questions)*12,11)):
-                self.umplus10.draw_text(self.init_x-max_str + 2,self.init_y-98+h+(39-que_height),i,7)
+                self.umplus10.draw_text(self.init_x-max_str - 3,self.init_y-98+h+(39-que_height),i,7)

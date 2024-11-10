@@ -1,6 +1,7 @@
 import pyxel
 import time
 
+import utils.scenes as scenes
 from save_load import SaveLoad
 
 class Title:
@@ -26,10 +27,10 @@ class Title:
         self.game_start = -1
         self.umplus10 = ump
         self.scenes = self.app.scenes
-        self.MAIN_SCENE = self.scenes["code"]["MAIN_SCENE"]
-        self.TITLE_SCENE = self.scenes["code"]["TITLE_SCENE"]
-        self.Continue = self.scenes["code"]["LOAD_SCENE"]
-        self.setting_scene = self.scenes["code"]["OUT_SETTING_SCENE"]
+        self.MAIN_SCENE = scenes.MAIN_SCENE
+        self.TITLE_SCENE = scenes.TITLE_SCENE
+        self.Continue = scenes.LOAD_SCENE
+        self.setting_scene = scenes.OUT_SETTING_SCENE
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False,app=self.app)
         self.save_data = None
         self.enter_pos = 1
@@ -53,8 +54,6 @@ class Title:
             if self.enter_pos == 0:
                 self.app.new_game = True
                 self.app.game_time_start = time.time()
-                if self.app.story:
-                    pass
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
                 self.app.save_load.save_data = self.app.save_data
