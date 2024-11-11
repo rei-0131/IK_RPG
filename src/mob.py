@@ -8,13 +8,14 @@ class Mob:
         self.show = self.info[1]
         self.scale = scale
         self.name = name
-        self.display = True
+        self.display = [True,-1]
 
     def update(self):
         disp = [False,-1]
         for i,info in enumerate(self.info[3]):
-            if info[0] <= int(self.app.disp_id) <= info[1]:
-                disp = [True,i]
+            if self.app.msg_id != None:
+                if info[0] <= int(self.app.msg_id) <= info[1]:
+                    disp = [True,i]
         self.display = disp
 
         if self.app.now_location == 6:
@@ -29,4 +30,4 @@ class Mob:
 
     def draw(self):
         if self.display[0]:
-            pyxel.blt(self.show[0],self.show[1],self.data[0],self.data[1],self.data[2],self.data[3] * self.info[3],self.data[4],self.data[5],scale=self.scale)
+            pyxel.blt(self.show[0],self.show[1],self.data[0],self.data[1],self.data[2],self.data[3] * self.show[3],self.data[4],self.data[5],scale=self.scale)

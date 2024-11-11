@@ -1,16 +1,16 @@
 {
     "1": {
         "play_data": {
-            "time": "02:20:06",
+            "time": "02:20:34",
             "money": 1000,
             "scene": 1,
-            "location": 6,
+            "location": 9,
             "words": {
-                "msg_id": "06",
-                "disp_id": "None"
+                "msg_id": "36",
+                "disp_id": "36"
             },
-            "x": 136,
-            "y": 182,
+            "x": 262,
+            "y": 152,
             "chara_data": {
                 "ぼく": {
                     "post": 1,
@@ -245,9 +245,7 @@
                     "battle": "true"
                 }
             },
-            "imp_item_codes": [
-
-            ],
+            "imp_item_codes": [],
             "equip_codes": {
                 "head": [
                     "001",
@@ -285,7 +283,8 @@
                     "001",
                     "002",
                     "003",
-                    "004"
+                    "004",
+                    "001"
                 ],
                 "shield": [
                     "001",
