@@ -213,6 +213,9 @@ class CMD:
                 self.app.battle.enemy_status[int(arg[2])]["HP"][1] = 0
                 self.log_type = "str"
                 self.log = f"インデックス{arg[2]}の敵ををキルしました"
+        else:
+            self.log_type = "str"
+            self.log = "存在しない対象です"
 
     def mode(self,arg):
         self.log_type = "str"

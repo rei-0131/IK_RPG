@@ -321,6 +321,7 @@ class App:
                         self.player.walk_num = 0
             if self.in_battle:
                 self.battle.clean(self.now_scene)
+                self.battle.save_chara(self.chara_data)
                 if self.is_test:
                     self.battle.debug_clean()
                 self.battle.set_enemy(len(self.words_j["story"][self.disp_id]["battle"][0]),self.words_j["story"][self.disp_id]["battle"][0])
@@ -387,6 +388,8 @@ class App:
                 if self.battle.win == "player":
                     self.in_battle = False
                     self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
+                else:
+                    pass
         elif self.now_scene == "cmd":
             self.cmd.update()
 
