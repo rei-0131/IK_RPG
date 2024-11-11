@@ -1,6 +1,7 @@
 import pyxel
 import json
 
+import utils.scenes as scenes
 from save import Save
 from cloud_data import Cloud_data
 
@@ -45,10 +46,9 @@ class SaveLoad:
             self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
-        self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
-        self.load = self.scenes["code"]["LOAD_SCENE"]
-        self.title = self.scenes["code"]["TITLE_SCENE"]
-        self.main = self.scenes["code"]["MAIN_SCENE"]
+        self.load = scenes.LOAD_SCENE
+        self.title = scenes.TITLE_SCENE
+        self.main = scenes.MAIN_SCENE
 
     def update(self,ent=None) -> int:
         """

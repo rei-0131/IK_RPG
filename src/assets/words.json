@@ -187,7 +187,7 @@
         },
         "36":{
             "speaker":"桃井",
-            "word":"僕は3-1に居ますので、何かありましたら声をかけて下さい",
+            "word":"僕は３ー１に居ますので、何かありましたら声をかけて下さい",
             "to":"None"
         },
         "37":{
@@ -202,7 +202,7 @@
         },
         "39":{
             "speaker":"元気そうな生徒",
-            "word":"この時間なら3-2にいるんじゃないか？あそこは不良どもがよく集まるからな",
+            "word":"この時間なら３ー２にいるんじゃないか？あそこは不良どもがよく集まるからな",
             "to":"None"
         },
         "40":{
@@ -323,7 +323,7 @@
         "62":{
             "speaker":"リュウガ",
             "word":"絶対に勝つよ！",
-            "battle":[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}],
+            "battle":[[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}],"63"],
             "to":"None"
         },
         "63":{
@@ -427,7 +427,7 @@
             "speaker":"不良3",
             "word":"返して欲しけりゃ力ずくで奪って見ろよ！",
             "questions":["絶対に返してもらう！"],
-            "battle":[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}],
+            "battle":[[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}],"82"],
             "to":"None"
         },
         "82":{

@@ -70,9 +70,19 @@ class Player:
                         self.walk_pos += 1
                         self.walk_pm = "p"
                 self.walk_num += 1
-        if not self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale,self.app.coord[0],self.app.coord[1])[0]:
+        cd_return = self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale,self.app.coord)
+        if not cd_return[0]:
             self.x += self.dx
             self.y += self.dy
+        else:
+            if not self.app.in_word:
+                if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                    if cd_return[1] == "mob":
+                        if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2][self.app.mobs[self.app.now_location - 6][cd_return[2]][0].display[1]] != -1:
+                            if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2][self.app.mobs[self.app.now_location - 6][cd_return[2]][0].display[1]]) == self.app.msg_id:
+                                self.app.disp_id = str(int(self.app.disp_id) - 1)
+                            else:
+                                self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2][self.app.mobs[self.app.now_location - 6][cd_return[2]][0].display[1]])
 
     def draw(self):
         """基本描画"""
@@ -98,4 +108,3 @@ class Player:
                 pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - self.walk_pos * 16,self.chara[0][2],self.chara[0][3],self.chara[0][4],self.chara[0][5],scale=self.scale)
         else:
             pyxel.blt(self.x,self.y,self.chara[0][0],self.chara[0][1] - self.walk_pos * 16,self.chara[0][2],self.chara[0][3],self.chara[0][4],self.chara[0][5],scale=self.scale)
-        self.map.cd_debug(self.x, self.y, self.key, self.app.scale, self.app.coord[0],self.app.coord[1])
