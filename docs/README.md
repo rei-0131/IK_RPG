@@ -26,8 +26,6 @@
 
 ## 進捗
 
-- [ ] メイン画面
-- - [ ] マスとマスの間の線で止まれないようにする(正規のマップができたら)
 - [x] タイトル画面
 - - [x] ニューゲーム処理
 - - [x] コンティニュー処理
@@ -107,6 +105,9 @@
         "shield":[shield_code,...],
         "staff":[staff_code,...],
         "other":[other_code,...]
+      },
+      "story_flags":{
+        "story_flag":0 or 1
       }
     }
   }
@@ -153,3 +154,4 @@
 |       shield_code       |              盾の装備コード               |
 |       staff_code        |              杖の装備コード               |
 |       other_code        |            その他の装備コード             |
+|       story_flag        |            ストーリーフラグ               |
