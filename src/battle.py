@@ -1133,7 +1133,7 @@ class Battle:
                                     vibe["total"] += 1
                         self.hp_int("none")
         else:
-            if self.win == "win":
+            if self.win == "player":
                 if not self.xp_stop:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         while not self.xp_stop:
@@ -1209,7 +1209,6 @@ class Battle:
                             self.finger_pos1 = 0
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         self.select_num1 = self.finger_pos1 // 11
-
                 else:
                     if self.select_num1 == 0:
                         self.clean(self.be_scene)

@@ -108,7 +108,7 @@ class Map:
         else:
             check_x, check_y = self.check_pos(self.key, self.player_scale, x, y, scale, coord)
             for i,mob in enumerate(self.app.mobs[self.app.now_location - 6]):
-                if mob[0].display:
+                if mob[0].display[0]:
                     mob_x = [mob[0].show[0] - 6 * (self.player_scale - 1) for _ in range(4)]
                     mob_y = [mob[0].show[1] - 8 * (self.player_scale - 1) for _ in range(4)]
                     mob_x[1] += 14 * self.player_scale
