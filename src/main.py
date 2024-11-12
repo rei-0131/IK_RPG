@@ -281,7 +281,6 @@ class App:
                     self.equip_codes = init_data[self.mode]["equip_codes"]
                     self.imp_item_codes = init_data[self.mode]["imp_item_codes"]
                 self.new_game = False
-            self.player.update()
             if not self.scene_show[self.now_location - 6]:
                 for k,v in self.assets_info["chara"].items():
                     for i in v[4]:
@@ -291,6 +290,7 @@ class App:
             else:
                 for mob in self.mobs[self.now_location - 6]:
                     mob[0].update()
+            self.player.update()
             if not self.new_game:
                 if self.in_word:
                     self.msg_id, self.disp_id = self.words.update()
@@ -298,6 +298,8 @@ class App:
                         self.story_flags["ryoga_group"] = True
                 if 270 <= self.player.x and 80 <= self.player.y <= 140 and (self.now_location == scenes.CLASS1_SCENE or self.now_location == scenes.CLASS2_SCENE):
                     if self.now_location == scenes.CLASS1_SCENE:
+                        if self.disp_id == "36":
+                            self.msg_id = "37"
                         self.player.x = 20
                         self.player.y = 166
                     elif self.now_location == scenes.CLASS2_SCENE:
@@ -318,6 +320,8 @@ class App:
                         else:
                             self.msg_id = "71"
                         self.player.rl = -1
+                        self.player.key = "a"
+                        self.player.walk_pos = 0
                         self.player.walk_num = 0
             if self.in_battle:
                 self.battle.clean(self.now_scene)
@@ -388,8 +392,6 @@ class App:
                 if self.battle.win == "player":
                     self.in_battle = False
                     self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
-                else:
-                    pass
         elif self.now_scene == "cmd":
             self.cmd.update()
 
@@ -404,6 +406,10 @@ class App:
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
                 pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
+                if self.now_location == scenes.CLASS1_SCENE:
+                    umplus24.draw_text(260,20,"3-1",0)
+                elif self.now_location == scenes.CLASS2_SCENE:
+                    umplus24.draw_text(260,20,"3-2",0)
                 if pyxel.btnp(pyxel.KEY_O):
                     self.now_location = scenes.WAY_SCENE
                 elif pyxel.btnp(pyxel.KEY_P):
