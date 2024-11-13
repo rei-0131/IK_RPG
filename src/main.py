@@ -140,6 +140,7 @@ class App:
         self.now_location = scenes.CLASS1_SCENE
         self.mobs = [[] for _ in range(len(list(self.scenes["code"].keys())) - 7)]
         self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
+        self.story_animation = False
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -283,9 +284,9 @@ class App:
                 self.new_game = False
             if not self.scene_show[self.now_location - 6]:
                 for k,v in self.assets_info["chara"].items():
-                    for i in v[4]:
+                    for j,i in enumerate(v[4]):
                         if i[0] == self.now_location:
-                            self.mobs[self.now_location - 6].append([Mob(self,self.assets_info["chara"][k][i[1][2]],i,self.player_scale,k),k,i])
+                            self.mobs[self.now_location - 6].append([Mob(self,self.assets_info["chara"][k][i[1][2]],i,self.player_scale,k,j),k,i])
                 self.scene_show[self.now_location - 6] = True
             else:
                 for mob in self.mobs[self.now_location - 6]:

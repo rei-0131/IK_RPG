@@ -1195,6 +1195,8 @@ class Battle:
                             money += i["money"]
                         self.app.money += money
                         self.app.now_scene = self.be_scene
+                        self.app.in_battle = False
+                        self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
             else:
                 if self.select_num1 == -1:
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
