@@ -10,7 +10,7 @@ class Mob:
         self.scale = scale
         self.name = name
         self.display = [True,-1]
-        self.walk_speed = 2
+        self.walk_speed = 1.5
         self.key = ""
         self.x = 0
         self.y = 0
@@ -84,7 +84,7 @@ class Mob:
                     self.x = self.show[0]
                     self.y = self.show[1]
                 if self.index + 1 == len(self.move_plan):
-                    if True in [self.move_plan[self.index][0] + i == self.x for i in range(self.walk_speed)] and True in [self.move_plan[self.index][1] + i == self.y for i in range(self.walk_speed)]:
+                    if True in [self.move_plan[self.index][0] + i / 10 == self.x for i in range(int(self.walk_speed + 1) * 10)] and True in [self.move_plan[self.index][1] + i / 10 == self.y for i in range(int(self.walk_speed + 1) * 10)]:
                         self.app.story_animation = False
                         self.index = 0
                         self.show[0] = self.x
@@ -99,7 +99,7 @@ class Mob:
                         self.x += self.dx
                         self.y += self.dy
                 else:
-                    if True in [self.move_plan[self.index][0] + i == self.x for i in range(self.walk_speed)] and True in [self.move_plan[self.index][1] + i == self.y for i in range(self.walk_speed)]:
+                    if True in [self.move_plan[self.index][0] + i / 10 == self.x for i in range(int(self.walk_speed + 1) * 10)] and True in [self.move_plan[self.index][1] + i / 10 == self.y for i in range(int(self.walk_speed + 1) * 10)]:
                         self.index += 1
                     else:
                         self.x += self.dx
