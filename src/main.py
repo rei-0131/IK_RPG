@@ -405,19 +405,20 @@ class App:
             if not (self.msg_id == None or self.msg_id == "01"):
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
-                pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
-                if self.now_location == scenes.CLASS1_SCENE:
-                    umplus24.draw_text(260,20,"3-1",0)
-                elif self.now_location == scenes.CLASS2_SCENE:
-                    umplus24.draw_text(260,20,"3-2",0)
-                if pyxel.btnp(pyxel.KEY_O):
-                    self.now_location = scenes.WAY_SCENE
-                elif pyxel.btnp(pyxel.KEY_P):
-                    self.now_location = scenes.STAFF_SCENE
-                if self.scene_show[self.now_location - 6]:
-                    for mob in self.mobs[self.now_location - 6]:
-                        mob[0].draw()
-                self.player.draw()
+                if self.msg_id != "111":
+                    pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
+                    if self.now_location == scenes.CLASS1_SCENE:
+                        umplus24.draw_text(260,20,"3-1",0)
+                    elif self.now_location == scenes.CLASS2_SCENE:
+                        umplus24.draw_text(260,20,"3-2",0)
+                    if pyxel.btnp(pyxel.KEY_O):
+                        self.now_location = scenes.WAY_SCENE
+                    elif pyxel.btnp(pyxel.KEY_P):
+                        self.now_location = scenes.STAFF_SCENE
+                    if self.scene_show[self.now_location - 6]:
+                        for mob in self.mobs[self.now_location - 6]:
+                            mob[0].draw()
+                    self.player.draw()
             if not self.new_game:
                 if self.msg_id != self.disp_id:
                     self.in_word = True
