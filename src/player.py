@@ -22,7 +22,7 @@ class Player:
         self.init_y = y
         self.rl = 1
         self.key = ""
-        self.walk_speed = 1
+        self.walk_speed = 1.5
         self.walk_num = 0
         self.question_mark = 0
         self.is_word = False
@@ -55,7 +55,7 @@ class Player:
                 self.walk_num = 0
                 self.walk_pos = 0
             elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
-                if self.walk_num % 10 == 0:
+                if self.walk_num % 5 == 0:
                     if self.walk_pm == "p":
                         self.walk_pos += 1
                     else:

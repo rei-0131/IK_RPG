@@ -28,7 +28,6 @@ filenames = [
     'src/assets/init_data.json',
     'src/configs/config.ini',
     'src/assets/enemy_info.json',
-    'src/assets/cd_block.json',
     'src/assets/assets_info.json',
     'src/assets/character_data.json',
     'src/assets/story_flags.json',

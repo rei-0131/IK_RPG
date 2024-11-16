@@ -52,7 +52,7 @@ class App:
 
     def draw(self):
         pyxel.cls(0)
-        self.coord = self.scenes["coordinate"][str(8)]
+        self.coord = self.scenes["coordinate"][str(10)]
         self.scale = self.coord[8]
         print(f"{self.coord[0]} {self.coord[1]} {self.coord[3]} {self.coord[4]} {self.coord[5]} {self.coord[6]} {self.coord[8]}",end="\r")
         pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
