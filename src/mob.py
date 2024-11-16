@@ -36,7 +36,7 @@ class Mob:
         elif self.app.now_location == 8:
             pass
         elif self.app.now_location == 9:
-            if self.app.story_flags["ryoga_group"] and self.name == "リョウガ":
+            if self.app.story_flags_tf["ryoga_group"] and self.name == "リョウガ":
                 self.display = [False,-1]
         #[6,[166,80,0,1],98,[[52,115]],115,[[166,105],[305,105]]]
         if len(self.info) > 4:

@@ -136,7 +136,8 @@ class App:
         self.scale = 0.4
         self.player_scale = 2
         self.coord = [0] * 8
-        self.story_flags = {i:False for i in story_flag_names}
+        self.story_flags_tf = {i:False for i in story_flag_names["TF"]}
+        self.story_flags_co = {0 for _ in story_flag_names["COUNT"]}
         self.now_location = scenes.CLASS1_SCENE
         self.mobs = [[] for _ in range(len(list(self.scenes["code"].keys())) - 7)]
         self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
@@ -249,7 +250,8 @@ class App:
                     self.equip_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
                     self.msg_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["msg_id"]
                     self.disp_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["disp_id"]
-                    self.story_flags = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags"].items()}
+                    self.story_flags_tf = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags_tf"].items()}
+                    self.story_flags_co = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags_co"].items()}
                     self.from_load = False
                 else:
                     print("new game")
@@ -268,7 +270,8 @@ class App:
                         "item_codes":self.item_codes,
                         "imp_item_codes":self.imp_item_codes,
                         "equip_codes":self.equip_codes,
-                        "story_flags":self.story_flags
+                        "story_flags_tf":self.story_flags_tf,
+                        "story_flags_co":self.story_flags_co
                         }
                     }
                     self.game_time = self.loaddata["play_data"]["time"]
@@ -296,7 +299,7 @@ class App:
                 if self.in_word:
                     self.msg_id, self.disp_id = self.words.update()
                     if self.disp_id == "49":
-                        self.story_flags["ryoga_group"] = True
+                        self.story_flags_tf["ryoga_group"] = True
                 if 270 <= self.player.x and 80 <= self.player.y <= 140:
                     if self.now_location == scenes.CLASS1_SCENE or self.now_location == scenes.CLASS2_SCENE:
                         if self.now_location == scenes.CLASS1_SCENE:
@@ -329,13 +332,19 @@ class App:
                         self.now_location = scenes.STAFF_E_SCENE
                         self.player.x = 178
                         self.player.y = 165
+                        if self.msg_id == "141":
+                            self.player.rl = 1
+                            self.player.key = "w"
+                            self.player.walk_pos = 0
+                            self.player.walk_num = 0
+                            self.msg_id = "142"
                 if 250 <= self.player.x <= 278 and 171 <= self.player.y:
                     if self.now_location == scenes.WAY_SCENE_12:
                         self.now_location = scenes.CLASS2_SCENE
                         self.player.x = 265
                         self.player.y = 105
                         if 36 <= int(self.disp_id) < 52:
-                            if self.story_flags["ryoga_group"]:
+                            if self.story_flags_tf["ryoga_group"]:
                                 self.msg_id = "52"
                             else:
                                 self.msg_id = "71"
@@ -354,7 +363,7 @@ class App:
                     elif self.now_location == scenes.WAY_SCENE_E:
                         self.now_location = scenes.WAY_SCENE_I
                         self.player.x = 262
-                        self.player.y = 165
+                        self.player.y = 138
                 if 275 <= self.player.x and 115 <= self.player.y <= 150:
                     if self.now_location == scenes.WAY_SCENE_12:
                         self.now_location = scenes.WAY_SCENE_31
@@ -362,8 +371,17 @@ class App:
                         self.player.y = 135
                     elif self.now_location == scenes.WAY_SCENE_31:
                         self.now_location = scenes.MACHINE_SCENE
-                        self.player.x = 177
-                        self.player.y = 156
+                        if self.disp_id == "115":
+                            self.player.x = 177
+                            self.player.y = 126
+                            self.player.rl = 1
+                            self.player.key = "w"
+                            self.player.walk_pos = 0
+                            self.player.walk_num = 0
+                            self.msg_id = "116"
+                        else:
+                            self.player.x = 177
+                            self.player.y = 156
                     elif self.now_location == scenes.WAY_SCENE_I:
                         self.now_location = scenes.WAY_SCENE_31
                         self.player.x = 262
@@ -385,7 +403,7 @@ class App:
                     if self.now_location == scenes.STAFF_I_SCENE:
                         self.now_location = scenes.WAY_SCENE_I
                         self.player.x = 20
-                        self.player.y = 166
+                        self.player.y = 146
                     elif self.now_location == scenes.STAFF_M_SCENE:
                         self.now_location = scenes.MACHINE_SCENE
                         self.player.x = 39
@@ -393,7 +411,7 @@ class App:
                     elif self.now_location == scenes.STAFF_E_SCENE:
                         self.now_location = scenes.WAY_SCENE_E
                         self.player.x = 20
-                        self.player.y = 166
+                        self.player.y = 146
             if self.in_battle:
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
@@ -499,6 +517,9 @@ class App:
                 pyxel.rect(250,194,43,6,0)
                 pyxel.rect(0,120,10,43,0)
                 pyxel.rect(290,120,10,43,0)
+                text = ["機","械","棟"]
+                for i in range(3):
+                    umplus10.draw_text(278,125 + i * 11,text[i],0)
                 pyxel.text(25,188,"3-3",0)
                 umplus10.draw_text(265,183,"1棟",0)
             elif self.now_location == scenes.WAY_SCENE_I:

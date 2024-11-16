@@ -121,6 +121,15 @@ class Map:
         self.next_x = x + dx
         self.next_y = y + dy
         self.key = key
+        if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+            if self.key == "w":
+                self.next_y -= self.app.player.walk_speed
+            elif self.key == "s":
+                self.next_y += self.app.player.walk_speed
+            elif self.key == "a":
+                self.next_x -= self.app.player.walk_speed
+            elif self.key == "d":
+                self.next_x += self.app.player.walk_speed
         check_x, check_y = self.check_pos(self.key, self.player_scale, self.next_x, self.next_y, scale, coord)
         pixel_size = 8 * scale
         pyxel.text(0, 99, f"{check_x}", 0)
@@ -140,9 +149,10 @@ class Map:
                 type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[xy_index] // pixel_size, check_y[xy_index] // pixel_size)))][1]
             except ValueError:
                 type_ = ""
+            if self.next_x <= 85 and 54 <= self.next_y <= 65 and 9 <= self.app.now_location <= 11:
+                return True, "trash", 0
             return True, type_, 0
         else:
-            check_x, check_y = self.check_pos(self.key, self.player_scale, x, y, scale, coord)
             for i,mob in enumerate(self.app.mobs[self.app.now_location - 6]):
                 if mob[0].display[0]:
                     mob_x = [mob[0].show[0] - 6 * (self.player_scale - 1) for _ in range(4)]
@@ -153,7 +163,7 @@ class Map:
                     mob_y[3] += 15 * self.player_scale
                     for xx, yy in zip(mob_x,mob_y):
                         pyxel.pset(xx,yy,0)
-                    for x_, y_ in zip(check_x, check_y):
-                        if mob_x[0] <= x_ - co_3 <= mob_x[1] and mob_y[0] <= y_ - co_4 <= mob_y[2]:
+                    for x_, y_ in zip(checkb_x, checkb_y):
+                        if mob_x[0] <= x_ <= mob_x[1] and mob_y[0] <= y_ <= mob_y[2]:
                             return True, "mob", i
             return False, "" , 0

@@ -303,8 +303,11 @@
                     "002"
                 ]
             },
-            "story_flags": {
+            "story_flags_tf": {
                 "ryoga_group": 0
+            },
+            "story_flags_co":{
+                "staff_it_search":0
             }
         }
     },
@@ -648,8 +651,11 @@
                     "002"
                 ]
             },
-            "story_flags": {
+            "story_flags_tf": {
                 "ryoga_group": 0
+            },
+            "story_flags_co":{
+                "staff_it_search":0
             }
         }
     }

@@ -1,4 +1,5 @@
 import pyxel
+import utils.scenes as scenes
 
 class Player:
     """プレイヤーに関するクラス
@@ -79,10 +80,17 @@ class Player:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     if cd_return[1] == "mob":
                         if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] != -1:
-                            if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2]) == self.app.msg_id:
-                                self.app.disp_id = str(int(self.app.disp_id) - 1)
-                            else:
-                                self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
+                            story_f = True
+                            if self.app.disp_id == "115" and self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] == 98:
+                                story_f = False
+                            if story_f:
+                                if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2]) == self.app.msg_id:
+                                    self.app.disp_id = str(int(self.app.disp_id) - 1)
+                                else:
+                                    self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
+                    elif cd_return[1] == "trash":
+                        if 129 <= int(self.app.msg_id) <= 140 and self.app.now_location == scenes.STAFF_M_SCENE:
+                            self.app.msg_id = "132"
 
     def draw(self):
         """基本描画"""
