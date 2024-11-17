@@ -106,8 +106,11 @@
         "staff":[staff_code,...],
         "other":[other_code,...]
       },
-      "story_flags":{
+      "story_flags_tf":{
         "story_flag":0 or 1
+      },
+      "story_flags_co":{
+        "story_flag":count
       }
     }
   }
