@@ -137,11 +137,12 @@ class App:
         self.player_scale = 2
         self.coord = [0] * 8
         self.story_flags_tf = {i:False for i in story_flag_names["TF"]}
-        self.story_flags_co = {0 for _ in story_flag_names["COUNT"]}
+        self.story_flags_co = {i:0 for i in story_flag_names["COUNT"]}
         self.now_location = scenes.CLASS1_SCENE
         self.mobs = [[] for _ in range(len(list(self.scenes["code"].keys())) - 7)]
         self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
         self.story_animation = False
+        self.random_encount = False
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -300,6 +301,10 @@ class App:
                     self.msg_id, self.disp_id = self.words.update()
                     if self.disp_id == "49":
                         self.story_flags_tf["ryoga_group"] = True
+                else:
+                    if (self.msg_id == "152" or self.msg_id == "9000") and 3 <= self.story_flags_co["staff_it_search"]:
+                        self.msg_id = "153"
+
                 if 270 <= self.player.x and 80 <= self.player.y <= 140:
                     if self.now_location == scenes.CLASS1_SCENE or self.now_location == scenes.CLASS2_SCENE:
                         if self.now_location == scenes.CLASS1_SCENE:
@@ -412,7 +417,16 @@ class App:
                         self.now_location = scenes.WAY_SCENE_E
                         self.player.x = 20
                         self.player.y = 146
-            if self.in_battle:
+
+                if self.msg_id == "170":
+                    if "006" in self.imp_item_codes:
+                        tmp = self.imp_item_codes.index("006")
+                        self.imp_item_codes.pop(tmp)
+                        tmp = self.imp_item_codes.index("007")
+                        self.imp_item_codes.pop(tmp)
+                        tmp = self.imp_item_codes.index("008")
+                        self.imp_item_codes.pop(tmp)
+            if self.in_battle and not self.random_encount:
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
                 if self.is_test:
@@ -480,7 +494,10 @@ class App:
                 self.bgm_run = False
                 if self.battle.win == "player":
                     self.in_battle = False
-                    self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
+                    if not self.random_encount:
+                        self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
+                    else:
+                        self.random_encount = True
         elif self.now_scene == "cmd":
             self.cmd.update()
 
@@ -521,13 +538,16 @@ class App:
                 for i in range(3):
                     umplus10.draw_text(278,125 + i * 11,text[i],0)
                 pyxel.text(25,188,"3-3",0)
-                umplus10.draw_text(265,183,"1棟",0)
+                umplus10.draw_text(262,183,"1棟",0)
             elif self.now_location == scenes.WAY_SCENE_I:
                 pyxel.rect(12,194,43,6,0)
                 pyxel.rect(250,194,43,6,0)
                 pyxel.rect(290,120,10,43,0)
+                text = ["１","棟"]
+                for i in range(2):
+                    umplus10.draw_text(278,130 + i * 11,text[i],0)
                 umplus10.draw_text(12,183,"IT職員室",0)
-                pyxel.text(265,188,"2F",0)
+                pyxel.text(267,188,"2F",0)
             elif self.now_location == scenes.WAY_SCENE_E:
                 pyxel.rect(12,194,43,6,0)
                 pyxel.rect(250,194,43,6,0)

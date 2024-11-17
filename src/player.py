@@ -32,6 +32,7 @@ class Player:
         self.walk_pos = 0
         self.walk_pm = "p"
         self.scale = self.app.player_scale
+        self.story_flag_progress = []
 
     def update(self):
         """基本処理"""
@@ -75,6 +76,34 @@ class Player:
         if not cd_return[0]:
             self.x += self.dx
             self.y += self.dy
+            if self.dx != 0 or self.dy != 0:
+                if self.app.now_location == scenes.CLASS3_SCENE:
+                    if 1 <= pyxel.rndi(1,100000) <= 444:
+                        self.app.battle.clean(self.app.now_scene)
+                        self.app.battle.save_chara(self.app.chara_data)
+                        if self.app.is_test:
+                            self.app.battle.debug_clean()
+                        enemy_num = pyxel.rndi(1,4)
+                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} for _ in range(enemy_num)]
+                        self.app.battle.set_enemy(enemy_num,enemys)
+                        self.app.be_scene = self.app.now_scene
+                        self.app.now_scene = scenes.BATTLE_SCENE
+                        self.app.random_encount = True
+                elif (self.app.now_location == scenes.WAY_SCENE_12 or
+                        self.app.now_location == scenes.WAY_SCENE_31 or
+                        self.app.now_location == scenes.WAY_SCENE_I or
+                        self.app.now_location == scenes.WAY_SCENE_E):
+                    if 1 <= pyxel.rndi(1,100000) <= 111:
+                        self.app.battle.clean(self.app.now_scene)
+                        self.app.battle.save_chara(self.app.chara_data)
+                        if self.app.is_test:
+                            self.app.battle.debug_clean()
+                        enemy_num = pyxel.rndi(1,4)
+                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} for _ in range(enemy_num)]
+                        self.app.battle.set_enemy(enemy_num,enemys)
+                        self.app.be_scene = self.app.now_scene
+                        self.app.now_scene = scenes.BATTLE_SCENE
+                        self.app.random_encount = True
         else:
             if not self.app.in_word:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
@@ -91,6 +120,11 @@ class Player:
                     elif cd_return[1] == "trash":
                         if 129 <= int(self.app.msg_id) <= 140 and self.app.now_location == scenes.STAFF_M_SCENE:
                             self.app.msg_id = "132"
+                    elif "it_search" in cd_return[1] and self.app.msg_id == "152" or self.app.msg_id == "9000" and cd_return[1] not in self.story_flag_progress:
+                        self.app.story_flags_co["staff_it_search"] += 1
+                        self.story_flag_progress.append(cd_return[1])
+                        self.app.msg_id = "9000"
+                        self.app.disp_id = "152"
 
     def draw(self):
         """基本描画"""
