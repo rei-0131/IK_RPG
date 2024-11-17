@@ -98,8 +98,6 @@ class Battle:
         self.item_num = 0
         self.item_pos = 0
         self.dis_num = 0
-        self.enemy_num = 0
-        self.enemy_code = []
         self.enemy_status = []
         self.operation_player = True
         self.player_op = []
@@ -219,6 +217,9 @@ class Battle:
         """
         self.enemy_num = enemy_num
         self.enemy_code = enemy_code
+        self.enemy_status = []
+        self.enemy_effect = []
+        self.vibe_enemy = []
         for i in range(self.enemy_num):
             self.enemy_status.append(copy.deepcopy(self.enemy_info[self.enemy_code[i]["enemy_type"]][self.enemy_code[i]["enemy_code"]]["status"]))
             self.enemy_effect.append({
@@ -1196,7 +1197,8 @@ class Battle:
                         self.app.money += money
                         self.app.now_scene = self.be_scene
                         self.app.in_battle = False
-                        self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
+                        if not self.app.random_encount:
+                            self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
             else:
                 if self.select_num1 == -1:
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
@@ -1215,7 +1217,7 @@ class Battle:
                     if self.select_num1 == 0:
                         self.clean(self.be_scene)
                         self.app.chara_data = copy.deepcopy(self.save_chara_data)
-                        self.set_enemy(len(self.app.words_j["story"][self.app.disp_id]["battle"][0]),self.app.words_j["story"][self.app.disp_id]["battle"][0])
+                        self.set_enemy(self.enemy_num,self.enemy_code)
                     elif self.select_num1 == 1:
                         self.app.save_load.update(battle_load = True)
 

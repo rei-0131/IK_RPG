@@ -127,7 +127,8 @@ class SaveLoad:
                     self.app.equip_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["equip_codes"]
                     self.app.msg_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["msg_id"]
                     self.app.disp_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["disp_id"]
-                    self.app.story_flags = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags"].items()}
+                    self.app.story_flags_tf = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_tf"].items()}
+                    self.app.story_flags_co = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_co"].items()}
                     self.app.in_battle = False
 
     def draw(self):
