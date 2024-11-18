@@ -38,7 +38,7 @@ class Player:
         """基本処理"""
         self.dx = 0
         self.dy = 0
-        if not self.app.in_word:
+        if not self.app.in_word and not self.app.trade:
             if (pyxel.btn(pyxel.KEY_RIGHT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.dx += self.walk_speed
                 self.rl = 1
@@ -78,6 +78,7 @@ class Player:
             self.y += self.dy
             if self.dx != 0 or self.dy != 0:
                 if self.app.now_location == scenes.CLASS3_SCENE:
+                    #0.444%
                     if 1 <= pyxel.rndi(1,100000) <= 444:
                         self.app.battle.clean(self.app.now_scene)
                         self.app.battle.save_chara(self.app.chara_data)
@@ -93,6 +94,7 @@ class Player:
                         self.app.now_location == scenes.WAY_SCENE_31 or
                         self.app.now_location == scenes.WAY_SCENE_I or
                         self.app.now_location == scenes.WAY_SCENE_E):
+                    #0.111%
                     if 1 <= pyxel.rndi(1,100000) <= 111:
                         self.app.battle.clean(self.app.now_scene)
                         self.app.battle.save_chara(self.app.chara_data)
@@ -105,7 +107,7 @@ class Player:
                         self.app.now_scene = scenes.BATTLE_SCENE
                         self.app.random_encount = True
         else:
-            if not self.app.in_word:
+            if not self.app.in_word and not self.app.trade:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     if cd_return[1] == "mob":
                         if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] != -1:
@@ -117,6 +119,8 @@ class Player:
                                     self.app.disp_id = str(int(self.app.disp_id) - 1)
                                 else:
                                     self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
+                        else:
+                            self.app.trade = True
                     elif cd_return[1] == "trash":
                         if 129 <= int(self.app.msg_id) <= 140 and self.app.now_location == scenes.STAFF_M_SCENE:
                             self.app.msg_id = "132"

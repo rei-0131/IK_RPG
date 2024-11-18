@@ -251,6 +251,13 @@ class CMD:
         else:
             self.log = "存在しないモードです"
 
+    def debugmsg(self, arg):
+        self.log_type = "str"
+        if arg[1] == "True" or arg[1] == "true":
+            self.app.debug_msg = True
+        elif arg[1] == "False" or arg[1] == "false":
+            self.app.debug_msg = False
+
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
             print(self.in_str)
@@ -273,6 +280,8 @@ class CMD:
                     self.kill(cmd_config)
                 elif cmd_config[0] == "mode":
                     self.mode(cmd_config)
+                elif cmd_config[0] == "debugmsg":
+                    self.debugmsg(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"
