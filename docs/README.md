@@ -25,7 +25,7 @@
 - [pyxel-tracker](https://github.com/shiromofufactory/pyxel-tracker)
 
 ## 進捗
-
+ストーリー
 - [x] ぼく転入
 - [x] 桃井説明
 - [ ] アイテム集め
@@ -38,6 +38,7 @@
 - [ ] ラスボス
 - [ ] END
 
+プログラム
 - [x] タイトル画面
 - - [x] ニューゲーム処理
 - - [x] コンティニュー処理
