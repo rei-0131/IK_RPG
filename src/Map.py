@@ -132,8 +132,9 @@ class Map:
                 self.next_x += self.app.player.walk_speed
         check_x, check_y = self.check_pos(self.key, self.player_scale, self.next_x, self.next_y, scale, coord)
         pixel_size = 8 * scale
-        pyxel.text(0, 99, f"{check_x}", 0)
-        pyxel.text(0, 110, f"{check_y}", 0)
+        if self.app.mode == "debug" and self.app.debug_msg:
+            pyxel.text(0, 99, f"{check_x}", 0)
+            pyxel.text(0, 110, f"{check_y}", 0)
         cd = [i[0] for i in self.collision_data[str(num)]]
         co_3 = coord[3] * scale
         co_4 = coord[4] * scale

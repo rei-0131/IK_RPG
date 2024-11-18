@@ -22,6 +22,7 @@ from battle import Battle
 from words import Words
 from option import Option
 from mob import Mob
+from trader import Trader
 
 #dev only
 from rpg_cmd import CMD
@@ -29,6 +30,10 @@ from rpg_cmd import CMD
 ##########テスト環境
 is_test = True
 mode = "debug"
+if mode == "debug":
+    msg = True
+else:
+    msg = False
 ##########
 
 #各ファイル読み込み
@@ -111,6 +116,7 @@ class App:
         self.in_battle = False
         self.load_write = False
         self.mode = mode
+        self.debug_msg = msg
         self.INIT_DATA = init_data
         self.chara_data = init_data[mode]["chara_data"]
         self.item_codes = init_data[mode]["item_codes"]
@@ -143,6 +149,7 @@ class App:
         self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
         self.story_animation = False
         self.random_encount = False
+        self.trade = False
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -180,6 +187,8 @@ class App:
         self.battle = Battle(self,self.init_x, self.init_y,umplus10)
         self.info("Loading CMD...")
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Trader...")
+        self.trader = Trader(self,self.init_x,self.init_y,umplus10)
         self.version_info()
         self.load_msg = "Load end"
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
@@ -434,6 +443,10 @@ class App:
                 self.battle.set_enemy(len(self.words_j["story"][self.disp_id]["battle"][0]),self.words_j["story"][self.disp_id]["battle"][0])
                 self.be_scene = self.now_scene
                 self.now_scene = scenes.BATTLE_SCENE
+            if pyxel.btnp(pyxel.KEY_T):
+                self.trade = True
+            if self.trade:
+                self.trader.update()
         elif self.now_scene == scenes.OUT_SETTING_SCENE:
             self.now_scene = self.setting_out.update()
         elif self.now_scene == scenes.IN_SETTING_SCENE:
@@ -554,7 +567,15 @@ class App:
                 umplus10.draw_text(15,183,"E職員室",0)
                 pyxel.text(265,188,"1F",0)
             elif self.now_location == scenes.MACHINE_SCENE:
-                pass
+                umplus10.draw_text(175,182,"２棟",0)
+            elif self.now_location == scenes.STAFF_I_SCENE:
+                umplus24.draw_text(210,177,"I",0)
+            elif self.now_location == scenes.STAFF_M_SCENE:
+                umplus24.draw_text(210,177,"M",0)
+            elif self.now_location == scenes.STAFF_E_SCENE:
+                umplus24.draw_text(210,177,"E",0)
+            if self.trade:
+                self.trader.draw()
             if not self.new_game:
                 if self.msg_id != self.disp_id:
                     self.in_word = True
@@ -562,17 +583,18 @@ class App:
                     self.in_word = False
                 if self.in_word:
                     self.words.dec_word(self.msg_id)
-                pyxel.text(0,0,f"{self.player.x = }",0)
-                pyxel.text(0,11,f"{self.player.y = }",0)
-                pyxel.text(0,22,f"{self.player.dx = }",0)
-                pyxel.text(0,33,f"{self.player.dy = }",0)
-                pyxel.text(0,44,f"{self.player.key = }",0)
-                pyxel.text(0,55,f"{self.player.walk_pm = }",0)
-                pyxel.text(0,66,f"{self.player.walk_pos = }",0)
-                pyxel.text(0,77,f"{self.player.walk_num = }",0)
-                pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
-                pyxel.text(0,121,f"{self.msg_id = } {self.disp_id = }",0)
-                pyxel.text(0,132,f"{self.now_location = }",0)
+                if self.mode == "debug" and self.debug_msg:
+                    pyxel.text(0,0,f"{self.player.x = }",0)
+                    pyxel.text(0,11,f"{self.player.y = }",0)
+                    pyxel.text(0,22,f"{self.player.dx = }",0)
+                    pyxel.text(0,33,f"{self.player.dy = }",0)
+                    pyxel.text(0,44,f"{self.player.key = }",0)
+                    pyxel.text(0,55,f"{self.player.walk_pm = }",0)
+                    pyxel.text(0,66,f"{self.player.walk_pos = }",0)
+                    pyxel.text(0,77,f"{self.player.walk_num = }",0)
+                    pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
+                    pyxel.text(0,121,f"{self.msg_id = } {self.disp_id = }",0)
+                    pyxel.text(0,132,f"{self.now_location = }",0)
         elif self.now_scene == scenes.OUT_SETTING_SCENE:
             self.setting_out.draw()
         elif self.now_scene == scenes.IN_SETTING_SCENE:
