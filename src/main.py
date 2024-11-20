@@ -316,15 +316,23 @@ class App:
 
                 if 270 <= self.player.x and 80 <= self.player.y <= 140:
                     if self.now_location == scenes.CLASS1_SCENE or self.now_location == scenes.CLASS2_SCENE:
-                        if self.now_location == scenes.CLASS1_SCENE:
-                            if self.disp_id == "36":
-                                self.msg_id = "37"
-                            self.player.x = 20
-                            self.player.y = 166
-                        elif self.now_location == scenes.CLASS2_SCENE:
-                            self.player.x = 265
-                            self.player.y = 166
-                        self.now_location = scenes.WAY_SCENE_12
+                        if self.msg_id == "200" and self.now_location == scenes.CLASS1_SCENE:
+                            self.msg_id = "201"
+                            self.player.x = 268
+                            self.player.rl = -1
+                            self.player.key = "a"
+                            self.player.walk_pos = 0
+                            self.player.walk_num = 0
+                        else:
+                            if self.now_location == scenes.CLASS1_SCENE:
+                                if self.disp_id == "36":
+                                    self.msg_id = "37"
+                                self.player.x = 20
+                                self.player.y = 166
+                            elif self.now_location == scenes.CLASS2_SCENE:
+                                self.player.x = 265
+                                self.player.y = 166
+                            self.now_location = scenes.WAY_SCENE_12
                     elif self.now_location == scenes.CLASS3_SCENE:
                         self.player.x = 20
                         self.player.y = 166
@@ -342,6 +350,8 @@ class App:
                         self.now_location = scenes.STAFF_I_SCENE
                         self.player.x = 178
                         self.player.y = 165
+                        if self.msg_id == "212":
+                            self.msg_id = "213"
                     elif self.now_location == scenes.WAY_SCENE_E:
                         self.now_location = scenes.STAFF_E_SCENE
                         self.player.x = 178
@@ -435,6 +445,8 @@ class App:
                         self.imp_item_codes.pop(tmp)
                         tmp = self.imp_item_codes.index("008")
                         self.imp_item_codes.pop(tmp)
+                if self.disp_id == "186":
+                    self.msg_id = "187"
             if self.in_battle and not self.random_encount:
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
@@ -521,7 +533,7 @@ class App:
         elif self.now_scene == scenes.MAIN_SCENE:
             pyxel.cls(0)
             pyxel.camera()
-            if not (self.msg_id == None or self.msg_id == "01"):
+            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "111" or self.msg_id == "187"):
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
                 if self.msg_id != "111":
