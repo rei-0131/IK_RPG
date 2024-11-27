@@ -274,6 +274,7 @@ class App:
                             "disp_id":None
                         },
                         "scene": 1,
+                        "location": 6,
                         "x":136,
                         "y": 182,
                         "chara_data":self.chara_data,
@@ -290,6 +291,7 @@ class App:
                     self.player.y = self.loaddata["play_data"]["y"]
                     self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
                     self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
+                    self.now_location = self.loaddata["play_data"]["location"]
                     self.chara_data = init_data[self.mode]["chara_data"]
                     self.item_codes = init_data[self.mode]["item_codes"]
                     self.equip_codes = init_data[self.mode]["equip_codes"]
@@ -445,8 +447,6 @@ class App:
                         self.imp_item_codes.pop(tmp)
                         tmp = self.imp_item_codes.index("008")
                         self.imp_item_codes.pop(tmp)
-                if self.disp_id == "186":
-                    self.msg_id = "187"
             if self.in_battle and not self.random_encount:
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
@@ -536,7 +536,7 @@ class App:
             if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "111" or self.msg_id == "187"):
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
-                if self.msg_id != "111":
+                if self.msg_id != "111" or self.msg_id != "187":
                     pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
                     if self.now_location == scenes.CLASS1_SCENE:
                         umplus24.draw_text(260,20,"3-1",0)
@@ -568,7 +568,7 @@ class App:
                 pyxel.rect(12,194,43,6,0)
                 pyxel.rect(250,194,43,6,0)
                 pyxel.rect(290,120,10,43,0)
-                text = ["１","棟"]
+                text = ["２","棟"]
                 for i in range(2):
                     umplus10.draw_text(278,130 + i * 11,text[i],0)
                 umplus10.draw_text(12,183,"IT職員室",0)
@@ -577,7 +577,7 @@ class App:
                 pyxel.rect(12,194,43,6,0)
                 pyxel.rect(250,194,43,6,0)
                 umplus10.draw_text(15,183,"E職員室",0)
-                pyxel.text(265,188,"1F",0)
+                pyxel.text(265,188,"2F",0)
             elif self.now_location == scenes.MACHINE_SCENE:
                 umplus10.draw_text(175,182,"２棟",0)
             elif self.now_location == scenes.STAFF_I_SCENE:
