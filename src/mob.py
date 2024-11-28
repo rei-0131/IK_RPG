@@ -1,4 +1,5 @@
 import pyxel
+import utils.scenes as scenes
 
 class Mob:
     def __init__(self,app,data,info,scale,name,index_info):
@@ -20,6 +21,7 @@ class Mob:
         self.walk_pos = 0
         self.walk_pm = "p"
         self.walk_num = 0
+        self.story_animation = False
 
     def update(self):
         disp = [False,-1]
@@ -32,13 +34,7 @@ class Mob:
                         disp = [True,i]
         self.display = disp
 
-        if self.app.now_location == 6:
-            pass
-        elif self.app.now_location == 7:
-            pass
-        elif self.app.now_location == 8:
-            pass
-        elif self.app.now_location == 9:
+        if self.app.now_location == scenes.WAY_SCENE_12:
             if self.app.story_flags_tf["ryoga_group"] and self.name == "リョウガ":
                 self.display = [False,-1]
         #[6,[166,80,0,1],98,[[52,115]],115,[[166,105],[305,105]]]
@@ -82,15 +78,18 @@ class Mob:
                             self.walk_pm = "p"
                     self.walk_num += 1
 
-                if not self.app.story_animation:
+                if not self.story_animation:
+                    self.story_animation = True
                     self.app.story_animation = True
                     self.x = self.show[0]
                     self.y = self.show[1]
                     self.index = 0
                 else:
+                    self.app.story_animation = True
                     if self.index == len(self.move_plan) - 1:
                         if (self.move_plan[self.index][0] - (self.walk_speed + 1) <= self.x <= self.move_plan[self.index][0] + (self.walk_speed + 1) and
                                 self.move_plan[self.index][1] - (self.walk_speed + 1) <= self.y <= self.move_plan[self.index][1] + (self.walk_speed + 1)):
+                            self.story_animation = False
                             self.app.story_animation = False
                             self.x = self.move_plan[self.index][0]
                             self.y = self.move_plan[self.index][1]
@@ -133,7 +132,7 @@ class Mob:
 
     def draw(self):
         if self.display[0]:
-            if not self.app.story_animation:
+            if not self.story_animation:
                 pyxel.blt(self.show[0],self.show[1],self.data[0],self.data[1],self.data[2],self.data[3] * self.show[3],self.data[4],self.data[5],scale=self.scale)
             else:
                 data = self.app.assets_info["chara"][self.name]

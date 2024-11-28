@@ -130,6 +130,14 @@ class Player:
                         self.story_flag_progress.append(cd_return[1])
                         self.app.msg_id = "9000"
                         self.app.disp_id = "152"
+                    elif "ch" in cd_return[1]:
+                        if 191 <= int(self.app.msg_id) <= 198:
+                            if cd_return[1] == "ch_2":
+                                self.app.msg_id = "192"
+                                if self.app.msg_id == self.app.disp_id:
+                                    self.app.disp_id = "191"
+                            elif cd_return[1] == "ch_4":
+                                self.app.msg_id = "197"
 
     def draw(self):
         """基本描画"""

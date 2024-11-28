@@ -310,7 +310,7 @@ class App:
             if not self.new_game:
                 if self.in_word:
                     self.msg_id, self.disp_id = self.words.update()
-                    if self.disp_id == "49":
+                    if self.msg_id == "49":
                         self.story_flags_tf["ryoga_group"] = True
                 else:
                     if (self.msg_id == "152" or self.msg_id == "9000") and 3 <= self.story_flags_co["staff_it_search"]:
@@ -439,7 +439,12 @@ class App:
                         self.player.x = 20
                         self.player.y = 146
 
-                if self.msg_id == "170":
+                if self.msg_id == "35":
+                    self.player.x = 192
+                    self.player.y = 109
+                    self.player.rl = 1
+                    self.player.key = "s"
+                elif self.msg_id == "170":
                     if "006" in self.imp_item_codes:
                         tmp = self.imp_item_codes.index("006")
                         self.imp_item_codes.pop(tmp)
@@ -447,6 +452,14 @@ class App:
                         self.imp_item_codes.pop(tmp)
                         tmp = self.imp_item_codes.index("008")
                         self.imp_item_codes.pop(tmp)
+                elif self.msg_id == "231":
+                    self.player.x = 166
+                    self.player.y = 110
+                    self.player.rl = 1
+                    self.player.key = "w"
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
+                    self.now_location = scenes.CLASS1_SCENE
             if self.in_battle and not self.random_encount:
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
@@ -533,10 +546,10 @@ class App:
         elif self.now_scene == scenes.MAIN_SCENE:
             pyxel.cls(0)
             pyxel.camera()
-            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "111" or self.msg_id == "187"):
+            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231"):
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
-                if self.msg_id != "111" or self.msg_id != "187":
+                if self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231":
                     pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
                     if self.now_location == scenes.CLASS1_SCENE:
                         umplus24.draw_text(260,20,"3-1",0)
