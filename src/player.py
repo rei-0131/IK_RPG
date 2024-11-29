@@ -111,16 +111,17 @@ class Player:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     if cd_return[1] == "mob":
                         if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] != -1:
-                            story_f = True
-                            if self.app.disp_id == "115" and self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] == 98:
-                                story_f = False
-                            if story_f:
-                                if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2]) == self.app.msg_id:
-                                    self.app.disp_id = str(int(self.app.disp_id) - 1)
-                                else:
-                                    self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
-                        else:
-                            self.app.trade = True
+                            if self.app.mobs[self.app.now_location - 6][cd_return[2]][2] == "T":
+                                self.app.trade = True
+                            else:
+                                story_f = True
+                                if self.app.disp_id == "115" and self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] == 98:
+                                    story_f = False
+                                if story_f:
+                                    if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2]) == self.app.msg_id:
+                                        self.app.disp_id = str(int(self.app.disp_id) - 1)
+                                    else:
+                                        self.app.msg_id = str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2])
                     elif cd_return[1] == "trash":
                         if 129 <= int(self.app.msg_id) <= 140 and self.app.now_location == scenes.STAFF_M_SCENE:
                             self.app.msg_id = "132"
@@ -129,6 +130,14 @@ class Player:
                         self.story_flag_progress.append(cd_return[1])
                         self.app.msg_id = "9000"
                         self.app.disp_id = "152"
+                    elif "ch" in cd_return[1]:
+                        if 191 <= int(self.app.msg_id) <= 198:
+                            if cd_return[1] == "ch_2":
+                                self.app.msg_id = "192"
+                                if self.app.msg_id == self.app.disp_id:
+                                    self.app.disp_id = "191"
+                            elif cd_return[1] == "ch_4":
+                                self.app.msg_id = "197"
 
     def draw(self):
         """基本描画"""

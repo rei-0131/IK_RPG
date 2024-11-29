@@ -274,6 +274,7 @@ class App:
                             "disp_id":None
                         },
                         "scene": 1,
+                        "location": 6,
                         "x":136,
                         "y": 182,
                         "chara_data":self.chara_data,
@@ -290,6 +291,7 @@ class App:
                     self.player.y = self.loaddata["play_data"]["y"]
                     self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
                     self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
+                    self.now_location = self.loaddata["play_data"]["location"]
                     self.chara_data = init_data[self.mode]["chara_data"]
                     self.item_codes = init_data[self.mode]["item_codes"]
                     self.equip_codes = init_data[self.mode]["equip_codes"]
@@ -308,7 +310,7 @@ class App:
             if not self.new_game:
                 if self.in_word:
                     self.msg_id, self.disp_id = self.words.update()
-                    if self.disp_id == "49":
+                    if self.msg_id == "49":
                         self.story_flags_tf["ryoga_group"] = True
                 else:
                     if (self.msg_id == "152" or self.msg_id == "9000") and 3 <= self.story_flags_co["staff_it_search"]:
@@ -316,15 +318,23 @@ class App:
 
                 if 270 <= self.player.x and 80 <= self.player.y <= 140:
                     if self.now_location == scenes.CLASS1_SCENE or self.now_location == scenes.CLASS2_SCENE:
-                        if self.now_location == scenes.CLASS1_SCENE:
-                            if self.disp_id == "36":
-                                self.msg_id = "37"
-                            self.player.x = 20
-                            self.player.y = 166
-                        elif self.now_location == scenes.CLASS2_SCENE:
-                            self.player.x = 265
-                            self.player.y = 166
-                        self.now_location = scenes.WAY_SCENE_12
+                        if self.msg_id == "200" and self.now_location == scenes.CLASS1_SCENE:
+                            self.msg_id = "201"
+                            self.player.x = 268
+                            self.player.rl = -1
+                            self.player.key = "a"
+                            self.player.walk_pos = 0
+                            self.player.walk_num = 0
+                        else:
+                            if self.now_location == scenes.CLASS1_SCENE:
+                                if self.disp_id == "36":
+                                    self.msg_id = "37"
+                                self.player.x = 20
+                                self.player.y = 166
+                            elif self.now_location == scenes.CLASS2_SCENE:
+                                self.player.x = 265
+                                self.player.y = 166
+                            self.now_location = scenes.WAY_SCENE_12
                     elif self.now_location == scenes.CLASS3_SCENE:
                         self.player.x = 20
                         self.player.y = 166
@@ -342,6 +352,8 @@ class App:
                         self.now_location = scenes.STAFF_I_SCENE
                         self.player.x = 178
                         self.player.y = 165
+                        if self.msg_id == "212":
+                            self.msg_id = "213"
                     elif self.now_location == scenes.WAY_SCENE_E:
                         self.now_location = scenes.STAFF_E_SCENE
                         self.player.x = 178
@@ -427,7 +439,12 @@ class App:
                         self.player.x = 20
                         self.player.y = 146
 
-                if self.msg_id == "170":
+                if self.msg_id == "35":
+                    self.player.x = 192
+                    self.player.y = 109
+                    self.player.rl = 1
+                    self.player.key = "s"
+                elif self.msg_id == "170":
                     if "006" in self.imp_item_codes:
                         tmp = self.imp_item_codes.index("006")
                         self.imp_item_codes.pop(tmp)
@@ -435,6 +452,14 @@ class App:
                         self.imp_item_codes.pop(tmp)
                         tmp = self.imp_item_codes.index("008")
                         self.imp_item_codes.pop(tmp)
+                elif self.msg_id == "231":
+                    self.player.x = 166
+                    self.player.y = 110
+                    self.player.rl = 1
+                    self.player.key = "w"
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
+                    self.now_location = scenes.CLASS1_SCENE
             if self.in_battle and not self.random_encount:
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
@@ -521,10 +546,10 @@ class App:
         elif self.now_scene == scenes.MAIN_SCENE:
             pyxel.cls(0)
             pyxel.camera()
-            if not (self.msg_id == None or self.msg_id == "01"):
+            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231"):
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
-                if self.msg_id != "111":
+                if self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231":
                     pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
                     if self.now_location == scenes.CLASS1_SCENE:
                         umplus24.draw_text(260,20,"3-1",0)
@@ -556,7 +581,7 @@ class App:
                 pyxel.rect(12,194,43,6,0)
                 pyxel.rect(250,194,43,6,0)
                 pyxel.rect(290,120,10,43,0)
-                text = ["１","棟"]
+                text = ["２","棟"]
                 for i in range(2):
                     umplus10.draw_text(278,130 + i * 11,text[i],0)
                 umplus10.draw_text(12,183,"IT職員室",0)
@@ -565,7 +590,7 @@ class App:
                 pyxel.rect(12,194,43,6,0)
                 pyxel.rect(250,194,43,6,0)
                 umplus10.draw_text(15,183,"E職員室",0)
-                pyxel.text(265,188,"1F",0)
+                pyxel.text(265,188,"2F",0)
             elif self.now_location == scenes.MACHINE_SCENE:
                 umplus10.draw_text(175,182,"２棟",0)
             elif self.now_location == scenes.STAFF_I_SCENE:

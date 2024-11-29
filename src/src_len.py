@@ -34,7 +34,8 @@ filenames = [
     'src/assets/story_flags.json',
     'src/utils/rpg_str.py',
     'src/utils/scenes.py',
-    'tools/ai_save.py']
+    'tools/ai_save.py',
+    'web/app.py']
 
 all_line = 0
 all_char = 0
