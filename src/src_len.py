@@ -35,7 +35,11 @@ filenames = [
     'src/utils/rpg_str.py',
     'src/utils/scenes.py',
     'tools/ai_save.py',
-    'web/app.py']
+    'web/app.py',
+    'web/command/web_app.bat',
+    'web/command/web_server.bat',
+    'web_start.bat',
+    'game_start.bat']
 
 all_line = 0
 all_char = 0

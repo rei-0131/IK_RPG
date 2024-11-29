@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 import sklearn
 import joblib
 import numpy as np
+import sys
 
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
@@ -197,6 +198,7 @@ class App:
 
     def version_info(self):
         print("----------Module Versions----------")
+        print(f"python version:{sys.version}")
         if not local:
             import pyodide # type: ignore
             print(f"pyodide version:{pyodide.__version__}")
