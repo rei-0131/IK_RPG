@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 import sklearn
 import joblib
 import numpy as np
+import sys
 
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
@@ -197,6 +198,7 @@ class App:
 
     def version_info(self):
         print("----------Module Versions----------")
+        print(f"python version:{sys.version}")
         if not local:
             import pyodide # type: ignore
             print(f"pyodide version:{pyodide.__version__}")
@@ -439,11 +441,13 @@ class App:
                         self.player.x = 20
                         self.player.y = 146
 
-                if self.msg_id == "35":
-                    self.player.x = 192
-                    self.player.y = 109
+                if self.msg_id == "21":
+                    self.now_location = scenes.WAY_SCENE_12
+                elif self.msg_id == "35":
+                    self.player.x = 20
+                    self.player.y = 166
                     self.player.rl = 1
-                    self.player.key = "s"
+                    self.player.key = "w"
                 elif self.msg_id == "170":
                     if "006" in self.imp_item_codes:
                         tmp = self.imp_item_codes.index("006")
@@ -468,7 +472,7 @@ class App:
                 self.battle.set_enemy(len(self.words_j["story"][self.disp_id]["battle"][0]),self.words_j["story"][self.disp_id]["battle"][0])
                 self.be_scene = self.now_scene
                 self.now_scene = scenes.BATTLE_SCENE
-            if pyxel.btnp(pyxel.KEY_T):
+            if pyxel.btnp(pyxel.KEY_T) and self.is_test:
                 self.trade = True
             if self.trade:
                 self.trader.update()
@@ -494,29 +498,6 @@ class App:
                     self.setting_in.clean()
                     self.be_scene = self.now_scene
                     self.now_scene = scenes.IN_SETTING_SCENE
-            if (pyxel.btnp(pyxel.KEY_B) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_X)) and (self.now_scene == scenes.MAIN_SCENE or self.now_scene == 5):
-                if not self.now_scene == "cmd" and self.now_scene == scenes.BATTLE_SCENE:
-                    self.now_scene = self.be_scene
-                    self.sound_manager.stop()
-                    print("BGM STOP")
-                elif self.now_scene == "cmd" and self.back_scene == scenes.BATTLE_SCENE:
-                    self.now_scene = self.be_scene
-                    self.battle.clean()
-                    #以下、敵のランダムな数、敵の名称を決定するコード
-                    # enemy_num = random.randint(1,3)
-                    self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
-                    self.now_scene = scenes.BATTLE_SCENE
-                else:
-                    self.be_scene = self.now_scene
-                    self.battle.clean(self.now_scene)
-                    #以下、敵のランダムな数、敵の名称を決定するコード
-                    # enemy_num = random.randint(1,3)
-                    self.battle.set_enemy(4,[{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"},{"enemy_type":"general","enemy_code":"mob1"}])
-                    self.now_scene = scenes.BATTLE_SCENE
-                    print(self.battle.win)
-                    if self.battle.win == "":
-                        self.bgm_run = True
-                        self.sound_manager.play_bgm("test")
             if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
                 if self.now_scene == "cmd":
                     self.now_scene = self.back_scene
@@ -546,10 +527,10 @@ class App:
         elif self.now_scene == scenes.MAIN_SCENE:
             pyxel.cls(0)
             pyxel.camera()
-            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231"):
+            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "15" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231"):
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
-                if self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231":
+                if self.msg_id == "15" or self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231":
                     pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
                     if self.now_location == scenes.CLASS1_SCENE:
                         umplus24.draw_text(260,20,"3-1",0)
