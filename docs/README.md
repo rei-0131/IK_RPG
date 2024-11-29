@@ -2,7 +2,7 @@
 
 2DRPG
 
-[**現段階の master をプレイ**](https://tops-desired-hog.ngrok-free.app/IK_RPG)
+[**現段階の master をプレイ**](https://tops-desired-hog.ngrok-free.app)
 
 ## 使用モジュール
 
@@ -18,6 +18,7 @@
 - os
 - scikit-learn
 - copy
+- sys
 
 ## 外部
 
@@ -25,7 +26,20 @@
 - [pyxel-tracker](https://github.com/shiromofufactory/pyxel-tracker)
 
 ## 進捗
+ストーリー
+- [x] ぼく転入
+- [x] 桃井説明
+- [ ] アイテム集め
+- - [x] うちわへの道
+- - [x] ペンライトへの道
+- - [x] タオルへの道
+- - [ ] はっぴへの道
+- - [ ] 痛バへの道
+- [ ] 桃井覚醒
+- [ ] ラスボス
+- [ ] END
 
+プログラム
 - [x] タイトル画面
 - - [x] ニューゲーム処理
 - - [x] コンティニュー処理
@@ -35,8 +49,6 @@
 - - - [x] 魔法
 - - - [x] スキル
 - - [x] アイテム一覧
-- - [ ] 詳細設定
-- - - [x] 音量調節(0 ~ 7)
 - - [x] セーブデータ一覧(20 個ほど?)
 - - [x] チーム並び替え
 - - [x] ゲーム終了
@@ -106,8 +118,11 @@
         "staff":[staff_code,...],
         "other":[other_code,...]
       },
-      "story_flags":{
+      "story_flags_tf":{
         "story_flag":0 or 1
+      },
+      "story_flags_co":{
+        "story_flag":count
       }
     }
   }
