@@ -433,6 +433,9 @@ class In_Setting:
             self.enter_pos = -1
             self.finger_pos = 0
             self.app.title_s.question_mark = 0
+            self.app.save_load.finger_pos = 0
+            self.app.save_load.setting_finger = 1
+            self.app.save_load.save_pos = 1
             self.app.now_scene = self.title_ac
         elif self.enter_pos == 8:
             self.enter_pos = self.save_load.update(self.enter_pos)
