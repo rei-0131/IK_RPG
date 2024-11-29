@@ -3,7 +3,7 @@
 chcp 65001
 
 cd %~dp0
-if exist "RPG_V.zip" (
+if not exist RPG_V (
 	echo RPG_V.zipを解凍しています...
 	tar -xf RPG_V.zip -C %~dp0
 	echo RPG_V.zipの解凍が完了しました。
