@@ -15,13 +15,12 @@ import utils.scenes as scenes
 from title import Title
 from save import Save
 from save_load import SaveLoad
-from setting import In_Setting, Out_Setting
+from setting import Setting
 from player import Player
 from cloud_data import Cloud_data
 from Map import Map
 from battle import Battle
 from words import Words
-from option import Option
 from mob import Mob
 from trader import Trader
 
@@ -151,6 +150,7 @@ class App:
         self.story_animation = False
         self.random_encount = False
         self.trade = False
+        self.question_selects = {}
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
@@ -172,12 +172,8 @@ class App:
         self.save = Save(self)
         self.info("Loading SaveLoad...")
         self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
-        self.info("Loading Option...")
-        self.option = Option(self,self.init_x,self.init_y,umplus10)
-        self.info("Loading In_Setting...")
-        self.setting_in = In_Setting(self,self.init_x,self.init_y,umplus10)
-        self.info("Loading Out_Settting...")
-        self.setting_out = Out_Setting(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Setting...")
+        self.setting_in = Setting(self,self.init_x,self.init_y,umplus10)
         self.info("Loading Player...")
         self.player = Player(self,self.init_x,self.init_y)
         self.info("Loading Title...")
@@ -264,6 +260,7 @@ class App:
                     self.disp_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["disp_id"]
                     self.story_flags_tf = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags_tf"].items()}
                     self.story_flags_co = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags_co"].items()}
+                    self.question_selects = self.savedata[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
                     self.from_load = False
                 else:
                     print("new game")
@@ -277,14 +274,15 @@ class App:
                         },
                         "scene": 1,
                         "location": 6,
-                        "x":136,
-                        "y": 182,
+                        "x": -100,
+                        "y": -100,
                         "chara_data":self.chara_data,
                         "item_codes":self.item_codes,
                         "imp_item_codes":self.imp_item_codes,
                         "equip_codes":self.equip_codes,
                         "story_flags_tf":self.story_flags_tf,
-                        "story_flags_co":self.story_flags_co
+                        "story_flags_co":self.story_flags_co,
+                        "question_selects":self.question_selects
                         }
                     }
                     self.game_time = self.loaddata["play_data"]["time"]
@@ -294,10 +292,6 @@ class App:
                     self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
                     self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
                     self.now_location = self.loaddata["play_data"]["location"]
-                    self.chara_data = init_data[self.mode]["chara_data"]
-                    self.item_codes = init_data[self.mode]["item_codes"]
-                    self.equip_codes = init_data[self.mode]["equip_codes"]
-                    self.imp_item_codes = init_data[self.mode]["imp_item_codes"]
                 self.new_game = False
             if not self.scene_show[self.now_location - 6]:
                 for k,v in self.assets_info["chara"].items():
@@ -305,6 +299,8 @@ class App:
                         if i[0] == self.now_location:
                             self.mobs[self.now_location - 6].append([Mob(self,self.assets_info["chara"][k][i[1][2]],i,self.player_scale,k,j),k,i])
                 self.scene_show[self.now_location - 6] = True
+                for mob in self.mobs[self.now_location - 6]:
+                    mob[0].update()
             else:
                 for mob in self.mobs[self.now_location - 6]:
                     mob[0].update()
@@ -465,10 +461,12 @@ class App:
                     self.player.walk_num = 0
                     self.now_location = scenes.CLASS1_SCENE
             if self.in_battle and not self.random_encount:
+                print("loading battle")
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
                 if self.is_test:
                     self.battle.debug_clean()
+                print(self.words_j["story"][self.disp_id]["battle"][0])
                 self.battle.set_enemy(len(self.words_j["story"][self.disp_id]["battle"][0]),self.words_j["story"][self.disp_id]["battle"][0])
                 self.be_scene = self.now_scene
                 self.now_scene = scenes.BATTLE_SCENE
@@ -476,8 +474,6 @@ class App:
                 self.trade = True
             if self.trade:
                 self.trader.update()
-        elif self.now_scene == scenes.OUT_SETTING_SCENE:
-            self.now_scene = self.setting_out.update()
         elif self.now_scene == scenes.IN_SETTING_SCENE:
             self.setting_in.update()
         elif self.now_scene == scenes.LOAD_SCENE:
@@ -513,10 +509,10 @@ class App:
                 self.bgm_run = False
                 if self.battle.win == "player":
                     self.in_battle = False
-                    if not self.random_encount:
+                    if "battle" in self.words_j["story"][self.disp_id]:
                         self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
-                    else:
-                        self.random_encount = True
+                    if self.random_encount:
+                        self.random_encount = False
         elif self.now_scene == "cmd":
             self.cmd.update()
 
@@ -601,8 +597,6 @@ class App:
                     pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
                     pyxel.text(0,121,f"{self.msg_id = } {self.disp_id = }",0)
                     pyxel.text(0,132,f"{self.now_location = }",0)
-        elif self.now_scene == scenes.OUT_SETTING_SCENE:
-            self.setting_out.draw()
         elif self.now_scene == scenes.IN_SETTING_SCENE:
             self.setting_in.draw()
         elif self.now_scene == scenes.LOAD_SCENE:
