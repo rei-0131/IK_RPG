@@ -14,13 +14,37 @@ class Words:
         self.word_tri = [0,True]
         self.words = self.app.words_j
         self.finger_ad = self.app.assets_info["finger_ad"]
+        self.frame_count = 0
 
     def update(self) -> tuple[str,str]:
         """基本処理"""
         #操作
+        self.frame_count += 1
         if self.disp_id != None:
             if int(self.disp_id) >= int(self.msg_id):
                 self.disp_id = str(int(self.msg_id) - 1)
+        if not self.app.story_animation:
+            if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if self.msg_id == "38" and not self.app.story_flags_tf["energy_stu"]:
+                    self.app.story_flags_tf["energy_stu"] = True
+                if self.msg_id == "40" and not self.app.story_flags_tf["languid_stu"]:
+                    self.app.story_flags_tf["languid_stu"] = True
+                if self.msg_id == "42" and not self.app.story_flags_tf["ill_humour_stu"]:
+                    self.app.story_flags_tf["ill_humour_stu"] = True
+                if self.msg_id == "43" and not self.app.story_flags_tf["kindness_stu"]:
+                    self.app.story_flags_tf["kindness_stu"] = True
+                if self.msg_id == "50" and not self.app.story_flags_tf["quiet_stu"]:
+                    self.app.story_flags_tf["quiet_stu"] = True
+                if self.msg_id == "130" and not self.app.story_flags_tf["longhair_stu"]:
+                    self.app.story_flags_tf["longhair_stu"] = True
+                if self.msg_id == "192" and not self.app.story_flags_tf["sleepy_stu"]:
+                    self.app.story_flags_tf["sleepy_stu"] = True
+                if self.msg_id == "193" and not self.app.story_flags_tf["serious_stu"]:
+                    self.app.story_flags_tf["serious_stu"] = True
+                if self.msg_id == "196" and not self.app.story_flags_tf["gentle_stu"]:
+                    self.app.story_flags_tf["gentle_stu"] = True
+                if self.msg_id == "197" and not self.app.story_flags_tf["earphone_stu"]:
+                    self.app.story_flags_tf["earphone_stu"] = True
         if self.questions != "None":
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos != (len(self.questions) - 1) * -10:
@@ -33,7 +57,8 @@ class Words:
                 else:
                     self.finger_pos = (len(self.questions) - 1) * -10
             if not self.app.story_animation:
-                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and self.frame_count > 8:
+                    self.app.question_selects[self.msg_id] = abs(self.finger_pos // 10)
                     if "item" in self.word:
                         if self.word["item"][0] == "basic":
                             if self.word["item"][1] in self.app.item_codes.keys():
@@ -54,9 +79,10 @@ class Words:
                             self.app.in_battle = True
                         self.disp_id = self.msg_id
                     self.finger_pos = 0
+                    self.frame_count = 0
         else:
             if not self.app.story_animation:
-                if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if (pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and self.frame_count > 8:
                     if "item" in self.word:
                         if self.word["item"][0] == "basic":
                             if self.word["item"][1] in self.app.item_codes.keys():
@@ -82,6 +108,7 @@ class Words:
                         if "battle" in self.word:
                             self.app.in_battle = True
                         self.disp_id = self.msg_id
+                    self.frame_count = 0
 
         if self.word_tri[1]:
             if self.word_tri[0] < 3:

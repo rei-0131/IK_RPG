@@ -1199,6 +1199,8 @@ class Battle:
                         self.app.in_battle = False
                         if not self.app.random_encount:
                             self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
+                        else:
+                            self.app.random_encount = False
             else:
                 if self.select_num1 == -1:
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
@@ -1528,6 +1530,7 @@ class Battle:
                                 self.self_target_select_draw(fin=2)
                         elif self.select_num1 == 4:
                             self.app.now_scene = self.be_scene
+                            self.app.random_encount = False
             else:
                 if self.play_effect_info:
                     play_ef = []

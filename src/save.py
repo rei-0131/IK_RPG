@@ -50,7 +50,8 @@ class Save:
             "imp_item_codes":self.app.imp_item_codes,
             "equip_codes":self.app.equip_codes,
             "story_flags_tf":{k:int(v) for k,v in self.app.story_flags_tf.items()},
-            "story_flags_co":{k:int(v) for k,v in self.app.story_flags_co.items()}
+            "story_flags_co":{k:int(v) for k,v in self.app.story_flags_co.items()},
+            "question_selects":self.app.question_selects
         }
         print(f"{save_data[str(pos)]['play_data']=}")
         if self.app.local:

@@ -5,9 +5,8 @@ import time
 import utils.scenes as scenes
 from save_load import SaveLoad
 from cloud_data import Cloud_data
-from option import Option
 
-class In_Setting:
+class Setting:
     """
     プレイしているときの設定のクラス
 
@@ -50,12 +49,18 @@ class In_Setting:
         self.time_h= 0
         self.time_m = 0
         self.time_s = 0
+        self.select_story_finger = 0
+        self.select_story_pos = -1
+        self.select_story_show = 0
+        self.story = {}
+        self.story_chapter = []
+        self.show_story = 0
+        self.show_story_finger = 0
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.cloud = Cloud_data(self.app.is_test)
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
-        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
         if self.app.local:
-            self.save_data = json.load( open("configs/savedata.json","r",encoding="utf-8"))
+            self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
         self.scenes = self.app.scenes
@@ -408,6 +413,89 @@ class In_Setting:
             self.in_eqse_finger = 0
             self.in_eqse_pos = 0
 
+    def story_update(self):
+        for i in range(1,int(self.app.msg_id) + 1):
+            str_i = str(i).zfill(2)
+            story_add = True
+            if 38 <= i <= 39 and not self.app.story_flags_tf["energy_stu"]:
+                story_add = False
+            if 40 <= i <= 41 and not self.app.story_flags_tf["languid_stu"]:
+                story_add = False
+            if i == 42 and not self.app.story_flags_tf["ill_humour_stu"]:
+                story_add = False
+            if 43 <= i <=49 and not self.app.story_flags_tf["kindness_stu"]:
+                story_add = False
+            if 50 <= i <= 51 and not self.app.story_flags_tf["quiet_stu"]:
+                story_add = False
+            if 130 <= i <= 131 and not self.app.story_flags_tf["longhair_stu"]:
+                story_add = False
+            if i == 192 and not self.app.story_flags_tf["sleepy_stu"]:
+                story_add = False
+            if 193 <= i <= 195 and not self.app.story_flags_tf["serious_stu"]:
+                story_add = False
+            if i == 196 and not self.app.story_flags_tf["gentle_stu"]:
+                story_add = False
+            if 197 <= i <= 198 and not self.app.story_flags_tf["earphone_stu"]:
+                story_add = False
+
+            story_ch = 0
+            if 15 <= i <= 110:
+                story_ch = 1
+            if 111 <= i <= 186:
+                story_ch = 2
+            if 187 <= i <= 239:
+                story_ch = 3
+
+            if story_add:
+                if self.story_chapter[story_ch] not in self.story:
+                    self.story[self.story_chapter[story_ch]] = {}
+                self.story[self.story_chapter[story_ch]][str_i] = self.app.words_j["story"][str_i]
+                if str_i in self.app.question_selects:
+                    self.story[self.story_chapter[story_ch]][f"{str_i}_answer"] = self.app.words_j["story"][str_i]["questions"][self.app.question_selects[str_i]]
+
+        if self.select_story_pos == -1:
+            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                self.select_story_finger = 0
+                self.enter_pos = -1
+            if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
+                if self.select_story_finger != 0:
+                    self.select_story_finger -= 11
+                elif self.select_story_show != 0:
+                    self.select_story_show -= 1
+            if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
+                if len(self.story_chapter) > 3:
+                    if self.select_story_finger != 33:
+                        self.select_story_finger += 11
+                    else:
+                        if self.select_story_show != len(self.story_chapter) - 4:
+                            self.select_story_show += 1
+                else:
+                    if self.select_story_finger != (len(self.story_chapter) - 1) * 11:
+                        self.select_story_finger += 11
+            if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
+                self.select_story_pos = self.select_story_finger // 11
+                self.show_story_finger = 0
+                self.show_story = 0
+                print(self.story[self.story_chapter[self.select_story_pos]])
+        else:
+            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                self.select_story_pos = -1
+                self.story = {}
+            if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
+                if self.show_story_finger != 0:
+                    self.show_story_finger -= 1
+                elif self.show_story != 0:
+                    self.show_story -= 1
+            if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
+                if len(list(self.story[self.story_chapter[self.select_story_pos]].keys())) > 3:
+                    if self.show_story_finger != 3:
+                        self.show_story_finger += 1
+                    elif self.show_story != len(list(self.story[self.story_chapter[self.select_story_pos]].keys())) - 4:
+                        self.show_story += 1
+                else:
+                    if self.show_story_finger != len(list(self.story[self.story_chapter[self.select_story_pos]].keys())) - 1:
+                        self.show_story_finger += 1
+
     def update(self):
         """基本処理"""
         time_time = int(time.time() - self.app.game_time_start)
@@ -440,7 +528,7 @@ class In_Setting:
         elif self.enter_pos == 8:
             self.enter_pos = self.save_load.update(self.enter_pos)
         elif self.enter_pos == 7:
-            self.enter_pos = self.option.update(self.enter_pos)
+            self.story_update()
         elif self.enter_pos == 6:
             self.sort_update()
         elif self.enter_pos == 5:
@@ -866,13 +954,55 @@ class In_Setting:
                 self.umplus10.draw_text(71,int(6+(49*i)),t,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
+    def story_draw(self):
+        pyxel.rect(18,125,53,45,0)
+        pyxel.rectb(18,125,53,45,7)
+        if int(self.app.msg_id) > 239:
+            self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ"]
+        elif int(self.app.msg_id) > 186:
+            self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル"]
+        elif int(self.app.msg_id) > 110:
+            self.story_chapter = ["ぼく転入","うちわ","ペンライト"]
+        elif int(self.app.msg_id) > 14:
+            self.story_chapter = ["ぼく転入","うちわ"]
+        else:
+            self.story_chapter = ["ぼく転入"]
+        if self.enter_pos != -1:
+            pyxel.blt(0,125 + self.select_story_finger,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
+        for i,t in enumerate(self.story_chapter[self.select_story_show:self.select_story_show + 4]):
+            self.umplus10.draw_text(19,126 + i * 11,t,7)
+        if self.select_story_pos != -1:
+            for i,t in enumerate(list(self.story[self.story_chapter[self.select_story_pos]].keys())[self.show_story:self.show_story + 4]):
+                if i == self.show_story_finger:
+                    pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,1)
+                    pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
+                else:
+                    pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
+                    pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
+                self.umplus10.draw_text(71,int(6+(49*i)),t.replace("_answer","_A"),7)
+                if "answer" in t:
+                    self.umplus10.draw_text(110,int(6+(49*i)),"ぼく",7)
+                    if len(self.story[self.story_chapter[self.select_story_pos]][t]) > 22:
+                        for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos]][t]),22),range(5)):
+                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos]][t][n:n + 22],7)
+                    else:
+                        self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos]][t],7)
+                else:
+                    self.umplus10.draw_text(110,int(6+(49*i)),self.story[self.story_chapter[self.select_story_pos]][t]["speaker"],7)
+                    if len(self.story[self.story_chapter[self.select_story_pos]][t]["word"]) > 22:
+                        for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos]][t]["word"]),22),range(5)):
+                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos]][t]["word"][n:n + 22],7)
+                    else:
+                        self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos]][t]["word"],7)
+            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
+
     def draw(self):
         """基本描画"""
         pyxel.cls(0)
         pyxel.rect(18,5,65,116,0)
         pyxel.rectb(18,5,65,116,7)
-        pyxel.rect(5,self.init_y-75,66,75,0)
-        pyxel.rectb(5,self.init_y-75,66,75,7)
+        pyxel.rect(5,self.init_y-25,66,25,0)
+        pyxel.rectb(5,self.init_y-25,66,25,7)
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
         if self.enter_pos == -1:
@@ -884,7 +1014,7 @@ class In_Setting:
         self.umplus10.draw_text(19,50,"装備",7)
         self.umplus10.draw_text(19,61,"ステータス",7)
         self.umplus10.draw_text(19,72,"並び替え",7)
-        self.umplus10.draw_text(19,83,"オプション",7)
+        self.umplus10.draw_text(19,83,"ストーリー",7)
         self.umplus10.draw_text(19,94,"セーブ",7)
         self.umplus10.draw_text(19,105,"ゲーム終了",7)
         self.umplus10.draw_text(5,self.init_y-22,f"￥{self.app.money}".rjust(8,"　"),7)
@@ -892,7 +1022,7 @@ class In_Setting:
         if self.enter_pos == 8 or self.finger_pos//11 == 8:
             self.save_load.draw()
         elif self.enter_pos == 7 or self.finger_pos//11 == 7:
-            self.option.draw()
+            self.story_draw()
         elif self.enter_pos == 6 or self.finger_pos//11 == 6:
             self.sort_draw()
         elif self.enter_pos == 5 or self.finger_pos//11 == 5:
@@ -907,68 +1037,3 @@ class In_Setting:
             self.imp_draw()
         elif self.enter_pos == 0 or self.finger_pos//11 == 0:
             self.item_draw()
-
-
-class Out_Setting:
-    """
-    プレイしていないときの設定
-
-    Parameters
-    ----------
-    app : Any
-        Appクラスのインスタンス
-    x : int
-        画面の大きさx
-    y : int
-        画面の大きさy
-    ump : Any
-        umplus10(日本語出力)
-    """
-    def __init__(self,app,x,y,ump):
-        self.app = app
-        self.init_x = x
-        self.init_y = y
-        self.umplus10 = ump
-        self.finger_pos = 0
-        self.enter_pos = -1
-        self.setting_finger = 1
-        self.save_pos = 1
-        self.scenes = self.app.scenes
-        self.finger_ad = self.app.assets_info["finger_ad"]
-        self.setting_sc = scenes.OUT_SETTING_SCENE
-        self.title_sc = scenes.TITLE_SCENE
-        self.option = Option(self.app,self.init_x,self.init_y,self.umplus10)
-
-    def update(self):
-        """基本処理"""
-        if self.enter_pos == -1:
-            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
-                if self.finger_pos != 0:
-                    self.finger_pos -= 11
-            elif pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                if self.finger_pos != 11:
-                    self.finger_pos += 11
-            elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-                self.enter_pos = self.finger_pos//11
-            elif pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-                return self.title_sc
-            return self.setting_sc
-        elif self.enter_pos == 1:
-            pyxel.quit()
-        elif self.enter_pos == 0:
-            self.enter_pos = self.option.update(self.enter_pos)
-            return self.setting_sc
-
-    def draw(self):
-        """基本描画"""
-        pyxel.cls(0)
-        pyxel.rect(18,5,65,95,0)
-        pyxel.rectb(18,5,65,95,7)
-        pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
-        pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
-        if self.enter_pos == -1:
-            pyxel.blt(0,5+self.finger_pos,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
-        self.umplus10.draw_text(19,6,"オプション",7)
-        self.umplus10.draw_text(19,17,"ゲーム終了",7)
-        if self.enter_pos == 0 or self.finger_pos//11 == 0:
-            self.option.draw()
