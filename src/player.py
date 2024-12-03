@@ -76,7 +76,7 @@ class Player:
         if not cd_return[0]:
             self.x += self.dx
             self.y += self.dy
-            if self.dx != 0 or self.dy != 0:
+            if (self.dx != 0 or self.dy != 0) and not self.app.in_word:
                 if self.app.now_location == scenes.CLASS3_SCENE:
                     #0.444%
                     if 1 <= pyxel.rndi(1,100000) <= 444:

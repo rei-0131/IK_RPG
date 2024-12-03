@@ -307,7 +307,7 @@ class App:
             self.player.update()
             if not self.new_game:
                 if self.in_word:
-                    self.msg_id, self.disp_id = self.words.update()
+                    self.words.update()
                     if self.msg_id == "49":
                         self.story_flags_tf["ryoga_group"] = True
                 else:
@@ -486,7 +486,7 @@ class App:
                 self.my_modules()
                 self.load_bgms()
                 self.now_scene = 0
-        if not self.now_scene == scenes.START_SCENE:
+        if not self.now_scene == scenes.START_SCENE and not self.in_word:
             if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == scenes.MAIN_SCENE or self.now_scene == scenes.IN_SETTING_SCENE):
                 if self.now_scene == scenes.IN_SETTING_SCENE:
                     self.now_scene = self.be_scene
@@ -494,6 +494,7 @@ class App:
                     self.setting_in.clean()
                     self.be_scene = self.now_scene
                     self.now_scene = scenes.IN_SETTING_SCENE
+        if not self.now_scene == scenes.START_SCENE:
             if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
                 if self.now_scene == "cmd":
                     self.now_scene = self.back_scene
@@ -511,7 +512,7 @@ class App:
                     self.in_battle = False
                     if "battle" in self.words_j["story"][self.disp_id]:
                         self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
-                    if self.random_encount:
+                    elif self.random_encount:
                         self.random_encount = False
         elif self.now_scene == "cmd":
             self.cmd.update()
@@ -567,7 +568,7 @@ class App:
                 pyxel.rect(12,194,43,6,0)
                 pyxel.rect(250,194,43,6,0)
                 umplus10.draw_text(15,183,"E職員室",0)
-                pyxel.text(265,188,"2F",0)
+                pyxel.text(265,188,"1F",0)
             elif self.now_location == scenes.MACHINE_SCENE:
                 umplus10.draw_text(175,182,"２棟",0)
             elif self.now_location == scenes.STAFF_I_SCENE:
@@ -584,7 +585,7 @@ class App:
                 else:
                     self.in_word = False
                 if self.in_word:
-                    self.words.dec_word(self.msg_id)
+                    self.words.dec_word()
                 if self.mode == "debug" and self.debug_msg:
                     pyxel.text(0,0,f"{self.player.x = }",0)
                     pyxel.text(0,11,f"{self.player.y = }",0)
@@ -596,7 +597,16 @@ class App:
                     pyxel.text(0,77,f"{self.player.walk_num = }",0)
                     pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
                     pyxel.text(0,121,f"{self.msg_id = } {self.disp_id = }",0)
-                    pyxel.text(0,132,f"{self.now_location = }",0)
+                    if pyxel.btn(pyxel.GAMEPAD1_BUTTON_A):
+                        pyxel.text(290,0,"A",0)
+                    if pyxel.btn(pyxel.GAMEPAD1_BUTTON_B):
+                        pyxel.text(290,11,"B",0)
+                    if pyxel.btn(pyxel.GAMEPAD1_BUTTON_X):
+                        pyxel.text(290,22,"X",0)
+                    if pyxel.btn(pyxel.GAMEPAD1_BUTTON_Y):
+                        pyxel.text(290,33,"Y",0)
+                    if pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP):
+                        pyxel.text(290,44,"UP",0)
         elif self.now_scene == scenes.IN_SETTING_SCENE:
             self.setting_in.draw()
         elif self.now_scene == scenes.LOAD_SCENE:
