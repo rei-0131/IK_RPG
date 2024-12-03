@@ -13,7 +13,7 @@ filenames = [
     'src/cloud_data.py',
     'src/main.py',
     'src/Map.py',
-    'src/option.py',
+    'src/mob.py',
     'src/player.py',
     'src/words.py',
     'src/save_load.py',
@@ -21,15 +21,24 @@ filenames = [
     'src/setting.py',
     'src/title.py',
     'src/rpg_cmd.py',
+    "src/trader.py",
     'src/assets/magic.json',
     'src/assets/scenes.json',
     'src/assets/tools.json',
     'src/assets/init_data.json',
     'src/configs/config.ini',
     'src/assets/enemy_info.json',
-    'src/assets/cd_block.json',
+    'src/assets/assets_info.json',
+    'src/assets/character_data.json',
+    'src/assets/story_flags.json',
     'src/utils/rpg_str.py',
-    'tools/ai_save.py']
+    'src/utils/scenes.py',
+    'tools/ai_save.py',
+    'web/app.py',
+    'web/command/web_app.bat',
+    'web/command/web_server.bat',
+    'web_start.bat',
+    'game_start.bat']
 
 all_line = 0
 all_char = 0

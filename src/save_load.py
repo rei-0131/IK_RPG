@@ -1,6 +1,8 @@
 import pyxel
 import json
+import time
 
+import utils.scenes as scenes
 from save import Save
 from cloud_data import Cloud_data
 
@@ -45,12 +47,12 @@ class SaveLoad:
             self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
-        self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
-        self.load = self.scenes["code"]["LOAD_SCENE"]
-        self.title = self.scenes["code"]["TITLE_SCENE"]
-        self.main = self.scenes["code"]["MAIN_SCENE"]
+        self.first_show = True
+        self.load = scenes.LOAD_SCENE
+        self.title = scenes.TITLE_SCENE
+        self.main = scenes.MAIN_SCENE
 
-    def update(self,ent=None):
+    def update(self,ent=None,battle_load = False) -> int:
         """
         基本処理
 
@@ -58,44 +60,95 @@ class SaveLoad:
         ent:int
             不明
         """
-        if self.left:
-            enter_pos = ent
-            if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
-                if self.setting_finger != 1:
-                    self.setting_finger -= 1
-            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                if self.setting_finger != 20:
-                    self.setting_finger += 1
-            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-                enter_pos = -1
-            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                print(f"{self.setting_finger=}")
-                if self.over_load:
-                    self.save.newsave(self.setting_finger)
+        if not battle_load:
+            if self.first_show:
                 if self.app.local:
                     self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
                 else:
                     self.save_data = self.cloud.load()
-            return enter_pos
+                self.first_show = False
+            if self.left:
+                enter_pos = ent
+                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                    enter_pos = -1
+                    self.first_show = True
+                if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
+                    if self.setting_finger != 1:
+                        self.setting_finger -= 1
+                if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
+                    if self.setting_finger != 20:
+                        self.setting_finger += 1
+                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                    print(f"{self.setting_finger=}")
+                    if self.over_load:
+                        self.save.newsave(self.setting_finger)
+                    if self.app.local:
+                        self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                    else:
+                        self.save_data = self.cloud.load()
+                return enter_pos
+            else:
+                enter_pos = self.load
+                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                    enter_pos = self.title
+                    self.first_show = True
+                if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
+                    if self.setting_finger != 1:
+                        self.setting_finger -= 1
+                if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
+                    if self.setting_finger != 20:
+                        self.setting_finger += 1
+                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                    print(f"{self.setting_finger=}")
+                    if self.load:
+                        if str(self.setting_finger) in self.save_data:
+                            self.continue_game = True
+                            enter_pos = self.main
+                    if self.over_load:
+                        self.save.newsave(self.setting_finger)
+                return enter_pos
         else:
-            enter_pos = self.load
+            if self.first_show:
+                if self.app.local:
+                    self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                else:
+                    self.save_data = self.cloud.load()
+                self.first_show = False
+            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                self.app.battle.select_num1 = -1
+                self.first_show = True
             if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.setting_finger != 1:
                     self.setting_finger -= 1
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.setting_finger != 20:
                     self.setting_finger += 1
-            if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-                enter_pos = self.title
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                print(f"{self.setting_finger=}")
-                if self.load:
-                    if str(self.setting_finger) in self.save_data:
-                        self.continue_game = True
-                        enter_pos = self.main
-                if self.over_load:
-                    self.save.newsave(self.setting_finger)
-            return enter_pos
+                if str(self.setting_finger) in self.save_data:
+                    if self.app.local:
+                        self.savedata = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                    else:
+                        self.savedata = self.app.cloud.load()
+                        time.sleep(0.3)
+                    self.game_time_start = time.time()
+                    print(f"{self.setting_finger=}")
+                    self.app.loaddata = self.app.savedata[str(self.setting_finger)]
+                    self.app.game_time = self.app.savedata[str(self.setting_finger)]["play_data"]["time"]
+                    self.app.money = self.app.savedata[str(self.setting_finger)]["play_data"]["money"]
+                    self.app.now_scene = self.app.savedata[str(self.setting_finger)]["play_data"]["scene"]
+                    self.app.now_location = self.app.savedata[str(self.setting_finger)]["play_data"]["location"]
+                    self.app.player.x = self.app.savedata[str(self.setting_finger)]["play_data"]["x"]
+                    self.app.player.y = self.app.savedata[str(self.setting_finger)]["play_data"]["y"]
+                    self.app.chara_data = self.app.savedata[str(self.setting_finger)]["play_data"]["chara_data"]
+                    self.app.item_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["item_codes"]
+                    self.app.imp_item_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["imp_item_codes"]
+                    self.app.equip_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["equip_codes"]
+                    self.app.msg_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["msg_id"]
+                    self.app.disp_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["disp_id"]
+                    self.app.story_flags_tf = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_tf"].items()}
+                    self.app.story_flags_co = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_co"].items()}
+                    self.question_selects = self.savedata[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
+                    self.app.in_battle = False
 
     def draw(self):
         """基本描画"""

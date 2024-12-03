@@ -83,6 +83,7 @@ class Battle:
         self.xp_stop = False
         self.status_diff = {}
         self.levelup_data = self.app.INIT_DATA["levelup"]
+        self.save_chara_data = {}
 
     def clean(self,scene):
         """初期化"""
@@ -97,8 +98,6 @@ class Battle:
         self.item_num = 0
         self.item_pos = 0
         self.dis_num = 0
-        self.enemy_num = 0
-        self.enemy_code = []
         self.enemy_status = []
         self.operation_player = True
         self.player_op = []
@@ -176,13 +175,16 @@ class Battle:
         # self.in_battle = False
         # self.win = "player"
 
+    def save_chara(self,chara):
+        self.save_chara_data = copy.deepcopy(chara)
+
     def debug_clean(self):
         for i in range(len(self.chara_data)):
             self.chara_data[list(self.chara_data.keys())[i]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["HP"][0]
             self.chara_data[list(self.chara_data.keys())[i]]["MP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["MP"][0]
 
     def check_level(self):
-        def xp_ck(cr):
+        def xp_ck(cr) -> float:
             xp = 0
             level = self.chara_data[cr]["Level"] + 1
             if 0 <= level <= 16:
@@ -215,6 +217,9 @@ class Battle:
         """
         self.enemy_num = enemy_num
         self.enemy_code = enemy_code
+        self.enemy_status = []
+        self.enemy_effect = []
+        self.vibe_enemy = []
         for i in range(self.enemy_num):
             self.enemy_status.append(copy.deepcopy(self.enemy_info[self.enemy_code[i]["enemy_type"]][self.enemy_code[i]["enemy_code"]]["status"]))
             self.enemy_effect.append({
@@ -1050,7 +1055,7 @@ class Battle:
                             self.ai_action = self.AI.predict(ai_input_data)
                             self.ai_action[:,0] -= 1
                             self.ai_turn = self.turn
-                            print(self.ai_action)
+                            print(f"{self.ai_action}")
                         i = self.attack_count
                         ai_ac = self.ai_action[i]
                         if int(ai_ac[0]) >= len(list(self.chara_data.keys())) or self.chara_data[list(self.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
@@ -1129,67 +1134,94 @@ class Battle:
                                     vibe["total"] += 1
                         self.hp_int("none")
         else:
-            if not self.xp_stop:
-                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                    while not self.xp_stop:
-                        for i,k in enumerate(self.chara_data.keys()):
-                            be_level_ten = 0
-                            no_level_ten = 0
-                            if not self.xp_get:
-                                self.xp_up[k][2] = self.chara_data[k]["Level"]
-                            xp = 0
-                            level = self.chara_data[k]["Level"] + 1
-                            if 0 <= level <= 16:
-                                xp = level ** 2 + 6 * level
-                            elif 17 <= level <= 30:
-                                xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
-                            elif 31 <= level:
-                                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
-                            if self.chara_data[k]["XP"] >= xp:
-                                self.chara_data[k]["Level"] += 1
-                                self.chara_data[k]["XP"] -= xp
-                                if len(str(self.xp_up[k][2])) > 1:
-                                    be_level_ten = int(str(self.xp_up[k][2])[-2])
-                                if len(str(self.chara_data[k]["Level"])) > 1:
-                                    no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
-                                if be_level_ten < no_level_ten:
-                                    ten_level = no_level_ten - be_level_ten
-                                    self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
-                                    self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
-                                self.status_diff[k]["HP"] += self.levelup_data["HP"]
-                                self.status_diff[k]["MP"] += self.levelup_data["MP"]
-                                self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
-                                self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
-                            if not self.xp_stop:
-                                if self.xp_up[k][0] >= 15:
-                                    self.chara_data[k]["XP"] += 15
-                                    self.xp_up[k][0] -= 15
-                                else:
-                                    self.chara_data[k]["XP"] += self.xp_up[k][0]
-                                    self.xp_up[k][0] = 0
-                                for j in self.xp_up:
-                                    if self.xp_up[j][0] == 0:
-                                        self.xp_stop = True
+            if self.win == "player":
+                if not self.xp_stop:
+                    if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                        while not self.xp_stop:
+                            for i,k in enumerate(self.chara_data.keys()):
+                                be_level_ten = 0
+                                no_level_ten = 0
+                                if not self.xp_get:
+                                    self.xp_up[k][2] = self.chara_data[k]["Level"]
+                                xp = 0
+                                level = self.chara_data[k]["Level"] + 1
+                                if 0 <= level <= 16:
+                                    xp = level ** 2 + 6 * level
+                                elif 17 <= level <= 30:
+                                    xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
+                                elif 31 <= level:
+                                    xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                                if self.chara_data[k]["XP"] >= xp:
+                                    self.chara_data[k]["Level"] += 1
+                                    self.chara_data[k]["XP"] -= xp
+                                    if len(str(self.xp_up[k][2])) > 1:
+                                        be_level_ten = int(str(self.xp_up[k][2])[-2])
+                                    if len(str(self.chara_data[k]["Level"])) > 1:
+                                        no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
+                                    if be_level_ten < no_level_ten:
+                                        ten_level = no_level_ten - be_level_ten
+                                        self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
+                                        self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
+                                    self.status_diff[k]["HP"] += self.levelup_data["HP"]
+                                    self.status_diff[k]["MP"] += self.levelup_data["MP"]
+                                    self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
+                                    self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
+                                if not self.xp_stop:
+                                    if self.xp_up[k][0] >= 15:
+                                        self.chara_data[k]["XP"] += 15
+                                        self.xp_up[k][0] -= 15
                                     else:
-                                        self.xp_stop = False
-                    self.check_level()
-                    self.xp_stop = True
+                                        self.chara_data[k]["XP"] += self.xp_up[k][0]
+                                        self.xp_up[k][0] = 0
+                                    for j in self.xp_up:
+                                        if self.xp_up[j][0] == 0:
+                                            self.xp_stop = True
+                                        else:
+                                            self.xp_stop = False
+                        self.check_level()
+                        self.xp_stop = True
+                else:
+                    if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                        for i in self.xp_up:
+                            self.chara_data[i]["XP"] += self.xp_up[i][0]
+                            self.xp_up[i][0] -= 0
+                            self.chara_data[i]["HP"][0] += self.status_diff[i]["HP"]
+                            self.chara_data[i]["MP"][0] += self.status_diff[i]["MP"]
+                            self.chara_data[i]["atk_ab"] += self.status_diff[i]["atk_ab"]
+                            self.chara_data[i]["def_ab"] += self.status_diff[i]["def_ab"]
+                            self.chara_data[i]["satisfaction"][0] += self.status_diff[i]["satisfaction"][0]
+                            self.chara_data[i]["satisfaction"][1] += self.status_diff[i]["satisfaction"][1]
+                        money = 0
+                        for i in self.enemy_status:
+                            money += i["money"]
+                        self.app.money += money
+                        self.app.now_scene = self.be_scene
+                        self.app.in_battle = False
+                        if "battle" in self.app.words_j["story"][self.app.disp_id]:
+                            self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
+                        elif self.app.random_encount:
+                            self.app.random_encount = False
             else:
-                if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                    for i in self.xp_up:
-                        self.chara_data[i]["XP"] += self.xp_up[i][0]
-                        self.xp_up[i][0] -= 0
-                        self.chara_data[i]["HP"][0] += self.status_diff[i]["HP"]
-                        self.chara_data[i]["MP"][0] += self.status_diff[i]["MP"]
-                        self.chara_data[i]["atk_ab"] += self.status_diff[i]["atk_ab"]
-                        self.chara_data[i]["def_ab"] += self.status_diff[i]["def_ab"]
-                        self.chara_data[i]["satisfaction"][0] += self.status_diff[i]["satisfaction"][0]
-                        self.chara_data[i]["satisfaction"][1] += self.status_diff[i]["satisfaction"][1]
-                    money = 0
-                    for i in self.enemy_status:
-                        money += i["money"]
-                    self.app.money += money
-                    self.app.now_scene = self.be_scene
+                if self.select_num1 == -1:
+                    if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
+                        if self.finger_pos1 != 0:
+                            self.finger_pos1 -= 11
+                        else:
+                            self.finger_pos1 = 11
+                    if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
+                        if self.finger_pos1 != 11:
+                            self.finger_pos1 += 11
+                        else:
+                            self.finger_pos1 = 0
+                    if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                        self.select_num1 = self.finger_pos1 // 11
+                else:
+                    if self.select_num1 == 0:
+                        self.clean(self.be_scene)
+                        self.app.chara_data = copy.deepcopy(self.save_chara_data)
+                        self.set_enemy(self.enemy_num,self.enemy_code)
+                    elif self.select_num1 == 1:
+                        self.app.save_load.update(battle_load = True)
 
     def sm_draw(self,sm):
         """
@@ -1360,12 +1392,15 @@ class Battle:
                 live_num += 1
                 live_p.append(len_)
         live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
-        if len(live_e) == 0:
-            self.win = "player"
-            self.in_battle = False
-        elif len(live_p) == 0:
-            self.win = "enemy"
-            self.in_battle = False
+        if self.win == "":
+            if len(live_e) == 0:
+                self.win = "player"
+                self.in_battle = False
+            elif len(live_p) == 0:
+                self.win = "enemy"
+                self.finger_pos1 = 0
+                self.select_num1 = -1
+                self.in_battle = False
 
         for i,data,ch_i in zip(range(1,1+len(self.chara_data.items())),enumerate(self.chara_data),range(len(self.chara_data.keys()))):
             height = 18*(i - 1)
@@ -1495,6 +1530,7 @@ class Battle:
                                 self.self_target_select_draw(fin=2)
                         elif self.select_num1 == 4:
                             self.app.now_scene = self.be_scene
+                            self.app.random_encount = False
             else:
                 if self.play_effect_info:
                     play_ef = []
@@ -1525,13 +1561,19 @@ class Battle:
                         self.player_op = []
         else:
             if self.win == "enemy":
-                pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
-                pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
-                self.umplus10.draw_text(9,6,"敗北メッセージ".center(26,"　"),7)
+                pyxel.rect(99,88,95,45,0)
+                pyxel.rectb(99,88,95,45,7)
+                self.umplus10.draw_text(127,89,"YOU LOSE",7)
+                self.umplus10.draw_text(124,100,"CONTINUE",7)
+                self.umplus10.draw_text(115,111,"セーブのロード",7)
+                pyxel.blt(100,100 + self.finger_pos1,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
+                if self.select_num1 == 1:
+                    pyxel.cls(0)
+                    self.app.save_load.draw()
             else:
                 pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
                 pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
-                self.umplus10.draw_text(9,6,"勝利メッセージ".center(26,"　"),7)
+                self.umplus10.draw_text(9,6,"YOU WIN".center(26,"　"),7)
                 self.umplus10.draw_text(6,43,"ＨＰ".rjust(5,"　"),7)
                 self.umplus10.draw_text(6,54,"ＭＰ".rjust(5,"　"),7)
                 self.umplus10.draw_text(6,65,"ＡＴＫ".rjust(5,"　"),7)

@@ -5,6 +5,19 @@ import utils.rpg_str as rpg_str
 
 #try文の細分化
 class CMD:
+    """プレイヤーに関するクラス
+
+    Parameter:
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
+    """
     def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x
@@ -109,6 +122,7 @@ class CMD:
         self.battle_ = self.app.battle
         print(f"{self.battle_.init_x = }")
         print(f"{self.battle_.init_y = }")
+        print(f"{self.battle_.be_scene = }")
         print(f"{self.battle_.select_chara = }")
         print(f"{self.battle_.select_num1 = }")
         print(f"{self.battle_.finger_pos1 = }")
@@ -153,7 +167,6 @@ class CMD:
         print(f"{self.battle_.ai_turn = }")
         print(f"{self.battle_.play_effect_info = }")
         print(f"{self.battle_.chara_data = }")
-        print(f"{self.battle_.ai_data = }")
         self.log_type = "str"
         self.log = "正常に実行されました"
 
@@ -200,6 +213,9 @@ class CMD:
                 self.app.battle.enemy_status[int(arg[2])]["HP"][1] = 0
                 self.log_type = "str"
                 self.log = f"インデックス{arg[2]}の敵ををキルしました"
+        else:
+            self.log_type = "str"
+            self.log = "存在しない対象です"
 
     def mode(self,arg):
         self.log_type = "str"
@@ -235,16 +251,12 @@ class CMD:
         else:
             self.log = "存在しないモードです"
 
-    def story(self,arg):
+    def debugmsg(self, arg):
         self.log_type = "str"
-        if arg[1] == "true" or arg[1] == "True":
-            self.app.story = True
-            self.log = "storyを有効にしました"
-        elif arg[1] == "false" or arg[1] == "False":
-            self.app.story = False
-            self.log = "storyを無効にしました"
-        else:
-            self.log = "TrueかFalseを入力してください"
+        if arg[1] == "True" or arg[1] == "true":
+            self.app.debug_msg = True
+        elif arg[1] == "False" or arg[1] == "false":
+            self.app.debug_msg = False
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
@@ -268,8 +280,8 @@ class CMD:
                     self.kill(cmd_config)
                 elif cmd_config[0] == "mode":
                     self.mode(cmd_config)
-                elif cmd_config[0] == "story":
-                    self.story(cmd_config)
+                elif cmd_config[0] == "debugmsg":
+                    self.debugmsg(cmd_config)
                 else:
                     self.log_type = "ex"
                     self.log = f"Not found command '{cmd_config[0]}'"

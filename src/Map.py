@@ -1,4 +1,5 @@
 import pyxel
+import numpy as np
 
 
 class Map:
@@ -21,8 +22,72 @@ class Map:
         self.key = ""
         self.next_x = 0
         self.next_y = 0
+        self.player_scale = self.app.player_scale
 
-    def cd_check(self, x, y, dx, dy, num, key, scale, gap_x = 0,gap_y = 0) -> tuple[bool,str]:
+    def check_pos(self, key, player_scale, x, y, scale, coord) -> tuple[np.ndarray, np.ndarray]:
+        gap_x = coord[0]
+        gap_y = coord[1]
+        point_n = 10
+        check_x = [x - (self.init_x // 2 * (1 - scale) + gap_x * scale - coord[3] * scale) - 8 * (player_scale - 1) for _ in range(point_n)]
+        check_y = [y - (self.init_y // 2 * (1 - scale) + gap_y * scale - coord[4] * scale) - 8 * (player_scale - 1) for _ in range(point_n)]
+        check_x = np.array(check_x)
+        check_y = np.array(check_y)
+        # print([check_x[0], check_y[0]],end="\r")
+        # 0,0 9,9 17,17 25,25
+        if key == "w":
+            check_x[0] += 2
+            for i in range(1,point_n):
+                check_x[i] += 2 + 12 / (point_n - 1) * i * player_scale
+        elif key == "s":
+            check_x[0] += 2
+            for i in range(1,point_n):
+                check_x[i] += 2 + 12 / (point_n - 1) * i * player_scale
+            check_y += 16 * player_scale
+        elif key == "a":
+            check_x += 2
+            for i in range(1,point_n - 1):
+                check_y[i] += 16 / (point_n - 2) * i * player_scale
+            check_y[point_n - 1] += 16 * player_scale
+        elif key == "d":
+            for i in range(point_n):
+                check_x[i] += 14 * player_scale
+            for i in range(1,point_n - 1):
+                check_y[i] += 16 / (point_n - 2) * i * player_scale
+            check_y[point_n - 1] += 16 * player_scale
+        return check_x, check_y
+
+    def check_b(self, key, player_scale, x, y) -> tuple[np.ndarray, np.ndarray]:
+        point_n = 10
+        check_x = [x for _ in range(point_n)]
+        check_y = [y for _ in range(point_n)]
+        check_x = np.array(check_x)
+        check_y = np.array(check_y)
+        # print([check_x[0], check_y[0]],end="\r")
+        # 0,0 9,9 17,17 25,25
+        if key == "w":
+            check_x[0] += 2
+            for i in range(1,point_n):
+                check_x[i] += 2 + 10 / (point_n - 1) * i * player_scale
+            check_y -= (player_scale - 1) * 7
+        elif key == "s":
+            check_x[0] += 2
+            for i in range(1,point_n):
+                check_x[i] += 2 + 10 / (point_n - 1) * i * player_scale
+            check_y += 12 * player_scale
+        elif key == "a":
+            check_x -= 2
+            for i in range(1,point_n - 1):
+                check_y[i] += 12 / (point_n - 2) * i * player_scale
+            check_y[point_n - 1] += 12 * player_scale
+        elif key == "d":
+            for i in range(point_n):
+                check_x[i] += 10 * player_scale
+            for i in range(1,point_n - 1):
+                check_y[i] += 12 / (point_n - 2) * i * player_scale
+            check_y[point_n - 1] += 12 * player_scale
+        return check_x, check_y
+
+    def cd_check(self, x, y, dx, dy, num, key, scale, coord) -> tuple[bool,str,int]:
         """
         当たり判定の判定
 
@@ -43,10 +108,8 @@ class Map:
             スマホやゲームパッドの場合はキーボードに相当するキー
         scale : float
             表示しているタイルマップのスケール
-        gap_x : int
-            タイルマップの初期表示座標x
-        gap_y : int
-            タイルマップの初期表示座標y
+        coord : list
+            タイルマップの座標系
 
         Returns
         ----------
@@ -58,70 +121,50 @@ class Map:
         self.next_x = x + dx
         self.next_y = y + dy
         self.key = key
-        check_x = [self.next_x - (self.init_x // 2 * (1 - scale) + (gap_x * scale)) for _ in range(3)]
-        check_y = [self.next_y - (self.init_y // 2 * (1 - scale) + (gap_y * scale)) for _ in range(3)]
-        print([check_x[0], check_y[0]],end="\r")
-        if self.key == "w":
-            check_x[0] += 2
-            check_x[1] += 7
-            check_x[2] += 12
-        elif self.key == "s":
-            check_x[0] += 2
-            check_x[1] += 7
-            check_x[2] += 12
-            check_y[0] += 14
-            check_y[1] += 14
-            check_y[2] += 14
-        elif self.key == "a":
-            check_y[0] += 3
-            check_y[1] += 8
-            check_y[2] += 13
-        elif self.key == "d":
-            check_x[0] += 12
-            check_x[1] += 12
-            check_x[2] += 12
-            check_y[0] += 3
-            check_y[1] += 8
-            check_y[2] += 13
+        if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+            if self.key == "w":
+                self.next_y -= self.app.player.walk_speed
+            elif self.key == "s":
+                self.next_y += self.app.player.walk_speed
+            elif self.key == "a":
+                self.next_x -= self.app.player.walk_speed
+            elif self.key == "d":
+                self.next_x += self.app.player.walk_speed
+        check_x, check_y = self.check_pos(self.key, self.player_scale, self.next_x, self.next_y, scale, coord)
         pixel_size = 8 * scale
-        pyxel.text(0,99,f"cd_block1{str(list(pyxel.tilemaps[num].pget(check_x[0]//pixel_size, check_y[0]//pixel_size)))}",7)
-        pyxel.text(0,110,f"cd_block2{str(list(pyxel.tilemaps[num].pget(check_x[1]//pixel_size, check_y[1]//pixel_size)))}",7)
-        pyxel.text(0,121,f"cd_block3{str(list(pyxel.tilemaps[num].pget(check_x[2]//pixel_size, check_y[2]//pixel_size)))}",7)
-        pyxel.text(0, 132, f"{check_x}", 7)
-        pyxel.text(0, 143, f"{check_y}", 7)
+        if self.app.mode == "debug" and self.app.debug_msg:
+            pyxel.text(0, 99, f"{check_x}", 0)
+            pyxel.text(0, 110, f"{check_y}", 0)
         cd = [i[0] for i in self.collision_data[str(num)]]
-        if (list(pyxel.tilemaps[num].pget(check_x[0] // pixel_size, check_y[0] // pixel_size)) not in cd
-            and list(pyxel.tilemaps[num].pget(check_x[1] // pixel_size, check_y[1] // pixel_size)) not in cd
-            and list(pyxel.tilemaps[num].pget(check_x[2] // pixel_size, check_y[2] // pixel_size)) not in cd):
-            return False,""
+        co_3 = coord[3] * scale
+        co_4 = coord[4] * scale
+        checkb_x,checkb_y = self.check_b(self.key, self.player_scale, self.next_x, self.next_y)
+        if 9 <= self.app.now_location <= 11:
+            check_x += 5
+        for x_,y_ in zip(checkb_x,checkb_y):
+            pyxel.pset(x_,y_,0)
+        cd_tf = [list(pyxel.tilemaps[num].pget(check[0] // pixel_size, check[1] // pixel_size)) in cd or not 0 <= b[0] <= 300 or not 0 <= b[1] <= 200 for check,b in zip(zip(check_x, check_y),zip(checkb_x, checkb_y))]
+        if True in cd_tf:
+            xy_index = cd_tf.index(True)
+            try:
+                type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[xy_index] // pixel_size, check_y[xy_index] // pixel_size)))][1]
+            except ValueError:
+                type_ = ""
+            if self.next_x <= 85 and 54 <= self.next_y <= 65 and 9 <= self.app.now_location <= 11:
+                return True, "trash", 0
+            return True, type_, 0
         else:
-            type_ = ""
-            if list(pyxel.tilemaps[num].pget(check_x[0] // pixel_size, check_y[0] // pixel_size)) in cd:
-                type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[0] // pixel_size, check_y[0] // pixel_size)))][1]
-            elif list(pyxel.tilemaps[num].pget(check_x[1] // pixel_size, check_y[1] // pixel_size)) in cd:
-                type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[1] // pixel_size, check_y[1] // pixel_size)))][1]
-            elif list(pyxel.tilemaps[num].pget(check_x[2] // pixel_size, check_y[2] // pixel_size)) in cd:
-                type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[2] // pixel_size, check_y[2] // pixel_size)))][1]
-            return True,type_
-
-    def cd_debug(self):
-        """
-        当たり判定のデバッグ
-        現在のフレームの当たり判定の場所を表示
-        """
-        if self.key == "w":
-            pyxel.line(self.next_x + 2, self.next_y, self.next_x + 2, self.next_y, 0)
-            pyxel.line(self.next_x + 8, self.next_y, self.next_x + 8, self.next_y, 0)
-            pyxel.line(self.next_x + 16 - 4, self.next_y, self.next_x + 16 - 4, self.next_y, 0)
-        elif self.key == "s":
-            pyxel.line(self.next_x + 2, self.next_y + 14, self.next_x + 2, self.next_y + 14, 0)
-            pyxel.line(self.next_x + 8, self.next_y + 14, self.next_x + 8, self.next_y + 14, 0)
-            pyxel.line(self.next_x + 16 - 2,self.next_y + 14,self.next_x + 16 - 2,self.next_y + 14,0)
-        elif self.key == "a":
-            pyxel.line(self.next_x, self.next_y + 3, self.next_x, self.next_y + 3, 0)
-            pyxel.line(self.next_x, self.next_y + 8, self.next_x, self.next_y + 8, 0)
-            pyxel.line(self.next_x, self.next_y + 16 - 3, self.next_x, self.next_y + 16 - 3, 0)
-        elif self.key == "d":
-            pyxel.line(self.next_x + 12, self.next_y + 3, self.next_x + 12, self.next_y + 3, 0)
-            pyxel.line(self.next_x + 12, self.next_y + 8, self.next_x + 12, self.next_y + 8, 0)
-            pyxel.line(self.next_x + 12,self.next_y + 16 - 3,self.next_x + 12,self.next_y + 16 - 3,0)
+            for i,mob in enumerate(self.app.mobs[self.app.now_location - 6]):
+                if mob[0].display[0]:
+                    mob_x = [mob[0].show[0] - 6 * (self.player_scale - 1) for _ in range(4)]
+                    mob_y = [mob[0].show[1] - 8 * (self.player_scale - 1) for _ in range(4)]
+                    mob_x[1] += 14 * self.player_scale
+                    mob_x[3] += 14 * self.player_scale
+                    mob_y[2] += 15 * self.player_scale
+                    mob_y[3] += 15 * self.player_scale
+                    for xx, yy in zip(mob_x,mob_y):
+                        pyxel.pset(xx,yy,0)
+                    for x_, y_ in zip(checkb_x, checkb_y):
+                        if mob_x[0] <= x_ <= mob_x[1] and mob_y[0] <= y_ <= mob_y[2]:
+                            return True, "mob", i
+            return False, "" , 0

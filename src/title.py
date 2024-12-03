@@ -1,6 +1,7 @@
 import pyxel
 import time
 
+import utils.scenes as scenes
 from save_load import SaveLoad
 
 class Title:
@@ -26,49 +27,43 @@ class Title:
         self.game_start = -1
         self.umplus10 = ump
         self.scenes = self.app.scenes
-        self.MAIN_SCENE = self.scenes["code"]["MAIN_SCENE"]
-        self.TITLE_SCENE = self.scenes["code"]["TITLE_SCENE"]
-        self.Continue = self.scenes["code"]["LOAD_SCENE"]
-        self.setting_scene = self.scenes["code"]["OUT_SETTING_SCENE"]
+        self.MAIN_SCENE = scenes.MAIN_SCENE
+        self.TITLE_SCENE = scenes.TITLE_SCENE
+        self.Continue = scenes.LOAD_SCENE
+        self.setting_scene = scenes.OUT_SETTING_SCENE
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False,app=self.app)
         self.save_data = None
         self.enter_pos = 1
-        self.setting = self.app.setting_out
         self.finger_ad = self.app.assets_info["finger_ad"]
 
     def update(self):
         """基本処理"""
         if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-            if self.question_mark != -18:
-                self.question_mark -= 9
+            if self.question_mark != -15:
+                self.question_mark -= 15
             else:
                 self.question_mark = 0
         if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
             if self.question_mark != 0:
-                self.question_mark += 9
+                self.question_mark += 15
             else:
-                self.question_mark = -18
+                self.question_mark = -15
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
-            self.enter_pos = self.question_mark // 9
+            self.enter_pos = self.question_mark // 15
             if self.enter_pos == 0:
                 self.app.new_game = True
                 self.app.game_time_start = time.time()
-                if self.app.story:
-                    pass
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
                 self.app.save_load.save_data = self.app.save_data
                 self.app.new_game = True
                 return self.Continue
-            elif self.enter_pos == -2:
-                return self.setting_scene
 
     def draw(self):
         """基本描画"""
         pyxel.cls(0)
         self.umplus10.draw_text(90,100,"     一工クエスト     ",7)
         self.umplus10.draw_text(103,110,"-   New Game   -",7)
-        self.umplus10.draw_text(103,120,"-   Continue   -",7)
-        self.umplus10.draw_text(103,130,"-   Settings   -",7)
+        self.umplus10.draw_text(103,125,"-   Continue   -",7)
         self.umplus10.draw_text(103,150,"-  PRESS Enter -",7)
-        pyxel.blt(self.init_x-217,self.init_y-88-self.question_mark,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
+        pyxel.blt(self.init_x-217,self.init_y-90-self.question_mark,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
