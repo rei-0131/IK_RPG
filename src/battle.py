@@ -1197,9 +1197,9 @@ class Battle:
                         self.app.money += money
                         self.app.now_scene = self.be_scene
                         self.app.in_battle = False
-                        if not self.app.random_encount:
+                        if "battle" in self.app.words_j["story"][self.app.disp_id]:
                             self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
-                        else:
+                        elif self.app.random_encount:
                             self.app.random_encount = False
             else:
                 if self.select_num1 == -1:
