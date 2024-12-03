@@ -1,4 +1,5 @@
 import pyxel
+import numpy as np
 
 class Words:
     def __init__(self,app,x,y,umplus10):
@@ -6,22 +7,40 @@ class Words:
         self.init_x = x
         self.init_y = y
         self.umplus10 = umplus10
-        self.msg_id = self.app.msg_id
-        self.disp_id = self.app.disp_id
         self.finger_pos = 0
         self.word = {}
         self.questions = "None"
         self.word_tri = [0,True]
-        self.words = self.app.words
-        self.tools = self.app.tools
-        self.equip_codes = self.app.equip_codes
-        self.imp_item_codes = self.app.imp_item_codes
-        self.item_codes = self.app.item_codes
+        self.words = self.app.words_j
         self.finger_ad = self.app.assets_info["finger_ad"]
+        self.frame_count = 0
 
-    def update(self) -> tuple[str,str]:
+    def update(self):
         """基本処理"""
         #操作
+        self.frame_count += 1
+        if not self.app.story_animation:
+            if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if self.app.msg_id == "38" and not self.app.story_flags_tf["energy_stu"]:
+                    self.app.story_flags_tf["energy_stu"] = True
+                if self.app.msg_id == "40" and not self.app.story_flags_tf["languid_stu"]:
+                    self.app.story_flags_tf["languid_stu"] = True
+                if self.app.msg_id == "42" and not self.app.story_flags_tf["ill_humour_stu"]:
+                    self.app.story_flags_tf["ill_humour_stu"] = True
+                if self.app.msg_id == "43" and not self.app.story_flags_tf["kindness_stu"]:
+                    self.app.story_flags_tf["kindness_stu"] = True
+                if self.app.msg_id == "50" and not self.app.story_flags_tf["quiet_stu"]:
+                    self.app.story_flags_tf["quiet_stu"] = True
+                if self.app.msg_id == "130" and not self.app.story_flags_tf["longhair_stu"]:
+                    self.app.story_flags_tf["longhair_stu"] = True
+                if self.app.msg_id == "192" and not self.app.story_flags_tf["sleepy_stu"]:
+                    self.app.story_flags_tf["sleepy_stu"] = True
+                if self.app.msg_id == "193" and not self.app.story_flags_tf["serious_stu"]:
+                    self.app.story_flags_tf["serious_stu"] = True
+                if self.app.msg_id == "196" and not self.app.story_flags_tf["gentle_stu"]:
+                    self.app.story_flags_tf["gentle_stu"] = True
+                if self.app.msg_id == "197" and not self.app.story_flags_tf["earphone_stu"]:
+                    self.app.story_flags_tf["earphone_stu"] = True
         if self.questions != "None":
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos != (len(self.questions) - 1) * -10:
@@ -33,50 +52,61 @@ class Words:
                     self.finger_pos += 10
                 else:
                     self.finger_pos = (len(self.questions) - 1) * -10
-            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                if "item" in self.word:
-                    if self.word["item"][0] == "basic":
-                        if self.word["item"][1] in self.item_codes.keys():
-                            self.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
-                        else:
-                            self.item_codes[self.word["item"][1]] = {
-                                "value": int(self.word["item"][2]),
-                                "battle": self.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
-                            }
-                    elif self.word["item"][0] == "important":
-                        self.imp_item_codes.append(self.word["item"][1])
-                    elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
-                        self.equip_codes[self.word["item"][0]].append(self.word["item"][1])
-                if self.word["to"] != "None":
-                    self.msg_id = self.word["to"]
-                else:
-                    if "battle" in self.word:
-                        self.app.in_battle = True
-                    self.disp_id = self.msg_id
-                self.finger_pos = 0
+            if not self.app.story_animation:
+                if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and self.frame_count > 8:
+                    self.app.question_selects[self.app.msg_id] = abs(self.finger_pos // 10)
+                    if "item" in self.word:
+                        if self.word["item"][0] == "basic":
+                            if self.word["item"][1] in self.app.item_codes.keys():
+                                self.app.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
+                            else:
+                                self.app.item_codes[self.word["item"][1]] = {
+                                    "value": int(self.word["item"][2]),
+                                    "battle": self.app.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
+                                }
+                        elif self.word["item"][0] == "important":
+                            self.app.imp_item_codes.append(self.word["item"][1])
+                        elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
+                            self.app.equip_codes[self.word["item"][0]].append(self.word["item"][1])
+                    if self.word["to"] != "None":
+                        self.app.msg_id = self.word["to"]
+                    else:
+                        if "battle" in self.word:
+                            self.app.in_battle = True
+                        self.app.disp_id = self.app.msg_id
+                    self.finger_pos = 0
+                    self.frame_count = 0
         else:
-            if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                if "item" in self.word:
-                    if self.word["item"][0] == "basic":
-                        if self.word["item"][1] in self.item_codes.keys():
-                            self.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
+            if not self.app.story_animation:
+                if (pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and self.frame_count > 8:
+                    if "item" in self.word:
+                        if self.word["item"][0] == "basic":
+                            if self.word["item"][1] in self.app.item_codes.keys():
+                                self.app.item_codes[self.word["item"][1]]["value"] += int(self.word["item"][2])
+                            else:
+                                self.app.item_codes[self.word["item"][1]] = {
+                                    "value": int(self.word["item"][2]),
+                                    "battle": self.app.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
+                                }
+                        elif self.word["item"][0] == "important":
+                            self.app.imp_item_codes.append(self.word["item"][1])
+                        elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
+                            self.app.equip_codes[self.word["item"][0]].append(self.word["item"][1])
+                    if "chara" in self.word:
+                        if type(self.word["chara"]) == list:
+                            for ch in self.word["chara"]:
+                                self.app.chara_data[ch] = self.app.character_data[ch]
                         else:
-                            self.item_codes[self.word["item"][1]] = {
-                                "value": int(self.word["item"][2]),
-                                "battle": self.tools[self.word["item"][0]][self.word["item"][1]]["battle"]
-                            }
-                    elif self.word["item"][0] == "important":
-                        self.imp_item_codes.append(self.word["item"][1])
-                    elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
-                        self.equip_codes[self.word["item"][0]].append(self.word["item"][1])
-                if "chara" in self.word:
-                    self.app.chara_data[self.word["chara"]] = self.app.character_data[self.word["chara"]]
-                if self.word["to"] != "None":
-                    self.msg_id = self.word["to"]
-                else:
-                    if "battle" in self.word:
-                        self.app.in_battle = True
-                    self.disp_id = self.msg_id
+                            self.app.chara_data[self.word["chara"]] = self.app.character_data[self.word["chara"]]
+                    if self.word["to"] != "None":
+                        self.app.msg_id = self.word["to"]
+                    else:
+                        if "battle" in self.word:
+                            self.app.in_battle = True
+                        key = str([int(k) for k, v in self.words["story"].items() if v == self.word][np.abs(np.asarray([int(k) for k, v in self.words["story"].items() if v == self.word]) - int(self.app.msg_id)).argmin()]).zfill(2)
+                        print(f"{[int(k) for k, v in self.words['story'].items() if v == self.word]} {key}")
+                        self.app.disp_id = key
+                    self.frame_count = 0
 
         if self.word_tri[1]:
             if self.word_tri[0] < 3:
@@ -89,9 +119,7 @@ class Words:
             else:
                 self.word_tri[1] = True
 
-        return self.msg_id, self.disp_id
-
-    def dec_word(self,msg_id):
+    def dec_word(self):
         """
         言葉を装飾
 
@@ -101,8 +129,7 @@ class Words:
             メッセージID
         """
         #文字を出力
-        self.msg_id = msg_id
-        self.word = self.words["story"][msg_id]
+        self.word = self.words["story"][self.app.msg_id]
         if "questions" in self.word:
             self.questions = self.word["questions"]
         else:
@@ -131,8 +158,8 @@ class Words:
             for i in self.questions:
                 if max_str < len(i) * 11:
                     max_str = len(i) * 11
-            pyxel.blt(self.init_x-max_str - 17,self.init_y-98-self.finger_pos+(39-que_height),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
-            pyxel.rect(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,0)
-            pyxel.rectb(self.init_x-max_str,self.init_y-61-que_height,max_str-5,que_height+2,7)
+            pyxel.blt(self.init_x-max_str - 22,self.init_y-98-self.finger_pos+(39-que_height),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
+            pyxel.rect(self.init_x-max_str-5,self.init_y-61-que_height,max_str,que_height+2,0)
+            pyxel.rectb(self.init_x-max_str-5,self.init_y-61-que_height,max_str,que_height+2,7)
             for i,h in zip(self.questions,range(0,len(self.questions)*12,11)):
-                self.umplus10.draw_text(self.init_x-max_str + 2,self.init_y-98+h+(39-que_height),i,7)
+                self.umplus10.draw_text(self.init_x-max_str - 3,self.init_y-98+h+(39-que_height),i,7)

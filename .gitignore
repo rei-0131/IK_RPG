@@ -1,3 +1,5 @@
 RPG_V/
 .vscode/
 src/assets/first_ai.txt
+web/command/
+web_start.bat
