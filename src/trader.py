@@ -94,7 +94,6 @@ class Trader:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
                 self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
-            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         else:
             for i,t in enumerate(self.app.tools[self.equip_en[self.type]]):
                 info = self.app.tools[self.equip_en[self.type]][t]
@@ -105,7 +104,6 @@ class Trader:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
                 self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
-            pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
         if self.buy_question:
             pyxel.rect(100,80,100,40,0)
             pyxel.rectb(100,80,100,40,7)

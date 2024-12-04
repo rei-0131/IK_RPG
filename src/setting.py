@@ -445,6 +445,8 @@ class Setting:
                 story_ch = 2
             if 187 <= i <= 239:
                 story_ch = 3
+            if 240 <= i <= 324:
+                story_ch = 4
 
             if story_add:
                 if self.story_chapter[story_ch] not in self.story:

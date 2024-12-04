@@ -12,6 +12,7 @@ if not exist RPG_V (
 )
 
 echo RPGを起動しています...
-RPG_V\Scripts\python.exe "src/main.py"
+call RPG_V\Scripts\Activate
+python -u "src/main.py"
 
 PAUSE

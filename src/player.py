@@ -111,11 +111,13 @@ class Player:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     if cd_return[1] == "mob":
                         if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] != -1:
-                            if self.app.mobs[self.app.now_location - 6][cd_return[2]][2] == "T":
+                            if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] == "T":
                                 self.app.trade = True
                             else:
                                 story_f = True
                                 if self.app.disp_id == "115" and self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] == 98:
+                                    story_f = False
+                                if self.app.story_flags_tf["200_speak"] and self.app.mobs[self.app.now_location - 6][cd_return[2]][2][3] == [[187,212]]:
                                     story_f = False
                                 if story_f:
                                     if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2]) == self.app.msg_id:
