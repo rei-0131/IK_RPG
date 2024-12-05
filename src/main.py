@@ -324,7 +324,6 @@ class App:
                         if self.msg_id == "200" and self.now_location == scenes.CLASS1_SCENE:
                             self.msg_id = "201"
                             self.player.x = 268
-                            self.player.rl = -1
                             self.player.key = "a"
                             self.player.walk_pos = 0
                             self.player.walk_num = 0
@@ -357,12 +356,13 @@ class App:
                         self.player.y = 155
                         if self.msg_id == "212":
                             self.msg_id = "213"
+                        elif self.msg_id == "267":
+                            self.msg_id = "268"
                     elif self.now_location == scenes.WAY_SCENE_E:
                         self.now_location = scenes.STAFF_E_SCENE
                         self.player.x = 141
                         self.player.y = 155
                         if self.msg_id == "141":
-                            self.player.rl = 1
                             self.player.key = "w"
                             self.player.walk_pos = 0
                             self.player.walk_num = 0
@@ -377,7 +377,6 @@ class App:
                                 self.msg_id = "52"
                             else:
                                 self.msg_id = "71"
-                            self.player.rl = -1
                             self.player.key = "a"
                             self.player.walk_pos = 0
                             self.player.walk_num = 0
@@ -442,12 +441,10 @@ class App:
                 elif self.msg_id == "35":
                     self.player.x = 20
                     self.player.y = 166
-                    self.player.rl = 1
                     self.player.key = "w"
                 elif self.msg_id == "118":
                     self.player.x = 160
                     self.player.y = 120
-                    self.player.rl = 1
                     self.player.key = "d"
                 elif self.msg_id == "136":
                     self.player.key = "s"
@@ -458,7 +455,6 @@ class App:
                 elif self.msg_id == "154":
                     self.player.x = 22
                     self.player.y = 100
-                    self.player.rl = 1
                     self.player.key = "d"
                 elif self.msg_id == "200":
                     if not self.story_flags_tf["200_speak"]:
@@ -474,11 +470,50 @@ class App:
                 elif self.msg_id == "231":
                     self.player.x = 166
                     self.player.y = 110
-                    self.player.rl = 1
                     self.player.key = "w"
                     self.player.walk_pos = 0
                     self.player.walk_num = 0
                     self.now_location = scenes.CLASS1_SCENE
+                elif self.msg_id == "240":
+                    self.player.x = 300
+                    self.player.y = 0
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
+                elif self.msg_id == "259":
+                    self.player.x = 166
+                    self.player.y = 100
+                    self.player.key = "a"
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
+                elif self.msg_id == "260" and self.now_location == scenes.WAY_SCENE_I and self.player.x <= 70 and self.player.y >= 150:
+                    self.msg_id = "261"
+                elif self.msg_id == "266":
+                    self.player.x = 30
+                    self.player.y = 120
+                    self.player.key = "w"
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
+                elif self.msg_id == "297":
+                    self.player.x = 165
+                    self.player.y = 80
+                    self.player.key = "a"
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
+                elif self.msg_id == "299":
+                    self.player.x = 186
+                    self.player.y = 95
+                    self.player.key = "w"
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
+                elif self.msg_id == "316":
+                    self.player.x = 300
+                    self.player.y = 0
+                elif self.msg_id == "324":
+                    self.player.x = 186
+                    self.player.y = 95
+                    self.player.key = "d"
+                    self.player.walk_pos = 0
+                    self.player.walk_num = 0
             if self.in_battle and not self.random_encount:
                 print("loading battle")
                 self.battle.clean(self.now_scene)
@@ -542,10 +577,10 @@ class App:
             self.title_s.draw()
         elif self.now_scene == scenes.MAIN_SCENE:
             pyxel.cls(0)
-            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "15" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231"):
+            if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "15" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231" or self.msg_id == "240"):
                 self.coord = self.scenes["coordinate"][str(self.now_location)]
                 self.scale = self.coord[8]
-                if self.msg_id == "15" or self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231":
+                if self.msg_id == "15" or self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231" or self.msg_id == "240":
                     if scenes.CLASS1_SCENE <= self.now_location <= scenes.CLASS3_SCENE:
                         pyxel.blt(-150,-100,self.class_room,0,0,600,400,0,scale = 0.5)
                     elif scenes.STAFF_I_SCENE <= self.now_location <= scenes.STAFF_E_SCENE:
