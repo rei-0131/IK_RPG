@@ -84,6 +84,10 @@ class Battle:
         self.status_diff = {}
         self.levelup_data = self.app.INIT_DATA["levelup"]
         self.save_chara_data = {}
+        self.escape = False
+        self.escape_rate = 25
+        self.in_boss = False
+        self.escape_count = 0
 
     def clean(self,scene):
         """初期化"""
@@ -170,6 +174,10 @@ class Battle:
                 0
             ]} for i in self.chara_data.keys()}
         self.levelup_data = self.app.INIT_DATA["levelup"]
+        self.escape = False
+        self.escape_rate = 25
+        self.in_boss = False
+        self.escape_count = 0
 
         # 経験値確認用
         # self.in_battle = False
@@ -233,6 +241,9 @@ class Battle:
                 "value":0,
                 "move":"p"
             })
+        for i in self.enemy_status:
+            if i["enemy_name"]["enemy_type"] == "boss":
+                self.in_boss = True
 
     def player_op_over(self):
         """プレイヤー行動チェック"""
@@ -1529,8 +1540,20 @@ class Battle:
                             else:
                                 self.self_target_select_draw(fin=2)
                         elif self.select_num1 == 4:
-                            self.app.now_scene = self.be_scene
-                            self.app.random_encount = False
+                            if self.in_boss:
+                                self.escape = True
+                                self.select_num1 = -1
+                            else:
+                                if 1 <= pyxel.rndi(1,100) <= self.escape_rate:
+                                    self.app.now_scene = self.be_scene
+                                    self.app.random_encount = False
+                                else:
+                                    self.escape = True
+                                    self.escape_rate += 25
+                                    self.select_num1 = -1
+                            if not self.in_boss:
+                                self.select_num1 = -1
+                                self.operation_player = False
             else:
                 if self.play_effect_info:
                     play_ef = []
@@ -1559,6 +1582,18 @@ class Battle:
                     else:
                         self.play_effect_info = False
                         self.player_op = []
+            if self.escape or self.escape_count != 0:
+                if self.escape_count < 60:
+                    pyxel.rect(40,177,220,15,0)
+                    pyxel.rectb(40,177,220,15,7)
+                    if self.in_boss:
+                        self.umplus10.draw_text(5,180,"逃げてはいけないような気がする".center(28,"　"))
+                    else:
+                        self.umplus10.draw_text(5,180,"しかし、逃げられなかった".center(28,"　"))
+                    self.escape_count += 1
+                else:
+                    self.escape_count = 0
+                    self.escape = False
         else:
             if self.win == "enemy":
                 pyxel.rect(99,88,95,45,0)

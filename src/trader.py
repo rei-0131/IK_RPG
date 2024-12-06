@@ -41,6 +41,8 @@ class Trader:
             if not self.buy_question:
                 if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.buy_equip_type = False
+                    self.disp_select = 0
+                    self.buy_select = 0
                 if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
                     if self.buy_select != 0:
                         self.buy_select -= 1
@@ -52,10 +54,12 @@ class Trader:
                         if self.disp_select != 3:
                             self.disp_select += 1
                 if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
-                    self.buy_question = True
+                    show_weapon = {i:self.app.tools[self.equip_en[self.type]][i] if self.app.tools[self.equip_en[self.type]][i][6] <= self.app.chara_data["ぼく"]["Level"] else f"ぼくのレベル{self.app.tools[self.equip_en[self.type]][i][6]}以上で開放" for i in self.app.tools[self.equip_en[self.type]].keys()}
+                    select = show_weapon[list(show_weapon.keys())[self.disp_select]]
+                    if type(select) == list:
+                        if select[5] <= self.app.money:
+                            self.buy_question = True
             else:
-                if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
-                    self.buy_question = False
                 if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                     if self.conf:
                         self.conf = False
@@ -68,10 +72,10 @@ class Trader:
                         self.conf = True
                 if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                     if self.conf:
-                        self.app.money -= self.app.tools[self.equip_en[self.type]][self.buy_select][5]
-                        self.app.equip_codes[self.equip_en[self.type]].append(self.app.tools[self.equip_en[self.type]][self.buy_select][0])
-                    else:
-                        self.buy_question = False
+                        print(self.app.tools[self.equip_en[self.type]][list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select]])
+                        self.app.money -= self.app.tools[self.equip_en[self.type]][list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select]][5]
+                        self.app.equip_codes[self.equip_en[self.type]].append(list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select])
+                    self.buy_question = False
 
     def draw(self):
         pyxel.rect(18,5,65,89,0)
@@ -84,29 +88,40 @@ class Trader:
         pyxel.rect(70,5,self.init_x-70,self.init_y-5,0)
         pyxel.rectb(70,5,self.init_x-70,self.init_y-5,7)
         self.umplus10.draw_text(5,self.init_y-11,f"￥{self.app.money}".rjust(8,"　"),7)
-        if len(list(self.app.tools[self.equip_en[self.type]].keys())) > 4:
-            for i,t in enumerate(list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select - self.disp_select:self.buy_select + 4 - self.disp_select]):
-                info = self.app.tools[self.equip_en[self.type]][t]
-                if i == self.disp_select:
+        show_weapon = {i:self.app.tools[self.equip_en[self.finger_pos // 11]][i] if self.app.tools[self.equip_en[self.finger_pos // 11]][i][6] <= self.app.chara_data["ぼく"]["Level"] else f"ぼくのレベル{self.app.tools[self.equip_en[self.finger_pos // 11]][i][6]}以上で開放" for i in self.app.tools[self.equip_en[self.finger_pos // 11]].keys()}
+        if len(list(show_weapon.keys())) > 4:
+            for i,t in enumerate(list(show_weapon.items())[self.buy_select - self.disp_select:self.buy_select + 4 - self.disp_select]):
+                info = self.app.tools[self.equip_en[self.finger_pos // 11]][t[0]]
+                if i == self.disp_select and self.buy_equip_type:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,1)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
                 else:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
-                self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
+                if type(t[1]) == list:
+                    self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
+                else:
+                    self.umplus10.draw_text(71,int(6 + (49 * i)),t[1],7)
         else:
-            for i,t in enumerate(self.app.tools[self.equip_en[self.type]]):
-                info = self.app.tools[self.equip_en[self.type]][t]
-                if i == self.disp_select:
+            for i,t in enumerate(show_weapon.items()):
+                info = self.app.tools[self.equip_en[self.finger_pos // 11]][t[0]]
+                if i == self.disp_select and self.buy_equip_type:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,1)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
                 else:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
-                self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
+                if type(t[1]) == list:
+                    self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
+                else:
+                    self.umplus10.draw_text(71,int(6 + (49 * i)),t[1],7)
         if self.buy_question:
-            pyxel.rect(100,80,100,40,0)
-            pyxel.rectb(100,80,100,40,7)
-            self.umplus10.draw_text(101,81,"購入しますか？",7)
+            pyxel.rect(90,80,110,40,0)
+            pyxel.rectb(90,80,110,40,7)
+            self.umplus10.draw_text(112,81,"購入しますか？",7)
+            if self.conf:
+                pyxel.rect(95,102,33,11,1)
+            else:
+                pyxel.rect(150,102,33,11,1)
             self.umplus10.draw_text(101,102,"はい",7)
             self.umplus10.draw_text(151,102,"いいえ",7)
