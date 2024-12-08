@@ -62,7 +62,7 @@ class Title:
     def draw(self):
         """基本描画"""
         pyxel.cls(0)
-        self.umplus10.draw_text(90,100,"     一工クエスト     ",7)
+        self.umplus10.draw_text(85,100,"     イチ工クエスト     ",7)
         self.umplus10.draw_text(103,110,"-   New Game   -",7)
         self.umplus10.draw_text(103,125,"-   Continue   -",7)
         self.umplus10.draw_text(103,150,"-  PRESS Enter -",7)
