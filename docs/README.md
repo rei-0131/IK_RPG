@@ -33,7 +33,7 @@
 - - [x] うちわへの道
 - - [x] ペンライトへの道
 - - [x] タオルへの道
-- - [ ] はっぴへの道
+- - [x] はっぴへの道
 - - [ ] 痛バへの道
 - [ ] 桃井覚醒
 - [ ] ラスボス
@@ -123,6 +123,9 @@
       },
       "story_flags_co":{
         "story_flag":count
+      },
+      "question_selects":{
+        "msg_id":0 ~ 3
       }
     }
   }
@@ -170,3 +173,4 @@
 |       staff_code        |              杖の装備コード               |
 |       other_code        |            その他の装備コード             |
 |       story_flag        |            ストーリーフラグ               |
+|    question_selects     |            答えた質問の選択肢             |
