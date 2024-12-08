@@ -14,10 +14,10 @@ pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 
 class App:
     def __init__(self):
-        self.scenes = json.load(open("assets/scenes.json","r",encoding="utf-8"))
+        self.scenes = json.load(open("../assets/scenes.json","r",encoding="utf-8"))
         self.init_x = init_x
         self.init_y = init_y
-        pyxel.load("assets/assets.pyxres")
+        pyxel.load("../assets/assets.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):

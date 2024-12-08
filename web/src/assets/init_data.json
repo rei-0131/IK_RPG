@@ -244,6 +244,7 @@
             "boots":["001","002","003","004"],
             "sword":["001","002","003","004"],
             "staff":["001","002","003","004"],
+            "shield":["002"],
             "other":["001","002"]
         },
         "imp_item_codes":["001"]
@@ -277,10 +278,10 @@
                 "atk_buff": 100,
                 "def_buff": 100,
                 "equipments": {
-                    "head": "001",
-                    "armor": "001",
-                    "leggings": "001",
-                    "boots": "001",
+                    "head": "",
+                    "armor": "",
+                    "leggings": "",
+                    "boots": "",
                     "sword": ""
                 }
             }
@@ -295,6 +296,7 @@
             "boots":["001"],
             "sword":[],
             "staff":[],
+            "shield":[],
             "other":[]
         },
         "imp_item_codes":[]
