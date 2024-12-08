@@ -370,8 +370,8 @@ class App:
                 if 250 <= self.player.x <= 278 and 171 <= self.player.y:
                     if self.now_location == scenes.WAY_SCENE_12:
                         self.now_location = scenes.CLASS2_SCENE
-                        self.player.x = 265
-                        self.player.y = 105
+                        self.player.x = 300
+                        self.player.y = 0
                         if 36 <= int(self.disp_id) < 52:
                             if self.story_flags_tf["ryoga_group"]:
                                 self.msg_id = "52"
@@ -442,9 +442,24 @@ class App:
                     self.player.x = 20
                     self.player.y = 166
                     self.player.key = "w"
+                elif self.msg_id == "69":
+                    self.player.x = 210
+                    self.player.y = 105
+                    self.player.key = "a"
+                elif self.msg_id == "96":
+                    self.player.x = 190
+                    self.player.y = 105
+                    self.player.key = "d"
+                elif self.msg_id == "98":
+                    self.player.x = 300
+                    self.player.y = 0
+                elif self.msg_id == "114" or self.msg_id == "190":
+                    self.player.x = 163
+                    self.player.y = 110
+                    self.player.key = "w"
                 elif self.msg_id == "118":
                     self.player.x = 160
-                    self.player.y = 120
+                    self.player.y = 110
                     self.player.key = "d"
                 elif self.msg_id == "136":
                     self.player.key = "s"

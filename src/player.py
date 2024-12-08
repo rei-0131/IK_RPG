@@ -72,6 +72,10 @@ class Player:
                         self.walk_pos += 1
                         self.walk_pm = "p"
                 self.walk_num += 1
+        else:
+            if self.walk_num != 0 or self.walk_pos != 0:
+                self.walk_num = 0
+                self.walk_pos = 0
         cd_return = self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale,self.app.coord)
         if not cd_return[0]:
             self.x += self.dx
@@ -85,7 +89,8 @@ class Player:
                         if self.app.is_test:
                             self.app.battle.debug_clean()
                         enemy_num = pyxel.rndi(1,4)
-                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} for _ in range(enemy_num)]
+                        enemy_code = [pyxel.rndi(0,1) for _ in range(enemy_num)]
+                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} if i == 0 else {"enemy_type":"general","enemy_code":"mob2"} for i in enemy_code]
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
@@ -101,7 +106,8 @@ class Player:
                         if self.app.is_test:
                             self.app.battle.debug_clean()
                         enemy_num = pyxel.rndi(1,4)
-                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} for _ in range(enemy_num)]
+                        enemy_code = [pyxel.rndi(0,1) for _ in range(enemy_num)]
+                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} if i == 0 else {"enemy_type":"general","enemy_code":"mob2"} for i in enemy_code]
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
