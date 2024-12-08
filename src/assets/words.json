@@ -364,15 +364,15 @@
             "battle": [
                 [
                     {
-                        "enemy_type": "general",
+                        "enemy_type": "boss",
                         "enemy_code": "mob1"
                     },
                     {
-                        "enemy_type": "general",
-                        "enemy_code": "mob1"
+                        "enemy_type": "boss",
+                        "enemy_code": "mob2"
                     },
                     {
-                        "enemy_type": "general",
+                        "enemy_type": "boss",
                         "enemy_code": "mob1"
                     }
                 ],
@@ -505,15 +505,15 @@
             "battle": [
                 [
                     {
-                        "enemy_type": "general",
+                        "enemy_type": "boss",
                         "enemy_code": "mob1"
                     },
                     {
-                        "enemy_type": "general",
-                        "enemy_code": "mob1"
+                        "enemy_type": "boss",
+                        "enemy_code": "mob2"
                     },
                     {
-                        "enemy_type": "general",
+                        "enemy_type": "boss",
                         "enemy_code": "mob1"
                     }
                 ],
@@ -1400,8 +1400,8 @@
             "battle": [
                 [
                     {
-                        "enemy_type": "general",
-                        "enemy_code": "mob1"
+                        "enemy_type": "boss",
+                        "enemy_code": "okubo"
                     }
                 ],
                 "226"
@@ -1769,8 +1769,8 @@
             "battle": [
                 [
                     {
-                        "enemy_type": "general",
-                        "enemy_code": "mob1"
+                        "enemy_type": "boss",
+                        "enemy_code": "yoshioka"
                     }
                 ],
                 "289"

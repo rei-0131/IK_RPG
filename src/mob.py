@@ -38,9 +38,9 @@ class Mob:
             if self.app.story_flags_tf["ryoga_group"] and self.name == "リョウガ":
                 self.display = [False,-1]
         if self.app.now_location == scenes.WAY_SCENE_I:
-            if self.app.story_flags_co["staff_it_search"] < 3 and self.name == "ぼく" and self.app.msg_id == "152":
+            if self.app.story_flags_co["staff_it_search"] < 3 and self.name == "ぼく" and (self.app.msg_id == "152" or self.app.msg_id == "9000"):
                 self.display = [False,-1]
-            if self.app.story_flags_co["staff_it_search"] < 3 and self.name == "キラ" and self.app.msg_id == "152":
+            if self.app.story_flags_co["staff_it_search"] < 3 and self.name == "キラ" and (self.app.msg_id == "152" or self.app.msg_id == "9000"):
                 self.display = [False,-1]
         #[6,[166,80,0,1],98,[[52,115]],115,[[166,105],[305,105]]]
         if len(self.info) > 4:

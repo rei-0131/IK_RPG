@@ -427,6 +427,10 @@ class Setting:
                 story_add = False
             if 50 <= i <= 51 and not self.app.story_flags_tf["quiet_stu"]:
                 story_add = False
+            if 52 <= i <= 70 and not self.app.story_flags_tf["kindness_stu"]:
+                story_add = False
+            if 71 <= i <= 97 and self.app.story_flags_tf["kindness_stu"]:
+                story_add = False
             if 130 <= i <= 131 and not self.app.story_flags_tf["longhair_stu"]:
                 story_add = False
             if i == 192 and not self.app.story_flags_tf["sleepy_stu"]:
@@ -489,13 +493,13 @@ class Setting:
                 elif self.show_story != 0:
                     self.show_story -= 1
             if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
-                if len(list(self.story[self.story_chapter[self.select_story_pos]].keys())) > 3:
+                if len(list(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]].keys())) > 3:
                     if self.show_story_finger != 3:
                         self.show_story_finger += 1
-                    elif self.show_story != len(list(self.story[self.story_chapter[self.select_story_pos]].keys())) - 4:
+                    elif self.show_story != len(list(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]].keys())) - 4:
                         self.show_story += 1
                 else:
-                    if self.show_story_finger != len(list(self.story[self.story_chapter[self.select_story_pos]].keys())) - 1:
+                    if self.show_story_finger != len(list(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]].keys())) - 1:
                         self.show_story_finger += 1
 
     def update(self):
@@ -959,7 +963,9 @@ class Setting:
     def story_draw(self):
         pyxel.rect(18,125,53,45,0)
         pyxel.rectb(18,125,53,45,7)
-        if int(self.app.msg_id) > 239:
+        if int(self.app.msg_id) > 325:
+            self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ","痛バ"]
+        elif int(self.app.msg_id) > 239:
             self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ"]
         elif int(self.app.msg_id) > 186:
             self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル"]
@@ -974,7 +980,7 @@ class Setting:
         for i,t in enumerate(self.story_chapter[self.select_story_show:self.select_story_show + 4]):
             self.umplus10.draw_text(19,126 + i * 11,t,7)
         if self.select_story_pos != -1:
-            for i,t in enumerate(list(self.story[self.story_chapter[self.select_story_pos]].keys())[self.show_story:self.show_story + 4]):
+            for i,t in enumerate(list(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]].keys())[self.show_story:self.show_story + 4]):
                 if i == self.show_story_finger:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,1)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
@@ -984,18 +990,18 @@ class Setting:
                 self.umplus10.draw_text(71,int(6+(49*i)),t.replace("_answer","_A"),7)
                 if "answer" in t:
                     self.umplus10.draw_text(110,int(6+(49*i)),"ぼく",7)
-                    if len(self.story[self.story_chapter[self.select_story_pos]][t]) > 22:
-                        for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos]][t]),22),range(5)):
-                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos]][t][n:n + 22],7)
+                    if len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]) > 22:
+                        for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]),22),range(5)):
+                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t][n:n + 22],7)
                     else:
-                        self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos]][t],7)
+                        self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t],7)
                 else:
-                    self.umplus10.draw_text(110,int(6+(49*i)),self.story[self.story_chapter[self.select_story_pos]][t]["speaker"],7)
-                    if len(self.story[self.story_chapter[self.select_story_pos]][t]["word"]) > 22:
-                        for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos]][t]["word"]),22),range(5)):
-                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos]][t]["word"][n:n + 22],7)
+                    self.umplus10.draw_text(110,int(6+(49*i)),self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["speaker"],7)
+                    if len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]) > 22:
+                        for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]),22),range(5)):
+                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"][n:n + 22],7)
                     else:
-                        self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos]][t]["word"],7)
+                        self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"],7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def draw(self):
