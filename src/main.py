@@ -23,6 +23,7 @@ from battle import Battle
 from words import Words
 from mob import Mob
 from trader import Trader
+from endroll import Endroll
 
 #dev only
 from rpg_cmd import CMD
@@ -194,6 +195,8 @@ class App:
         self.cmd = CMD(self,self.init_x,self.init_y,umplus10)
         self.info("Loading Trader...")
         self.trader = Trader(self,self.init_x,self.init_y,umplus10)
+        self.info("Loading Endroll...")
+        self.endroll = Endroll(self,self.init_x,self.init_y,umplus10,umplus24)
         self.version_info()
         self.load_msg = "Load end"
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
@@ -541,6 +544,10 @@ class App:
                 self.now_scene = scenes.BATTLE_SCENE
             if pyxel.btnp(pyxel.KEY_T) and self.is_test:
                 self.trade = True
+            if pyxel.btnp(pyxel.KEY_P) and self.is_test:
+                self.endroll.crean()
+                self.be_scene = self.now_scene
+                self.now_scene = "Endroll"
             if self.trade:
                 self.trader.update()
         elif self.now_scene == scenes.IN_SETTING_SCENE:
@@ -583,8 +590,10 @@ class App:
                         self.msg_id = self.words_j["story"][self.disp_id]["battle"][1]
                     elif self.random_encount:
                         self.random_encount = False
-        elif self.now_scene == "cmd":
+        if self.now_scene == "cmd":
             self.cmd.update()
+        if self.now_scene == "Endroll":
+            self.endroll.update()
 
     def draw(self):
         """基本描画"""
@@ -687,6 +696,8 @@ class App:
             self.battle.draw()
         elif self.now_scene == "cmd":
             self.cmd.draw()
+        elif self.now_scene == "Endroll":
+            self.endroll.draw()
 
 
 App(init_x,init_y)
