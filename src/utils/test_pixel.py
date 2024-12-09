@@ -17,6 +17,8 @@ class App:
         self.scenes = json.load(open("../assets/scenes.json","r",encoding="utf-8"))
         self.init_x = init_x
         self.init_y = init_y
+        self.gamepad_op = pyxel.Image(719,480)
+        self.gamepad_op.load(0,0,"../assets/gamepad_op.png")
         pyxel.load("../assets/assets.pyxres")
         pyxel.run(self.update, self.draw)
 
@@ -55,7 +57,8 @@ class App:
         self.coord = self.scenes["coordinate"][str(13)]
         self.scale = self.coord[8]
         print(f"{self.coord[0]} {self.coord[1]} {self.coord[3]} {self.coord[4]} {self.coord[5]} {self.coord[6]} {self.coord[8]}",end="\r")
-        pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
+        pyxel.blt(self.coord[0],self.coord[1],self.gamepad_op,self.coord[3],self.coord[4],self.coord[5],self.coord[6],scale = self.coord[8])
+        # pyxel.bltm(self.coord[0],self.coord[1],self.coord[2],self.coord[3],self.coord[4],self.coord[5],self.coord[6],self.coord[7],scale = self.scale)
 
 
 App()
