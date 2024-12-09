@@ -163,6 +163,7 @@ class App:
         self.gamepad_op = pyxel.Image(719,480)
         self.gamepad_op.load(0,0,"assets/gamepad_op.png")
         self.op_show = [True,True]
+        self.adc = False
         pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
