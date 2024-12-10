@@ -9,6 +9,8 @@ import joblib
 import numpy as np
 import sys
 
+sys.path.append("src")
+
 from utils.BDFRenderer import BDFRenderer
 from utils.sound_manager import SoundManager
 import utils.scenes as scenes
