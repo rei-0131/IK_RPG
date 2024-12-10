@@ -103,6 +103,7 @@ class Trader:
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
                 if type(t[1]) == list:
                     self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
+                    self.umplus10.draw_text(71,int(19 + (49 * i)),info[4],7)
                     self.umplus10.draw_text(180,int(6 + (49 * i)),f"所持数:{self.app.equip_codes[self.equip_en[self.finger_pos // 11]].count(list(self.app.tools[self.equip_en[self.finger_pos // 11]].keys())[self.buy_select - self.disp_select + i])}",7)
                     self.umplus10.draw_text(250,int(6 + (49 * i)),f"￥{info[5]}",7)
                 else:
@@ -118,6 +119,7 @@ class Trader:
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
                 if type(t[1]) == list:
                     self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
+                    self.umplus10.draw_text(71,int(19 + (49 * i)),info[4],7)
                     self.umplus10.draw_text(180,int(6 + (49 * i)),f"所持数:{self.app.equip_codes[self.equip_en[self.finger_pos // 11]].count(list(self.app.tools[self.equip_en[self.finger_pos // 11]].keys())[self.buy_select - self.disp_select + i])}",7)
                     self.umplus10.draw_text(250,int(6 + (49 * i)),f"￥{info[5]}",7)
                 else:

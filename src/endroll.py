@@ -19,7 +19,7 @@ class Endroll:
 
     def update(self):
         if self.roll:
-            self.endroll_pos -= 1.2
+            self.endroll_pos -= 0.6
         if not True in (self.endroll_pos[0:len(self.endroll_pos) - 1] > 0):
             self.roll = False
 
@@ -40,6 +40,6 @@ class Endroll:
                 elif text[2] == 1 and 0 <= int(pos) <= 184:
                     self.umplus16.draw_text(12 + text[0],int(pos),text[1].center(18,"　"),text[3])
                 elif text[2] == 0 and 0 <= int(pos) <= 190:
-                    self.umplus10.draw_text(11 + text[0],int(pos),text[1].center(28,"　"),text[3])
+                    self.umplus10.draw_text(16 + text[0],int(pos),text[1].center(28,"　"),text[3])
             except IndexError:
                 pass
