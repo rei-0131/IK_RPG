@@ -100,7 +100,7 @@ class Setting:
         """並び替え処理"""
         len_ = len(self.app.chara_data.items())
         self.chara_keys = list(self.app.chara_data.keys())
-        if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+        if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
             self.in_st_finger = 0
             self.in_st_pos = 0
@@ -135,7 +135,7 @@ class Setting:
         if self.enter_pos != -1:
             if self.enter_pos2 == -1:
                 len_ = len(self.app.item_codes.items())
-                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.enter_pos = -1
                     self.in_st_finger = 0
                     self.in_st_pos = 0
@@ -155,7 +155,7 @@ class Setting:
                         self.enter_pos2 = self.in_st_finger + self.in_st_pos
                         print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]]["name"])
             else:
-                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.finger_pos1 = 0
                     self.enter_pos2 = -1
                 if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
@@ -197,7 +197,7 @@ class Setting:
     def imp_update(self):
         """大切なもの処理"""
         len_ = len(self.app.imp_item_codes)
-        if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+        if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
             self.in_st_finger = 0
             self.in_st_pos = 0
@@ -226,7 +226,7 @@ class Setting:
         """
         if not self.equip_men:
             len_ = len(self.app.chara_data.items())
-            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.enter_pos = -1
                 self.in_st_finger = 0
                 self.in_st_pos = 0
@@ -295,7 +295,7 @@ class Setting:
         """装備処理"""
         if not self.equip_men:
             len_ = len(self.app.chara_data.items())
-            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.enter_pos = -1
                 self.in_st_finger = 0
                 self.in_st_pos = 0
@@ -317,7 +317,7 @@ class Setting:
                 self.equip_select = True
         else:
             if self.equip_select:
-                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.in_eq_enter = 0
                     self.equip_men = False
                 if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
@@ -396,7 +396,7 @@ class Setting:
     def status_update(self):
         """ステータス処理"""
         len_ = len(self.app.chara_data.items())
-        if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+        if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
             self.enter_pos = -1
         if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)) and self.in_st_finger + self.in_st_pos != 0:
             if self.in_st_finger == 0:
@@ -460,7 +460,7 @@ class Setting:
                     self.story[self.story_chapter[story_ch]][f"{str_i}_answer"] = self.app.words_j["story"][str_i]["questions"][self.app.question_selects[str_i]]
 
         if self.select_story_pos == -1:
-            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_story_finger = 0
                 self.enter_pos = -1
             if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
@@ -484,7 +484,7 @@ class Setting:
                 self.show_story = 0
                 print(self.story[self.story_chapter[self.select_story_pos]])
         else:
-            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_story_pos = -1
                 self.story = {}
             if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
@@ -679,7 +679,7 @@ class Setting:
             except IndexError:
                 self.in_pqse_finger = 0
                 self.in_eqst_item = 0
-            self.umplus10.draw_text(190,59,"※戻るにはESCキーを押す",8)
+            self.umplus10.draw_text(180,59,"※戻るにはESCキーを押す",8)
 
     def equip_draw(self):
         """装備描画"""
@@ -875,7 +875,7 @@ class Setting:
                             except IndexError:
                                 self.in_pqse_finger = 0
                                 self.in_eqst_item = 0
-                self.umplus10.draw_text(190,59,"※戻るにはESCキーを押す",8)
+                self.umplus10.draw_text(180,59,"※戻るにはESCキーを押す",8)
 
     def status_draw(self):
         """ステータス描画"""

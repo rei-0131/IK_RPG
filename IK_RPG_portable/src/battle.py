@@ -945,7 +945,7 @@ class Battle:
                                     self.finger_pos2 += 18
                                 else:
                                     self.finger_pos2 = 0
-                            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                            if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                                 self.select_num1 = -1
                                 self.finger_pos2 = 0
                                 self.select_num2 = -1
@@ -1099,8 +1099,8 @@ class Battle:
                                     self.player_effect[int(ai_ac[0])]["basic_def_buff"] = 0
                                     self.enemy_effect[live_enemy[i]]["atk_buff"] = 0
                                     self.enemy_effect[live_enemy[i]]["atk_dbuff"] = 0
+                                    self.player_animation = True
                             self.attack_count += 1
-                            self.player_animation = True
                             if self.attack_count == len(self.ai_action):
                                 self.operation_player = True
                                 self.attack_count = 0
@@ -1252,7 +1252,7 @@ class Battle:
                 self.umplus10.draw_text(26,self.init_y//2-19 + 11 * j,self.magic_codes[sm][self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"][i:i + 27],7)
         else:
             self.umplus10.draw_text(26,self.init_y//2-19,self.magic_codes[sm][self.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]["info"],7)
-        self.umplus10.draw_text(190,self.init_y-12,"※戻るにはESCキーを押す",8)
+        self.umplus10.draw_text(180,self.init_y-12,"※戻るにはESCキーを押す",8)
         self.item_num = len(self.chara_data[self.select_chara][f"{sm}_codes"])
         if self.item_num >= self.item_pos + 11:
             self.dis_num = 10
@@ -1295,7 +1295,7 @@ class Battle:
         pyxel.rectb(110,self.init_y//2+10,185,75,7)
         pyxel.rect(25,self.init_y//2-20,270,25,0)
         pyxel.rectb(25,self.init_y//2-20,270,25,7)
-        self.umplus10.draw_text(190,self.init_y-12,"※戻るにはESCキーを押す",8)
+        self.umplus10.draw_text(180,self.init_y-12,"※戻るにはESCキーを押す",8)
         if len(list(self.battle_item.keys())) > 0:
             self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
             self.item_num = len(self.battle_item.items())
@@ -1321,7 +1321,7 @@ class Battle:
 
     def enemy_target_select_draw(self):
         """敵ターゲット選択描画"""
-        self.umplus10.draw_text(190,self.init_y-12,"※戻るにはESCキーを押す",8)
+        self.umplus10.draw_text(180,self.init_y-12,"※戻るにはESCキーを押す",8)
         pyxel.blt(self.finger_pos4 - 8,2,self.finger_ws[0],self.finger_ws[1],self.finger_ws[2],self.finger_ws[3],self.finger_ws[4],self.finger_ws[5])
 
     def self_target_select_draw(self,fin = 5):
