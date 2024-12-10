@@ -377,9 +377,11 @@ class App:
                 if 250 <= self.player.x <= 278 and 171 <= self.player.y:
                     if self.now_location == scenes.WAY_SCENE_12:
                         self.now_location = scenes.CLASS2_SCENE
-                        self.player.x = 300
-                        self.player.y = 0
+                        self.player.x = 265
+                        self.player.y = 105
                         if 36 <= int(self.disp_id) < 52:
+                            self.player.x = 300
+                            self.player.y = 0
                             if self.story_flags_tf["ryoga_group"]:
                                 self.msg_id = "52"
                             else:
