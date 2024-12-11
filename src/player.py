@@ -89,8 +89,8 @@ class Player:
                         if self.app.is_test:
                             self.app.battle.debug_clean()
                         enemy_num = pyxel.rndi(1,4)
-                        enemy_code = [pyxel.rndi(0,1) for _ in range(enemy_num)]
-                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} if i == 0 else {"enemy_type":"general","enemy_code":"mob2"} for i in enemy_code]
+                        enemy_code = [pyxel.rndi(1,3) for _ in range(enemy_num)]
+                        enemys = [{"enemy_type":"general","enemy_code":f"mob{i}"} for i in enemy_code]
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
@@ -106,8 +106,8 @@ class Player:
                         if self.app.is_test:
                             self.app.battle.debug_clean()
                         enemy_num = pyxel.rndi(1,4)
-                        enemy_code = [pyxel.rndi(0,1) for _ in range(enemy_num)]
-                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} if i == 0 else {"enemy_type":"general","enemy_code":"mob2"} for i in enemy_code]
+                        enemy_code = [pyxel.rndi(1,3) for _ in range(enemy_num)]
+                        enemys = [{"enemy_type":"general","enemy_code":f"mob{i}"} for i in enemy_code]
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE

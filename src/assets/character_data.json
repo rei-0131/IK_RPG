@@ -17,7 +17,7 @@
         ],
         "skill_codes":[
         ],
-        "atk_ab":17,
+        "atk_ab":27,
         "def_ab":18,
         "satisfaction":[
             10,
@@ -26,10 +26,6 @@
         "atk_buff":100,
         "def_buff":100,
         "equipments":{
-            "head":"",
-            "armor":"",
-            "leggings":"",
-            "boots":"",
             "staff":"001"
         }
     },
@@ -52,7 +48,7 @@
         "skill_codes":[
             "07"
         ],
-        "atk_ab":17,
+        "atk_ab":27,
         "def_ab":18,
         "satisfaction":[
             10,
@@ -85,7 +81,7 @@
         "skill_codes":[
             "05"
         ],
-        "atk_ab":18,
+        "atk_ab":28,
         "def_ab":25,
         "satisfaction":[
             10,
@@ -120,7 +116,7 @@
             "05",
             "06"
         ],
-        "atk_ab":18,
+        "atk_ab":28,
         "def_ab":25,
         "satisfaction":[
             10,
@@ -154,7 +150,7 @@
             "08",
             "09"
         ],
-        "atk_ab":10,
+        "atk_ab":20,
         "def_ab":15,
         "satisfaction":[
             1,
@@ -163,10 +159,6 @@
         "atk_buff":100,
         "def_buff":100,
         "equipments":{
-            "head":"",
-            "armor":"",
-            "leggings":"",
-            "boots":"",
             "other":"001"
         }
     }

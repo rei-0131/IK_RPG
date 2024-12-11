@@ -482,9 +482,6 @@ class App:
                     self.player.x = 22
                     self.player.y = 100
                     self.player.key = "d"
-                elif self.msg_id == "200":
-                    if not self.story_flags_tf["200_speak"]:
-                        self.story_flags_tf["200_speak"] = True
                 elif self.msg_id == "170":
                     if "006" in self.imp_item_codes:
                         tmp = self.imp_item_codes.index("006")
@@ -493,6 +490,16 @@ class App:
                         self.imp_item_codes.pop(tmp)
                         tmp = self.imp_item_codes.index("008")
                         self.imp_item_codes.pop(tmp)
+                elif self.msg_id == "173":
+                    self.player.x = 300
+                    self.player.y = 0
+                elif self.msg_id == "190":
+                    self.player.x = 163
+                    self.player.y = 110
+                    self.player.key = "w"
+                elif self.msg_id == "200":
+                    if not self.story_flags_tf["200_speak"]:
+                        self.story_flags_tf["200_speak"] = True
                 elif self.msg_id == "231":
                     self.player.x = 166
                     self.player.y = 110
