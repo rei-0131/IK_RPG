@@ -69,7 +69,10 @@ class Words:
                         elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
                             self.app.equip_codes[self.word["item"][0]].append(self.word["item"][1])
                     if self.word["to"] != "None":
-                        self.app.msg_id = self.word["to"]
+                        if type(self.word["to"]) is list:
+                            self.app.msg_id = self.word["to"][self.app.question_selects[self.app.msg_id]]
+                        else:
+                            self.app.msg_id = self.word["to"]
                     else:
                         if "battle" in self.word:
                             self.app.in_battle = True
@@ -93,7 +96,7 @@ class Words:
                         elif self.word["item"][0] in ["head","armor","leggings","boots","sword","shield","staff","other"]:
                             self.app.equip_codes[self.word["item"][0]].append(self.word["item"][1])
                     if "chara" in self.word:
-                        if type(self.word["chara"]) == list:
+                        if type(self.word["chara"]) is list:
                             for ch in self.word["chara"]:
                                 self.app.chara_data[ch] = self.app.character_data[ch]
                         else:
@@ -140,14 +143,14 @@ class Words:
         pyxel.rect(5,self.init_y-71,sp_len,12,0)
         pyxel.rectb(5,self.init_y-71,sp_len,12,7)
         self.umplus10.draw_text(7,self.init_y-70,self.word["speaker"],7)
-        if type(self.word["word"]) == str:
+        if type(self.word["word"]) is str:
             # self.umplus10.draw_text(7,self.init_y-59,self.word["word"],7)
             if len(self.word["word"]) > 28:
                 for i,j in zip(range(0,len(self.word["word"]),28),range(5)):
                     self.umplus10.draw_text(7,self.init_y-59 + 11 * j,self.word["word"][i:i + 28],7)
             else:
                 self.umplus10.draw_text(7,self.init_y-59,self.word["word"],7)
-        # elif type(self.word["word"]) == list:
+        # elif type(self.word["word"]) is list:
         #     for i,n in enumerate(self.word["word"]):
         #         self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)
         if self.word["to"] != "None":

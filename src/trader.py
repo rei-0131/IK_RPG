@@ -57,7 +57,7 @@ class Trader:
                     show_weapon = {i:self.app.tools[self.equip_en[self.type]][i] if self.app.tools[self.equip_en[self.type]][i][6] <= self.app.chara_data["ぼく"]["Level"] else f"ぼくのレベル{self.app.tools[self.equip_en[self.type]][i][6]}以上で開放" for i in self.app.tools[self.equip_en[self.type]].keys()}
                     select = show_weapon[list(show_weapon.keys())[self.disp_select]]
                     print(list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select])
-                    if type(select) == list:
+                    if type(select) is list:
                         if select[5] <= self.app.money:
                             self.buy_question = True
             else:
@@ -101,7 +101,7 @@ class Trader:
                 else:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
-                if type(t[1]) == list:
+                if type(t[1]) is list:
                     self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
                     self.umplus10.draw_text(71,int(19 + (49 * i)),info[4],7)
                     self.umplus10.draw_text(180,int(6 + (49 * i)),f"所持数:{self.app.equip_codes[self.equip_en[self.finger_pos // 11]].count(list(self.app.tools[self.equip_en[self.finger_pos // 11]].keys())[self.buy_select - self.disp_select + i])}",7)
@@ -117,7 +117,7 @@ class Trader:
                 else:
                     pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
                     pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
-                if type(t[1]) == list:
+                if type(t[1]) is list:
                     self.umplus10.draw_text(71,int(6 + (49 * i)),info[0],7)
                     self.umplus10.draw_text(71,int(19 + (49 * i)),info[4],7)
                     self.umplus10.draw_text(180,int(6 + (49 * i)),f"所持数:{self.app.equip_codes[self.equip_en[self.finger_pos // 11]].count(list(self.app.tools[self.equip_en[self.finger_pos // 11]].keys())[self.buy_select - self.disp_select + i])}",7)

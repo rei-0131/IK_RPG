@@ -269,7 +269,7 @@
                 "skill_codes":[
 
                 ],
-                "atk_ab": 15,
+                "atk_ab": 25,
                 "def_ab": 20,
                 "satisfaction": [
                     10,
@@ -278,11 +278,6 @@
                 "atk_buff": 100,
                 "def_buff": 100,
                 "equipments": {
-                    "head": "",
-                    "armor": "",
-                    "leggings": "",
-                    "boots": "",
-                    "sword": ""
                 }
             }
         },
