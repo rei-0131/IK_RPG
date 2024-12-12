@@ -1,5 +1,6 @@
 import json
 import time
+import os
 
 from cloud_data import Cloud_data
 #新しいセーブデータを作成する
@@ -16,11 +17,15 @@ class Save:
         self.app = app
         self.cloud = Cloud_data(self.app.is_test)
         self.scenes = self.app.scenes
+        self.save_path = os.path.join(self.app.base_path,"save/savedata.json")
 
     def newsave(self,pos):
         """新しいセーブ"""
         if self.app.local:
-            save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+            if self.app.exefile:
+                save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+            else:
+                save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
         else:
             save_data = self.cloud.load()
 
@@ -55,7 +60,10 @@ class Save:
         }
         print(f"{save_data[str(pos)]['play_data']=}")
         if self.app.local:
-            json.dump(save_data,open("configs/savedata.json","w",encoding="utf-8"),indent=4,ensure_ascii=False)
+            if self.app.exefile:
+                json.dump(save_data,open(self.save_path,"w",encoding="utf-8"),indent=4,ensure_ascii=False)
+            else:
+                json.dump(save_data,open("../save/savedata.json","w",encoding="utf-8"),indent=4,ensure_ascii=False)
         else:
             self.cloud.save(save_data)
         self.app.save_data = save_data

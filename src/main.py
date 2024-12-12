@@ -8,6 +8,7 @@ import sklearn
 import joblib
 import numpy as np
 import sys
+import os
 
 sys.path.append("src")
 
@@ -39,29 +40,57 @@ else:
     msg = False
 ##########
 
+#main, scenes, sound_manager
+exefile = True
+
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+base_path = os.path.dirname(os.path.abspath(sys.argv[0]))
+
 #各ファイル読み込み
 cloud = Cloud_data(is_test=is_test)
 local = cloud.import_()
-
 if local:
     config = configparser.ConfigParser(interpolation=None)
-    config.read("src/configs/config.ini",encoding="utf-8_sig")
-    save_data = json.load(open("src/configs/savedata.json","r",encoding="utf-8"))
+    if exefile:
+        config.read(resource_path("config.ini"),encoding="utf-8_sig")
+    else:
+        config.read("src/configs/config.ini",encoding="utf-8_sig")
+    if not os.path.isdir("save"):
+        os.mkdir("save")
+    if not os.path.isfile("save/savedata.json"):
+        with open("save/savedata.json", "w",encoding="utf-8") as f:
+            json.dump({},f)
+    save_data = json.load(open("save/savedata.json","r",encoding="utf-8"))
 else:
     config = cloud.config_load()
     save_data = cloud.load()
 
 #["アタッカー","ヒーラー","バッファー","タンク","遊び人"]
-init_data = json.load(open("src/assets/init_data.json","r",encoding="utf-8"))
-scenes_ = json.load(open("src/assets/scenes.json","r",encoding="utf-8"))
-words = json.load(open("src/assets/words.json","r",encoding="utf-8"))
-tools = json.load(open("src/assets/tools.json","r",encoding="utf-8"))
-magic_codes = json.load(open("src/assets/magic.json","r",encoding="utf-8"))
-enemy_info = json.load(open("src/assets/enemy_info.json","r",encoding="utf-8"))
-assets_info = json.load(open("src/assets/assets_info.json","r",encoding="utf-8"))
+if exefile:
+    init_data = json.load(open(resource_path("init_data.json"),"r",encoding="utf-8"))
+    scenes_ = json.load(open(resource_path("scenes.json"),"r",encoding="utf-8"))
+    words = json.load(open(resource_path("words.json"),"r",encoding="utf-8"))
+    tools = json.load(open(resource_path("tools.json"),"r",encoding="utf-8"))
+    magic_codes = json.load(open(resource_path("magic.json"),"r",encoding="utf-8"))
+    enemy_info = json.load(open(resource_path("enemy_info.json"),"r",encoding="utf-8"))
+    assets_info = json.load(open(resource_path("assets_info.json"),"r",encoding="utf-8"))
+    character_data = json.load(open(resource_path("character_data.json"),"r",encoding="utf-8"))
+    story_flag_names = json.load(open(resource_path("story_flags.json"),"r",encoding="utf-8"))
+else:
+    init_data = json.load(open("src/assets/init_data.json","r",encoding="utf-8"))
+    scenes_ = json.load(open("src/assets/scenes.json","r",encoding="utf-8"))
+    words = json.load(open("src/assets/words.json","r",encoding="utf-8"))
+    tools = json.load(open("src/assets/tools.json","r",encoding="utf-8"))
+    magic_codes = json.load(open("src/assets/magic.json","r",encoding="utf-8"))
+    enemy_info = json.load(open("src/assets/enemy_info.json","r",encoding="utf-8"))
+    assets_info = json.load(open("src/assets/assets_info.json","r",encoding="utf-8"))
+    character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
+    story_flag_names = json.load(open("src/assets/story_flags.json","r",encoding="utf-8"))
 collision_data = assets_info["cd_block"]
-character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
-story_flag_names = json.load(open("src/assets/story_flags.json","r",encoding="utf-8"))
 #セーブ機能
 #フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
 
@@ -84,8 +113,12 @@ else:
 #BDFRendererのインスタンス作成より前にinitしないとエラーが発生する
 pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 #文字コードの読み込み
-umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
-umplus24 = BDFRenderer("assets/b24.bdf")
+if exefile:
+    umplus10 = BDFRenderer(resource_path("umplus_j10r.bdf"))
+    umplus24 = BDFRenderer(resource_path("b24.bdf"))
+else:
+    umplus10 = BDFRenderer("assets/umplus_j10r.bdf")
+    umplus24 = BDFRenderer("assets/b24.bdf")
 
 que_height = 0
 
@@ -155,20 +188,37 @@ class App:
         self.trade = False
         self.question_selects = {}
         self.class_room = pyxel.Image(1200,800)
-        self.class_room.load(0,0,"assets/classroom.png")
         self.way = pyxel.Image(1200,800)
-        self.way.load(0,0,"assets/way.png")
         self.machine = pyxel.Image(1200,800)
-        self.machine.load(0,0,"assets/machine.png")
         self.staff_room = pyxel.Image(1200,800)
-        self.staff_room.load(0,0,"assets/staffroom.png")
         self.gamepad_op = pyxel.Image(719,480)
-        self.gamepad_op.load(0,0,"assets/gamepad_op.png")
+        if exefile:
+            self.class_room.load(0,0,resource_path("classroom.png"))
+            self.way.load(0,0,resource_path("way.png"))
+            self.machine.load(0,0,resource_path("machine.png"))
+            self.staff_room.load(0,0,resource_path("staffroom.png"))
+            self.gamepad_op.load(0,0,resource_path("gamepad_op.png"))
+        else:
+            self.class_room.load(0,0,"assets/classroom.png")
+            self.way.load(0,0,"assets/way.png")
+            self.machine.load(0,0,"assets/machine.png")
+            self.staff_room.load(0,0,"assets/staffroom.png")
+            self.gamepad_op.load(0,0,"assets/gamepad_op.png")
         self.op_show = [True,True]
         self.adc = False
-        pyxel.load("assets/assets.pyxres")
+        self.exefile = exefile
+        self.base_path = base_path
+        if self.exefile:
+            pyxel.load(resource_path("assets.pyxres"))
+        else:
+            pyxel.load("assets/assets.pyxres")
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
+
+    def resource_path(self,relative_path):
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        return os.path.join(os.path.abspath("."), relative_path)
 
     def info(self,msg):
         print(f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] {msg}")
@@ -256,7 +306,10 @@ class App:
             if self.new_game:
                 if self.from_load:
                     if self.local:
-                        self.savedata = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                        if self.exefile:
+                            self.savedata = json.load(open(os.path.join(self.base_path,"save/savedata.json"),"r",encoding="utf-8"))
+                        else:
+                            self.savedata = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                     else:
                         self.savedata = cloud.load()
                         time.sleep(0.3)
