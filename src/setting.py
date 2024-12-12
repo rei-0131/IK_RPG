@@ -1,6 +1,7 @@
 import pyxel
 import json
 import time
+import os
 
 import utils.scenes as scenes
 from save_load import SaveLoad
@@ -59,8 +60,12 @@ class Setting:
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.cloud = Cloud_data(self.app.is_test)
         self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
+        self.save_path = os.path.join(self.app.base_path,"save/savedata.json")
         if self.app.local:
-            self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+            if self.app.exefile:
+                self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+            else:
+                self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
         self.scenes = self.app.scenes

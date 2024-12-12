@@ -1,6 +1,7 @@
 import pyxel
 import json
 import time
+import os
 
 import utils.scenes as scenes
 from save import Save
@@ -45,8 +46,12 @@ class SaveLoad:
         self.cloud = Cloud_data(self.app.is_test)
         self.over_tf = False
         self.save_enter = -1
+        self.save_path = os.path.join(self.app.base_path,"save/savedata.json")
         if self.app.local:
-            self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+            if self.app.exefile:
+                self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+            else:
+                self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
         self.first_show = True
@@ -65,7 +70,10 @@ class SaveLoad:
         if not battle_load:
             if self.first_show:
                 if self.app.local:
-                    self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                    if self.app.exefile:
+                        self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                    else:
+                        self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                 else:
                     self.save_data = self.cloud.load()
                 self.first_show = False
@@ -89,7 +97,10 @@ class SaveLoad:
                             else:
                                 self.save.newsave(self.setting_finger)
                                 if self.app.local:
-                                    self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                                    if self.app.exefile:
+                                        self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                                    else:
+                                        self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                                 else:
                                     self.save_data = self.cloud.load()
                 else:
@@ -109,7 +120,10 @@ class SaveLoad:
                         if self.over_tf:
                             self.save.newsave(self.save_enter)
                             if self.app.local:
-                                self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                                if self.app.exefile:
+                                    self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                                else:
+                                    self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                             else:
                                 self.save_data = self.cloud.load()
                         self.save_enter = -1
@@ -154,7 +168,10 @@ class SaveLoad:
                         if self.over_tf:
                             self.save.newsave(self.setting_finger)
                             if self.app.local:
-                                self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                                if self.app.exefile:
+                                    self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                                else:
+                                    self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                             else:
                                 self.save_data = self.cloud.load()
                         self.save_enter = -1
@@ -162,7 +179,10 @@ class SaveLoad:
         else:
             if self.first_show:
                 if self.app.local:
-                    self.save_data = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                    if self.app.exefile:
+                        self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                    else:
+                        self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                 else:
                     self.save_data = self.cloud.load()
                 self.first_show = False
@@ -178,7 +198,10 @@ class SaveLoad:
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if str(self.setting_finger) in self.save_data:
                     if self.app.local:
-                        self.savedata = json.load(open("configs/savedata.json","r",encoding="utf-8"))
+                        if self.app.exefile:
+                            self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                        else:
+                            self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                     else:
                         self.savedata = self.app.cloud.load()
                         time.sleep(0.3)

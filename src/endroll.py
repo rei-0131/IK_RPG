@@ -10,8 +10,12 @@ class Endroll:
         self.init_y = y
         self.umplus10 = ump10
         self.umplus24 = ump24
-        self.endroll_msgs = json.load(open("assets/endroll.json","r",encoding="utf-8"))
-        self.umplus16 = BDFRenderer("assets/b16.bdf")
+        if self.app.exefile:
+            self.endroll_msgs = json.load(open(self.app.resource_path("endroll.json"),"r",encoding="utf-8"))
+            self.umplus16 = BDFRenderer(self.app.resource_path("b16.bdf"))
+        else:
+            self.endroll_msgs = json.load(open("assets/endroll.json","r",encoding="utf-8"))
+            self.umplus16 = BDFRenderer("assets/b16.bdf")
         self.roll = True
 
     def crean(self):

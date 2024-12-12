@@ -1,8 +1,19 @@
 import json
 import pyxel
+import os
 import sys
 
-sound_file_path = "assets/sounds"
+exefile = True
+
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+if exefile:
+    sound_file_path = resource_path("")
+else:
+    sound_file_path = "assets/sounds"
 
 class SoundManager:
     def __init__(self):

@@ -77,7 +77,10 @@ class Battle:
         self.enemy_info = self.app.enemy_info
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.finger_ws = self.app.assets_info["finger_ws"]
-        self.AI = joblib.load("assets/rpg.aibi")
+        if self.app.exefile:
+            self.AI = joblib.load(self.app.resource_path("rpg.aibi"))
+        else:
+            self.AI = joblib.load("assets/rpg.aibi")
         self.xp_up = {}
         self.xp_get = False
         self.xp_stop = False
