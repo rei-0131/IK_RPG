@@ -2,7 +2,7 @@ import json
 import sys
 import os
 
-exefile = True
+exefile = False
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):

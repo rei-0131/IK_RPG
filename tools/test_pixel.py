@@ -14,12 +14,12 @@ pyxel.init(init_x,init_y,title=name,fps=FPS,quit_key=pyxel.KEY_F9)
 
 class App:
     def __init__(self):
-        self.scenes = json.load(open("../assets/scenes.json","r",encoding="utf-8"))
+        self.scenes = json.load(open("../src/assets/scenes.json","r",encoding="utf-8"))
         self.init_x = init_x
         self.init_y = init_y
         self.gamepad_op = pyxel.Image(719,480)
-        self.gamepad_op.load(0,0,"../assets/gamepad_op.png")
-        pyxel.load("../assets/assets.pyxres")
+        self.gamepad_op.load(0,0,"../src/assets/gamepad_op.png")
+        pyxel.load("../src/assets/assets.pyxres")
         pyxel.run(self.update, self.draw)
 
     def update(self):

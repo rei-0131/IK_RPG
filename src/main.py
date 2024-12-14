@@ -41,7 +41,7 @@ else:
 ##########
 
 #main, scenes, sound_manager
-exefile = True
+exefile = False
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
@@ -491,6 +491,8 @@ class App:
                         self.player.y = 146
                         if (self.msg_id == "152" or self.msg_id == "9000") and 3 <= self.story_flags_co["staff_it_search"]:
                             self.msg_id = "153"
+                        elif self.msg_id == "403":
+                            self.msg_id = "404"
                     elif self.now_location == scenes.STAFF_M_SCENE:
                         self.now_location = scenes.MACHINE_SCENE
                         self.player.x = 50
@@ -515,8 +517,10 @@ class App:
                     self.player.y = 105
                     self.player.key = "d"
                 elif self.msg_id == "98":
-                    self.player.x = 300
+                    self.player.x = 330
                     self.player.y = 0
+                    tmp = self.imp_item_codes.index("001")
+                    self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "114" or self.msg_id == "190":
                     self.player.x = 163
                     self.player.y = 110
@@ -546,6 +550,8 @@ class App:
                 elif self.msg_id == "173":
                     self.player.x = 300
                     self.player.y = 0
+                    tmp = self.imp_item_codes.index("002")
+                    self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "190":
                     self.player.x = 163
                     self.player.y = 110
@@ -560,8 +566,10 @@ class App:
                     self.player.walk_pos = 0
                     self.player.walk_num = 0
                     self.now_location = scenes.CLASS1_SCENE
+                    tmp = self.imp_item_codes.index("003")
+                    self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "240":
-                    self.player.x = 300
+                    self.player.x = 330
                     self.player.y = 0
                     self.player.walk_pos = 0
                     self.player.walk_num = 0
@@ -586,13 +594,10 @@ class App:
                     self.player.walk_pos = 0
                     self.player.walk_num = 0
                 elif self.msg_id == "299":
-                    self.player.x = 186
-                    self.player.y = 95
-                    self.player.key = "w"
-                    self.player.walk_pos = 0
-                    self.player.walk_num = 0
+                    tmp = self.imp_item_codes.index("004")
+                    self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "316":
-                    self.player.x = 300
+                    self.player.x = 330
                     self.player.y = 0
                 elif self.msg_id == "324":
                     self.player.x = 186
@@ -600,6 +605,28 @@ class App:
                     self.player.key = "d"
                     self.player.walk_pos = 0
                     self.player.walk_num = 0
+                elif self.msg_id == "326":
+                    self.player.x = 330
+                    self.player.y = 0
+                elif self.msg_id == "358":
+                    self.player.x = 163
+                    self.player.y = 110
+                    self.player.key = "d"
+                elif self.msg_id == "359" and self.now_location == scenes.STAFF_I_SCENE and self.player.y < 150:
+                    self.player.x = 330
+                    self.player.y = 0
+                    self.msg_id = "360"
+                elif self.msg_id == "402":
+                    self.player.x = 165
+                    self.player.y = 110
+                    self.player.key = "w"
+                elif self.msg_id == "410":
+                    tmp = self.imp_item_codes.index("005")
+                    self.imp_item_codes.pop(tmp)
+                elif self.msg_id == "429":
+                    self.player.x = 20
+                    self.player.y = 100
+                    self.player.key = "d"
             else:
                 if self.op_show[0]:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
@@ -677,10 +704,10 @@ class App:
         elif self.now_scene == scenes.MAIN_SCENE:
             pyxel.cls(0)
             if not True in self.op_show:
-                if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "15" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231" or self.msg_id == "240"):
+                if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "15" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231" or self.msg_id == "240" or self.msg_id == "326"):
                     self.coord = self.scenes["coordinate"][str(self.now_location)]
                     self.scale = self.coord[8]
-                    if self.msg_id == "15" or self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231" or self.msg_id == "240":
+                    if self.msg_id == "15" or self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231" or self.msg_id == "240" or self.msg_id == "326":
                         if scenes.CLASS1_SCENE <= self.now_location <= scenes.CLASS3_SCENE:
                             pyxel.blt(-150,-100,self.class_room,0,0,600,400,0,scale = 0.5)
                         elif scenes.STAFF_I_SCENE <= self.now_location <= scenes.STAFF_E_SCENE:

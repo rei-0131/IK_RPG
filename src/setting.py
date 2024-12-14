@@ -456,6 +456,8 @@ class Setting:
                 story_ch = 3
             if 240 <= i <= 325:
                 story_ch = 4
+            if 326 <= i <= 430:
+                story_ch = 5
 
             if story_add:
                 if self.story_chapter[story_ch] not in self.story:
@@ -968,7 +970,9 @@ class Setting:
     def story_draw(self):
         pyxel.rect(18,125,53,45,0)
         pyxel.rectb(18,125,53,45,7)
-        if int(self.app.msg_id) > 325:
+        if int(self.app.msg_id) > 430:
+            self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ","痛バ","桃井覚醒"]
+        elif int(self.app.msg_id) > 325:
             self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ","痛バ"]
         elif int(self.app.msg_id) > 239:
             self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ"]
