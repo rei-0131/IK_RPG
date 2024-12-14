@@ -120,8 +120,12 @@ class Mob:
                             self.key = ""
                             self.info = self.info[0:4]
                         else:
-                            self.x += self.dx
-                            self.y += self.dy
+                            if self.app.msg_id != self.app.disp_id:
+                                self.x += self.dx
+                                self.y += self.dy
+                            else:
+                                self.x = self.move_plan[self.index][0]
+                                self.y = self.move_plan[self.index][1]
                     else:
                         if (self.move_plan[self.index][0] - (self.walk_speed + 1) <= self.x <= self.move_plan[self.index][0] + (self.walk_speed + 1) and
                                 self.move_plan[self.index][1] - (self.walk_speed + 1) <= self.y <= self.move_plan[self.index][1] + (self.walk_speed + 1)):
@@ -132,8 +136,12 @@ class Mob:
                             self.index += 1
                             print(f"{self.name} 目標:{self.move_plan[self.index]}    x:{self.move_plan[self.index][0] - (self.walk_speed + 1)} ~ {self.x} ~ {self.move_plan[self.index][0] + (self.walk_speed + 1)}    y:{self.move_plan[self.index][1] - (self.walk_speed + 1)} ~ {self.y} ~ {self.move_plan[self.index][1] + (self.walk_speed + 1)}")
                         else:
-                            self.x += self.dx
-                            self.y += self.dy
+                            if self.app.msg_id != self.app.disp_id:
+                                self.x += self.dx
+                                self.y += self.dy
+                            else:
+                                self.x = self.move_plan[self.index][0]
+                                self.y = self.move_plan[self.index][1]
 
     def draw(self):
         if not self.story_animation:
