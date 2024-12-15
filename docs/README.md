@@ -137,8 +137,8 @@
 |       data_number       |                データ番号                 |
 |        play_time        |                プレイ時間                 |
 |      scene_number       |                シーン番号                 |
-|         msg_id          |           表示予定メッセージ ID           |
-|         disp_id         |             表示メッセージ ID             |
+|         msg_id          |             表示メッセージ ID           |
+|         disp_id         |           会話終了メッセージ ID            |
 |        player_x         |            プレイヤーの座標 x             |
 |        player_y         |            プレイヤーの座標 y             |
 |       chara_name        |            キャラクターの名前             |
