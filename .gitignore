@@ -3,3 +3,6 @@ RPG_V/
 src/assets/first_ai.txt
 web/command/
 web_start.bat
+save/
+dist/
+build/

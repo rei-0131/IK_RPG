@@ -39,24 +39,24 @@ class Player:
         self.dx = 0
         self.dy = 0
         if not self.app.in_word and not self.app.trade:
-            if (pyxel.btn(pyxel.KEY_RIGHT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+            if (pyxel.btn(pyxel.KEY_RIGHT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.KEY_D) and not pyxel.btn(pyxel.KEY_W) and not pyxel.btn(pyxel.KEY_S)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.dx += self.walk_speed
                 self.rl = 1
                 self.key = "d"
-            if (pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+            if (pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_DOWN)) or (pyxel.btn(pyxel.KEY_A) and not pyxel.btn(pyxel.KEY_W) and not pyxel.btn(pyxel.KEY_S)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.dx -= self.walk_speed
                 self.rl = -1
                 self.key = "a"
-            if (pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
+            if (pyxel.btn(pyxel.KEY_UP) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.KEY_W) and not pyxel.btn(pyxel.KEY_A) and not pyxel.btn(pyxel.KEY_D)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
                 self.dy -= self.walk_speed
                 self.key = "w"
-            if (pyxel.btn(pyxel.KEY_DOWN) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
+            if (pyxel.btn(pyxel.KEY_DOWN) and not pyxel.btn(pyxel.KEY_LEFT) and not pyxel.btn(pyxel.KEY_RIGHT)) or (pyxel.btn(pyxel.KEY_S) and not pyxel.btn(pyxel.KEY_A) and not pyxel.btn(pyxel.KEY_D)) or (pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) and not pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT)):
                 self.dy += self.walk_speed
                 self.key = "s"
-            if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+            if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_W) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 self.walk_num = 0
                 self.walk_pos = 0
-            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+            elif (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_W) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
                 if self.walk_num % 5 == 0:
                     if self.walk_pm == "p":
                         self.walk_pos += 1
@@ -72,6 +72,10 @@ class Player:
                         self.walk_pos += 1
                         self.walk_pm = "p"
                 self.walk_num += 1
+        else:
+            if self.walk_num != 0 or self.walk_pos != 0:
+                self.walk_num = 0
+                self.walk_pos = 0
         cd_return = self.map.cd_check(self.x,self.y,self.dx,self.dy,self.app.now_map,self.key,self.app.scale,self.app.coord)
         if not cd_return[0]:
             self.x += self.dx
@@ -85,7 +89,8 @@ class Player:
                         if self.app.is_test:
                             self.app.battle.debug_clean()
                         enemy_num = pyxel.rndi(1,4)
-                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} for _ in range(enemy_num)]
+                        enemy_code = [pyxel.rndi(1,3) for _ in range(enemy_num)]
+                        enemys = [{"enemy_type":"general","enemy_code":f"mob{i}"} for i in enemy_code]
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
@@ -101,7 +106,8 @@ class Player:
                         if self.app.is_test:
                             self.app.battle.debug_clean()
                         enemy_num = pyxel.rndi(1,4)
-                        enemys = [{"enemy_type":"general","enemy_code":"mob1"} for _ in range(enemy_num)]
+                        enemy_code = [pyxel.rndi(1,3) for _ in range(enemy_num)]
+                        enemys = [{"enemy_type":"general","enemy_code":f"mob{i}"} for i in enemy_code]
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
@@ -111,11 +117,13 @@ class Player:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     if cd_return[1] == "mob":
                         if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] != -1:
-                            if self.app.mobs[self.app.now_location - 6][cd_return[2]][2] == "T":
+                            if self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] == "T":
                                 self.app.trade = True
                             else:
                                 story_f = True
                                 if self.app.disp_id == "115" and self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2] == 98:
+                                    story_f = False
+                                if self.app.story_flags_tf["200_speak"] and self.app.mobs[self.app.now_location - 6][cd_return[2]][2][3] == [[187,212]]:
                                     story_f = False
                                 if story_f:
                                     if str(self.app.mobs[self.app.now_location - 6][cd_return[2]][2][2]) == self.app.msg_id:

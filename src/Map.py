@@ -1,6 +1,8 @@
 import pyxel
 import numpy as np
 
+import utils.scenes as scenes
+
 
 class Map:
     """
@@ -35,12 +37,12 @@ class Map:
         # print([check_x[0], check_y[0]],end="\r")
         # 0,0 9,9 17,17 25,25
         if key == "w":
-            check_x[0] += 2
-            for i in range(1,point_n):
+            check_x[0] += 3
+            for i in range(1,point_n - 1):
                 check_x[i] += 2 + 12 / (point_n - 1) * i * player_scale
         elif key == "s":
-            check_x[0] += 2
-            for i in range(1,point_n):
+            check_x[0] += 3
+            for i in range(1,point_n - 1):
                 check_x[i] += 2 + 12 / (point_n - 1) * i * player_scale
             check_y += 16 * player_scale
         elif key == "a":
@@ -50,7 +52,7 @@ class Map:
             check_y[point_n - 1] += 16 * player_scale
         elif key == "d":
             for i in range(point_n):
-                check_x[i] += 14 * player_scale
+                check_x[i] += 12 * player_scale
             for i in range(1,point_n - 1):
                 check_y[i] += 16 / (point_n - 2) * i * player_scale
             check_y[point_n - 1] += 16 * player_scale
@@ -66,12 +68,12 @@ class Map:
         # 0,0 9,9 17,17 25,25
         if key == "w":
             check_x[0] += 2
-            for i in range(1,point_n):
+            for i in range(1,point_n - 1):
                 check_x[i] += 2 + 10 / (point_n - 1) * i * player_scale
             check_y -= (player_scale - 1) * 7
         elif key == "s":
             check_x[0] += 2
-            for i in range(1,point_n):
+            for i in range(1,point_n - 1):
                 check_x[i] += 2 + 10 / (point_n - 1) * i * player_scale
             check_y += 12 * player_scale
         elif key == "a":
@@ -81,7 +83,7 @@ class Map:
             check_y[point_n - 1] += 12 * player_scale
         elif key == "d":
             for i in range(point_n):
-                check_x[i] += 10 * player_scale
+                check_x[i] += 9 * player_scale
             for i in range(1,point_n - 1):
                 check_y[i] += 12 / (point_n - 2) * i * player_scale
             check_y[point_n - 1] += 12 * player_scale
@@ -121,7 +123,7 @@ class Map:
         self.next_x = x + dx
         self.next_y = y + dy
         self.key = key
-        if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
+        if not (pyxel.btn(pyxel.KEY_RIGHT) or pyxel.btn(pyxel.KEY_D) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT) or pyxel.btn(pyxel.KEY_LEFT) or pyxel.btn(pyxel.KEY_A) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT) or pyxel.btn(pyxel.KEY_UP) or pyxel.btn(pyxel.KEY_W) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_UP) or pyxel.btn(pyxel.KEY_DOWN) or pyxel.btn(pyxel.KEY_S) or pyxel.btn(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN)):
             if self.key == "w":
                 self.next_y -= self.app.player.walk_speed
             elif self.key == "s":
@@ -139,8 +141,12 @@ class Map:
         co_3 = coord[3] * scale
         co_4 = coord[4] * scale
         checkb_x,checkb_y = self.check_b(self.key, self.player_scale, self.next_x, self.next_y)
-        if 9 <= self.app.now_location <= 11:
-            check_x += 5
+        if 6 <= self.app.now_location <= 8:
+            check_x += 3
+        elif 9 <= self.app.now_location <= 11:
+            check_x += 3
+        elif self.app.now_location == 16:
+            check_x += 4
         for x_,y_ in zip(checkb_x,checkb_y):
             pyxel.pset(x_,y_,0)
         cd_tf = [list(pyxel.tilemaps[num].pget(check[0] // pixel_size, check[1] // pixel_size)) in cd or not 0 <= b[0] <= 300 or not 0 <= b[1] <= 200 for check,b in zip(zip(check_x, check_y),zip(checkb_x, checkb_y))]
@@ -150,7 +156,7 @@ class Map:
                 type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[xy_index] // pixel_size, check_y[xy_index] // pixel_size)))][1]
             except ValueError:
                 type_ = ""
-            if self.next_x <= 85 and 54 <= self.next_y <= 65 and 9 <= self.app.now_location <= 11:
+            if self.next_x <= 81 and 42 <= self.next_y <= 48 and 9 <= self.app.now_location <= 11:
                 return True, "trash", 0
             return True, type_, 0
         else:

@@ -33,6 +33,8 @@ filenames = [
     'src/assets/story_flags.json',
     'src/utils/rpg_str.py',
     'src/utils/scenes.py',
+    'src/endroll.py',
+    'src/assets/endroll.json',
     'tools/ai_save.py',
     'web/app.py',
     'web/command/web_app.bat',

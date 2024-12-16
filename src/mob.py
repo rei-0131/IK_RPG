@@ -37,6 +37,11 @@ class Mob:
         if self.app.now_location == scenes.WAY_SCENE_12:
             if self.app.story_flags_tf["ryoga_group"] and self.name == "リョウガ":
                 self.display = [False,-1]
+        if self.app.now_location == scenes.WAY_SCENE_I:
+            if self.app.story_flags_co["staff_it_search"] < 3 and self.name == "ぼく" and (self.app.msg_id == "152" or self.app.msg_id == "9000"):
+                self.display = [False,-1]
+            if self.app.story_flags_co["staff_it_search"] < 3 and self.name == "キラ" and (self.app.msg_id == "152" or self.app.msg_id == "9000"):
+                self.display = [False,-1]
         #[6,[166,80,0,1],98,[[52,115]],115,[[166,105],[305,105]]]
         if len(self.info) > 4:
             if self.app.msg_id == str(self.info[4]):
@@ -107,16 +112,20 @@ class Mob:
                                 self.show[2] = 1
                                 self.show[3] = 1
                             self.data = self.app.assets_info["chara"][self.name][self.show[2]]
+                            print(f"{self.name} 目標:{self.move_plan[self.index]}    x:{self.move_plan[self.index][0] - (self.walk_speed + 1)} ~ {self.x} ~ {self.move_plan[self.index][0] + (self.walk_speed + 1)}    y:{self.move_plan[self.index][1] - (self.walk_speed + 1)} ~ {self.y} ~ {self.move_plan[self.index][1] + (self.walk_speed + 1)}")
                             self.x = 0
                             self.y = 0
                             self.dx = 0
                             self.dy = 0
                             self.key = ""
                             self.info = self.info[0:4]
-                            print(f"{self.move_plan[self.index]}    {self.move_plan[self.index][0] - (self.walk_speed + 1)} {self.x} {self.move_plan[self.index][0] + (self.walk_speed + 1)}    {self.move_plan[self.index][1] - (self.walk_speed + 1)} {self.y} {self.move_plan[self.index][1] + (self.walk_speed + 1)}")
                         else:
-                            self.x += self.dx
-                            self.y += self.dy
+                            if self.app.msg_id != self.app.disp_id:
+                                self.x += self.dx
+                                self.y += self.dy
+                            else:
+                                self.x = self.move_plan[self.index][0]
+                                self.y = self.move_plan[self.index][1]
                     else:
                         if (self.move_plan[self.index][0] - (self.walk_speed + 1) <= self.x <= self.move_plan[self.index][0] + (self.walk_speed + 1) and
                                 self.move_plan[self.index][1] - (self.walk_speed + 1) <= self.y <= self.move_plan[self.index][1] + (self.walk_speed + 1)):
@@ -125,35 +134,39 @@ class Mob:
                             self.show[0] = self.x
                             self.show[1] = self.y
                             self.index += 1
-                            print(f"{self.move_plan[self.index]}    {self.move_plan[self.index][0] - (self.walk_speed + 1)} {self.x} {self.move_plan[self.index][0] + (self.walk_speed + 1)}    {self.move_plan[self.index][1] - (self.walk_speed + 1)} {self.y} {self.move_plan[self.index][1] + (self.walk_speed + 1)}")
+                            print(f"{self.name} 目標:{self.move_plan[self.index]}    x:{self.move_plan[self.index][0] - (self.walk_speed + 1)} ~ {self.x} ~ {self.move_plan[self.index][0] + (self.walk_speed + 1)}    y:{self.move_plan[self.index][1] - (self.walk_speed + 1)} ~ {self.y} ~ {self.move_plan[self.index][1] + (self.walk_speed + 1)}")
                         else:
-                            self.x += self.dx
-                            self.y += self.dy
+                            if self.app.msg_id != self.app.disp_id:
+                                self.x += self.dx
+                                self.y += self.dy
+                            else:
+                                self.x = self.move_plan[self.index][0]
+                                self.y = self.move_plan[self.index][1]
 
     def draw(self):
-        if self.display[0]:
-            if not self.story_animation:
-                pyxel.blt(self.show[0],self.show[1],self.data[0],self.data[1],self.data[2],self.data[3] * self.show[3],self.data[4],self.data[5],scale=self.scale)
-            else:
-                data = self.app.assets_info["chara"][self.name]
-                if self.key == "":
+        if not self.story_animation:
+            pyxel.blt(self.show[0],self.show[1],self.data[0],self.data[1],self.data[2],self.data[3] * self.show[3],self.data[4],self.data[5],scale=self.scale)
+        else:
+            data = self.app.assets_info["chara"][self.name]
+            match self.key:
+                case "":
                     pyxel.blt(self.x,self.y,self.data[0],self.data[1],self.data[2],self.data[3] * self.show[3],self.data[4],self.data[5],scale=self.scale)
-                elif self.key == "w":
+                case "w":
                     if self.walk_pos == -1:
                         pyxel.blt(self.x,self.y,data[2][0],data[2][1] - (self.walk_pos + 2) * 16,data[2][2],data[2][3] * self.show[3],data[2][4],data[2][5],scale=self.scale)
                     else:
                         pyxel.blt(self.x,self.y,data[2][0],data[2][1] - self.walk_pos * 16,data[2][2],data[2][3] * self.show[3],data[2][4],data[2][5],scale=self.scale)
-                elif self.key == "s":
+                case "s":
                     if self.walk_pos == -1:
                         pyxel.blt(self.x,self.y,data[0][0],data[0][1] - (self.walk_pos + 2) * 16,data[0][2],data[0][3] * self.show[3],data[0][4],data[0][5],scale=self.scale)
                     else:
                         pyxel.blt(self.x,self.y,data[0][0],data[0][1] - self.walk_pos * 16,data[0][2],data[0][3] * self.show[3],data[0][4],data[0][5],scale=self.scale)
-                elif self.key == "a":
+                case "a":
                     if self.walk_pos == -1:
                         pyxel.blt(self.x,self.y,data[1][0],data[1][1] - (self.walk_pos + 2) * 16,data[1][2],data[1][3] * -1,data[1][4],data[1][5],scale=self.scale)
                     else:
                         pyxel.blt(self.x,self.y,data[1][0],data[1][1] - self.walk_pos * 16,data[1][2],data[1][3] * -1,data[1][4],data[1][5],scale=self.scale)
-                elif     self.key == "d":
+                case "d":
                     if self.walk_pos == -1:
                         pyxel.blt(self.x,self.y,data[1][0],data[1][1] - (self.walk_pos + 2) * 16,data[1][2],data[1][3],data[1][4],data[1][5],scale=self.scale)
                     else:

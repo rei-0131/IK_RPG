@@ -12,12 +12,12 @@
             100
         ],
         "magic_codes":[
-            "00"
+            "01",
+            "16"
         ],
         "skill_codes":[
-            "00"
         ],
-        "atk_ab":17,
+        "atk_ab":27,
         "def_ab":18,
         "satisfaction":[
             10,
@@ -26,16 +26,12 @@
         "atk_buff":100,
         "def_buff":100,
         "equipments":{
-            "head":"000",
-            "armor":"000",
-            "leggings":"000",
-            "boots":"000",
-            "staff":"000"
+            "staff":"001"
         }
     },
     "マナト":{
         "post":2,
-        "Level":1,
+        "Level":30,
         "XP":0,
         "HP":[
             90,
@@ -46,12 +42,13 @@
             100
         ],
         "magic_codes":[
-            "00"
+            "05",
+            "17"
         ],
         "skill_codes":[
-            "00"
+            "07"
         ],
-        "atk_ab":17,
+        "atk_ab":27,
         "def_ab":18,
         "satisfaction":[
             10,
@@ -60,16 +57,16 @@
         "atk_buff":100,
         "def_buff":100,
         "equipments":{
-            "head":"000",
-            "armor":"000",
-            "leggings":"000",
-            "boots":"000",
-            "staff":"000"
+            "head":"002",
+            "armor":"002",
+            "leggings":"002",
+            "boots":"002",
+            "staff":"002"
         }
     },
     "キラ":{
         "post":4,
-        "Level":1,
+        "Level":10,
         "XP":0,
         "HP":[
             150,
@@ -80,12 +77,11 @@
             50
         ],
         "magic_codes":[
-            "00"
         ],
         "skill_codes":[
-            "00"
+            "05"
         ],
-        "atk_ab":18,
+        "atk_ab":28,
         "def_ab":25,
         "satisfaction":[
             10,
@@ -94,16 +90,16 @@
         "atk_buff":100,
         "def_buff":100,
         "equipments":{
-            "head":"000",
-            "armor":"000",
-            "leggings":"000",
-            "boots":"000",
-            "shield":"000"
+            "head":"001",
+            "armor":"001",
+            "leggings":"001",
+            "boots":"001",
+            "shield":"001"
         }
     },
     "ユウタ":{
         "post":4,
-        "Level":1,
+        "Level":30,
         "XP":0,
         "HP":[
             150,
@@ -114,12 +110,13 @@
             50
         ],
         "magic_codes":[
-            "00"
+            "10"
         ],
         "skill_codes":[
-            "00"
+            "05",
+            "06"
         ],
-        "atk_ab":18,
+        "atk_ab":28,
         "def_ab":25,
         "satisfaction":[
             10,
@@ -128,16 +125,16 @@
         "atk_buff":100,
         "def_buff":100,
         "equipments":{
-            "head":"000",
-            "armor":"000",
-            "leggings":"000",
-            "boots":"000",
-            "shield":"000"
+            "head":"002",
+            "armor":"002",
+            "leggings":"002",
+            "boots":"002",
+            "shield":"002"
         }
     },
     "カイト":{
         "post":5,
-        "Level":1,
+        "Level":18,
         "XP":0,
         "HP":[
             100,
@@ -148,12 +145,12 @@
             50
         ],
         "magic_codes":[
-            "00"
         ],
         "skill_codes":[
-            "00"
+            "08",
+            "09"
         ],
-        "atk_ab":10,
+        "atk_ab":20,
         "def_ab":15,
         "satisfaction":[
             1,
@@ -162,11 +159,7 @@
         "atk_buff":100,
         "def_buff":100,
         "equipments":{
-            "head":"000",
-            "armor":"000",
-            "leggings":"000",
-            "boots":"000",
-            "other":"000"
+            "other":"001"
         }
     }
 }

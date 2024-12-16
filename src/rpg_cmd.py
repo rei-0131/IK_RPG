@@ -255,8 +255,12 @@ class CMD:
         self.log_type = "str"
         if arg[1] == "True" or arg[1] == "true":
             self.app.debug_msg = True
+            self.log = "デバッグメッセージを有効にしました"
         elif arg[1] == "False" or arg[1] == "false":
             self.app.debug_msg = False
+            self.log = "デバッグメッセージを無効にしました"
+        else:
+            self.log = "true または falseを入力してください"
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_RETURN):
