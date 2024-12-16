@@ -1,6 +1,20 @@
 import pyxel
 
 class Trader:
+    """
+    取引に関するクラス
+
+    Parameters
+    ----------
+    app : Any
+        appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
+    """
     def __init__(self,app,x,y,ump):
         self.app = app
         self.init_x = x
@@ -18,6 +32,7 @@ class Trader:
         self.disp_select = 0
 
     def update(self):
+        """基本処理"""
         if not self.buy_equip_type:
             if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.app.trade = False
@@ -81,6 +96,7 @@ class Trader:
                     self.buy_question = False
 
     def draw(self):
+        """基本描画"""
         pyxel.rect(18,5,65,89,0)
         pyxel.rectb(18,5,65,89,7)
         for i,j in enumerate(self.equip_jp):
