@@ -27,6 +27,31 @@ class Map:
         self.player_scale = self.app.player_scale
 
     def check_pos(self, key, player_scale, x, y, scale, coord) -> tuple[np.ndarray, np.ndarray]:
+        """
+        画面当たり判定座標計算
+
+        Parameters
+        ----------
+        key : str
+            進むキー
+        player_scale : float
+            プレイヤーの大きさ
+        x : int
+            プレイヤー座標x
+        y : int
+            プレイヤー座標y
+        scale : float
+            マップスケール
+        coord : list
+            マップ情報
+
+        Returns
+        ----------
+        check_x : np.ndarray
+            当たり判定座標x
+        check_y : np.ndarray
+            当たり判定座標y
+        """
         gap_x = coord[0]
         gap_y = coord[1]
         point_n = 10
@@ -59,6 +84,27 @@ class Map:
         return check_x, check_y
 
     def check_b(self, key, player_scale, x, y) -> tuple[np.ndarray, np.ndarray]:
+        """
+        マップ当たり判定座標計算
+
+        Parameters
+        ----------
+        key : str
+            進むキー
+        player_scale : float
+            プレイヤーの大きさ
+        x : int
+            プレイヤー座標x
+        y : int
+            プレイヤー座標y
+
+        Returns
+        ----------
+        check_x : np.ndarray
+            当たり判定座標x
+        check_y : np.ndarray
+            当たり判定座標y
+        """
         point_n = 10
         check_x = [x for _ in range(point_n)]
         check_y = [y for _ in range(point_n)]
@@ -119,6 +165,8 @@ class Map:
             あたっている場合はTrue、そうでない場合はFalse
         Any : str
             あたったブロックのタイプ
+        Any : int
+            モブに当たった際のモブインデックス
         """
         self.next_x = x + dx
         self.next_y = y + dy

@@ -119,6 +119,7 @@ class CMD:
             self.log_type = "ex"
 
     def battle(self):
+        """バトルクラスの全変数表示"""
         self.battle_ = self.app.battle
         print(f"{self.battle_.init_x = }")
         print(f"{self.battle_.init_y = }")
@@ -179,6 +180,7 @@ class CMD:
         pass
 
     def xp(self,arg):
+        """経験値付与"""
         try:
             self.app.chara_data[list(self.app.chara_data.keys())[int(arg[1])]]["XP"] = int(arg[2])
             self.log = f"{list(self.app.chara_data.keys())[int(arg[1])]}に{int(arg[2])}xp与えました。"
@@ -193,6 +195,7 @@ class CMD:
             self.log = str(e)
 
     def kill(self,arg):
+        """キルコマンド"""
         if arg[1] == "self":
             if arg[2] == "@a":
                 for i in range(len(list(self.app.chara_data.keys()))):
@@ -218,6 +221,7 @@ class CMD:
             self.log = "存在しない対象です"
 
     def mode(self,arg):
+        """モードコマンド"""
         self.log_type = "str"
         if arg[1] == "init":
             self.app.mode = arg[1]
@@ -252,6 +256,7 @@ class CMD:
             self.log = "存在しないモードです"
 
     def debugmsg(self, arg):
+        """デバッグメッセージ表示切替"""
         self.log_type = "str"
         if arg[1] == "True" or arg[1] == "true":
             self.app.debug_msg = True
@@ -263,6 +268,7 @@ class CMD:
             self.log = "true または falseを入力してください"
 
     def update(self):
+        """基本処理"""
         if pyxel.btnp(pyxel.KEY_RETURN):
             print(self.in_str)
             cmd_config = self.in_str.split()
@@ -302,6 +308,7 @@ class CMD:
                 self.start = False
 
     def draw(self):
+        """基本描画"""
         pyxel.rect(5,self.init_y-30,self.init_x-10,30,0)
         pyxel.rectb(5,self.init_y-30,self.init_x-10,30,7)
         pyxel.rect(5,self.init_y-60,self.init_x-10,30,0)

@@ -189,15 +189,34 @@ class Battle:
         # self.win = "player"
 
     def save_chara(self,chara):
+        """
+        キャラデータを保存
+
+        Parameters
+        ----------
+        chara : dict
+            キャラデータ
+        """
         self.save_chara_data = copy.deepcopy(chara)
 
     def debug_clean(self):
+        """
+        デバッグ用初期化
+        """
         for i in range(len(self.chara_data)):
             self.chara_data[list(self.chara_data.keys())[i]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["HP"][0]
             self.chara_data[list(self.chara_data.keys())[i]]["MP"][1] = self.chara_data[list(self.chara_data.keys())[i]]["MP"][0]
 
     def check_level(self):
         def xp_ck(cr) -> float:
+            """
+            必要xp計算
+
+            Parameters
+            ----------
+            cr : str
+                キャラ名
+            """
             xp = 0
             level = self.chara_data[cr]["Level"] + 1
             if 0 <= level <= 16:
@@ -207,6 +226,9 @@ class Battle:
             elif 31 <= self.chara_data[cr]["Level"]:
                 xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
             return xp
+        """
+        レベルチェック
+        """
         for i in self.chara_data.keys():
             try:
                 while self.chara_data[i]["XP"] >= xp_ck(i):
@@ -270,7 +292,6 @@ class Battle:
 
     def enemy_target_select_update(self):
         """攻撃ターゲット設定"""
-        #敵ターゲットを選択
         if self.finger_pos4 == 0:
             self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
         if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -334,7 +355,6 @@ class Battle:
 
     def self_target_select_update(self):
         """味方ターゲット設定"""
-        #味方ターゲットを選択
         if self.select_num5 == -1:
             if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos5 != 0:
@@ -381,7 +401,6 @@ class Battle:
 
     def none_target_select_update(self):
         """選択のない行動"""
-        #選択のない行動
         k_ran = pyxel.rndi(1,1000)
         kaisin = False
         if self.app.chara_data[list(self.chara_data.keys())[self.select_num2]]["satisfaction"][0] * 10 >= k_ran:
@@ -412,7 +431,6 @@ class Battle:
         sm : str
             魔法かスキル
         """
-        #魔法・スキルの表示と選択
         if self.select_num3 == -1:
             if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_num2 = -1
@@ -486,7 +504,6 @@ class Battle:
         target : string
             HPを変換するターゲット
         """
-        #HPをint型に変更
         if target != "none":
             self.app.chara_data[list(self.chara_data.keys())[target]]["HP"][1] = int(self.app.chara_data[list(self.chara_data.keys())[target]]["HP"][1])
         else:
@@ -506,7 +523,6 @@ class Battle:
         atk : tuple[float,float]
             攻撃力
         """
-        #攻撃力を計算
         action_p = self.app.chara_data[list(self.chara_data.keys())[action["player_pos"]]]
         atk = 0
         atk += action_p["atk_ab"] * ((self.player_effect[action["player_pos"]]["basic_atk_buff"] + 100) / 100)
@@ -522,7 +538,6 @@ class Battle:
 
     def target_attack_update(self):
         """敵攻撃"""
-        #敵を攻撃
         try:
             action = self.player_op[self.attack_count]
             if action["target"] != "None":
@@ -835,7 +850,6 @@ class Battle:
 
     def item_update(self):
         """アイテム表示・選択"""
-        #アイテムの表示・選択
         if self.select_num2 == -1:
             if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos5 != 0:
@@ -926,7 +940,6 @@ class Battle:
 
     def update(self):
         """基本処理"""
-        #基本画面
         if self.in_battle:
             if self.operation_player:
                 if self.select_num1 == -1:
@@ -1410,12 +1423,6 @@ class Battle:
         elif fin == 2:
             self.umplus10.draw_text(210,self.init_y-12,"※使用者を選択",8)
             pyxel.blt(115,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
-
-    def none_target_select_draw(self):
-        pass
-
-    def target_attack_draw(self):
-        pass
 
     def draw(self):
         """基本描画"""

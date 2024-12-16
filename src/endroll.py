@@ -4,6 +4,22 @@ import json
 from utils.BDFRenderer import BDFRenderer
 
 class Endroll:
+    """
+    エンドロールクラス
+
+    Parameters
+    ----------
+    app : Any
+        appクラスのインスタンス
+    x : int
+        画面の大きさx
+    y : int
+        画面の大きさy
+    ump10 : Any
+        umplus10(日本語出力)
+    ump24 : Any
+        umplus24(日本語出力)
+    """
     def __init__(self,app,x,y,ump10,ump24):
         self.app = app
         self.init_x = x
@@ -19,15 +35,18 @@ class Endroll:
         self.roll = True
 
     def crean(self):
+        """初期化"""
         self.endroll_pos = np.array([200 + (i * 33) for i in range(len(self.endroll_msgs))],dtype = np.float64)
 
     def update(self):
+        """基本処理"""
         if self.roll:
             self.endroll_pos -= 0.6
         if not True in (self.endroll_pos[0:len(self.endroll_pos) - 1] > 0):
             self.roll = False
 
     def draw(self):
+        """基本描画"""
         pyxel.cls(0)
         pyxel.line(self.init_x // 2,0,self.init_x // 2,self.init_y,7)
         pyxel.line(0,self.init_y // 2,self.init_x,self.init_y // 2,7)
