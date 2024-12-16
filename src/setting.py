@@ -419,6 +419,7 @@ class Setting:
             self.in_eqse_pos = 0
 
     def story_update(self):
+        """ストーリーログ処理"""
         for i in range(1,int(self.app.msg_id) + 1):
             str_i = str(i).zfill(2)
             story_add = True
@@ -968,6 +969,7 @@ class Setting:
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def story_draw(self):
+        """ストーリーログ描画"""
         pyxel.rect(18,125,53,45,0)
         pyxel.rectb(18,125,53,45,7)
         if int(self.app.msg_id) > 430:
