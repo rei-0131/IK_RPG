@@ -44,6 +44,19 @@ else:
 exefile = False
 
 def resource_path(relative_path):
+    """
+    パスチェック
+
+    Parameters
+    ----------
+    relative_path : str
+        パス
+
+    Returns
+    ----------
+    Any : str
+        パス
+    """
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
@@ -91,8 +104,6 @@ else:
     character_data = json.load(open("src/assets/character_data.json","r",encoding="utf-8"))
     story_flag_names = json.load(open("src/assets/story_flags.json","r",encoding="utf-8"))
 collision_data = assets_info["cd_block"]
-#セーブ機能
-#フラグの数とシーンのデータ、プレイ時間、仲間などのHP,MP、レベル情報などをjsonで保存
 
 
 #呼び出す自作関数の中にあるファイル読み込みは自作関数があるディレクトリからカウントされる
@@ -208,6 +219,7 @@ class App:
         self.adc = False
         self.exefile = exefile
         self.base_path = base_path
+        self.load_game = False
         if self.exefile:
             pyxel.load(resource_path("assets.pyxres"))
         else:
@@ -216,11 +228,32 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def resource_path(self,relative_path):
+        """
+        パスチェック
+
+        Parameters
+        ----------
+        relative_path : str
+            パス
+
+        Returns
+        ----------
+        Any : str
+            パス
+        """
         if hasattr(sys, '_MEIPASS'):
             return os.path.join(sys._MEIPASS, relative_path)
         return os.path.join(os.path.abspath("."), relative_path)
 
     def info(self,msg):
+        """
+        ログ出力
+
+        Parameters
+        ----------
+        msg : str
+            出力メッセージ
+        """
         print(f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] {msg}")
 
     def my_modules(self):
@@ -260,6 +293,9 @@ class App:
         print(self.load_msg)
 
     def version_info(self):
+        """
+        pyodideで使用するモジュールのバージョン表示
+        """
         print("----------Module Versions----------")
         print(f"python version:{sys.version}")
         if not local:
@@ -276,6 +312,14 @@ class App:
 
     def check_level(self):
         def xp_ck(cr) -> float:
+            """
+            必要xp計算
+
+            Parameters
+            ----------
+            cr : str
+                キャラ名
+            """
             xp = 0
             level = self.chara_data[cr]["Level"] + 1
             if 0 <= level <= 16:
@@ -285,6 +329,9 @@ class App:
             elif 31 <= self.chara_data[cr]["Level"]:
                 xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
             return xp
+        """
+        レベルチェック
+        """
         for i in self.chara_data.keys():
             try:
                 while self.chara_data[i]["XP"] >= xp_ck(i):
@@ -332,6 +379,7 @@ class App:
                     self.story_flags_co = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags_co"].items()}
                     self.question_selects = self.savedata[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
                     self.from_load = False
+                    self.load_game = True
                 else:
                     print("new game")
                     self.loaddata = {
@@ -362,6 +410,7 @@ class App:
                     self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
                     self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
                     self.now_location = self.loaddata["play_data"]["location"]
+                    self.load_game = False
                 self.new_game = False
             if not self.scene_show[self.now_location - 6]:
                 for k,v in self.assets_info["chara"].items():
@@ -774,7 +823,7 @@ class App:
                         self.in_word = False
                     if self.in_word:
                         self.words.dec_word()
-                    if self.mode == "debug" and self.debug_msg:
+                    if self.debug_msg:
                         pyxel.text(0,0,f"{self.player.x = }",0)
                         pyxel.text(0,11,f"{self.player.y = }",0)
                         pyxel.text(0,22,f"{self.player.dx = }",0)
@@ -786,6 +835,8 @@ class App:
                         pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
                         pyxel.text(0,121,f"{self.msg_id = } {self.disp_id = }",0)
             else:
+                if self.load_game:
+                    self.op_show = [False,False]
                 if self.op_show[0]:
                     pyxel.blt(-234,-90,self.gamepad_op,-30,30,760,380,scale = 0.42)
                 elif self.op_show[1]:

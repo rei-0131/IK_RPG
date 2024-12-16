@@ -2,6 +2,24 @@ import pyxel
 import utils.scenes as scenes
 
 class Mob:
+    """
+    モブに関するクラス
+
+    Parameters
+    ----------
+    app : Any
+        Appクラスのインスタンス
+    data : list
+        アセット上のキャラ情報
+    info : list
+        モブの表示情報
+    scale : float
+        モブの表示スケール
+    name : str
+        モブ名
+    index_info : int
+        モブリスト内のインデックス
+    """
     def __init__(self,app,data,info,scale,name,index_info):
         self.app = app
         self.data = data
@@ -24,6 +42,7 @@ class Mob:
         self.story_animation = False
 
     def update(self):
+        """表示管理と移動"""
         disp = [False,-1]
         for i,info in enumerate(self.info[3]):
             if self.app.msg_id != None:
@@ -144,6 +163,7 @@ class Mob:
                                 self.y = self.move_plan[self.index][1]
 
     def draw(self):
+        """基本描画"""
         if not self.story_animation:
             pyxel.blt(self.show[0],self.show[1],self.data[0],self.data[1],self.data[2],self.data[3] * self.show[3],self.data[4],self.data[5],scale=self.scale)
         else:
