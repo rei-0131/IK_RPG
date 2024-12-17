@@ -273,7 +273,7 @@ class App:
         self.info("Loading Setting...")
         self.setting_in = Setting(self,self.init_x,self.init_y,umplus10)
         self.info("Loading Player...")
-        self.player = Player(self,self.init_x,self.init_y)
+        self.player = Player(self,self.init_x,self.init_y,umplus10)
         self.info("Loading Title...")
         self.title_s = Title(self,self.init_x,self.init_y,umplus10)
         self.info("Loading Words...")
@@ -568,8 +568,9 @@ class App:
                 elif self.msg_id == "98":
                     self.player.x = 330
                     self.player.y = 0
-                    tmp = self.imp_item_codes.index("001")
-                    self.imp_item_codes.pop(tmp)
+                    if "001" in self.imp_item_codes:
+                        tmp = self.imp_item_codes.index("001")
+                        self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "114" or self.msg_id == "190":
                     self.player.x = 163
                     self.player.y = 110
@@ -599,8 +600,9 @@ class App:
                 elif self.msg_id == "173":
                     self.player.x = 300
                     self.player.y = 0
-                    tmp = self.imp_item_codes.index("002")
-                    self.imp_item_codes.pop(tmp)
+                    if "002" in self.imp_item_codes:
+                        tmp = self.imp_item_codes.index("002")
+                        self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "190":
                     self.player.x = 163
                     self.player.y = 110
@@ -615,8 +617,9 @@ class App:
                     self.player.walk_pos = 0
                     self.player.walk_num = 0
                     self.now_location = scenes.CLASS1_SCENE
-                    tmp = self.imp_item_codes.index("003")
-                    self.imp_item_codes.pop(tmp)
+                    if "003" in self.imp_item_codes:
+                        tmp = self.imp_item_codes.index("003")
+                        self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "240":
                     self.player.x = 330
                     self.player.y = 0
@@ -643,8 +646,9 @@ class App:
                     self.player.walk_pos = 0
                     self.player.walk_num = 0
                 elif self.msg_id == "299":
-                    tmp = self.imp_item_codes.index("004")
-                    self.imp_item_codes.pop(tmp)
+                    if "004" in self.imp_item_codes:
+                        tmp = self.imp_item_codes.index("004")
+                        self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "316":
                     self.player.x = 330
                     self.player.y = 0
@@ -670,8 +674,9 @@ class App:
                     self.player.y = 110
                     self.player.key = "w"
                 elif self.msg_id == "410":
-                    tmp = self.imp_item_codes.index("005")
-                    self.imp_item_codes.pop(tmp)
+                    if "005" in self.imp_item_codes:
+                        tmp = self.imp_item_codes.index("005")
+                        self.imp_item_codes.pop(tmp)
                 elif self.msg_id == "429":
                     self.player.x = 20
                     self.player.y = 100
@@ -834,6 +839,30 @@ class App:
                         pyxel.text(0,77,f"{self.player.walk_num = }",0)
                         pyxel.text(0,88,f"{self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)}",0)
                         pyxel.text(0,121,f"{self.msg_id = } {self.disp_id = }",0)
+                    if not self.in_word and not self.trade:
+                        cd_return = self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)
+                        story_f = True
+                        if cd_return[1] == "mob":
+                            if self.mobs[self.now_location - 6][cd_return[2]][2][2] != "T":
+                                if self.disp_id == "115" and self.mobs[self.now_location - 6][cd_return[2]][2][2] == 98:
+                                    story_f = False
+                                if self.story_flags_tf["200_speak"] and self.mobs[self.now_location - 6][cd_return[2]][2][3] == [[187,212]]:
+                                    story_f = False
+                        elif cd_return[1] == "trash":
+                            if not (129 <= int(self.msg_id) <= 140 and self.now_location == scenes.STAFF_M_SCENE):
+                                story_f = False
+                        elif not ("it_search" in cd_return[1] and self.msg_id == "152" or self.msg_id == "9000" and cd_return[1] not in self.player.story_flag_progress):
+                            story_f = False
+                        elif "ch" in cd_return[1]:
+                            if 191 <= int(self.msg_id) <= 198:
+                                if cd_return[1] != "ch_2" and cd_return[1] != "ch_4":
+                                    story_f = False
+                            else:
+                                story_f = False
+                        else:
+                            story_f = False
+                        if story_f:
+                            umplus10.draw_text(5,190,f"FキーまたはAボタン".rjust(30,"　"),0)
             else:
                 if self.load_game:
                     self.op_show = [False,False]
