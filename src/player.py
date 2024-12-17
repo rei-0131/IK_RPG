@@ -12,11 +12,14 @@ class Player:
         画面の大きさx
     y : int
         画面の大きさy
+    ump : Any
+        umplus10(日本語出力)
     """
-    def __init__(self,app,x,y):
+    def __init__(self,app,x,y,ump):
         self.app = app
         self.x = 20
         self.y = y - 100
+        self.umplus10 = ump
         self.dx = 0
         self.dy = 0
         self.init_x = x

@@ -30,6 +30,7 @@ class Mob:
         self.name = name
         self.display = [True,-1]
         self.walk_speed = 1.5
+        self.walk_animation = 5
         self.key = ""
         self.x = 0
         self.y = 0
@@ -64,6 +65,16 @@ class Mob:
         #[6,[166,80,0,1],98,[[52,115]],115,[[166,105],[305,105]]]
         if len(self.info) > 4:
             if self.app.msg_id == str(self.info[4]):
+                if len(self.info) > 6:
+                    if self.info[6] == "r":
+                        self.walk_speed = 3
+                        self.walk_animation = 2
+                    else:
+                        self.walk_speed = 1.5
+                        self.walk_animation = 5
+                else:
+                    self.walk_speed = 1.5
+                    self.walk_animation = 5
                 self.move_plan = self.info[5]
                 if self.show[0] > self.move_plan[self.index][0]:
                     self.dx = - self.walk_speed
@@ -86,7 +97,7 @@ class Mob:
                     self.walk_num = 0
                     self.walk_pos = 0
                 else:
-                    if self.walk_num % 5 == 0:
+                    if self.walk_num % self.walk_animation == 0:
                         if self.walk_pm == "p":
                             self.walk_pos += 1
                         else:
