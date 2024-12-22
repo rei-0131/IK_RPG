@@ -98,6 +98,7 @@ class Player:
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
                         self.app.random_encount = True
+                        self.app.sound_manager.play_bgm("battle")
                 elif (self.app.now_location == scenes.WAY_SCENE_12 or
                         self.app.now_location == scenes.WAY_SCENE_31 or
                         self.app.now_location == scenes.WAY_SCENE_I or
@@ -115,6 +116,7 @@ class Player:
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
                         self.app.random_encount = True
+                        self.app.sound_manager.play_bgm("battle")
         else:
             if not self.app.in_word and not self.app.trade:
                 if pyxel.btnp(pyxel.KEY_F) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
@@ -149,6 +151,7 @@ class Player:
                                     self.app.disp_id = "191"
                             elif cd_return[1] == "ch_4":
                                 self.app.msg_id = "197"
+                    self.app.sound_manager.play_se("ok")
 
     def draw(self):
         """基本描画"""

@@ -1,8 +1,6 @@
 import pyxel
 import numpy as np
 
-import utils.scenes as scenes
-
 
 class Map:
     """

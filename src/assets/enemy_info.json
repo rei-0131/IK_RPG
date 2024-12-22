@@ -163,6 +163,22 @@
                 "xp":500,
                 "money":500
             }
+        },
+        "momonoi_2":{
+            "basis":[1,[128,80],[63,79],10],
+            "status":{
+                "enemy_name":{"enemy_type":"boss","enemy_code":"momonoi_2"},
+                "HP":[1000,1000],
+                "MP":[100,100],
+                "atk_ab":300,
+                "def_ab":50,
+                "satisfaction": [
+                    1.5,
+                    120
+                ],
+                "xp":500,
+                "money":500
+            }
         }
     },
     "enemy_pos":{

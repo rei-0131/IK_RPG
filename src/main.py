@@ -203,18 +203,21 @@ class App:
         self.machine = pyxel.Image(1200,800)
         self.staff_room = pyxel.Image(1200,800)
         self.gamepad_op = pyxel.Image(719,480)
+        self.title_logo = pyxel.Image(1153,769)
         if exefile:
             self.class_room.load(0,0,resource_path("classroom.png"))
             self.way.load(0,0,resource_path("way.png"))
             self.machine.load(0,0,resource_path("machine.png"))
             self.staff_room.load(0,0,resource_path("staffroom.png"))
             self.gamepad_op.load(0,0,resource_path("gamepad_op.png"))
+            self.title_logo.load(0,0,resource_path("title_logo.png"))
         else:
             self.class_room.load(0,0,"assets/classroom.png")
             self.way.load(0,0,"assets/way.png")
             self.machine.load(0,0,"assets/machine.png")
             self.staff_room.load(0,0,"assets/staffroom.png")
             self.gamepad_op.load(0,0,"assets/gamepad_op.png")
+            self.title_logo.load(0,0,"assets/title_logo.png")
         self.op_show = [True,True]
         self.adc = False
         self.exefile = exefile
@@ -308,7 +311,10 @@ class App:
 
     def load_bgms(self):
         """BGMのロード"""
-        self.sound_manager.load_bgm("q_c","test")
+        self.sound_manager.load_bgm("q_c","battle")
+        self.sound_manager.load_se("ok","ok")
+        self.sound_manager.load_se("select","select")
+        self.sound_manager.load_se("win","win")
 
     def check_level(self):
         def xp_ck(cr) -> float:
@@ -685,9 +691,11 @@ class App:
                 if self.op_show[0]:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         self.op_show[0] = False
+                        self.sound_manager.play_se("ok")
                 elif self.op_show[1]:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         self.op_show[1] = False
+                        self.sound_manager.play_se("ok")
             if self.in_battle and not self.random_encount:
                 print("loading battle")
                 self.battle.clean(self.now_scene)
@@ -698,6 +706,7 @@ class App:
                 self.battle.set_enemy(len(self.words_j["story"][self.disp_id]["battle"][0]),self.words_j["story"][self.disp_id]["battle"][0])
                 self.be_scene = self.now_scene
                 self.now_scene = scenes.BATTLE_SCENE
+                self.sound_manager.play_bgm("battle")
             if pyxel.btnp(pyxel.KEY_T) and self.is_test:
                 self.trade = True
             if pyxel.btnp(pyxel.KEY_P) and self.is_test:

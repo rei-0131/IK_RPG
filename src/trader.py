@@ -36,38 +36,45 @@ class Trader:
         if not self.buy_equip_type:
             if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.app.trade = False
+                self.app.sound_manager.play_se("select")
             if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
                 if self.finger_pos == 0:
                     self.finger_pos = 77
                 else:
                     self.finger_pos -= 11
+                self.app.sound_manager.play_se("select")
             if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
                 if self.finger_pos == 77:
                     self.finger_pos = 0
                 else:
                     self.finger_pos += 11
+                self.app.sound_manager.play_se("select")
             if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                 self.buy_equip_type = True
                 if self.finger_pos == 0:
                     self.type = 0
                 else:
                     self.type = self.finger_pos // 11
+                self.app.sound_manager.play_se("ok")
         else:
             if not self.buy_question:
                 if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.buy_equip_type = False
                     self.disp_select = 0
                     self.buy_select = 0
+                    self.app.sound_manager.play_se("select")
                 if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
                     if self.buy_select != 0:
                         self.buy_select -= 1
                         if self.disp_select != 0:
                             self.disp_select -= 1
+                        self.app.sound_manager.play_se("select")
                 if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8)or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
                     if self.buy_select != len(list(self.app.tools[self.equip_en[self.type]].keys())) - 1:
                         self.buy_select += 1
                         if self.disp_select != 3:
                             self.disp_select += 1
+                        self.app.sound_manager.play_se("select")
                 if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                     show_weapon = {i:self.app.tools[self.equip_en[self.type]][i] if self.app.tools[self.equip_en[self.type]][i][6] <= self.app.chara_data["ぼく"]["Level"] else f"ぼくのレベル{self.app.tools[self.equip_en[self.type]][i][6]}以上で開放" for i in self.app.tools[self.equip_en[self.type]].keys()}
                     select = show_weapon[list(show_weapon.keys())[self.disp_select]]
@@ -75,25 +82,30 @@ class Trader:
                     if type(select) is list:
                         if select[5] <= self.app.money:
                             self.buy_question = True
+                            self.app.sound_manager.play_se("ok")
             else:
                 if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.buy_question = False
+                    self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                     if self.conf:
                         self.conf = False
                     else:
                         self.conf = True
+                    self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                     if self.conf:
                         self.conf = False
                     else:
                         self.conf = True
+                    self.app.sound_manager.play_se("select")
                 if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                     if self.conf:
                         print(self.app.tools[self.equip_en[self.type]][list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select]])
                         self.app.money -= self.app.tools[self.equip_en[self.type]][list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select]][5]
                         self.app.equip_codes[self.equip_en[self.type]].append(list(self.app.tools[self.equip_en[self.type]].keys())[self.buy_select])
                     self.buy_question = False
+                    self.app.sound_manager.play_se("ok")
 
     def draw(self):
         """基本描画"""

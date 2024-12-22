@@ -83,12 +83,15 @@ class SaveLoad:
                     if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                         enter_pos = -1
                         self.first_show = True
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                         if self.setting_finger != 1:
                             self.setting_finger -= 1
+                            self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                         if self.setting_finger != 20:
                             self.setting_finger += 1
+                            self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         print(f"{self.setting_finger=}")
                         if self.over_load:
@@ -103,19 +106,23 @@ class SaveLoad:
                                         self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
                                 else:
                                     self.save_data = self.cloud.load()
+                            self.app.sound_manager.play_se("ok")
                 else:
                     if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                         self.save_enter = -1
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                         if self.over_tf:
                             self.over_tf = False
                         else:
                             self.over_tf = True
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                         if self.over_tf:
                             self.over_tf = False
                         else:
                             self.over_tf = True
+                        self.app.sound_manager.play_se("select")
                     if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                         if self.over_tf:
                             self.save.newsave(self.save_enter)
@@ -127,6 +134,7 @@ class SaveLoad:
                             else:
                                 self.save_data = self.cloud.load()
                         self.save_enter = -1
+                        self.app.sound_manager.play_se("ok")
                 return enter_pos
             else:
                 enter_pos = self.load
@@ -134,12 +142,15 @@ class SaveLoad:
                     if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                         enter_pos = self.title
                         self.first_show = True
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                         if self.setting_finger != 1:
                             self.setting_finger -= 1
+                            self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                         if self.setting_finger != 20:
                             self.setting_finger += 1
+                            self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         print(f"{self.setting_finger=}")
                         if self.load:
@@ -151,19 +162,23 @@ class SaveLoad:
                                 self.save_enter = self.setting_finger
                             else:
                                 self.save.newsave(self.setting_finger)
+                        self.app.sound_manager.play_se("ok")
                 else:
                     if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                         self.save_enter = -1
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                         if self.over_tf:
                             self.over_tf = False
                         else:
                             self.over_tf = True
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                         if self.over_tf:
                             self.over_tf = False
                         else:
                             self.over_tf = True
+                        self.app.sound_manager.play_se("select")
                     if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                         if self.over_tf:
                             self.save.newsave(self.setting_finger)
@@ -175,6 +190,7 @@ class SaveLoad:
                             else:
                                 self.save_data = self.cloud.load()
                         self.save_enter = -1
+                        self.app.sound_manager.play_se("ok")
                 return enter_pos
         else:
             if self.first_show:
@@ -189,12 +205,15 @@ class SaveLoad:
             if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.app.battle.select_num1 = -1
                 self.first_show = True
+                self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.setting_finger != 1:
                     self.setting_finger -= 1
+                    self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.setting_finger != 20:
                     self.setting_finger += 1
+                    self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 if str(self.setting_finger) in self.save_data:
                     if self.app.local:
@@ -224,6 +243,7 @@ class SaveLoad:
                     self.app.story_flags_co = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_co"].items()}
                     self.question_selects = self.savedata[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
                     self.app.in_battle = False
+                    self.app.sound_manager.play_se("ok")
 
     def draw(self):
         """基本描画"""

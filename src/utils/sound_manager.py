@@ -24,7 +24,7 @@ class SoundManager:
         self.se = ""  # 現在再生中のSE名
         self.bgm = ""  # 現在再生中のBGM名
         self.isLoop = True  # BGMがループ再生するかどうか
-        self.seChannel = 2 # SEが再生されるチャンネル
+        self.seChannel = 3 # SEが再生されるチャンネル
 
     def set_seChannel(self, ch: int):
         """SEを再生するチャンネルを指定"""
@@ -42,7 +42,7 @@ class SoundManager:
         """指定されたパスからSEを読み込み、サウンドバンクにセットする"""
         if self.seStack > 3:
             try:
-                with open(f"./sounds/{path}.json", "rt") as fin:
+                with open(f"{sound_file_path}/{path}.json", "rt") as fin:
                     se = json.loads(fin.read())
                 for ch, sound in enumerate(se):
                     if ch == 0:
