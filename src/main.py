@@ -312,9 +312,13 @@ class App:
     def load_bgms(self):
         """BGMのロード"""
         self.sound_manager.load_bgm("q_c","battle")
+        self.sound_manager.load_bgm("winner","battle_win")
+
         self.sound_manager.load_se("ok","ok")
         self.sound_manager.load_se("select","select")
-        self.sound_manager.load_se("win","win")
+        self.sound_manager.load_se("turn","turn")
+        self.sound_manager.load_se("give","damage_enemy")
+        self.sound_manager.load_se("acceptable","damage_self")
 
     def check_level(self):
         def xp_ck(cr) -> float:
@@ -453,20 +457,24 @@ class App:
                             elif self.now_location == scenes.CLASS2_SCENE:
                                 self.player.x = 265
                                 self.player.y = 166
+                            self.sound_manager.play_se("turn")
                             self.now_location = scenes.WAY_SCENE_12
                     elif self.now_location == scenes.CLASS3_SCENE:
                         self.player.x = 20
                         self.player.y = 166
+                        self.sound_manager.play_se("turn")
                         self.now_location = scenes.WAY_SCENE_31
                 if 12 <= self.player.x <= 55 and 171 <= self.player.y:
                     if self.now_location == scenes.WAY_SCENE_12:
                         self.now_location = scenes.CLASS1_SCENE
                         self.player.x = 265
                         self.player.y = 105
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_31:
                         self.now_location = scenes.CLASS3_SCENE
                         self.player.x = 265
                         self.player.y = 105
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_I:
                         self.now_location = scenes.STAFF_I_SCENE
                         self.player.x = 141
@@ -475,6 +483,7 @@ class App:
                             self.msg_id = "213"
                         elif self.msg_id == "267":
                             self.msg_id = "268"
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_E:
                         self.now_location = scenes.STAFF_E_SCENE
                         self.player.x = 141
@@ -484,6 +493,7 @@ class App:
                             self.player.walk_pos = 0
                             self.player.walk_num = 0
                             self.msg_id = "142"
+                        self.sound_manager.play_se("turn")
                 if 250 <= self.player.x <= 278 and 171 <= self.player.y:
                     if self.now_location == scenes.WAY_SCENE_12:
                         self.now_location = scenes.CLASS2_SCENE
@@ -499,46 +509,56 @@ class App:
                             self.player.key = "a"
                             self.player.walk_pos = 0
                             self.player.walk_num = 0
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_31:
                         self.now_location = scenes.WAY_SCENE_I
                         self.player.x = 272
                         self.player.y = 135
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_I:
                         self.now_location = scenes.WAY_SCENE_E
                         self.player.x = 262
                         self.player.y = 138
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_E:
                         self.now_location = scenes.WAY_SCENE_I
                         self.player.x = 262
                         self.player.y = 138
+                        self.sound_manager.play_se("turn")
                 if 275 <= self.player.x and 115 <= self.player.y <= 150:
                     if self.now_location == scenes.WAY_SCENE_12:
                         self.now_location = scenes.WAY_SCENE_31
                         self.player.x = 15
                         self.player.y = 135
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_31:
                         self.now_location = scenes.MACHINE_SCENE
                         if self.disp_id == "115":
                             self.msg_id = "116"
                         self.player.x = 158
                         self.player.y = 155
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_I:
                         self.now_location = scenes.WAY_SCENE_31
                         self.player.x = 262
                         self.player.y = 165
+                        self.sound_manager.play_se("turn")
                 if self.player.x <= 7 and 115 <= self.player.y <= 150:
                     if self.now_location == scenes.WAY_SCENE_31:
                         self.now_location = scenes.WAY_SCENE_12
                         self.player.x = 272
                         self.player.y = 135
+                        self.sound_manager.play_se("turn")
                 if 41 <= self.player.x <= 63 and 43 <= self.player.y <= 45 and self.now_location == scenes.MACHINE_SCENE:
                     self.now_location = scenes.STAFF_M_SCENE
                     self.player.x = 141
                     self.player.y = 155
+                    self.sound_manager.play_se("turn")
                 if 150 <= self.player.x <= 160 and 165 <= self.player.y <= 170 and self.now_location == scenes.MACHINE_SCENE:
                     self.now_location = scenes.WAY_SCENE_31
                     self.player.x = 272
                     self.player.y = 135
+                    self.sound_manager.play_se("turn")
                 if 133 <= self.player.x <= 151 and 166 <= self.player.y <= 169:
                     if self.now_location == scenes.STAFF_I_SCENE:
                         self.now_location = scenes.WAY_SCENE_I
@@ -548,14 +568,17 @@ class App:
                             self.msg_id = "153"
                         elif self.msg_id == "403":
                             self.msg_id = "404"
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.STAFF_M_SCENE:
                         self.now_location = scenes.MACHINE_SCENE
                         self.player.x = 50
                         self.player.y = 48
+                        self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.STAFF_E_SCENE:
                         self.now_location = scenes.WAY_SCENE_E
                         self.player.x = 20
                         self.player.y = 146
+                        self.sound_manager.play_se("turn")
 
                 if self.msg_id == "21":
                     self.now_location = scenes.WAY_SCENE_12
@@ -706,6 +729,8 @@ class App:
                 self.battle.set_enemy(len(self.words_j["story"][self.disp_id]["battle"][0]),self.words_j["story"][self.disp_id]["battle"][0])
                 self.be_scene = self.now_scene
                 self.now_scene = scenes.BATTLE_SCENE
+                if self.bgm_run:
+                    self.sound_manager.stop()
                 self.sound_manager.play_bgm("battle")
             if pyxel.btnp(pyxel.KEY_T) and self.is_test:
                 self.trade = True
@@ -746,9 +771,6 @@ class App:
         if self.now_scene == scenes.BATTLE_SCENE:
             self.battle.update()
             if self.bgm_run and self.battle.win != "":
-                self.sound_manager.stop()
-                print("BGM STOP")
-                self.bgm_run = False
                 if self.battle.win == "player":
                     self.in_battle = False
                     if "battle" in self.words_j["story"][self.disp_id]:

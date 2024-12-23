@@ -92,6 +92,7 @@ class Battle:
         self.in_boss = False
         self.escape_count = 0
         self.get_item = []
+        self.wl_sound = False
 
     def clean(self,scene):
         """初期化"""
@@ -183,6 +184,7 @@ class Battle:
         self.in_boss = False
         self.escape_count = 0
         self.get_item = []
+        self.wl_sound = False
 
         # 経験値確認用
         # self.in_battle = False
@@ -852,6 +854,11 @@ class Battle:
                                         else:
                                             self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
                                 self.damage_pos -= 2
+                            if self.vibe_enemy[self.vibe_count]["total"] == 0:
+                                if action["kaisin"]:
+                                    self.app.sound_manager.play_se("damage_enemy")
+                                else:
+                                    self.app.sound_manager.play_se("damage_enemy")
                             vibe = self.vibe_enemy[self.vibe_count]
                             if vibe["move"] == "p":
                                 if vibe["value"] < 2:
@@ -1207,6 +1214,8 @@ class Battle:
                                 }
                             else:
                                 if int(ai_ac[0]) < len(self.vibe_player):
+                                    if self.vibe_player[int(ai_ac[0])]["total"] == 0:
+                                        self.app.sound_manager.play_se("damage_self")
                                     vibe = self.vibe_player[int(ai_ac[0])]
                                     if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:
                                         if vibe["move"] == "p":
@@ -1225,6 +1234,12 @@ class Battle:
                         self.hp_int("none")
         else:
             if self.win == "player":
+                if not self.wl_sound:
+                    self.app.sound_manager.stop()
+                    self.app.bgm_run = False
+                    self.app.sound_manager.play_bgm("battle_win",loop=False)
+                    self.app.bgm_run = True
+                    self.wl_sound = True
                 if not self.xp_stop:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         while not self.xp_stop:
@@ -1302,6 +1317,7 @@ class Battle:
                         elif self.app.random_encount:
                             self.app.random_encount = False
                         self.app.sound_manager.play_se("ok")
+                        self.app.bgm_run = False
             else:
                 if self.select_num1 == -1:
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):

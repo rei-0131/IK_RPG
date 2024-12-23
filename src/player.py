@@ -98,6 +98,8 @@ class Player:
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
                         self.app.random_encount = True
+                        if self.app.bgm_run:
+                            self.app.sound_manager.stop()
                         self.app.sound_manager.play_bgm("battle")
                 elif (self.app.now_location == scenes.WAY_SCENE_12 or
                         self.app.now_location == scenes.WAY_SCENE_31 or
@@ -116,6 +118,8 @@ class Player:
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
                         self.app.random_encount = True
+                        if self.app.bgm_run:
+                            self.app.sound_manager.stop()
                         self.app.sound_manager.play_bgm("battle")
         else:
             if not self.app.in_word and not self.app.trade:
