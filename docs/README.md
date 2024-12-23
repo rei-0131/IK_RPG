@@ -13,8 +13,7 @@
 - datetime
 - tzdata
 - js
-- pyodide.http
-- urllib.request
+- pyodide
 - os
 - scikit-learn
 - copy
