@@ -7,6 +7,12 @@ import utils.scenes as scenes
 from save import Save
 from cloud_data import Cloud_data
 
+try:
+    from js import document, FileReader, window, Blob, URL
+    from pyodide.ffi import create_proxy # type: ignore
+except Exception:
+    pass
+
 #セーブデータをロードする画面を表示する
 class SaveLoad:
     """
@@ -54,10 +60,87 @@ class SaveLoad:
                 self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
         else:
             self.save_data = self.cloud.load()
+            document.body.addEventListener('dragover', create_proxy(self.on_dragover))
+            document.body.addEventListener('drop', create_proxy(self.on_drop))
         self.first_show = True
+        self.text = ""
+        self.info_show = False
+        self.info_count = 0
+        self.info_text = ""
         self.load = scenes.LOAD_SCENE
         self.title = scenes.TITLE_SCENE
         self.main = scenes.MAIN_SCENE
+
+    def save_download(self):
+        data = [str(self.save_data)]
+        blob = Blob.new(data, {'type': 'text/plain'})
+        blob_url = URL.createObjectURL(blob)
+        a = document.createElement('a')
+        a.href = blob_url
+        a.download = 'save_data.json'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(blob_url)
+
+    def save_change(self,error = False):
+        if error:
+            self.info_text = "読み込みに失敗しました。バイナリデータの可能性があります。"
+        else:
+            try:
+                self.save_data = dict(self.text)
+                self.info_text = "セーブデータをアップロードしました"
+            except Exception:
+                self.info_text = "dict型への変換に失敗しました。"
+            self.info_count = 0
+            self.info_show = True
+
+    def open_file_dialog(self):
+        file_input = document.createElement('input')
+        file_input.type = 'file'
+
+        def on_change(event):
+            files = file_input.files
+            if files.length > 0:
+                file = files.item(0)
+                reader = FileReader.new()
+                def on_load(event):
+                    try:
+                        self.text = reader.result
+                        self.save_change()
+                    except Exception:
+                        self.save_change(True)
+                reader.onload = on_load
+                reader.readAsText(file)
+
+        file_input.addEventListener('change', create_proxy(on_change))
+        file_input.click()
+
+    def on_dragover(self, e):
+        e.preventDefault()
+
+    def on_drop(self, e):
+        go = False
+        if self.app.now_scene == scenes.BATTLE_SCENE and self.app.battle.in_battle and self.app.battle.win != "player" and self.app.battle.select_num1 == 1:
+            go = True
+        elif self.app.now_scene == scenes.LOAD_SCENE:
+            go = True
+        elif self.app.setting.enter_pos == 8:
+            go = True
+        if go:
+            e.preventDefault()
+            files = e.dataTransfer.files
+            for file in files:
+                reader = FileReader.new()
+                def on_load(e):
+                    try:
+                        self.text = reader.result
+                        self.save_change()
+                    except Exception:
+                        self.save_change(True)
+                reader.onload = on_load
+                reader.readAsText(file)
+                break
 
     def update(self,ent=None,battle_load = False) -> int:
         """
@@ -88,25 +171,47 @@ class SaveLoad:
                         if self.setting_finger != 1:
                             self.setting_finger -= 1
                             self.app.sound_manager.play_se("select")
+                        else:
+                            if self.app.local:
+                                self.setting_finger = 20
+                                self.save_pos = 17
+                            else:
+                                self.setting_finger = 22
+                                self.save_pos = 19
                     if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                        if self.setting_finger != 20:
-                            self.setting_finger += 1
-                            self.app.sound_manager.play_se("select")
+                        if self.app.local:
+                            if self.setting_finger != 20:
+                                self.setting_finger += 1
+                            else:
+                                self.setting_finger = 1
+                                self.save_pos = 1
+                        else:
+                            if self.setting_finger != 22:
+                                self.setting_finger += 1
+                            else:
+                                self.setting_finger = 1
+                                self.save_pos = 1
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         print(f"{self.setting_finger=}")
-                        if self.over_load:
-                            if str(self.setting_finger) in self.save_data:
-                                self.save_enter = self.setting_finger
-                            else:
-                                self.save.newsave(self.setting_finger)
-                                if self.app.local:
-                                    if self.app.exefile:
-                                        self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
-                                    else:
-                                        self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
+                        if not self.app.local and self.setting_finger == 21:
+                            self.open_file_dialog()
+                        elif not self.app.local and self.setting_finger == 22:
+                            self.save_download()
+                        else:
+                            if self.over_load:
+                                if str(self.setting_finger) in self.save_data:
+                                    self.save_enter = self.setting_finger
                                 else:
-                                    self.save_data = self.cloud.load()
-                            self.app.sound_manager.play_se("ok")
+                                    self.save.newsave(self.setting_finger)
+                                    if self.app.local:
+                                        if self.app.exefile:
+                                            self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                                        else:
+                                            self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
+                                    else:
+                                        self.save_data = self.cloud.load()
+                        self.app.sound_manager.play_se("ok")
                 else:
                     if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                         self.save_enter = -1
@@ -147,21 +252,43 @@ class SaveLoad:
                         if self.setting_finger != 1:
                             self.setting_finger -= 1
                             self.app.sound_manager.play_se("select")
+                        else:
+                            if self.app.local:
+                                self.setting_finger = 20
+                                self.save_pos = 17
+                            else:
+                                self.setting_finger = 22
+                                self.save_pos = 19
                     if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                        if self.setting_finger != 20:
-                            self.setting_finger += 1
-                            self.app.sound_manager.play_se("select")
+                        if self.app.local:
+                            if self.setting_finger != 20:
+                                self.setting_finger += 1
+                            else:
+                                self.setting_finger = 1
+                                self.save_pos = 1
+                        else:
+                            if self.setting_finger != 22:
+                                self.setting_finger += 1
+                            else:
+                                self.setting_finger = 1
+                                self.save_pos = 1
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         print(f"{self.setting_finger=}")
-                        if self.load:
-                            if str(self.setting_finger) in self.save_data:
-                                self.continue_game = True
-                                enter_pos = self.main
-                        if self.over_load:
-                            if str(self.setting_finger) in self.save_data:
-                                self.save_enter = self.setting_finger
-                            else:
-                                self.save.newsave(self.setting_finger)
+                        if not self.app.local and self.setting_finger == 21:
+                            self.open_file_dialog()
+                        elif not self.app.local and self.setting_finger == 22:
+                            self.save_download()
+                        else:
+                            if self.load:
+                                if str(self.setting_finger) in self.save_data:
+                                    self.continue_game = True
+                                    enter_pos = self.main
+                            if self.over_load:
+                                if str(self.setting_finger) in self.save_data:
+                                    self.save_enter = self.setting_finger
+                                else:
+                                    self.save.newsave(self.setting_finger)
                         self.app.sound_manager.play_se("ok")
                 else:
                     if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -210,40 +337,68 @@ class SaveLoad:
                 if self.setting_finger != 1:
                     self.setting_finger -= 1
                     self.app.sound_manager.play_se("select")
-            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                if self.setting_finger != 20:
-                    self.setting_finger += 1
-                    self.app.sound_manager.play_se("select")
-            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                if str(self.setting_finger) in self.save_data:
+                else:
                     if self.app.local:
-                        if self.app.exefile:
-                            self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
-                        else:
-                            self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
+                        self.setting_finger = 20
+                        self.save_pos = 17
                     else:
-                        self.savedata = self.app.cloud.load()
-                        time.sleep(0.3)
-                    self.game_time_start = time.time()
-                    print(f"{self.setting_finger=}")
-                    self.app.loaddata = self.app.savedata[str(self.setting_finger)]
-                    self.app.game_time = self.app.savedata[str(self.setting_finger)]["play_data"]["time"]
-                    self.app.money = self.app.savedata[str(self.setting_finger)]["play_data"]["money"]
-                    self.app.now_scene = self.app.savedata[str(self.setting_finger)]["play_data"]["scene"]
-                    self.app.now_location = self.app.savedata[str(self.setting_finger)]["play_data"]["location"]
-                    self.app.player.x = self.app.savedata[str(self.setting_finger)]["play_data"]["x"]
-                    self.app.player.y = self.app.savedata[str(self.setting_finger)]["play_data"]["y"]
-                    self.app.chara_data = self.app.savedata[str(self.setting_finger)]["play_data"]["chara_data"]
-                    self.app.item_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["item_codes"]
-                    self.app.imp_item_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["imp_item_codes"]
-                    self.app.equip_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["equip_codes"]
-                    self.app.msg_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["msg_id"]
-                    self.app.disp_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["disp_id"]
-                    self.app.story_flags_tf = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_tf"].items()}
-                    self.app.story_flags_co = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_co"].items()}
-                    self.question_selects = self.savedata[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
-                    self.app.in_battle = False
-                    self.app.sound_manager.play_se("ok")
+                        self.setting_finger = 22
+                        self.save_pos = 19
+            if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
+                if self.app.local:
+                    if self.setting_finger != 20:
+                        self.setting_finger += 1
+                    else:
+                        self.setting_finger = 1
+                        self.save_pos = 1
+                else:
+                    if self.setting_finger != 22:
+                        self.setting_finger += 1
+                    else:
+                        self.setting_finger = 1
+                        self.save_pos = 1
+                self.app.sound_manager.play_se("select")
+            if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                if not self.app.local and self.setting_finger == 21:
+                    self.open_file_dialog()
+                elif not self.app.local and self.setting_finger == 22:
+                            self.save_download()
+                else:
+                    if str(self.setting_finger) in self.save_data:
+                        if self.app.local:
+                            if self.app.exefile:
+                                self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
+                            else:
+                                self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
+                        else:
+                            self.savedata = self.app.cloud.load()
+                            time.sleep(0.3)
+                        self.game_time_start = time.time()
+                        print(f"{self.setting_finger=}")
+                        self.app.loaddata = self.app.savedata[str(self.setting_finger)]
+                        self.app.game_time = self.app.savedata[str(self.setting_finger)]["play_data"]["time"]
+                        self.app.money = self.app.savedata[str(self.setting_finger)]["play_data"]["money"]
+                        self.app.now_scene = self.app.savedata[str(self.setting_finger)]["play_data"]["scene"]
+                        self.app.now_location = self.app.savedata[str(self.setting_finger)]["play_data"]["location"]
+                        self.app.player.x = self.app.savedata[str(self.setting_finger)]["play_data"]["x"]
+                        self.app.player.y = self.app.savedata[str(self.setting_finger)]["play_data"]["y"]
+                        self.app.chara_data = self.app.savedata[str(self.setting_finger)]["play_data"]["chara_data"]
+                        self.app.item_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["item_codes"]
+                        self.app.imp_item_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["imp_item_codes"]
+                        self.app.equip_codes = self.app.savedata[str(self.setting_finger)]["play_data"]["equip_codes"]
+                        self.app.msg_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["msg_id"]
+                        self.app.disp_id = self.app.savedata[str(self.setting_finger)]["play_data"]["words"]["disp_id"]
+                        self.app.story_flags_tf = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_tf"].items()}
+                        self.app.story_flags_co = {k:bool(v) for k,v in self.app.savedata[str(self.setting_finger)]["play_data"]["story_flags_co"].items()}
+                        self.question_selects = self.savedata[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
+                        self.app.in_battle = False
+                self.app.sound_manager.play_se("ok")
+        if self.info_show:
+            if self.info_count > 60:
+                self.info_count += 1
+            else:
+                self.info_count = 0
+                self.info_show = False
 
     def draw(self):
         """基本描画"""
@@ -260,11 +415,17 @@ class SaveLoad:
             else:
                 pyxel.rect(70,5+(48.75*(i)),self.init_x-70,48.75,0)
                 pyxel.rectb(70,5+(48.75*(i)),self.init_x-70,48.75,7)
-            self.umplus10.draw_text(71,5+int(48.75*(i)),f"data {l}",7)
+            if l != 21 and l != 22:
+                self.umplus10.draw_text(71,5+int(48.75*(i)),f"data {l}",7)
             if str(l) in self.save_data:
                 self.umplus10.draw_text(200,6+int(48.75*(i)),f"time:{self.save_data[str(l)]['play_data']['time']}",7)
             else:
-                self.umplus10.draw_text(125,25+int(48.75*(i)),f"保存データなし",7)
+                if l == 21:
+                    self.umplus10.draw_text(125,25+int(48.75*(i)),f"ファイルをアップロード",7)
+                elif l == 22:
+                    self.umplus10.draw_text(125,25+int(48.75*(i)),f"ファイルをダウンロード",7)
+                else:
+                    self.umplus10.draw_text(125,25+int(48.75*(i)),f"保存データなし",7)
         if self.save_enter != -1:
             pyxel.rect(90,80,110,40,0)
             pyxel.rectb(90,80,110,40,7)
@@ -275,3 +436,5 @@ class SaveLoad:
                 pyxel.rect(150,102,33,11,1)
             self.umplus10.draw_text(101,102,"はい",7)
             self.umplus10.draw_text(151,102,"いいえ",7)
+        if self.info_show:
+            self.umplus10.draw_text(5,0,f"{self.info_text}".center(28,"　"),7)
