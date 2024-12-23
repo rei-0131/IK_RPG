@@ -43,26 +43,30 @@ class Title:
                 self.question_mark -= 15
             else:
                 self.question_mark = 0
+            self.app.sound_manager.play_se("select")
         if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
             if self.question_mark != 0:
                 self.question_mark += 15
             else:
                 self.question_mark = -15
+            self.app.sound_manager.play_se("select")
         if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
             self.enter_pos = self.question_mark // 15
             if self.enter_pos == 0:
                 self.app.new_game = True
                 self.app.game_time_start = time.time()
+                self.app.sound_manager.play_se("ok")
                 return self.MAIN_SCENE
             elif self.enter_pos == -1:
                 self.app.save_load.save_data = self.app.save_data
                 self.app.new_game = True
+                self.app.sound_manager.play_se("ok")
                 return self.Continue
 
     def draw(self):
         """基本描画"""
         pyxel.cls(0)
-        self.umplus10.draw_text(85,100,"     イチ工クエスト     ",7)
+        pyxel.blt(-426,-300,self.app.title_logo,0,0,1153,769,scale = 0.1)
         self.umplus10.draw_text(103,110,"-   New Game   -",7)
         self.umplus10.draw_text(103,125,"-   Continue   -",7)
         self.umplus10.draw_text(103,150,"-  PRESS Enter -",7)

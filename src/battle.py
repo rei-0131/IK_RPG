@@ -92,6 +92,7 @@ class Battle:
         self.in_boss = False
         self.escape_count = 0
         self.get_item = []
+        self.wl_sound = False
 
     def clean(self,scene):
         """初期化"""
@@ -183,6 +184,7 @@ class Battle:
         self.in_boss = False
         self.escape_count = 0
         self.get_item = []
+        self.wl_sound = False
 
         # 経験値確認用
         # self.in_battle = False
@@ -299,11 +301,13 @@ class Battle:
             self.select_num3 = -1
             self.finger_pos2 = 0
             self.finger_pos4 = 0
+            self.app.sound_manager.play_se("select")
         if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
             if self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) != self.enemy_num - 1:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) + 1]
             else:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][0]
+            self.app.sound_manager.play_se("select")
         if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
             live_e = []
             for len_,v in enumerate(self.enemy_status):
@@ -313,6 +317,7 @@ class Battle:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4) - 1]
             else:
                 self.finger_pos4 = self.enemy_info["enemy_pos"][str(self.enemy_num)][self.enemy_num - 1]
+            self.app.sound_manager.play_se("select")
 
         try:
             while self.enemy_status[self.enemy_info["enemy_pos"][str(self.enemy_num)].index(self.finger_pos4)]["HP"][1] <= 0:
@@ -352,6 +357,7 @@ class Battle:
                 self.finger_pos3 = 0
                 self.select_num3 = -1
                 self.finger_pos4 = 0
+                self.app.sound_manager.play_se("ok")
 
     def self_target_select_update(self):
         """味方ターゲット設定"""
@@ -361,15 +367,18 @@ class Battle:
                     self.finger_pos5 -= 18
                 else:
                     self.finger_pos5 = (len(self.chara_data.items()) - 1) * 18
+                self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                     self.finger_pos5 += 18
                 else:
                     self.finger_pos5 = 0
+                self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.select_num5 = -1
                 self.finger_pos5 = 0
                 self.select_num3 = -1
+                self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                 if self.app.chara_data[list(self.chara_data.keys())[self.finger_pos5//18]]["HP"][1] > 0:
                     self.select_num5 = int(self.finger_pos5 // 18)
@@ -398,6 +407,7 @@ class Battle:
                     self.finger_pos5 = 0
                     self.item_pos = 0
                     self.dis_num = 0
+                    self.app.sound_manager.play_se("ok")
 
     def none_target_select_update(self):
         """選択のない行動"""
@@ -436,31 +446,39 @@ class Battle:
                 self.select_num2 = -1
                 self.finger_pos3 = 0
                 self.item_pos = 0
+                self.app.sound_manager.play_se("select")
             if len(self.chara_data[self.select_chara][f"{sm}_codes"]) > 0:
                 if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
                         self.finger_pos3-=2
                     elif self.item_pos - 2 >= 0:
                         self.item_pos -= 2
+                    self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                     if self.finger_pos3 != 8 and self.finger_pos3 != 9:
                         if self.finger_pos3 + 2 < self.dis_num:
                             self.finger_pos3 += 2
+                            self.app.sound_manager.play_se("select")
                     else:
                         if self.finger_pos3 + self.item_pos + 2 < self.item_num:
                             self.item_pos += 2
+                            self.app.sound_manager.play_se("select")
                         elif self.finger_pos3 + self.item_pos + 2 == self.item_num and self.item_num > 10:
                             self.item_pos += 2
                             self.finger_pos3 -= 1
+                            self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                     if self.finger_pos3 + 1 < self.dis_num and self.finger_pos3 % 2 == 0:
                         self.finger_pos3 += 1
+                        self.app.sound_manager.play_se("select")
                     elif not self.item_pos + 13 <= self.item_num and self.finger_pos3 % 2 != 0 and self.item_pos + 2 < self.item_num:
                         self.finger_pos3 -= 1
                         self.item_pos += 2
+                        self.app.sound_manager.play_se("select")
                     elif self.item_pos + 12 <= self.item_num:
                         self.finger_pos3 -= 1
                         self.item_pos += 2
+                        self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                     if self.item_pos != 0:
                         if self.finger_pos3 == 0:
@@ -468,9 +486,11 @@ class Battle:
                             self.item_pos -= 2
                         else:
                             self.finger_pos3 -= 1
+                        self.app.sound_manager.play_se("select")
                     else:
                         if self.finger_pos3 != 0:
                             self.finger_pos3 -= 1
+                            self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     use_sm = self.magic_codes[sm][self.app.chara_data[self.select_chara][f"{sm}_codes"][self.item_pos + self.finger_pos3]]
                     if use_sm["req_MP"] <= self.app.chara_data[self.select_chara]["MP"][1]:
@@ -494,6 +514,7 @@ class Battle:
                             self.select_num3 = 0
                             self.finger_pos4 = 0
                             print(f"{use_sm['name']=}")
+                            self.app.sound_manager.play_se("ok")
 
     def hp_int(self,target):
         """
@@ -833,6 +854,11 @@ class Battle:
                                         else:
                                             self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
                                 self.damage_pos -= 2
+                            if self.vibe_enemy[self.vibe_count]["total"] == 0:
+                                if action["kaisin"]:
+                                    self.app.sound_manager.play_se("damage_enemy")
+                                else:
+                                    self.app.sound_manager.play_se("damage_enemy")
                             vibe = self.vibe_enemy[self.vibe_count]
                             if vibe["move"] == "p":
                                 if vibe["value"] < 2:
@@ -854,42 +880,55 @@ class Battle:
             if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                 if self.finger_pos5 != 0:
                     self.finger_pos5 -= 18
+                    self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                 if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                     self.finger_pos5 += 18
+                    self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                 self.finger_pos5 = 0
                 self.select_num3 = -1
+                self.app.sound_manager.play_se("select")
             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                 self.select_num2 = (self.finger_pos2 // 18)
+                self.app.sound_manager.play_se("ok")
         else:
             if self.select_num3 == -1:
                 if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                     self.select_num1 = -1
+                    self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if not (self.finger_pos3 == 0 or self.finger_pos3 == 1):
                         self.finger_pos3 -= 2
+                        self.app.sound_manager.play_se("select")
                     elif self.item_pos - 2 >= 0:
                         self.item_pos -= 2
+                        self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                     if self.finger_pos3 != 8 and self.finger_pos3 != 9:
                         if self.finger_pos3 + 2 < self.dis_num:
                             self.finger_pos3 += 2
+                            self.app.sound_manager.play_se("select")
                     else:
                         if self.finger_pos3 + self.item_pos + 2 < self.item_num:
                             self.item_pos += 2
+                            self.app.sound_manager.play_se("select")
                         elif self.finger_pos3 + self.item_pos + 2 == self.item_num and self.item_num > 10:
                             self.item_pos += 2
                             self.finger_pos3 -= 1
+                            self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
                     if self.finger_pos3 + 1 < self.dis_num:
                         self.finger_pos3 += 1
+                        self.app.sound_manager.play_se("select")
                     elif not self.item_pos + 13 <= self.item_num and self.finger_pos3 % 2 != 0:
                         self.finger_pos3 -= 1
                         self.item_pos += 2
+                        self.app.sound_manager.play_se("select")
                     elif self.item_pos + 12 <= self.item_num:
                         self.finger_pos3 -= 1
                         self.item_pos += 2
+                        self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
                     if self.item_pos != 0:
                         if self.finger_pos3 == 0:
@@ -897,22 +936,28 @@ class Battle:
                             self.item_pos -= 2
                         else:
                             self.finger_pos3 -= 1
+                        self.app.sound_manager.play_se("select")
                     else:
                         if self.finger_pos3 != 0:
                             self.finger_pos3 -= 1
+                            self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                     if len(list(self.battle_item.keys())) > 0:
                         self.select_num3 = self.item_pos + self.finger_pos3
+                        self.app.sound_manager.play_se("ok")
             else:
                 if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                     if self.finger_pos5 != 0:
                         self.finger_pos5 -= 18
+                        self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                     if self.finger_pos5 != (len(self.chara_data.items()) - 1) * 18:
                         self.finger_pos5 += 18
+                        self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A,hold = 8,repeat=8):
                     self.finger_pos5 = 0;
                     self.select_num3 = -1
+                    self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_RETURN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B,hold = 8,repeat=8):
                     use_item = self.tools["basic"][list(self.battle_item.items())[self.select_num3][0]]
                     use_player = list(self.chara_data.keys())[int(self.finger_pos5 // 18)]
@@ -937,6 +982,7 @@ class Battle:
                             self.select_num3 = -1
                             self.finger_pos5 = 0
                             self.select_num5 = -1
+                            self.app.sound_manager.play_se("ok")
 
     def update(self):
         """基本処理"""
@@ -948,15 +994,18 @@ class Battle:
                             self.finger_pos1 -= 15
                         else:
                             self.finger_pos1 = 60
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                         if self.finger_pos1 != 60:
                             self.finger_pos1 += 15
                         else:
                             self.finger_pos1 = 0
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                         self.select_num1 = int(self.finger_pos1 // 15)
                         print(f"{self.select_num1=}")
                         self.select_num2 = -1
+                        self.app.sound_manager.play_se("ok")
                 elif self.select_num1 != 4:
                     if self.select_num2 == -1:
                         if 0 <= self.select_num1 <= 3:
@@ -965,15 +1014,18 @@ class Battle:
                                     self.finger_pos2 -= 18
                                 else:
                                     self.finger_pos2 = (len(self.chara_data.items()) - 1) * 18
+                                self.app.sound_manager.play_se("select")
                             if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                                 if self.finger_pos2 != (len(self.chara_data.items()) - 1) * 18:
                                     self.finger_pos2 += 18
                                 else:
                                     self.finger_pos2 = 0
+                                self.app.sound_manager.play_se("select")
                             if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
                                 self.select_num1 = -1
                                 self.finger_pos2 = 0
                                 self.select_num2 = -1
+                                self.app.sound_manager.play_se("select")
                             if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RIGHT) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT):
                                 self.select_num2 = int(self.finger_pos2 // 18)
                                 if self.app.chara_data[list(self.chara_data.keys())[self.select_num2]]["HP"][1] > 0:
@@ -985,6 +1037,7 @@ class Battle:
                                         self.dis_num = 0
                                 else:
                                     self.select_num2 = -1
+                                self.app.sound_manager.play_se("ok")
                     else:
                         live_num = 0
                         for i in self.chara_data:
@@ -1033,6 +1086,7 @@ class Battle:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         self.play_effect_info = False
                         self.player_op = []
+                        self.app.sound_manager.play_se("ok")
                 else:
                     ai_input_data = []
                     live_enemy = [i for i in range(self.enemy_num) if self.enemy_status[i]["HP"][1] > 0]
@@ -1160,6 +1214,8 @@ class Battle:
                                 }
                             else:
                                 if int(ai_ac[0]) < len(self.vibe_player):
+                                    if self.vibe_player[int(ai_ac[0])]["total"] == 0:
+                                        self.app.sound_manager.play_se("damage_self")
                                     vibe = self.vibe_player[int(ai_ac[0])]
                                     if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:
                                         if vibe["move"] == "p":
@@ -1178,6 +1234,12 @@ class Battle:
                         self.hp_int("none")
         else:
             if self.win == "player":
+                if not self.wl_sound:
+                    self.app.sound_manager.stop()
+                    self.app.bgm_run = False
+                    self.app.sound_manager.play_bgm("battle_win",loop=False)
+                    self.app.bgm_run = True
+                    self.wl_sound = True
                 if not self.xp_stop:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         while not self.xp_stop:
@@ -1223,6 +1285,7 @@ class Battle:
                                             self.xp_stop = False
                         self.check_level()
                         self.xp_stop = True
+                        self.app.sound_manager.play_se("ok")
                 else:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         for i in self.xp_up:
@@ -1253,6 +1316,8 @@ class Battle:
                             self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
                         elif self.app.random_encount:
                             self.app.random_encount = False
+                        self.app.sound_manager.play_se("ok")
+                        self.app.bgm_run = False
             else:
                 if self.select_num1 == -1:
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
@@ -1260,13 +1325,16 @@ class Battle:
                             self.finger_pos1 -= 11
                         else:
                             self.finger_pos1 = 11
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
                         if self.finger_pos1 != 11:
                             self.finger_pos1 += 11
                         else:
                             self.finger_pos1 = 0
+                        self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         self.select_num1 = self.finger_pos1 // 11
+                        self.app.sound_manager.play_se("ok")
                 else:
                     if self.select_num1 == 0:
                         self.clean(self.be_scene)
