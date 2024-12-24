@@ -1236,6 +1236,7 @@ class Battle:
             if self.win == "player":
                 if not self.wl_sound:
                     self.app.sound_manager.stop()
+                    print("win_sound")
                     self.app.bgm_run = False
                     self.app.sound_manager.play_bgm("battle_win",loop=False)
                     self.app.bgm_run = True
@@ -1319,6 +1320,10 @@ class Battle:
                         self.app.sound_manager.play_se("ok")
                         self.app.bgm_run = False
             else:
+                if not self.wl_sound:
+                    self.app.sound_manager.stop()
+                    self.app.bgm_run = False
+                    self.wl_sound = True
                 if self.select_num1 == -1:
                     if pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8):
                         if self.finger_pos1 != 0:
@@ -1340,8 +1345,9 @@ class Battle:
                         self.clean(self.be_scene)
                         self.app.chara_data = copy.deepcopy(self.save_chara_data)
                         self.set_enemy(self.enemy_num,self.enemy_code)
+                        self.app.sound_manager.play_bgm("battle")
                     elif self.select_num1 == 1:
-                        self.app.save_load.update(battle_load = True)
+                        self.app.save_load.update(over_load=False,left=False,load=True,battle_load = True)
 
     def sm_draw(self,sm):
         """
@@ -1651,6 +1657,8 @@ class Battle:
                                 if 1 <= pyxel.rndi(1,100) <= self.escape_rate:
                                     self.app.now_scene = self.be_scene
                                     self.app.random_encount = False
+                                    self.app.sound_manager.stop()
+                                    self.app.bgm_run = False
                                 else:
                                     self.escape = True
                                     self.escape_rate += 25
