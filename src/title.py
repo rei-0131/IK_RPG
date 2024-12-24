@@ -2,7 +2,6 @@ import pyxel
 import time
 
 import utils.scenes as scenes
-from save_load import SaveLoad
 
 class Title:
     """
@@ -31,7 +30,6 @@ class Title:
         self.TITLE_SCENE = scenes.TITLE_SCENE
         self.Continue = scenes.LOAD_SCENE
         self.setting_scene = scenes.OUT_SETTING_SCENE
-        self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,False,app=self.app)
         self.save_data = None
         self.enter_pos = 1
         self.finger_ad = self.app.assets_info["finger_ad"]

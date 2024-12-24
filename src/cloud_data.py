@@ -1,11 +1,7 @@
 LOCAL = False
 try:
-    from js import window,document
-    from pyodide.http import open_url # type: ignore
+    from js import window
 except:
-    import urllib.request
-    import os
-
     LOCAL = True
 import json
 

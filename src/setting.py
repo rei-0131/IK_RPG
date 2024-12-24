@@ -4,7 +4,6 @@ import time
 import os
 
 import utils.scenes as scenes
-from save_load import SaveLoad
 from cloud_data import Cloud_data
 
 class Setting:
@@ -59,15 +58,7 @@ class Setting:
         self.show_story_finger = 0
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.cloud = Cloud_data(self.app.is_test)
-        self.save_load = SaveLoad(self.init_x,self.init_y,self.umplus10,True,app = self.app)
         self.save_path = os.path.join(self.app.base_path,"save/savedata.json")
-        if self.app.local:
-            if self.app.exefile:
-                self.save_data = json.load(open(self.save_path,"r",encoding="utf-8"))
-            else:
-                self.save_data = json.load(open("../save/savedata.json","r",encoding="utf-8"))
-        else:
-            self.save_data = self.cloud.load()
         self.scenes = self.app.scenes
         self.tools = self.app.tools
         self.magic = self.app.magic_codes
@@ -606,6 +597,8 @@ class Setting:
                 self.in_st_finger = 0
                 self.enter_pos = self.finger_pos//11
                 print(f"{self.enter_pos=}")
+                if self.enter_pos == 8:
+                    self.app.save_load.clean()
                 self.app.sound_manager.play_se("ok")
         elif self.enter_pos == 9:
             self.enter_pos = -1
@@ -616,7 +609,7 @@ class Setting:
             self.app.save_load.save_pos = 1
             self.app.now_scene = self.title_ac
         elif self.enter_pos == 8:
-            self.enter_pos = self.save_load.update(self.enter_pos)
+            self.enter_pos = self.app.save_load.update(over_load=True,ent=self.enter_pos,left=True,load=True)
         elif self.enter_pos == 7:
             self.story_update()
         elif self.enter_pos == 6:
@@ -1115,7 +1108,7 @@ class Setting:
         self.umplus10.draw_text(5,self.init_y-22,f"￥{self.app.money}".rjust(8,"　"),7)
         self.umplus10.draw_text(20,self.init_y-11,f"{str(self.time_h).zfill(2)}:{str(self.time_m).zfill(2)}:{str(self.time_s).zfill(2)}")
         if self.enter_pos == 8 or self.finger_pos//11 == 8:
-            self.save_load.draw()
+            self.app.save_load.draw()
         elif self.enter_pos == 7 or self.finger_pos//11 == 7:
             self.story_draw()
         elif self.enter_pos == 6 or self.finger_pos//11 == 6:

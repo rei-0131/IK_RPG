@@ -158,7 +158,6 @@ class App:
         self.in_word = False
         self.new_game = True
         self.from_load = False
-        self.savedata = None
         self.loaddata = None
         self.in_battle = False
         self.load_write = False
@@ -272,7 +271,7 @@ class App:
         self.info("Loading Save...")
         self.save = Save(self)
         self.info("Loading SaveLoad...")
-        self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,False,left=False,load=True,app=self)
+        self.save_load = SaveLoad(self.init_x,self.init_y,umplus10,app=self)
         self.info("Loading Setting...")
         self.setting_in = Setting(self,self.init_x,self.init_y,umplus10)
         self.info("Loading Player...")
@@ -362,32 +361,24 @@ class App:
         elif self.now_scene == scenes.MAIN_SCENE:
             if self.new_game:
                 if self.from_load:
-                    if self.local:
-                        if self.exefile:
-                            self.savedata = json.load(open(os.path.join(self.base_path,"save/savedata.json"),"r",encoding="utf-8"))
-                        else:
-                            self.savedata = json.load(open("../save/savedata.json","r",encoding="utf-8"))
-                    else:
-                        self.savedata = cloud.load()
-                        time.sleep(0.3)
                     self.game_time_start = time.time()
                     print(f"{self.save_load.setting_finger=}")
-                    self.loaddata = self.savedata[str(self.save_load.setting_finger)]
-                    self.game_time = self.savedata[str(self.save_load.setting_finger)]["play_data"]["time"]
-                    self.money = self.savedata[str(self.save_load.setting_finger)]["play_data"]["money"]
-                    self.now_scene = self.savedata[str(self.save_load.setting_finger)]["play_data"]["scene"]
-                    self.now_location = self.savedata[str(self.save_load.setting_finger)]["play_data"]["location"]
-                    self.player.x = self.savedata[str(self.save_load.setting_finger)]["play_data"]["x"]
-                    self.player.y = self.savedata[str(self.save_load.setting_finger)]["play_data"]["y"]
-                    self.chara_data = self.savedata[str(self.save_load.setting_finger)]["play_data"]["chara_data"]
-                    self.item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["item_codes"]
-                    self.imp_item_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["imp_item_codes"]
-                    self.equip_codes = self.savedata[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
-                    self.msg_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["msg_id"]
-                    self.disp_id = self.savedata[str(self.save_load.setting_finger)]["play_data"]["words"]["disp_id"]
-                    self.story_flags_tf = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags_tf"].items()}
-                    self.story_flags_co = {k:bool(v) for k,v in self.savedata[str(self.save_load.setting_finger)]["play_data"]["story_flags_co"].items()}
-                    self.question_selects = self.savedata[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
+                    self.loaddata = self.save_data[str(self.save_load.setting_finger)]
+                    self.game_time = self.save_data[str(self.save_load.setting_finger)]["play_data"]["time"]
+                    self.money = self.save_data[str(self.save_load.setting_finger)]["play_data"]["money"]
+                    self.now_scene = self.save_data[str(self.save_load.setting_finger)]["play_data"]["scene"]
+                    self.now_location = self.save_data[str(self.save_load.setting_finger)]["play_data"]["location"]
+                    self.player.x = self.save_data[str(self.save_load.setting_finger)]["play_data"]["x"]
+                    self.player.y = self.save_data[str(self.save_load.setting_finger)]["play_data"]["y"]
+                    self.chara_data = self.save_data[str(self.save_load.setting_finger)]["play_data"]["chara_data"]
+                    self.item_codes = self.save_data[str(self.save_load.setting_finger)]["play_data"]["item_codes"]
+                    self.imp_item_codes = self.save_data[str(self.save_load.setting_finger)]["play_data"]["imp_item_codes"]
+                    self.equip_codes = self.save_data[str(self.save_load.setting_finger)]["play_data"]["equip_codes"]
+                    self.msg_id = self.save_data[str(self.save_load.setting_finger)]["play_data"]["words"]["msg_id"]
+                    self.disp_id = self.save_data[str(self.save_load.setting_finger)]["play_data"]["words"]["disp_id"]
+                    self.story_flags_tf = {k:bool(v) for k,v in self.save_data[str(self.save_load.setting_finger)]["play_data"]["story_flags_tf"].items()}
+                    self.story_flags_co = {k:bool(v) for k,v in self.save_data[str(self.save_load.setting_finger)]["play_data"]["story_flags_co"].items()}
+                    self.question_selects = self.save_data[str(self.save_load.setting_finger)]["play_data"]["question_selects"]
                     self.from_load = False
                     self.load_game = True
                 else:
@@ -743,7 +734,7 @@ class App:
         elif self.now_scene == scenes.IN_SETTING_SCENE:
             self.setting_in.update()
         elif self.now_scene == scenes.LOAD_SCENE:
-            self.now_scene = self.save_load.update()
+            self.now_scene = self.save_load.update(False,left=False,load=True)
             if self.save_load.continue_game:
                 self.from_load = True
         elif self.now_scene == scenes.START_SCENE:
