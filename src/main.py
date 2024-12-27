@@ -457,10 +457,15 @@ class App:
                         self.now_location = scenes.WAY_SCENE_31
                 if 12 <= self.player.x <= 55 and 171 <= self.player.y:
                     if self.now_location == scenes.WAY_SCENE_12:
-                        self.now_location = scenes.CLASS1_SCENE
-                        self.player.x = 265
-                        self.player.y = 105
-                        self.sound_manager.play_se("turn")
+                        if self.msg_id == "430":
+                            self.msg_id = "431"
+                            self.player.x += 3
+                            self.player.y -= 3
+                        else:
+                            self.now_location = scenes.CLASS1_SCENE
+                            self.player.x = 265
+                            self.player.y = 105
+                            self.sound_manager.play_se("turn")
                     elif self.now_location == scenes.WAY_SCENE_31:
                         self.now_location = scenes.CLASS3_SCENE
                         self.player.x = 265
@@ -726,7 +731,7 @@ class App:
             if pyxel.btnp(pyxel.KEY_T) and self.is_test:
                 self.trade = True
             if pyxel.btnp(pyxel.KEY_P) and self.is_test:
-                self.endroll.crean()
+                self.endroll.clean()
                 self.be_scene = self.now_scene
                 self.now_scene = "Endroll"
             if self.trade:
@@ -780,10 +785,10 @@ class App:
         elif self.now_scene == scenes.MAIN_SCENE:
             pyxel.cls(0)
             if not True in self.op_show:
-                if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "15" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231" or self.msg_id == "240" or self.msg_id == "326"):
+                if not (self.msg_id == None or self.msg_id == "01" or self.msg_id == "15" or self.msg_id == "111" or self.msg_id == "187" or self.msg_id == "231" or self.msg_id == "240" or self.msg_id == "326" or self.msg_id == "477" or self.msg_id == "478" or self.msg_id == "479"):
                     self.coord = self.scenes["coordinate"][str(self.now_location)]
                     self.scale = self.coord[8]
-                    if self.msg_id == "15" or self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231" or self.msg_id == "240" or self.msg_id == "326":
+                    if self.msg_id == "15" or self.msg_id != "111" or self.msg_id != "187" or self.msg_id != "231" or self.msg_id == "240" or self.msg_id == "326" or self.msg_id == "477" or self.msg_id == "478" or self.msg_id == "479":
                         if scenes.CLASS1_SCENE <= self.now_location <= scenes.CLASS3_SCENE:
                             pyxel.blt(-150,-100,self.class_room,0,0,600,400,0,scale = 0.5)
                         elif scenes.STAFF_I_SCENE <= self.now_location <= scenes.STAFF_E_SCENE:

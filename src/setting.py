@@ -510,6 +510,10 @@ class Setting:
                 story_ch = 4
             if 326 <= i <= 430:
                 story_ch = 5
+            if 431 <= i <= 454:
+                story_ch = 6
+            if 455 <= i <= 479:
+                story_ch = 7
 
             if story_add:
                 if self.story_chapter[story_ch] not in self.story:
@@ -547,7 +551,7 @@ class Setting:
                 self.select_story_pos = self.select_story_finger // 11
                 self.show_story_finger = 0
                 self.show_story = 0
-                print(self.story[self.story_chapter[self.select_story_pos]])
+                print(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]])
                 self.app.sound_manager.play_se("select")
         else:
             if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -1041,7 +1045,9 @@ class Setting:
         """ストーリーログ描画"""
         pyxel.rect(18,125,53,45,0)
         pyxel.rectb(18,125,53,45,7)
-        if int(self.app.msg_id) > 430:
+        if int(self.app.msg_id) > 454:
+            self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ","痛バ","桃井覚醒","ＥＮＤ"]
+        elif int(self.app.msg_id) > 430:
             self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ","痛バ","桃井覚醒"]
         elif int(self.app.msg_id) > 325:
             self.story_chapter = ["ぼく転入","うちわ","ペンライト","タオル","はっぴ","痛バ"]
@@ -1077,11 +1083,15 @@ class Setting:
                         self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t],7)
                 else:
                     self.umplus10.draw_text(110,int(6+(49*i)),self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["speaker"],7)
-                    if len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]) > 22:
-                        for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]),22),range(5)):
-                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"][n:n + 22],7)
-                    else:
-                        self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"],7)
+                    if type(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]) is str:
+                        if len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]) > 22:
+                            for n,j in zip(range(0,len(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]),22),range(5)):
+                                self.umplus10.draw_text(71,int(17+(49*i)) + 11 * j,self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"][n:n + 22],7)
+                        else:
+                            self.umplus10.draw_text(71,int(17+(49*i)),self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"],7)
+                    elif type(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"]) is list:
+                        for n,j in enumerate(self.story[self.story_chapter[self.select_story_pos + self.select_story_show]][t]["word"][-1]):
+                            self.umplus10.draw_text(71,int(17+(49*i)) + 11 * n,j,7)
             pyxel.line(70,5+(48.75*(i + 1) + 1),self.init_x,5+(48.75*(i + 1) + 1),7)
 
     def draw(self):

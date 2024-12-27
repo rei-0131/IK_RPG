@@ -1,6 +1,8 @@
 import pyxel
 import numpy as np
 
+import utils.scenes as scenes
+
 class Words:
     def __init__(self,app,x,y,umplus10):
         self.app = app
@@ -70,7 +72,10 @@ class Words:
                             self.app.equip_codes[self.word["item"][0]].append(self.word["item"][1])
                     if self.word["to"] != "None":
                         if type(self.word["to"]) is list:
-                            self.app.msg_id = self.word["to"][self.app.question_selects[self.app.msg_id]]
+                            if self.app.msg_id == "431" and self.app.question_selects[self.app.msg_id] == 1:
+                                self.app.msg_id = "430"
+                            else:
+                                self.app.msg_id = self.word["to"][self.app.question_selects[self.app.msg_id]]
                         else:
                             self.app.msg_id = self.word["to"]
                     else:
@@ -82,6 +87,15 @@ class Words:
         else:
             if not self.app.story_animation:
                 if (pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and self.frame_count > 8:
+                    if self.app.msg_id == "432":
+                        self.app.now_location = scenes.CLASS1_SCENE
+                        self.app.player.x = 330
+                        self.app.player.y = 0
+                        self.app.sound_manager.play_se("turn")
+                    elif self.app.msg_id == "479":
+                        self.app.endroll.clean()
+                        self.app.be_scene = self.app.now_scene
+                        self.app.now_scene = "Endroll"
                     if "item" in self.word:
                         if self.word["item"][0] == "basic":
                             if self.word["item"][1] in self.app.item_codes.keys():
@@ -150,6 +164,10 @@ class Words:
                     self.umplus10.draw_text(7,self.init_y-59 + 11 * j,self.word["word"][i:i + 28],7)
             else:
                 self.umplus10.draw_text(7,self.init_y-59,self.word["word"],7)
+        elif type(self.word["word"]) is list:
+            for i,j in enumerate(self.word["word"]):
+                if type(j) is not list:
+                    self.umplus10.draw_text(7,self.init_y-59 + (11 * i),j,7)
         # elif type(self.word["word"]) is list:
         #     for i,n in enumerate(self.word["word"]):
         #         self.umplus10.draw_text(7,self.init_y-59+i*11,n,7)

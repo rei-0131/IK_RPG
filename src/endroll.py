@@ -3,6 +3,8 @@ import numpy as np
 import json
 from utils.BDFRenderer import BDFRenderer
 
+import utils.scenes as scenes
+
 class Endroll:
     """
     エンドロールクラス
@@ -33,8 +35,9 @@ class Endroll:
             self.endroll_msgs = json.load(open("assets/endroll.json","r",encoding="utf-8"))
             self.umplus16 = BDFRenderer("assets/b16.bdf")
         self.roll = True
+        self.endroll_pos = []
 
-    def crean(self):
+    def clean(self):
         """初期化"""
         self.endroll_pos = np.array([200 + (i * 33) for i in range(len(self.endroll_msgs))],dtype = np.float64)
 
@@ -42,20 +45,25 @@ class Endroll:
         """基本処理"""
         if self.roll:
             self.endroll_pos -= 0.6
+        elif pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+            self.app.now_scene = scenes.MAIN_SCENE
+            self.app.player.x = 200
+            self.app.player.y = 95
+            self.app.msg_id = "480"
+            self.app.disp_id = "480"
+            self.app.sound_manager.play_se("ok")
         if not True in (self.endroll_pos[0:len(self.endroll_pos) - 1] > 0):
             self.roll = False
 
     def draw(self):
         """基本描画"""
         pyxel.cls(0)
-        pyxel.line(self.init_x // 2,0,self.init_x // 2,self.init_y,7)
-        pyxel.line(0,self.init_y // 2,self.init_x,self.init_y // 2,7)
         for text,pos in zip(self.endroll_msgs,self.endroll_pos):
             try:
                 if text[2] == 2 and 0 <= int(pos) <= 176:
                     if len(text) > 4:
                         if int(pos) + text[0] < 88:
-                            self.umplus24.draw_text(12,88,text[1].center(12,"　"),text[3])
+                            self.umplus24.draw_text(12 + text[0],88,text[1].center(12,"　"),text[3])
                         else:
                             self.umplus24.draw_text(12 + text[0],int(pos),text[1].center(12,"　"),text[3])
                     else:
