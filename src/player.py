@@ -87,6 +87,7 @@ class Player:
                 if self.app.now_location == scenes.CLASS3_SCENE:
                     #0.444%
                     if 1 <= pyxel.rndi(1,100000) <= 444:
+                        self.app.random_encount = True
                         self.app.battle.clean(self.app.now_scene)
                         self.app.battle.save_chara(self.app.chara_data)
                         if self.app.is_test:
@@ -97,7 +98,6 @@ class Player:
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
-                        self.app.random_encount = True
                         if self.app.bgm_run:
                             self.app.sound_manager.stop()
                         self.app.sound_manager.play_bgm("battle")
@@ -107,6 +107,7 @@ class Player:
                         self.app.now_location == scenes.WAY_SCENE_E):
                     #0.111%
                     if 1 <= pyxel.rndi(1,100000) <= 111:
+                        self.app.random_encount = True
                         self.app.battle.clean(self.app.now_scene)
                         self.app.battle.save_chara(self.app.chara_data)
                         if self.app.is_test:
@@ -117,7 +118,6 @@ class Player:
                         self.app.battle.set_enemy(enemy_num,enemys)
                         self.app.be_scene = self.app.now_scene
                         self.app.now_scene = scenes.BATTLE_SCENE
-                        self.app.random_encount = True
                         if self.app.bgm_run:
                             self.app.sound_manager.stop()
                         self.app.sound_manager.play_bgm("battle")

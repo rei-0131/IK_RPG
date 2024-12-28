@@ -271,6 +271,25 @@ class Battle:
                 "value":0,
                 "move":"p"
             })
+
+        print(self.enemy_status)
+        if self.app.random_encount:
+            levels = [self.chara_data[j]["Level"] for j in self.chara_data.keys()]
+            max_level = max(levels)
+            ten = max_level // 10
+            for i in range(len(self.enemy_status)):
+                self.enemy_status[i]["HP"][0] += max_level * self.levelup_data["HP"]
+                self.enemy_status[i]["HP"][1] += max_level * self.levelup_data["HP"]
+                self.enemy_status[i]["MP"][0] += max_level * self.levelup_data["MP"]
+                self.enemy_status[i]["MP"][1] += max_level * self.levelup_data["MP"]
+                self.enemy_status[i]["atk_ab"] += max_level * self.levelup_data["atk_ab"]
+                self.enemy_status[i]["def_ab"] += max_level * self.levelup_data["def_ab"]
+                self.enemy_status[i]["satisfaction"][0] += ten * self.levelup_data["satisfaction"][0]
+                self.enemy_status[i]["satisfaction"][1] += ten * self.levelup_data["satisfaction"][1]
+                self.enemy_status[i]["xp"] *= max_level
+                self.enemy_status[i]["money"] *= ten
+            print(self.enemy_status)
+
         for i in self.enemy_status:
             if i["enemy_name"]["enemy_type"] == "boss":
                 self.in_boss = True
@@ -1342,8 +1361,8 @@ class Battle:
                         self.app.sound_manager.play_se("ok")
                 else:
                     if self.select_num1 == 0:
-                        self.clean(self.be_scene)
                         self.app.chara_data = copy.deepcopy(self.save_chara_data)
+                        self.clean(self.be_scene)
                         self.set_enemy(self.enemy_num,self.enemy_code)
                         self.app.sound_manager.play_bgm("battle")
                     elif self.select_num1 == 1:
