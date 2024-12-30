@@ -259,6 +259,12 @@
             "content":"play",
             "req_MP":10,
             "info":"５％の確率で３％攻撃力アップ"
+        },
+        "10":{
+            "name":"仁王立ち",
+            "content":"tank_replace",
+            "req_MP":40,
+            "info":"味方全員に対する攻撃を肩代わりする"
         }
     }
 }

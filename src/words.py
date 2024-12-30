@@ -17,6 +17,11 @@ class Words:
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.frame_count = 0
 
+    def _add_equip(self,chara_data):
+        """装備を追加"""
+        for k,v in chara_data["equipments"].items():
+            self.app.equip_codes[k].append(v)
+
     def update(self):
         """基本処理"""
         #操作
@@ -113,8 +118,10 @@ class Words:
                         if type(self.word["chara"]) is list:
                             for ch in self.word["chara"]:
                                 self.app.chara_data[ch] = self.app.character_data[ch]
+                                self._add_equip(self.app.chara_data[ch])
                         else:
                             self.app.chara_data[self.word["chara"]] = self.app.character_data[self.word["chara"]]
+                            self._add_equip(self.app.chara_data[self.word["chara"]])
                     if self.word["to"] != "None":
                         self.app.msg_id = self.word["to"]
                     else:
