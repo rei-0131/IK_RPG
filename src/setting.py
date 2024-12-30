@@ -518,9 +518,10 @@ class Setting:
             if story_add:
                 if self.story_chapter[story_ch] not in self.story:
                     self.story[self.story_chapter[story_ch]] = {}
-                self.story[self.story_chapter[story_ch]][str_i] = self.app.words_j["story"][str_i]
-                if str_i in self.app.question_selects:
-                    self.story[self.story_chapter[story_ch]][f"{str_i}_answer"] = self.app.words_j["story"][str_i]["questions"][self.app.question_selects[str_i]]
+                if str_i in self.app.words_j["story"]:
+                    self.story[self.story_chapter[story_ch]][str_i] = self.app.words_j["story"][str_i]
+                    if str_i in self.app.question_selects:
+                        self.story[self.story_chapter[story_ch]][f"{str_i}_answer"] = self.app.words_j["story"][str_i]["questions"][self.app.question_selects[str_i]]
 
         if self.select_story_pos == -1:
             if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
@@ -760,7 +761,7 @@ class Setting:
             except IndexError:
                 self.in_pqse_finger = 0
                 self.in_eqst_item = 0
-            self.umplus10.draw_text(180,59,"※戻るにはESCキーを押す",8)
+            self.umplus10.draw_text(110,59,"※戻るにはESCキーまたはＡボタンを押す",8)
 
     def equip_draw(self):
         """装備描画"""
@@ -956,7 +957,7 @@ class Setting:
                             except IndexError:
                                 self.in_pqse_finger = 0
                                 self.in_eqst_item = 0
-                self.umplus10.draw_text(180,59,"※戻るにはESCキーを押す",8)
+                self.umplus10.draw_text(110,59,"※戻るにはESCキーまたはＡボタンを押す",8)
 
     def status_draw(self):
         """ステータス描画"""

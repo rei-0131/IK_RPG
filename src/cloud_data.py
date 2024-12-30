@@ -62,7 +62,7 @@ class Cloud_data:
         if window.localStorage.getItem(save_name) == None:
             savedata = {}
             window.localStorage.setItem(save_name,savedata)
-        savedata = json.loads(window.localStorage.getItem(save_name).replace("\'","\""))
+        savedata = json.loads(window.localStorage.getItem(save_name).replace("\'","\"").replace("True","true").replace("False","false"))
         return savedata
 
     def config_save(self,config):
@@ -98,7 +98,7 @@ class Cloud_data:
         if window.localStorage.getItem(config_name) == None:
             config = {
                 "basic":{
-                        "screen_x":300,"screen_y":200,"name":"一工クエスト","fps":30
+                        "screen_x":300,"screen_y":200,"name":"イチ工クエスト","fps":30
                         }
                 }
             window.localStorage.setItem(config_name,config)

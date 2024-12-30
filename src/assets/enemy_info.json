@@ -84,7 +84,7 @@
                     5,
                     110
                 ],
-                "xp":5,
+                "xp":50,
                 "money":200,
                 "drop":{
                     "item":[
@@ -106,7 +106,7 @@
                     5,
                     110
                 ],
-                "xp":7,
+                "xp":70,
                 "money":200,
                 "drop":{
                     "item":[
@@ -120,80 +120,80 @@
             "basis":[1,[64,0],[63,79],10],
             "status":{
                 "enemy_name":{"enemy_type":"boss","enemy_code":"okubo"},
-                "HP":[1000,1000],
+                "HP":[450,450],
                 "MP":[100,100],
-                "atk_ab":300,
-                "def_ab":50,
+                "atk_ab":70,
+                "def_ab":20,
                 "satisfaction": [
-                    1.5,
-                    120
+                    8,
+                    130
                 ],
-                "xp":500,
-                "money":500
+                "xp":1000,
+                "money":1000
             }
         },
         "yoshioka":{
             "basis":[1,[0,80],[63,79],14],
             "status":{
                 "enemy_name":{"enemy_type":"boss","enemy_code":"yoshioka"},
-                "HP":[1000,1000],
-                "MP":[100,100],
-                "atk_ab":300,
+                "HP":[1150,1150],
+                "MP":[500,500],
+                "atk_ab":180,
                 "def_ab":50,
                 "satisfaction": [
-                    1.5,
-                    120
+                    13,
+                    160
                 ],
-                "xp":500,
-                "money":500
+                "xp":2000,
+                "money":4000
             }
         },
         "nishio":{
             "basis":[1,[64,80],[63,79],10],
             "status":{
                 "enemy_name":{"enemy_type":"boss","enemy_code":"nishio"},
-                "HP":[1000,1000],
-                "MP":[100,100],
-                "atk_ab":300,
-                "def_ab":50,
+                "HP":[950,950],
+                "MP":[350,350],
+                "atk_ab":170,
+                "def_ab":45,
                 "satisfaction": [
-                    1.5,
-                    120
+                    10,
+                    140
                 ],
-                "xp":500,
-                "money":500
+                "xp":4000,
+                "money":10000
             }
         },
         "momonoi_1":{
             "basis":[1,[128,0],[63,79],10],
             "status":{
                 "enemy_name":{"enemy_type":"boss","enemy_code":"momonoi_1"},
-                "HP":[1000,1000],
-                "MP":[100,100],
-                "atk_ab":300,
-                "def_ab":50,
+                "HP":[1650,1650],
+                "MP":[500,500],
+                "atk_ab":200,
+                "def_ab":60,
                 "satisfaction": [
-                    1.5,
-                    120
+                    20,
+                    180
                 ],
-                "xp":500,
-                "money":500
+                "xp":50000,
+                "money":50000
             }
         },
         "momonoi_2":{
             "basis":[1,[128,80],[63,79],10],
             "status":{
                 "enemy_name":{"enemy_type":"boss","enemy_code":"momonoi_2"},
-                "HP":[1000,1000],
-                "MP":[100,100],
-                "atk_ab":300,
-                "def_ab":50,
+                "HP":[2050,2050],
+                "MP":[500,500],
+                "atk_ab":350,
+                "def_ab":60,
                 "satisfaction": [
-                    1.5,
-                    120
+                    25,
+                    200
                 ],
-                "xp":500,
-                "money":500
+                "xp":100000,
+                "money":80000
             }
         }
     },

@@ -33,11 +33,8 @@ from rpg_cmd import CMD
 
 ##########テスト環境
 is_test = True
-mode = "debug"
-if mode == "debug":
-    msg = True
-else:
-    msg = False
+mode = "init"
+msg = False
 ##########
 
 #main, scenes, sound_manager
@@ -179,6 +176,10 @@ class App:
         self.assets_info = assets_info
         self.collision_data = collision_data
         self.character_data = character_data
+        self.chara_levelup = {
+            "magic":self.character_data["magic"],
+            "skill":self.character_data["skill"]
+        }
         self.start_loading = False
         self.load_msg = ""
         self.game_time = "00:00:00"
@@ -878,18 +879,18 @@ class App:
                         elif cd_return[1] == "trash":
                             if not (129 <= int(self.msg_id) <= 140 and self.now_location == scenes.STAFF_M_SCENE):
                                 story_f = False
-                        elif not ("it_search" in cd_return[1] and self.msg_id == "152" or self.msg_id == "9000" and cd_return[1] not in self.player.story_flag_progress):
+                        elif not ("it_search" in cd_return[1] and (self.msg_id == "152" or self.msg_id == "9000") and cd_return[1] not in self.player.story_flag_progress):
                             story_f = False
-                        elif "ch" in cd_return[1]:
+                        elif "ch_" in cd_return[1]:
                             if 191 <= int(self.msg_id) <= 198:
                                 if cd_return[1] != "ch_2" and cd_return[1] != "ch_4":
                                     story_f = False
                             else:
                                 story_f = False
-                        else:
-                            story_f = False
                         if story_f:
-                            umplus10.draw_text(5,190,f"FキーまたはAボタン".rjust(30,"　"),0)
+                            pyxel.rect(200,188,100,12,0)
+                            pyxel.rectb(200,188,100,12,7)
+                            umplus10.draw_text(5,189,f"FキーまたはAボタン".rjust(30,"　"),7)
             else:
                 if self.load_game:
                     self.op_show = [False,False]

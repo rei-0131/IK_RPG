@@ -180,7 +180,7 @@ class Map:
                 self.next_x += self.app.player.walk_speed
         check_x, check_y = self.check_pos(self.key, self.player_scale, self.next_x, self.next_y, scale, coord)
         pixel_size = 8 * scale
-        if self.app.mode == "debug" and self.app.debug_msg:
+        if self.app.debug_msg:
             pyxel.text(0, 99, f"{check_x}", 0)
             pyxel.text(0, 110, f"{check_y}", 0)
         cd = [i[0] for i in self.collision_data[str(num)]]
@@ -193,8 +193,8 @@ class Map:
             check_x += 3
         elif self.app.now_location == 16:
             check_x += 4
-        for x_,y_ in zip(checkb_x,checkb_y):
-            pyxel.pset(x_,y_,0)
+        # for x_,y_ in zip(checkb_x,checkb_y):
+        #     pyxel.pset(x_,y_,0)
         cd_tf = [list(pyxel.tilemaps[num].pget(check[0] // pixel_size, check[1] // pixel_size)) in cd or not 0 <= b[0] <= 300 or not 0 <= b[1] <= 200 for check,b in zip(zip(check_x, check_y),zip(checkb_x, checkb_y))]
         if True in cd_tf:
             xy_index = cd_tf.index(True)
@@ -214,8 +214,8 @@ class Map:
                     mob_x[3] += 14 * self.player_scale
                     mob_y[2] += 15 * self.player_scale
                     mob_y[3] += 15 * self.player_scale
-                    for xx, yy in zip(mob_x,mob_y):
-                        pyxel.pset(xx,yy,0)
+                    # for xx, yy in zip(mob_x,mob_y):
+                    #     pyxel.pset(xx,yy,0)
                     for x_, y_ in zip(checkb_x, checkb_y):
                         if mob_x[0] <= x_ <= mob_x[1] and mob_y[0] <= y_ <= mob_y[2]:
                             return True, "mob", i

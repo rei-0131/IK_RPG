@@ -100,7 +100,7 @@ class SaveLoad:
                     else:
                         json.dump(self.save_data,open("../save/savedata.json","w",encoding="utf-8"),indent=4,ensure_ascii=False)
                 else:
-                    self.cloud.save(self.save_data)
+                    self.cloud.save(self.app.save_data)
                 self.info_text = "セーブデータをアップロードしました"
             except Exception:
                 self.info_text = "dict型への変換に失敗しました。"
