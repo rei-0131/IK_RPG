@@ -581,7 +581,7 @@ class Battle:
         """敵攻撃"""
         try:
             action = self.player_op[self.attack_count]
-            if action["target"] != "None":
+            if action["target"] != "None" and action["sm"] != "item" and action["target_team"] != "self" and action["target"] != "none":
                 if self.enemy_status[action["target"]]["HP"][1] <= 0:
                     live_e = []
                     for len_,v in enumerate(self.enemy_status):
@@ -597,7 +597,7 @@ class Battle:
             action = self.player_op[self.attack_count]
             atk = self.atk_sum(action)
             print(f"{action=}\n{self.player_effect[action['player_pos']]=}\n{atk=}\n\n\n")
-            if action["target"] != "None" and action["sm"] != "item":
+            if action["target"] != "None" and action["sm"] != "item" and action["target_team"] != "self" and action["target"] != "none":
                 while True:
                     if self.enemy_status[action["target"]]["HP"][1] <= 0:
                         live_e = []

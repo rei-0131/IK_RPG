@@ -807,6 +807,32 @@ class App:
                                 umplus24.draw_text(260,20,"3-2",0)
                             case scenes.CLASS3_SCENE:
                                 umplus24.draw_text(260,20,"3-3",0)
+                        if not self.in_word:
+                            if 36 <= int(self.msg_id) <= 51:
+                                umplus10.draw_text(0,0,"・情報を集める",7,0)
+                                umplus10.draw_text(0,11,"・３－２に向かう",7,0)
+                            elif int(self.msg_id) == 70 or int(self.msg_id) == 97 or int(self.msg_id) == 172 or int(self.msg_id) == 298 or int(self.msg_id) == 403 or int(self.msg_id) == 430:
+                                umplus10.draw_text(0,0,"・３－１に戻る",7,0)
+                            elif int(self.msg_id) == 115:
+                                umplus10.draw_text(0,0,"・機械棟に向かう",7,0)
+                            elif int(self.msg_id) == 129:
+                                umplus10.draw_text(0,0,"・ゴミ箱からパーツを探す",7,0)
+                            elif int(self.msg_id) == 131:
+                                umplus10.draw_text(0,0,"・機械科職員室のゴミ箱からパーツを探す",7,0)
+                            elif int(self.msg_id) == 141:
+                                umplus10.draw_text(0,0,"・電気科職員室に向かう",7,0)
+                            elif int(self.msg_id) == 152 or int(self.msg_id) == 9000:
+                                if self.now_location != scenes.STAFF_I_SCENE:
+                                    umplus10.draw_text(0,0,"・IT科職員室に向かう",7,0)
+                                else:
+                                    umplus10.draw_text(0,0,"・調査する",7,0)
+                            elif int(self.msg_id) == 166:
+                                umplus10.draw_text(0,0,"・機械棟に向かう",7,0)
+                            elif 191 <= int(self.msg_id) <= 198:
+                                umplus10.draw_text(0,0,"・聞き込みをする",7,0)
+                                umplus10.draw_text(0,0,"・キラに話しかける",7,0)
+                            elif int(self.msg_id) == 200 or int(self.msg_id) == 212 or int(self.msg_id) == 260 or int(self.msg_id) == 267 or int(self.msg_id) == 359:
+                                umplus10.draw_text(0,0,"・IT科職員室に向かう",7,0)
                         if self.scene_show[self.now_location - 6]:
                             [mob[0].draw() for mob in self.mobs[self.now_location - 6] if mob[0].display[0]]
                         self.player.draw()
@@ -871,11 +897,14 @@ class App:
                         cd_return = self.map.cd_check(self.player.x,self.player.y,self.player.dx,self.player.dy,self.now_map,self.player.key,self.scale,self.coord)
                         story_f = True
                         if cd_return[1] == "mob":
-                            if self.mobs[self.now_location - 6][cd_return[2]][2][2] != "T":
-                                if self.disp_id == "115" and self.mobs[self.now_location - 6][cd_return[2]][2][2] == 98:
-                                    story_f = False
-                                if self.story_flags_tf["200_speak"] and self.mobs[self.now_location - 6][cd_return[2]][2][3] == [[187,212]]:
-                                    story_f = False
+                            if self.mobs[self.now_location - 6][cd_return[2]][2][2] != -1:
+                                if self.mobs[self.now_location - 6][cd_return[2]][2][2] != "T":
+                                    if self.disp_id == "115" and self.mobs[self.now_location - 6][cd_return[2]][2][2] == 98:
+                                        story_f = False
+                                    if self.story_flags_tf["200_speak"] and self.mobs[self.now_location - 6][cd_return[2]][2][3] == [[187,212]]:
+                                        story_f = False
+                            else:
+                                story_f = False
                         elif cd_return[1] == "trash":
                             if not (129 <= int(self.msg_id) <= 140 and self.now_location == scenes.STAFF_M_SCENE):
                                 story_f = False
