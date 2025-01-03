@@ -27,6 +27,7 @@ from words import Words
 from mob import Mob
 from trader import Trader
 from endroll import Endroll
+from pygame_sound import pygame_sound
 
 #dev only
 from rpg_cmd import CMD
@@ -37,7 +38,7 @@ mode = "init"
 msg = False
 ##########
 
-#main, scenes, sound_manager
+#main, scenes, sound_manager,pygame_sound
 exefile = False
 
 def resource_path(relative_path):
@@ -223,6 +224,9 @@ class App:
         self.exefile = exefile
         self.base_path = base_path
         self.load_game = False
+        self.be_msg_id = ""
+        self.heal = False
+        self.heal_time = 0
         if self.exefile:
             pyxel.load(resource_path("assets.pyxres"))
         else:
@@ -289,6 +293,8 @@ class App:
         self.trader = Trader(self,self.init_x,self.init_y,umplus10)
         self.info("Loading Endroll...")
         self.endroll = Endroll(self,self.init_x,self.init_y,umplus10,umplus24)
+        self.info("Loading pygame sound...")
+        self.pygame_sound = pygame_sound(self)
         self.version_info()
         self.load_msg = "Load end"
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load end"
@@ -311,7 +317,6 @@ class App:
 
     def load_bgms(self):
         """BGMのロード"""
-        self.sound_manager.load_bgm("q_c","battle")
         self.sound_manager.load_bgm("winner","battle_win")
 
         self.sound_manager.load_se("ok","ok")
@@ -428,6 +433,8 @@ class App:
             self.player.update()
             if not self.new_game and not True in self.op_show:
                 if self.in_word:
+                    if self.heal:
+                        self.heal_time += 1
                     self.words.update()
                     if self.msg_id == "49":
                         self.story_flags_tf["ryoga_group"] = True
@@ -728,7 +735,6 @@ class App:
                 self.now_scene = scenes.BATTLE_SCENE
                 if self.bgm_run:
                     self.sound_manager.stop()
-                self.sound_manager.play_bgm("battle")
             if pyxel.btnp(pyxel.KEY_T) and self.is_test:
                 self.trade = True
             if pyxel.btnp(pyxel.KEY_P) and self.is_test:
@@ -778,6 +784,8 @@ class App:
             self.cmd.update()
         if self.now_scene == "Endroll":
             self.endroll.update()
+        if "end" in self.load_msg:
+            self.pygame_sound.update()
 
     def draw(self):
         """基本描画"""
@@ -882,6 +890,15 @@ class App:
                         self.in_word = False
                     if self.in_word:
                         self.words.dec_word()
+                        if self.heal:
+                            if self.heal_time <= 30:
+                                pyxel.dither(1 - (0.033 * self.heal_time))
+                            elif self.heal_time >= 60:
+                                pyxel.dither(0.033 * (self.heal_time - 60))
+                            elif self.heal_time == 31:
+                                for chara in self.chara_data.keys():
+                                    self.chara_data[chara]["HP"][1] = self.chara_data[chara]["HP"][0]
+                                    self.chara_data[chara]["MP"][1] = self.chara_data[chara]["MP"][0]
                     if self.debug_msg:
                         pyxel.text(0,0,f"{self.player.x = }",0)
                         pyxel.text(0,11,f"{self.player.y = }",0)
