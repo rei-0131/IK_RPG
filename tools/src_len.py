@@ -22,6 +22,7 @@ filenames = [
     'src/title.py',
     'src/rpg_cmd.py',
     "src/trader.py",
+    'src/pygame_sound.py',
     'src/assets/magic.json',
     'src/assets/scenes.json',
     'src/assets/tools.json',

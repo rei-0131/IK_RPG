@@ -317,7 +317,6 @@ class App:
 
     def load_bgms(self):
         """BGMのロード"""
-        self.sound_manager.load_bgm("q_c","battle")
         self.sound_manager.load_bgm("winner","battle_win")
 
         self.sound_manager.load_se("ok","ok")

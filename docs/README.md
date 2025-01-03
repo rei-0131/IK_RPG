@@ -7,6 +7,7 @@
 ## 使用モジュール
 
 - pyxel
+- pygame
 - configparser
 - json
 - time
