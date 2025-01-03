@@ -62,6 +62,8 @@ class Mob:
                 self.display = [False,-1]
             if self.app.story_flags_co["staff_it_search"] < 3 and self.name == "キラ" and (self.app.msg_id == "152" or self.app.msg_id == "9000"):
                 self.display = [False,-1]
+        if self.app.in_word and int(self.app.msg_id) < 9001 and self.info[2] == 9001:
+            self.display = [False,-1]
         #[6,[166,80,0,1],98,[[52,115]],115,[[166,105],[305,105]]]
         if len(self.info) > 4:
             if self.app.msg_id == str(self.info[4]):

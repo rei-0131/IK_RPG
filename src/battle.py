@@ -1199,7 +1199,7 @@ class Battle:
                                 else:
                                     atk = self.enemy_status[live_enemy[i]]["atk_ab"] * (100 + self.enemy_effect[live_enemy[i]]["atk_buff"] - self.enemy_effect[live_enemy[i]]["atk_dbuff"]) / 100
                                 if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:
-                                    if ai_ac[1] == 1:
+                                    if int(ai_ac[1]) == 1:
                                         if atk - def_ >= 0:
                                             self.chara_data[list(self.chara_data.keys())[int(ai_ac[0])]]["HP"][1] -= atk - def_
                                     else:
@@ -1269,6 +1269,11 @@ class Battle:
                             else:
                                 if int(ai_ac[0]) < len(self.vibe_player):
                                     if self.vibe_player[int(ai_ac[0])]["total"] == 0:
+                                        if int(ai_ac[1]) == 2 and self.enemy_status[live_enemy[i]]["MP"][1] >= 30:
+                                            self.vibe_player[int(ai_ac[0])]["strength"] = True
+                                            self.vibe_player[int(ai_ac[0])]["strength_count"] = 0
+                                        else:
+                                            self.vibe_player[int(ai_ac[0])]["strength"] = False
                                         self.app.sound_manager.play_se("damage_self")
                                     vibe = self.vibe_player[int(ai_ac[0])]
                                     if not self.player_effect[int(ai_ac[0])]["atk_invalid"]:
@@ -1366,18 +1371,19 @@ class Battle:
                                 }
                         for sm in ["magic","skill"]:
                             for chara in self.chara_data.keys():
-                                for level_j in self.app.chara_levelup[sm][chara].keys():
-                                    base_level = self.chara_data[chara]["Level"] - self.status_diff[chara]["HP"] // self.levelup_data["HP"]
-                                    if base_level < int(level_j) <= self.chara_data[chara]["Level"]:
-                                        for sm_code in self.app.chara_levelup[sm][chara][level_j]["add"]:
-                                            if sm_code not in self.chara_data[chara][f"{sm}_codes"]:
-                                                print(f"add player:{chara} {sm}:{sm_code}")
-                                                self.chara_data[chara][f"{sm}_codes"].append(sm_code)
-                                        if "remove" in self.app.chara_levelup[sm][chara][level_j]:
-                                            for sm_code in self.app.chara_levelup[sm][chara][level_j]["remove"]:
-                                                if sm_code in self.chara_data[chara][f"{sm}_codes"]:
-                                                    print(f"remove player:{chara} {sm}:{sm_code}")
-                                                    self.chara_data[chara][f"{sm}_codes"].remove(sm_code)
+                                if chara in self.app.chara_levelup[sm]:
+                                    for level_j in self.app.chara_levelup[sm][chara].keys():
+                                        base_level = self.chara_data[chara]["Level"] - self.status_diff[chara]["HP"] // self.levelup_data["HP"]
+                                        if base_level < int(level_j) <= self.chara_data[chara]["Level"]:
+                                            for sm_code in self.app.chara_levelup[sm][chara][level_j]["add"]:
+                                                if sm_code not in self.chara_data[chara][f"{sm}_codes"]:
+                                                    print(f"add player:{chara} {sm}:{sm_code}")
+                                                    self.chara_data[chara][f"{sm}_codes"].append(sm_code)
+                                            if "remove" in self.app.chara_levelup[sm][chara][level_j]:
+                                                for sm_code in self.app.chara_levelup[sm][chara][level_j]["remove"]:
+                                                    if sm_code in self.chara_data[chara][f"{sm}_codes"]:
+                                                        print(f"remove player:{chara} {sm}:{sm_code}")
+                                                        self.chara_data[chara][f"{sm}_codes"].remove(sm_code)
                         for i in self.chara_data.keys():
                             if self.chara_data[i]["HP"][1] <= 0:
                                 self.chara_data[i]["HP"][1] = 1
@@ -1626,6 +1632,10 @@ class Battle:
             pyxel.rect(178 + self.vibe_player[ch_i]["value"],self.init_y//2+21+height,(self.chara_data[data[1]]["MP"][1] / self.chara_data[data[1]]["MP"][0]) * 100,5,5)
             pyxel.rectb(178 + self.vibe_player[ch_i]["value"],self.init_y//2+21+height,100,5,7)
             pyxel.text(279,self.init_y//2+21+height,f"{self.chara_data[data[1]]['MP'][1]}",5)
+            if "strength" in self.vibe_player[ch_i]:
+                if self.vibe_player[ch_i]["strength"] and self.vibe_player[ch_i]["strength_count"] <= 60:
+                    self.umplus10.draw_text(5,0,"敵が強化攻撃を使用した".center(28,"　"),7)
+                    self.vibe_player[ch_i]["strength_count"] += 1
         for n,i in enumerate(self.enemy_code):
             if n in live_e:
                 enemy_data = self.enemy_info[i["enemy_type"]][i["enemy_code"]]["basis"]

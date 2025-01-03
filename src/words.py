@@ -1,5 +1,6 @@
 import pyxel
 import numpy as np
+import copy
 
 import utils.scenes as scenes
 
@@ -80,6 +81,9 @@ class Words:
                             if self.app.msg_id == "431" and self.app.question_selects[self.app.msg_id] == 1:
                                 self.app.msg_id = "430"
                             else:
+                                if self.word["to"][self.app.question_selects[self.app.msg_id]] == "9002":
+                                    self.app.heal = True
+                                    self.app.heal_time = 0
                                 self.app.msg_id = self.word["to"][self.app.question_selects[self.app.msg_id]]
                         else:
                             self.app.msg_id = self.word["to"]
@@ -125,11 +129,22 @@ class Words:
                     if self.word["to"] != "None":
                         self.app.msg_id = self.word["to"]
                     else:
-                        if "battle" in self.word:
-                            self.app.in_battle = True
-                        key = str([int(k) for k, v in self.words["story"].items() if v == self.word][np.abs(np.asarray([int(k) for k, v in self.words["story"].items() if v == self.word]) - int(self.app.msg_id)).argmin()]).zfill(2)
-                        print(f"{[int(k) for k, v in self.words['story'].items() if v == self.word]} {key}")
-                        self.app.disp_id = key
+                        if int(self.app.msg_id) > 9001:
+                            if self.app.msg_id == "9002":
+                                if self.app.heal and self.app.heal_time > 90:
+                                    self.app.msg_id = copy.deepcopy(self.app.be_msg_id)
+                                    self.app.be_msg_id = ""
+                                    self.app.heal = False
+                                    self.app.heal_time = 0
+                            else:
+                                self.app.msg_id = copy.deepcopy(self.app.be_msg_id)
+                                self.app.be_msg_id = ""
+                        else:
+                            if "battle" in self.word:
+                                self.app.in_battle = True
+                            key = str([int(k) for k, v in self.words["story"].items() if v == self.word][np.abs(np.asarray([int(k) for k, v in self.words["story"].items() if v == self.word]) - int(self.app.msg_id)).argmin()]).zfill(2)
+                            print(f"{[int(k) for k, v in self.words['story'].items() if v == self.word]} {key}")
+                            self.app.disp_id = key
                     self.frame_count = 0
 
         if self.word_tri[1]:
