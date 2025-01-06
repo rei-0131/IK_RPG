@@ -95,6 +95,8 @@ class Battle:
         self.wl_sound = False
         self.sm_level = False
         self.add_sm = {}
+        self.win_show = False
+        self.add_sm_tf = False
 
     def clean(self,scene):
         """初期化"""
@@ -190,6 +192,8 @@ class Battle:
         self.wl_sound = False
         self.sm_level = False
         self.add_sm = {}
+        self.win_show = False
+        self.add_sm_tf = False
 
         # 経験値確認用
         # self.in_battle = False
@@ -1351,63 +1355,88 @@ class Battle:
                         self.xp_stop = True
                         self.app.sound_manager.play_se("ok")
                 else:
-                    if not self.sm_level:
-                        for sm in ["magic","skill"]:
-                            for chara in self.chara_data.keys():
-                                if chara in self.app.chara_levelup[sm]:
-                                    for level_j in self.app.chara_levelup[sm][chara].keys():
-                                        base_level = self.chara_data[chara]["Level"] - self.status_diff[chara]["HP"] // self.levelup_data["HP"]
-                                        if base_level < int(level_j) <= self.chara_data[chara]["Level"]:
-                                            for sm_code in self.app.chara_levelup[sm][chara][level_j]["add"]:
-                                                if sm_code not in self.chara_data[chara][f"{sm}_codes"]:
-                                                    print(f"add player:{chara} {sm}:{sm_code}")
-                                                    if sm not in self.add_sm.keys():
-                                                        self.add_sm[sm] = {}
-                                                    if chara not in self.add_sm[sm].keys():
-                                                        self.add_sm[sm][chara] = []
-                                                    self.add_sm[sm][chara].append(sm_code)
-                                                    self.chara_data[chara][f"{sm}_codes"].append(sm_code)
-                                            if "remove" in self.app.chara_levelup[sm][chara][level_j]:
-                                                for sm_code in self.app.chara_levelup[sm][chara][level_j]["remove"]:
-                                                    if sm_code in self.chara_data[chara][f"{sm}_codes"]:
-                                                        print(f"remove player:{chara} {sm}:{sm_code}")
-                                                        self.chara_data[chara][f"{sm}_codes"].remove(sm_code)
-                        self.sm_level = True
-                    if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
-                        for i in self.xp_up:
-                            self.chara_data[i]["XP"] += self.xp_up[i][0]
-                            self.xp_up[i][0] -= 0
-                            self.chara_data[i]["HP"][0] += self.status_diff[i]["HP"]
-                            self.chara_data[i]["MP"][0] += self.status_diff[i]["MP"]
-                            self.chara_data[i]["atk_ab"] += self.status_diff[i]["atk_ab"]
-                            self.chara_data[i]["def_ab"] += self.status_diff[i]["def_ab"]
-                            self.chara_data[i]["satisfaction"][0] += self.status_diff[i]["satisfaction"][0]
-                            self.chara_data[i]["satisfaction"][1] += self.status_diff[i]["satisfaction"][1]
-                        money = 0
-                        for i in self.enemy_status:
-                            money += i["money"]
-                        for i in self.get_item:
-                            item = self.app.tools["basic"][i]
-                            if i in self.app.item_codes:
-                                self.app.item_codes[i]["value"] += 1
-                            else:
-                                self.app.item_codes[i] = {
-                                    "value":1,
-                                    "battle":item["battle"]
-                                }
-                        for i in self.chara_data.keys():
-                            if self.chara_data[i]["HP"][1] <= 0:
-                                self.chara_data[i]["HP"][1] = 1
-                            self.chara_data[i] = self.chara_data[i]
-                        self.app.money += money
-                        self.app.now_scene = self.be_scene
-                        self.app.in_battle = False
-                        if "battle" in self.app.words_j["story"][self.app.disp_id]:
-                            self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
-                        elif self.app.random_encount:
-                            self.app.random_encount = False
-                        self.app.sound_manager.play_se("ok")
-                        self.app.bgm_run = False
+                    if not self.win_show:
+                        if not self.sm_level:
+                            for sm in ["magic","skill"]:
+                                for chara in self.chara_data.keys():
+                                    if chara in self.app.chara_levelup[sm]:
+                                        for level_j in self.app.chara_levelup[sm][chara].keys():
+                                            base_level = self.chara_data[chara]["Level"] - self.status_diff[chara]["HP"] // self.levelup_data["HP"]
+                                            if base_level < int(level_j) <= self.chara_data[chara]["Level"]:
+                                                for sm_code in self.app.chara_levelup[sm][chara][level_j]["add"]:
+                                                    if sm_code not in self.chara_data[chara][f"{sm}_codes"]:
+                                                        print(f"add player:{chara} {sm}:{sm_code}")
+                                                        if sm not in self.add_sm.keys():
+                                                            self.add_sm[sm] = {}
+                                                        if chara not in self.add_sm[sm].keys():
+                                                            self.add_sm[sm][chara] = []
+                                                        self.add_sm[sm][chara].append(sm_code)
+                                                        self.chara_data[chara][f"{sm}_codes"].append(sm_code)
+                                                if "remove" in self.app.chara_levelup[sm][chara][level_j]:
+                                                    for sm_code in self.app.chara_levelup[sm][chara][level_j]["remove"]:
+                                                        if sm_code in self.chara_data[chara][f"{sm}_codes"]:
+                                                            print(f"remove player:{chara} {sm}:{sm_code}")
+                                                            self.chara_data[chara][f"{sm}_codes"].remove(sm_code)
+                            # self.add_sm = {
+                            #     "magic":{
+                            #         "ぼく":["01","03","05"],
+                            #         "リョウガ":["02","04"]
+                            #     },
+                            #     "skill":{
+                            #         "ぼく":["01","03","05"],
+                            #         "リョウガ":["02","04"]
+                            #     }
+                            # }
+                            self.sm_level = True
+                        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                            for i in self.xp_up:
+                                self.chara_data[i]["XP"] += self.xp_up[i][0]
+                                self.xp_up[i][0] -= 0
+                                self.chara_data[i]["HP"][0] += self.status_diff[i]["HP"]
+                                self.chara_data[i]["MP"][0] += self.status_diff[i]["MP"]
+                                self.chara_data[i]["atk_ab"] += self.status_diff[i]["atk_ab"]
+                                self.chara_data[i]["def_ab"] += self.status_diff[i]["def_ab"]
+                                self.chara_data[i]["satisfaction"][0] += self.status_diff[i]["satisfaction"][0]
+                                self.chara_data[i]["satisfaction"][1] += self.status_diff[i]["satisfaction"][1]
+                            money = 0
+                            for i in self.enemy_status:
+                                money += i["money"]
+                            for i in self.get_item:
+                                item = self.app.tools["basic"][i]
+                                if i in self.app.item_codes:
+                                    self.app.item_codes[i]["value"] += 1
+                                else:
+                                    self.app.item_codes[i] = {
+                                        "value":1,
+                                        "battle":item["battle"]
+                                    }
+                            for i in self.chara_data.keys():
+                                if self.chara_data[i]["HP"][1] <= 0:
+                                    self.chara_data[i]["HP"][1] = 1
+                                self.chara_data[i] = self.chara_data[i]
+                            self.app.money += money
+                            self.win_show = True
+                            if self.add_sm != {}:
+                                self.add_sm_tf = True
+                            if not self.add_sm_tf:
+                                self.app.now_scene = self.be_scene
+                                self.app.in_battle = False
+                                if "battle" in self.app.words_j["story"][self.app.disp_id]:
+                                    self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
+                                elif self.app.random_encount:
+                                    self.app.random_encount = False
+                                self.app.sound_manager.play_se("ok")
+                                self.app.bgm_run = False
+                    elif self.add_sm_tf:
+                        if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+                            self.app.now_scene = self.be_scene
+                            self.app.in_battle = False
+                            if "battle" in self.app.words_j["story"][self.app.disp_id]:
+                                self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
+                            elif self.app.random_encount:
+                                self.app.random_encount = False
+                            self.app.sound_manager.play_se("ok")
+                            self.app.bgm_run = False
             else:
                 if not self.wl_sound:
                     self.app.sound_manager.stop()
@@ -1434,7 +1463,6 @@ class Battle:
                         self.app.chara_data = copy.deepcopy(self.save_chara_data)
                         self.clean(self.be_scene)
                         self.set_enemy(self.enemy_num,self.enemy_code)
-                        self.app.sound_manager.play_bgm("battle")
                     elif self.select_num1 == 1:
                         self.app.save_load.update(over_load=False,left=False,load=True,battle_load = True)
 
@@ -1816,106 +1844,114 @@ class Battle:
                 pyxel.rect(5, 5,self.init_x - 10,self.init_y - 10,0)
                 pyxel.rectb(5, 5,self.init_x - 10,self.init_y - 10,7)
                 self.umplus10.draw_text(9,6,"YOU WIN".center(30,"　"),7)
-                self.umplus10.draw_text(6,43,"ＨＰ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,54,"ＭＰ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,65,"ＡＴＫ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,76,"ＤＥＦ".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,87,"会心率".rjust(5,"　"),7)
-                self.umplus10.draw_text(6,98,"会心ダメ".rjust(5,"　"),7)
-                if not self.xp_get:
-                    for i in self.enemy_status:
-                        for j in self.xp_up:
-                            self.xp_up[j][0] += i["xp"]
-                            xp = 0
-                            level = self.chara_data[j]["Level"] + 1
-                            if 0 <= level <= 16:
-                                xp = level ** 2 + 6 * level
-                            elif 17 <= level <= 30:
-                                xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
-                            elif 31 <= level:
-                                xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
-                            if self.chara_data[j]["XP"] + self.xp_up[j][0] >= xp:
-                                self.xp_up[j][1] = True
-                    print(f"get xp:{self.xp_up}")
-                for i,k in enumerate(self.chara_data.keys()):
-                    be_level_ten = 0
-                    no_level_ten = 0
+                if not self.win_show:
+                    self.umplus10.draw_text(6,43,"ＨＰ".rjust(5,"　"),7)
+                    self.umplus10.draw_text(6,54,"ＭＰ".rjust(5,"　"),7)
+                    self.umplus10.draw_text(6,65,"ＡＴＫ".rjust(5,"　"),7)
+                    self.umplus10.draw_text(6,76,"ＤＥＦ".rjust(5,"　"),7)
+                    self.umplus10.draw_text(6,87,"会心率".rjust(5,"　"),7)
+                    self.umplus10.draw_text(6,98,"会心ダメ".rjust(5,"　"),7)
                     if not self.xp_get:
-                        self.xp_up[k][2] = self.chara_data[k]["Level"]
-                    chara = self.chara_data[k]
-                    self.umplus10.draw_text(58 + 61 * i,43,str(chara["HP"][0]).rjust(4,' '),7)
-                    self.umplus10.draw_text(58 + 61 * i,54,str(chara["MP"][0]).rjust(4,' '),7)
-                    self.umplus10.draw_text(58 + 61 * i,65,str(chara["atk_ab"]).rjust(4,' '),7)
-                    self.umplus10.draw_text(58 + 61 * i,76,str(chara["def_ab"]).rjust(4,' '),7)
-                    self.umplus10.draw_text(58 + 61 * i,87,str(chara["satisfaction"][0]).rjust(4,' '),7)
-                    self.umplus10.draw_text(58 + 61 * i,98,str(chara["satisfaction"][1]).rjust(4,' '),7)
-                    self.umplus10.draw_text(62 * i + 51,17,str(k).center(5,"　"),7)
-                    xp = 0
-                    level = self.chara_data[k]["Level"] + 1
-                    if 0 <= level <= 16:
-                        xp = level ** 2 + 6 * level
-                    elif 17 <= level <= 30:
-                        xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
-                    elif 31 <= level:
-                        xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
-                    if self.chara_data[k]["XP"] >= xp:
-                        self.chara_data[k]["Level"] += 1
-                        self.chara_data[k]["XP"] -= xp
-                        if len(str(self.xp_up[k][2])) > 1:
-                            be_level_ten = int(str(self.xp_up[k][2])[-2])
-                        if len(str(self.chara_data[k]["Level"])) > 1:
-                            no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
-                        if be_level_ten < no_level_ten:
-                            ten_level = no_level_ten - be_level_ten
-                            self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
-                            self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
-                        self.status_diff[k]["HP"] += self.levelup_data["HP"]
-                        self.status_diff[k]["MP"] += self.levelup_data["MP"]
-                        self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
-                        self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
-                    if self.xp_up[k][2] != None:
-                        if self.status_diff[k]["satisfaction"][0] != 0:
-                            self.umplus10.draw_text(84 + 61 * i,87,f"→{str(chara['satisfaction'][0] + self.status_diff[k]['satisfaction'][0]).rjust(2,' ')}",11)
-                            self.umplus10.draw_text(84 + 61 * i,98,f"→{str(chara['satisfaction'][1] + self.status_diff[k]['satisfaction'][1]).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(84 + 61 * i,43,f"→{str(chara['HP'][0] + self.status_diff[k]['HP']).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(84 + 61 * i,54,f"→{str(chara['MP'][0] + self.status_diff[k]['MP']).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(84 + 61 * i,65,f"→{str(chara['atk_ab'] + self.status_diff[k]['atk_ab']).rjust(2,' ')}",11)
-                        self.umplus10.draw_text(84 + 61 * i,76,f"→{str(chara['def_ab'] + self.status_diff[k]['def_ab']).rjust(2,' ')}",11)
-                    self.umplus10.draw_text(61 * i + 56,28,"Lv ",7)
-                    self.umplus10.draw_text(61 * i + 71,28,str(self.chara_data[k]['Level']),7)
-                    pyxel.rect(61 * i + 56,39,int(self.chara_data[k]["XP"] / xp * 100 * 0.5),4,11)
-                    pyxel.rectb(61 * i + 56,39,50,4,7)
-                    if not self.xp_stop:
-                        if self.xp_up[k][0] >= 15:
-                            self.chara_data[k]["XP"] += 15
-                            self.xp_up[k][0] -= 15
-                        else:
-                            self.chara_data[k]["XP"] += self.xp_up[k][0]
-                            self.xp_up[k][0] = 0
-                        for j in self.xp_up:
-                            if self.xp_up[j][0] == 0:
-                                self.xp_stop = True
+                        for i in self.enemy_status:
+                            for j in self.xp_up:
+                                self.xp_up[j][0] += i["xp"]
+                                xp = 0
+                                level = self.chara_data[j]["Level"] + 1
+                                if 0 <= level <= 16:
+                                    xp = level ** 2 + 6 * level
+                                elif 17 <= level <= 30:
+                                    xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
+                                elif 31 <= level:
+                                    xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                                if self.chara_data[j]["XP"] + self.xp_up[j][0] >= xp:
+                                    self.xp_up[j][1] = True
+                        print(f"get xp:{self.xp_up}")
+                    for i,k in enumerate(self.chara_data.keys()):
+                        be_level_ten = 0
+                        no_level_ten = 0
+                        if not self.xp_get:
+                            self.xp_up[k][2] = self.chara_data[k]["Level"]
+                        chara = self.chara_data[k]
+                        self.umplus10.draw_text(58 + 61 * i,43,str(chara["HP"][0]).rjust(4,' '),7)
+                        self.umplus10.draw_text(58 + 61 * i,54,str(chara["MP"][0]).rjust(4,' '),7)
+                        self.umplus10.draw_text(58 + 61 * i,65,str(chara["atk_ab"]).rjust(4,' '),7)
+                        self.umplus10.draw_text(58 + 61 * i,76,str(chara["def_ab"]).rjust(4,' '),7)
+                        self.umplus10.draw_text(58 + 61 * i,87,str(chara["satisfaction"][0]).rjust(4,' '),7)
+                        self.umplus10.draw_text(58 + 61 * i,98,str(chara["satisfaction"][1]).rjust(4,' '),7)
+                        self.umplus10.draw_text(62 * i + 51,17,str(k).center(5,"　"),7)
+                        xp = 0
+                        level = self.chara_data[k]["Level"] + 1
+                        if 0 <= level <= 16:
+                            xp = level ** 2 + 6 * level
+                        elif 17 <= level <= 30:
+                            xp = (5 / 2) * level ** 2 - (81 / 2) * level + 360
+                        elif 31 <= level:
+                            xp = (9 / 2) * level ** 2 - (325 / 2) * level + 2220
+                        if self.chara_data[k]["XP"] >= xp:
+                            self.chara_data[k]["Level"] += 1
+                            self.chara_data[k]["XP"] -= xp
+                            if len(str(self.xp_up[k][2])) > 1:
+                                be_level_ten = int(str(self.xp_up[k][2])[-2])
+                            if len(str(self.chara_data[k]["Level"])) > 1:
+                                no_level_ten = int(str(self.chara_data[k]["Level"])[-2])
+                            if be_level_ten < no_level_ten:
+                                ten_level = no_level_ten - be_level_ten
+                                self.status_diff[k]["satisfaction"][0] = self.levelup_data["satisfaction"][0] * ten_level
+                                self.status_diff[k]["satisfaction"][1] = self.levelup_data["satisfaction"][1] * ten_level
+                            self.status_diff[k]["HP"] += self.levelup_data["HP"]
+                            self.status_diff[k]["MP"] += self.levelup_data["MP"]
+                            self.status_diff[k]["atk_ab"] += self.levelup_data["atk_ab"]
+                            self.status_diff[k]["def_ab"] += self.levelup_data["def_ab"]
+                        if self.xp_up[k][2] != None:
+                            if self.status_diff[k]["satisfaction"][0] != 0:
+                                self.umplus10.draw_text(84 + 61 * i,87,f"→{str(chara['satisfaction'][0] + self.status_diff[k]['satisfaction'][0]).rjust(2,' ')}",11)
+                                self.umplus10.draw_text(84 + 61 * i,98,f"→{str(chara['satisfaction'][1] + self.status_diff[k]['satisfaction'][1]).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(84 + 61 * i,43,f"→{str(chara['HP'][0] + self.status_diff[k]['HP']).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(84 + 61 * i,54,f"→{str(chara['MP'][0] + self.status_diff[k]['MP']).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(84 + 61 * i,65,f"→{str(chara['atk_ab'] + self.status_diff[k]['atk_ab']).rjust(2,' ')}",11)
+                            self.umplus10.draw_text(84 + 61 * i,76,f"→{str(chara['def_ab'] + self.status_diff[k]['def_ab']).rjust(2,' ')}",11)
+                        self.umplus10.draw_text(61 * i + 56,28,"Lv ",7)
+                        self.umplus10.draw_text(61 * i + 71,28,str(self.chara_data[k]['Level']),7)
+                        pyxel.rect(61 * i + 56,39,int(self.chara_data[k]["XP"] / xp * 100 * 0.5),4,11)
+                        pyxel.rectb(61 * i + 56,39,50,4,7)
+                        if not self.xp_stop:
+                            if self.xp_up[k][0] >= 15:
+                                self.chara_data[k]["XP"] += 15
+                                self.xp_up[k][0] -= 15
                             else:
-                                self.xp_stop = False
-                for i,chara in enumerate(list(self.chara_data.keys())):
-                    for j,sm in enumerate(list(self.add_sm.keys())):
-                        if sm == "magic":
-                            self.umplus10.draw_text(6,109 + 11 * j,"獲得魔法".rjust(5,"　"),7)
-                        else:
-                            self.umplus10.draw_text(6,109 + 11 * j,"獲得スキル".rjust(5,"　"),7)
-                        if chara in self.add_sm[sm].keys():
-                            for k,sm_code in enumerate(self.add_sm[sm][chara]):
-                                self.umplus10.draw_text(58 + 61 * i,109 + 11 * k,self.magic_codes[sm][sm_code]["name"].rjust(4,' '),7)
-                self.xp_get = True
-                money = 0
-                for i in self.enemy_status:
-                    money += i["money"]
-                self.umplus10.draw_text(100,130,"お金",7)
-                self.umplus10.draw_text(130,130,f"￥{self.app.money}",7)
-                self.umplus10.draw_text(146 + len(str(self.app.money)) * 5,130,f"→￥{self.app.money + money}",11)
-                if self.get_item != []:
-                    self.umplus10.draw_text(0,150,f"手に入れたアイテム".rjust(15,"　"))
-                    for j,i in enumerate(self.get_item):
-                        item = self.app.tools["basic"][i]
-                        self.umplus10.draw_text(160,150 + (j * 11),item["name"])
-                # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
+                                self.chara_data[k]["XP"] += self.xp_up[k][0]
+                                self.xp_up[k][0] = 0
+                            for j in self.xp_up:
+                                if self.xp_up[j][0] == 0:
+                                    self.xp_stop = True
+                                else:
+                                    self.xp_stop = False
+                    self.xp_get = True
+                    money = 0
+                    for i in self.enemy_status:
+                        money += i["money"]
+                    self.umplus10.draw_text(100,130,"お金",7)
+                    self.umplus10.draw_text(130,130,f"￥{self.app.money}",7)
+                    self.umplus10.draw_text(146 + len(str(self.app.money)) * 5,130,f"→￥{self.app.money + money}",11)
+                    if self.get_item != []:
+                        self.umplus10.draw_text(0,150,f"手に入れたアイテム".rjust(15,"　"))
+                        for j,i in enumerate(self.get_item):
+                            item = self.app.tools["basic"][i]
+                            self.umplus10.draw_text(160,150 + (j * 11),item["name"])
+                    # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
+                elif self.add_sm_tf:
+                    for i,j in enumerate(self.chara_data.keys()):
+                        self.umplus10.draw_text(62 * i + 51,17,str(j).center(5,"　"),7)
+                    for i,chara in enumerate(list(self.chara_data.keys())):
+                        for j,sm in enumerate(list(self.add_sm.keys())):
+                            max_ = max([len(self.add_sm["magic"][n]) for n in [m for m in list(self.chara_data.keys())] if n in self.add_sm["magic"].keys()])
+                            if sm == "magic":
+                                self.umplus10.draw_text(6,43 + 11 * j,"獲得魔法".rjust(5,"　"),7)
+                            else:
+                                self.umplus10.draw_text(6,43 + 11 * (j + max_ + 1),"獲得スキル".rjust(5,"　"),7)
+                            if chara in self.add_sm[sm].keys():
+                                for k,sm_code in enumerate(self.add_sm[sm][chara]):
+                                    if sm == "magic":
+                                        self.umplus10.draw_text(58 + 61 * i,43 + 11 * k,self.magic_codes[sm][sm_code]["name"].rjust(4,' '),7)
+                                    else:
+                                        self.umplus10.draw_text(58 + 61 * i,43 + 11 * (k + max_ + 2),self.magic_codes[sm][sm_code]["name"].rjust(4,' '),7)
