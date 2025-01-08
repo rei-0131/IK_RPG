@@ -41,10 +41,16 @@ a.datas += [
     ('acceptable.json','.\\src\\assets\\sounds\\acceptable.json','DATA'),
     ('give.json','.\\src\\assets\\sounds\\give.json','DATA'),
     ('ok.json','.\\src\\assets\\sounds\\ok.json','DATA'),
-    ('q_c.json','.\\src\\assets\\sounds\\q_c.json','DATA'),
     ('select.json','.\\src\\assets\\sounds\\select.json','DATA'),
     ('turn.json','.\\src\\assets\\sounds\\turn.json','DATA'),
-    ('winner.json','.\\src\\assets\\sounds\\winner.json','DATA')
+    ('winner.json','.\\src\\assets\\sounds\\winner.json','DATA'),
+    ('boss.ogg','.\\src\\assets\\sounds\\boss.ogg','DATA'),
+    ('last_boss_1.ogg','.\\src\\assets\\sounds\\last_boss_1.ogg','DATA'),
+    ('last_boss_2.ogg','.\\src\\assets\\sounds\\last_boss_2.ogg','DATA'),
+    ('normal_battle.ogg','.\\src\\assets\\sounds\\normal_battle.ogg','DATA'),
+    ('city.ogg','.\\src\\assets\\sounds\\city.ogg','DATA'),
+    ('ed.ogg','.\\src\\assets\\sounds\\ed.ogg','DATA'),
+    ('op.ogg','.\\src\\assets\\sounds\\op.ogg','DATA')
 ]
 
 pyz = PYZ(a.pure)
