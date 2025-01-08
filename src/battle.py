@@ -150,7 +150,7 @@ class Battle:
                     break
         else:
             self.chara_data = self.app.chara_data
-        self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"] == "true"}
+        self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"]}
         for _ in range(len(self.chara_data)):
             self.player_effect.append({
                 "atk_buff":0,
@@ -284,18 +284,18 @@ class Battle:
         print(self.enemy_status)
         if self.app.random_encount:
             levels = [self.chara_data[j]["Level"] for j in self.chara_data.keys()]
-            max_level = max(levels)
-            ten = max_level // 10 + 1
+            ava_level = sum(levels) / len(levels)
+            ten = ava_level // 10 + 1
             for i in range(len(self.enemy_status)):
-                self.enemy_status[i]["HP"][0] += int(max_level * self.levelup_data["HP"] * 0.85)
-                self.enemy_status[i]["HP"][1] += int(max_level * self.levelup_data["HP"] * 0.85)
-                self.enemy_status[i]["MP"][0] += int(max_level * self.levelup_data["MP"] * 0.85)
-                self.enemy_status[i]["MP"][1] += int(max_level * self.levelup_data["MP"] * 0.85)
-                self.enemy_status[i]["atk_ab"] += int(max_level * self.levelup_data["atk_ab"] * 0.85)
-                self.enemy_status[i]["def_ab"] += int(max_level * self.levelup_data["def_ab"] * 0.85)
+                self.enemy_status[i]["HP"][0] += int(ava_level * self.levelup_data["HP"] * 0.85)
+                self.enemy_status[i]["HP"][1] += int(ava_level * self.levelup_data["HP"] * 0.85)
+                self.enemy_status[i]["MP"][0] += int(ava_level * self.levelup_data["MP"] * 0.85)
+                self.enemy_status[i]["MP"][1] += int(ava_level * self.levelup_data["MP"] * 0.85)
+                self.enemy_status[i]["atk_ab"] += int(ava_level * self.levelup_data["atk_ab"] * 0.85)
+                self.enemy_status[i]["def_ab"] += int(ava_level * self.levelup_data["def_ab"] * 0.85)
                 self.enemy_status[i]["satisfaction"][0] += int(ten * self.levelup_data["satisfaction"][0] * 0.85)
                 self.enemy_status[i]["satisfaction"][1] += int(ten * self.levelup_data["satisfaction"][1] * 0.85)
-                self.enemy_status[i]["xp"] = int(self.enemy_status[i]["xp"] * (max_level * 0.85))
+                self.enemy_status[i]["xp"] = int(self.enemy_status[i]["xp"] * (ava_level * 0.85))
                 self.enemy_status[i]["money"] = int(self.enemy_status[i]["money"] * (ten * 0.85))
             print(self.enemy_status)
 
@@ -1263,9 +1263,9 @@ class Battle:
                                             self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] += effect["recovery_info"][1]
                                         if self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] >= self.chara_data[list(self.chara_data.keys())[n]]["HP"][0]:
                                             self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[n]]["HP"][0]
-                                        effect["recovery_turn"] -= 1
+                                        self.player_effect[n]["recovery_turn"] -= 1
                                     if effect["atk_invalid"]:
-                                        effect["atk_invalid"] = False
+                                        self.player_effect[n]["atk_invalid"] = False
                         else:
                             if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                                 self.player_animation = False
@@ -1425,6 +1425,7 @@ class Battle:
                                     self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
                                 elif self.app.random_encount:
                                     self.app.random_encount = False
+                                self.app.sound_manager.stop()
                                 self.app.sound_manager.play_se("ok")
                                 self.app.bgm_run = False
                     elif self.add_sm_tf:
@@ -1435,6 +1436,7 @@ class Battle:
                                 self.app.msg_id = self.app.words_j["story"][self.app.disp_id]["battle"][1]
                             elif self.app.random_encount:
                                 self.app.random_encount = False
+                            self.app.sound_manager.stop()
                             self.app.sound_manager.play_se("ok")
                             self.app.bgm_run = False
             else:
