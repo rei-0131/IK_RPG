@@ -150,7 +150,7 @@ class Battle:
                     break
         else:
             self.chara_data = self.app.chara_data
-        self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"] == "true"}
+        self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"]}
         for _ in range(len(self.chara_data)):
             self.player_effect.append({
                 "atk_buff":0,
@@ -1263,9 +1263,9 @@ class Battle:
                                             self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] += effect["recovery_info"][1]
                                         if self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] >= self.chara_data[list(self.chara_data.keys())[n]]["HP"][0]:
                                             self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[n]]["HP"][0]
-                                        effect["recovery_turn"] -= 1
+                                        self.player_effect[n]["recovery_turn"] -= 1
                                     if effect["atk_invalid"]:
-                                        effect["atk_invalid"] = False
+                                        self.player_effect[n]["atk_invalid"] = False
                         else:
                             if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                                 self.player_animation = False
