@@ -207,7 +207,7 @@ class Map:
                 type_ = self.collision_data[str(num)][cd.index(list(pyxel.tilemaps[num].pget(check_x[xy_index] // pixel_size, check_y[xy_index] // pixel_size)))][1]
             except ValueError:
                 type_ = ""
-            if self.next_x <= 81 and 42 <= self.next_y <= 58 and 9 <= self.app.now_location <= 11:
+            if self.next_x <= 81 and 26 <= self.next_y <= 40 and 9 <= self.app.now_location <= 11:
                 return True, "trash", 0
             return True, type_, 0
         else:
