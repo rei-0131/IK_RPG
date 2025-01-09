@@ -85,8 +85,8 @@ class Player:
             self.y += self.dy
             if (self.dx != 0 or self.dy != 0) and not self.app.in_word:
                 if self.app.now_location == scenes.CLASS3_SCENE:
-                    #0.444%
-                    if 1 <= pyxel.rndi(1,100000) <= 444:
+                    #0.888%
+                    if 1 <= pyxel.rndi(1,100000) <= 888:
                         self.app.random_encount = True
                         self.app.battle.clean(self.app.now_scene)
                         self.app.battle.save_chara(self.app.chara_data)
@@ -104,8 +104,8 @@ class Player:
                         self.app.now_location == scenes.WAY_SCENE_31 or
                         self.app.now_location == scenes.WAY_SCENE_I or
                         self.app.now_location == scenes.WAY_SCENE_E):
-                    #0.111%
-                    if 1 <= pyxel.rndi(1,100000) <= 111:
+                    #0.222%
+                    if 1 <= pyxel.rndi(1,100000) <= 222:
                         self.app.random_encount = True
                         self.app.battle.clean(self.app.now_scene)
                         self.app.battle.save_chara(self.app.chara_data)
