@@ -838,7 +838,7 @@ class App:
                                 umplus10.draw_text(0,0,"・機械棟に向かう",7,0)
                             elif 191 <= int(self.msg_id) <= 198:
                                 umplus10.draw_text(0,0,"・聞き込みをする",7,0)
-                                umplus10.draw_text(0,0,"・キラに話しかける",7,0)
+                                umplus10.draw_text(0,11,"・キラに話しかける",7,0)
                             elif int(self.msg_id) == 200 or int(self.msg_id) == 212 or int(self.msg_id) == 260 or int(self.msg_id) == 267 or int(self.msg_id) == 359:
                                 umplus10.draw_text(0,0,"・IT科職員室に向かう",7,0)
                         if self.scene_show[self.now_location - 6]:

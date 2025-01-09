@@ -1247,7 +1247,6 @@ class Battle:
                                             if len(self.ai_action) - 1 == i:
                                                 self.player_effect[m]["dmg_replace"] = False
                                             self.player_effect[int(ai_ac[0])]["atk_invalid"] = False
-                                            break
                             self.attack_count += 1
                             if self.attack_count == len(self.ai_action):
                                 self.operation_player = True
@@ -1297,6 +1296,8 @@ class Battle:
                                             else:
                                                 vibe["move"] = "p"
                                                 vibe["value"] += 2
+                                    else:
+                                        self.vibe_player[int(ai_ac[0])]["total"] = 10
                                     vibe["total"] += 1
                         self.hp_int("none")
         else:
@@ -1937,9 +1938,13 @@ class Battle:
                     self.umplus10.draw_text(146 + len(str(self.app.money)) * 5,130,f"→￥{self.app.money + money}",11)
                     if self.get_item != []:
                         self.umplus10.draw_text(0,150,f"手に入れたアイテム".rjust(15,"　"))
+                        ind = 0
                         for j,i in enumerate(self.get_item):
+                            if j != 0:
+                                if j / 3 == 0:
+                                    ind += 1
                             item = self.app.tools["basic"][i]
-                            self.umplus10.draw_text(160,150 + (j * 11),item["name"])
+                            self.umplus10.draw_text(120 + 66 * ind,150 + (j * 11),item["name"])
                     # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
                 elif self.add_sm_tf:
                     for i,j in enumerate(self.chara_data.keys()):
