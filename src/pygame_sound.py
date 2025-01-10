@@ -34,7 +34,7 @@ class pygame_sound:
         self.filename = ""
         self.now_music = ""
         self.stop_ = False
-        pygame.mixer.init()
+        pygame.mixer.init(frequency = 44100, channels = 1, buffer = 4096)
 
     def loop(self,filename=None):
         pos = pygame.mixer.music.get_pos()
