@@ -87,6 +87,7 @@ class Battle:
         self.status_diff = {}
         self.levelup_data = self.app.INIT_DATA["levelup"]
         self.save_chara_data = {}
+        self.save_item = {}
         self.escape = False
         self.escape_rate = 25
         self.in_boss = False
@@ -151,6 +152,7 @@ class Battle:
         else:
             self.chara_data = self.app.chara_data
         self.battle_item = {i[0]:i[1] for i in self.app.item_codes.items() if i[1]["battle"]}
+        self.save_item = copy.deepcopy(self.battle_item)
         for _ in range(len(self.chara_data)):
             self.player_effect.append({
                 "atk_buff":0,
@@ -1466,6 +1468,7 @@ class Battle:
                 else:
                     if self.select_num1 == 0:
                         self.app.chara_data = copy.deepcopy(self.save_chara_data)
+                        self.battle_item = copy.deepcopy(self.save_item)
                         self.clean(self.be_scene)
                         self.set_enemy(self.enemy_num,self.enemy_code)
                     elif self.select_num1 == 1:
