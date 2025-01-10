@@ -24,23 +24,23 @@
         "004":{
             "name":"フレンチトースト",
             "type":"HP",
-            "effect":[600,800],
+            "effect":[100,120],
             "battle":true,
-            "info":"HPを６００～８００回復する"
+            "info":"HPを１００～１２０回復する"
         },
         "005":{
             "name":"やきそばパン",
             "type":"HP",
-            "effect":[1000,1400],
+            "effect":[50,80],
             "battle":true,
-            "info":"HPを１０００～１４００回復する"
+            "info":"HPを５０～８０回復する"
         },
         "006":{
             "name":"あんぱん",
             "type":"HP",
-            "effect":[200,300],
+            "effect":[20,30],
             "battle":true,
-            "info":"HPを２００～３００回復する"
+            "info":"HPを２０～３０回復する"
         },
         "007":{
             "name":"ナゾノクスリ",
