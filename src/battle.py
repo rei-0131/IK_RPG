@@ -739,10 +739,10 @@ class Battle:
                                 self.player_op[self.attack_count]["effect_invoke"] = True
                                 self.player_op[self.attack_count]["effect_name"] = "atk_buff"
                                 self.player_effect[action["player_pos"]]["atk_buff"] += 3
-                        else:
+                        elif action["sm_code"] == "10":
                             for i in range(len(self.player_effect)):
                                 self.player_effect[i]["atk_invalid"] = True
-                                self.player_effect[i]["dmg_replace"] = True
+                            self.player_effect[action["player_pos"]]["dmg_replace"] = True
                         self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
                 else:
                     if (action["sm_code"]["type"] == "revival" and self.chara_data[action["target"]]["HP"][1] <= 0) or action["sm_code"]["type"] != "revival":
@@ -988,7 +988,7 @@ class Battle:
                         self.finger_pos5 += 18
                         self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A,hold = 8,repeat=8):
-                    self.finger_pos5 = 0;
+                    self.finger_pos5 = 0
                     self.select_num3 = -1
                     self.app.sound_manager.play_se("select")
                 if pyxel.btnp(pyxel.KEY_RETURN,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B,hold = 8,repeat=8):
@@ -1533,26 +1533,29 @@ class Battle:
         pyxel.rectb(25,self.init_y//2-20,270,25,7)
         self.umplus10.draw_text(110,self.init_y-12,"※戻るにはESCキーまたはＡボタンを押す",8)
         if len(list(self.battle_item.keys())) > 0:
-            self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
-            self.item_num = len(self.battle_item.items())
-            if self.item_num >= self.item_pos + 11:
-                self.dis_num = 10
-                for i,item in enumerate(self.battle_item.items()):
-                    h = int(i // 2)
-                    w = i % 2
-                    if i == self.finger_pos3:
-                        pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                    self.umplus10.draw_text(190+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]).rjust(2," "),7)
-            else:
-                self.dis_num = self.item_num - self.item_pos
-                for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
-                    h = int(i // 2)
-                    w = i % 2
-                    if i == self.finger_pos3:
-                        pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
-                    self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
-                    self.umplus10.draw_text(190+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]).rjust(2," "),7)
+            try:
+                self.umplus10.draw_text(26,self.init_y//2-19,self.tools["basic"][list(self.battle_item.keys())[self.item_pos + self.finger_pos3]]["info"],7)
+                self.item_num = len(self.battle_item.items())
+                if self.item_num >= self.item_pos + 11:
+                    self.dis_num = 10
+                    for i,item in enumerate(self.battle_item.items()):
+                        h = int(i // 2)
+                        w = i % 2
+                        if i == self.finger_pos3:
+                            pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                        self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                        self.umplus10.draw_text(190+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]).rjust(2," "),7)
+                else:
+                    self.dis_num = self.item_num - self.item_pos
+                    for i,item in enumerate(list(self.battle_item.items())[self.item_pos:self.item_num]):
+                        h = int(i // 2)
+                        w = i % 2
+                        if i == self.finger_pos3:
+                            pyxel.rect(111+(w*91),self.init_y//2+11+(h*14.4),92,15,1)
+                        self.umplus10.draw_text(111+(w*93),self.init_y//2+12+(h*15),self.tools["basic"][item[0]]["name"],7)
+                        self.umplus10.draw_text(190+(w*93),self.init_y//2+13+(h*15),str(item[1]["value"]).rjust(2," "),7)
+            except Exception:
+                pass
 
 
     def enemy_target_select_draw(self):
@@ -1620,7 +1623,7 @@ class Battle:
 
     def draw(self):
         """基本描画"""
-        pyxel.cls(0)
+        pyxel.cls(1)
         pyxel.rect(25,self.init_y//2+10,75,75,0)
         pyxel.rectb(25,self.init_y//2+10,75,75,7)
         pyxel.rect(50,self.init_y//2+10,25,4,0)
@@ -1776,6 +1779,7 @@ class Battle:
                             else:
                                 self.self_target_select_draw(fin=2)
                         elif self.select_num1 == 4:
+                            self.player_op = []
                             if self.in_boss:
                                 self.escape = True
                                 self.select_num1 = -1
@@ -1937,14 +1941,14 @@ class Battle:
                     self.umplus10.draw_text(130,130,f"￥{self.app.money}",7)
                     self.umplus10.draw_text(146 + len(str(self.app.money)) * 5,130,f"→￥{self.app.money + money}",11)
                     if self.get_item != []:
-                        self.umplus10.draw_text(0,150,f"手に入れたアイテム".rjust(15,"　"))
+                        self.umplus10.draw_text(0,141,f"手に入れたアイテム".rjust(15,"　"))
                         ind = 0
                         for j,i in enumerate(self.get_item):
                             if j != 0:
                                 if j / 3 == 0:
                                     ind += 1
                             item = self.app.tools["basic"][i]
-                            self.umplus10.draw_text(120 + 66 * ind,150 + (j * 11),item["name"])
+                            self.umplus10.draw_text(133 + 66 * ind,152 + (j * 11),item["name"])
                     # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
                 elif self.add_sm_tf:
                     for i,j in enumerate(self.chara_data.keys()):
