@@ -1232,9 +1232,10 @@ class Battle:
                                         if n["dmg_replace"]:
                                             if ai_ac[1] == 1:
                                                 if atk - def_ >= 0:
+                                                    print(f'replace: enemy_mp:{self.enemy_status[live_enemy[i]]["MP"][1]} atk:{atk} def:{def_}')
                                                     self.chara_data[list(self.chara_data.keys())[m]]["HP"][1] -= atk - def_
                                             else:
-                                                print(f'enemy_mp:{self.enemy_status[live_enemy[i]]["MP"][1]} atk:{atk} def:{def_}')
+                                                print(f'replace: enemy_mp:{self.enemy_status[live_enemy[i]]["MP"][1]} atk:{atk} def:{def_}')
                                                 if self.enemy_status[live_enemy[i]]["MP"][1] >= 30:
                                                     if (atk * 2) - def_ >= 0:
                                                         self.chara_data[list(self.chara_data.keys())[m]]["HP"][1] -= (atk * 2) - def_
@@ -1244,9 +1245,8 @@ class Battle:
                                                         self.chara_data[list(self.chara_data.keys())[m]]["HP"][1] -= atk - def_
                                             if self.chara_data[list(self.chara_data.keys())[m]]["HP"][1] < 0:
                                                 self.chara_data[list(self.chara_data.keys())[m]]["HP"][1] = 0
-                                            if len(self.ai_action) - 1 == i:
-                                                self.player_effect[m]["dmg_replace"] = False
-                                            self.player_effect[int(ai_ac[0])]["atk_invalid"] = False
+                                    if len(self.ai_action) - 1 == i:
+                                        self.player_effect[m]["dmg_replace"] = False
                             self.attack_count += 1
                             if self.attack_count == len(self.ai_action):
                                 self.operation_player = True
@@ -1263,8 +1263,7 @@ class Battle:
                                         if self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] >= self.chara_data[list(self.chara_data.keys())[n]]["HP"][0]:
                                             self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[n]]["HP"][0]
                                         self.player_effect[n]["recovery_turn"] -= 1
-                                    if effect["atk_invalid"]:
-                                        self.player_effect[n]["atk_invalid"] = False
+                                    self.player_effect[n]["atk_invalid"] = False
                         else:
                             if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                                 self.player_animation = False
@@ -1948,7 +1947,7 @@ class Battle:
                                 if j / 3 == 0:
                                     ind += 1
                             item = self.app.tools["basic"][i]
-                            self.umplus10.draw_text(133 + 66 * ind,152 + (j * 11),item["name"])
+                            self.umplus10.draw_text(113 + 99 * ind,152 + (j * 11),item["name"],7)
                     # self.umplus10.draw_text(self.init_x//2 - 60, self.init_y//2 - 5,"Player Win",7)
                 elif self.add_sm_tf:
                     for i,j in enumerate(self.chara_data.keys()):
