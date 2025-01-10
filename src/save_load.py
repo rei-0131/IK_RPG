@@ -81,7 +81,7 @@ class SaveLoad:
         blob_url = URL.createObjectURL(blob)
         a = document.createElement('a')
         a.href = blob_url
-        a.download = 'save_data.json'
+        a.download = 'savedata.json'
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
