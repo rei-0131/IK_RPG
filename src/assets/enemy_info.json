@@ -147,7 +147,7 @@
                 "enemy_name":{"enemy_type":"boss","enemy_code":"okubo"},
                 "HP":[300,300],
                 "MP":[60,60],
-                "atk_ab":70,
+                "atk_ab":25,
                 "def_ab":20,
                 "satisfaction": [
                     8,
@@ -174,7 +174,7 @@
                 "enemy_name":{"enemy_type":"boss","enemy_code":"yoshioka"},
                 "HP":[770,770],
                 "MP":[350,350],
-                "atk_ab":180,
+                "atk_ab":40,
                 "def_ab":30,
                 "satisfaction": [
                     13,
@@ -201,7 +201,7 @@
                 "enemy_name":{"enemy_type":"boss","enemy_code":"nishio"},
                 "HP":[650,650],
                 "MP":[250,250],
-                "atk_ab":170,
+                "atk_ab":35,
                 "def_ab":25,
                 "satisfaction": [
                     10,
@@ -228,7 +228,7 @@
                 "enemy_name":{"enemy_type":"boss","enemy_code":"momonoi_1"},
                 "HP":[1110,1110],
                 "MP":[350,350],
-                "atk_ab":200,
+                "atk_ab":50,
                 "def_ab":40,
                 "satisfaction": [
                     20,
@@ -255,7 +255,7 @@
                 "enemy_name":{"enemy_type":"boss","enemy_code":"momonoi_2"},
                 "HP":[1400,1400],
                 "MP":[350,350],
-                "atk_ab":350,
+                "atk_ab":60,
                 "def_ab":40,
                 "satisfaction": [
                     25,
