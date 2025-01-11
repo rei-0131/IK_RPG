@@ -607,307 +607,311 @@ class Battle:
             action = self.player_op[self.attack_count]
             atk = self.atk_sum(action)
             print(f"{action=}\n{self.player_effect[action['player_pos']]=}\n{atk=}\n\n\n")
-            if action["target"] != "None" and action["sm"] != "item" and action["target_team"] != "self" and action["target"] != "none":
-                while True:
-                    if self.enemy_status[action["target"]]["HP"][1] <= 0:
-                        live_e = []
-                        for len_,v in enumerate(self.enemy_status):
-                            if  v["HP"][1] > 0:
-                                live_e.append(len_)
-                        if len(live_e) == 0:
-                            action["target"] = -1
-                        else:
-                            action["target"] = live_e[pyxel.rndi(0,len(live_e) - 1)]
-                    else:
-                        break
-            if action["target"] != -1:
-                if action["sm"] != "item":
-                    if action["sm_code"] != "None":
-                        int_code = int(action["sm_code"])
-                    if action["target_team"] == "enemy":
-                        def_ = self.enemy_status[action["target"]]["def_ab"] * ((100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100)
-                        kaisin_p = 1
-                        if action["kaisin"]:
-                            kaisin_p = self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
-                        if action["sm"] == "None":
-                            if (atk - def_) * kaisin_p >= 0:
-                                self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
-                        elif action["sm"] == "skill":
-                            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                            if action["sm_code"] == "01":
-                                for _ in range(sm_info["other"]["atk_num"]):
-                                    if (atk - def_) * kaisin_p >= 0:
-                                        self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
-                            elif action["sm_code"] == "02":
-                                cri_atk = atk * (self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
-                                if cri_atk - def_ >= 0:
-                                    self.enemy_status[action["target"]]["HP"][1] -= cri_atk - def_
-                                self.player_effect[action["player_pos"]]["02_use"] = False
-                            self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
-                        elif action["sm"] == "magic":
-                            if 1 <= int_code <= 15 or int_code == 21:
+            if "revival" not in action:
+                if action["target"] != "None" and action["sm"] != "item":
+                    if "target_team" in action:
+                        if action["target_team"] != "self" and action["target"] != "none":
+                            while True:
+                                if self.enemy_status[action["target"]]["HP"][1] <= 0:
+                                    live_e = []
+                                    for len_,v in enumerate(self.enemy_status):
+                                        if  v["HP"][1] > 0:
+                                            live_e.append(len_)
+                                    if len(live_e) == 0:
+                                        action["target"] = -1
+                                    else:
+                                        action["target"] = live_e[pyxel.rndi(0,len(live_e) - 1)]
+                                else:
+                                    break
+                if action["target"] != -1:
+                    if action["sm"] != "item":
+                        if action["sm_code"] != "None":
+                            int_code = int(action["sm_code"])
+                        if action["target_team"] == "enemy":
+                            def_ = self.enemy_status[action["target"]]["def_ab"] * ((100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100)
+                            kaisin_p = 1
+                            if action["kaisin"]:
+                                kaisin_p = self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
+                            if action["sm"] == "None":
+                                if (atk - def_) * kaisin_p >= 0:
+                                    self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
+                            elif action["sm"] == "skill":
                                 sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                                magic_atk = atk * sm_info["atk_amount"] / 100
-                                if (magic_atk - def_) * kaisin_p >= 0:
-                                    self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
-                            elif 17 <= int_code <= 18:
-                                sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                                if sm_info["dbuff_type"] == "atk":
-                                    self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
-                                elif sm_info["dbuff_type"] == "def":
-                                    self.enemy_effect[action["target"]]["def_dbuff"] += sm_info["dbuff_amount"]
-                            self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
-                        if self.enemy_status[action["target"]]["HP"][1] < 0:
-                            self.enemy_status[action["target"]]["HP"][1] = 0
-                        self.player_effect[action["player_pos"]]["atk_buff"] = 0
-                        self.player_effect[action["player_pos"]]["atk_dbuff"] = 0
-                        self.player_effect[action["player_pos"]]["basic_atk_buff"] = 0
-                        self.enemy_effect[action["target"]]["def_buff"] = 0
-                        self.enemy_effect[action["target"]]["def_dbuff"] = 0
-                    elif action["target_team"] == "self":
-                        if action["sm"] == "skill":
-                            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                            if action["sm_code"] == "03":
-                                if sm_info["recovery_amount"][0] == "p":
-                                    self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
-                                else:
-                                    self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
-                            elif action["sm_code"] == "04":
-                                self.player_effect[action["target"]]["recovery_turn"] = sm_info["other"]["continue_turn"]
-                                self.player_effect[action["target"]]["recovery_info"] = sm_info["recovery_amount"]
-                                self.player_effect[action["target"]]["recovery_turn"] -= 1
-                                if self.player_effect[action["target"]]["recovery_info"][0] == "p":
-                                    self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][0] * (self.player_effect[action["target"]]["recovery_info"][1] / 100)
-                                else:
-                                    self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.player_effect[action["target"]]["recovery_info"][1]
-                            elif action["sm_code"] == "05":
-                                self.player_effect[action["target"]]["atk_invalid"] = True
-                            elif action["sm_code"] == "07":
-                                self.battle_effect["buff_up"] += sm_info["buff_amount"]
-                            self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
-                            if self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] >= self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0]:
-                                self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0]
-                        elif action["sm"] == "magic":
-                            sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                            if action["sm_code"] == "16":
-                                if sm_info["recovery_amount"][0] == "p":
-                                    print(f'heal:{self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)}')
-                                    self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
-                                else:
-                                    self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
-                            elif 19 <= int_code <= 20:
-                                if sm_info["buff_type"] == "atk":
-                                    self.player_effect[action["target"]]["basic_atk_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
-                                elif sm_info["buff_type"] == "def":
-                                    self.player_effect[action["target"]]["basic_def_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
-                                self.battle_effect["buff_up"] = 0
-                            self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
-                        self.hp_int(action["target"])
-                    elif action["target_team"] == "none":
-                        sm_info = self.magic_codes["skill"][action["sm_code"]]
-                        if action["sm_code"] == "06":
-                            for i in range(len(self.player_effect)):
-                                self.player_effect[i]["atk_invalid"] = True
-                        elif action["sm_code"] == "08":
-                            if action["effect_invoke"]:
-                                sm_info = self.magic_codes["magic"][action["effect_name"]]
-                                if action["effect_type"] == "atk":
-                                    def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
+                                if action["sm_code"] == "01":
+                                    for _ in range(sm_info["other"]["atk_num"]):
+                                        if (atk - def_) * kaisin_p >= 0:
+                                            self.enemy_status[action["target"]]["HP"][1] -= (atk - def_) * kaisin_p
+                                elif action["sm_code"] == "02":
+                                    cri_atk = atk * (self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
+                                    if cri_atk - def_ >= 0:
+                                        self.enemy_status[action["target"]]["HP"][1] -= cri_atk - def_
+                                    self.player_effect[action["player_pos"]]["02_use"] = False
+                                self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+                            elif action["sm"] == "magic":
+                                if 1 <= int_code <= 15 or int_code == 21:
+                                    sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                     magic_atk = atk * sm_info["atk_amount"] / 100
-                                    kaisin_p = 1
-                                    if action["kaisin"]:
-                                        kaisin_p = self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
                                     if (magic_atk - def_) * kaisin_p >= 0:
                                         self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
-                                elif action["effect_type"] == "rec":
-                                    if sm_info["recovery_amount"][0] == "p":
-                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
-                                    else:
-                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
-                                elif action["effect_type"] == "dbuff":
+                                elif 17 <= int_code <= 18:
+                                    sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
                                     if sm_info["dbuff_type"] == "atk":
                                         self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
                                     elif sm_info["dbuff_type"] == "def":
                                         self.enemy_effect[action["target"]]["def_dbuff"] += sm_info["dbuff_amount"]
-                                elif action["effect_type"] == "buff":
+                                self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+                            if self.enemy_status[action["target"]]["HP"][1] < 0:
+                                self.enemy_status[action["target"]]["HP"][1] = 0
+                            self.player_effect[action["player_pos"]]["atk_buff"] = 0
+                            self.player_effect[action["player_pos"]]["atk_dbuff"] = 0
+                            self.player_effect[action["player_pos"]]["basic_atk_buff"] = 0
+                            self.enemy_effect[action["target"]]["def_buff"] = 0
+                            self.enemy_effect[action["target"]]["def_dbuff"] = 0
+                        elif action["target_team"] == "self":
+                            if action["sm"] == "skill":
+                                sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                                if action["sm_code"] == "03":
+                                    if sm_info["recovery_amount"][0] == "p":
+                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
+                                    else:
+                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
+                                elif action["sm_code"] == "04":
+                                    self.player_effect[action["target"]]["recovery_turn"] = sm_info["other"]["continue_turn"]
+                                    self.player_effect[action["target"]]["recovery_info"] = sm_info["recovery_amount"]
+                                    self.player_effect[action["target"]]["recovery_turn"] -= 1
+                                    if self.player_effect[action["target"]]["recovery_info"][0] == "p":
+                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["HP"][0] * (self.player_effect[action["target"]]["recovery_info"][1] / 100)
+                                    else:
+                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.player_effect[action["target"]]["recovery_info"][1]
+                                elif action["sm_code"] == "05":
+                                    self.player_effect[action["target"]]["atk_invalid"] = True
+                                elif action["sm_code"] == "07":
+                                    self.battle_effect["buff_up"] += sm_info["buff_amount"]
+                                self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+                                if self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] >= self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0]:
+                                    self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0]
+                            elif action["sm"] == "magic":
+                                sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                                if action["sm_code"] == "16":
+                                    if sm_info["recovery_amount"][0] == "p":
+                                        print(f'heal:{self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)}')
+                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
+                                    else:
+                                        self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
+                                elif 19 <= int_code <= 20:
                                     if sm_info["buff_type"] == "atk":
                                         self.player_effect[action["target"]]["basic_atk_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
                                     elif sm_info["buff_type"] == "def":
                                         self.player_effect[action["target"]]["basic_def_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
                                     self.battle_effect["buff_up"] = 0
-                        elif action["sm_code"] == "09":
-                            self.random_range = pyxel.rndi(1,100)
-                            if 1 <= self.random_range <= 5:
-                                self.player_op[self.attack_count]["effect_invoke"] = True
-                                self.player_op[self.attack_count]["effect_name"] = "atk_buff"
-                                self.player_effect[action["player_pos"]]["atk_buff"] += 3
-                        elif action["sm_code"] == "10":
-                            for i in range(len(self.player_effect)):
-                                self.player_effect[i]["atk_invalid"] = True
-                            self.player_effect[action["player_pos"]]["dmg_replace"] = True
-                        self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
-                else:
-                    if (action["sm_code"]["type"] == "revival" and self.chara_data[action["target"]]["HP"][1] <= 0) or action["sm_code"]["type"] != "revival":
-                        if action["sm_code"]["type"] == "HP":
-                            size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
-                            self.chara_data[action["target"]]["HP"][1] += size
-                            if self.chara_data[action["target"]]["HP"][1] > self.chara_data[action["target"]]["HP"][0]:
-                                self.chara_data[action["target"]]["HP"][1] = self.chara_data[action["target"]]["HP"][0]
-                        elif action["sm_code"]["type"] == "MP":
-                            size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
-                            self.chara_data[action["target"]]["MP"][1] += size
-                            if self.chara_data[action["target"]]["MP"][1] > self.chara_data[action["target"]]["MP"][0]:
-                                self.chara_data[action["target"]]["MP"][1] = self.chara_data[action["target"]]["MP"][0]
-                        elif action["sm_code"]["type"] == "revival":
-                            self.chara_data[action["target"]]["HP"][1] = int(self.chara_data[action["target"]]["HP"][0] * (action["sm_code"]["effect"] / 100))
-                            self.player_op.append({"player_pos":list(self.chara_data.keys()).index(action["target"]),"target":-1,"sm":"None","sm_code":"None"})
-                        self.battle_item[list(self.battle_item.keys())[action["use_num"]]]["value"] -= 1
-                        if self.app.item_codes[list(self.battle_item.keys())[action["use_num"]]]["value"] == 0:
-                            self.app.item_codes.pop(list(self.battle_item.keys())[action["use_num"]])
-                            self.battle_item.pop(list(self.battle_item.keys())[action["use_num"]])
-                        print(f"{action['sm_code']=}")
+                                self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+                            self.hp_int(action["target"])
+                        elif action["target_team"] == "none":
+                            sm_info = self.magic_codes["skill"][action["sm_code"]]
+                            if action["sm_code"] == "06":
+                                for i in range(len(self.player_effect)):
+                                    self.player_effect[i]["atk_invalid"] = True
+                            elif action["sm_code"] == "08":
+                                if action["effect_invoke"]:
+                                    sm_info = self.magic_codes["magic"][action["effect_name"]]
+                                    if action["effect_type"] == "atk":
+                                        def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
+                                        magic_atk = atk * sm_info["atk_amount"] / 100
+                                        kaisin_p = 1
+                                        if action["kaisin"]:
+                                            kaisin_p = self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] // 100
+                                        if (magic_atk - def_) * kaisin_p >= 0:
+                                            self.enemy_status[action["target"]]["HP"][1] -= (magic_atk - def_) * kaisin_p
+                                    elif action["effect_type"] == "rec":
+                                        if sm_info["recovery_amount"][0] == "p":
+                                            self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][0] * (sm_info["recovery_amount"][1] / 100)
+                                        else:
+                                            self.chara_data[list(self.chara_data.keys())[action["target"]]]["HP"][1] += sm_info["recovery_amount"][1]
+                                    elif action["effect_type"] == "dbuff":
+                                        if sm_info["dbuff_type"] == "atk":
+                                            self.enemy_effect[action["target"]]["atk_dbuff"] += sm_info["dbuff_amount"]
+                                        elif sm_info["dbuff_type"] == "def":
+                                            self.enemy_effect[action["target"]]["def_dbuff"] += sm_info["dbuff_amount"]
+                                    elif action["effect_type"] == "buff":
+                                        if sm_info["buff_type"] == "atk":
+                                            self.player_effect[action["target"]]["basic_atk_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
+                                        elif sm_info["buff_type"] == "def":
+                                            self.player_effect[action["target"]]["basic_def_buff"] += sm_info["buff_amount"] + self.battle_effect["buff_up"]
+                                        self.battle_effect["buff_up"] = 0
+                            elif action["sm_code"] == "09":
+                                self.random_range = pyxel.rndi(1,100)
+                                if 1 <= self.random_range <= 5:
+                                    self.player_op[self.attack_count]["effect_invoke"] = True
+                                    self.player_op[self.attack_count]["effect_name"] = "atk_buff"
+                                    self.player_effect[action["player_pos"]]["atk_buff"] += 3
+                            elif action["sm_code"] == "10":
+                                for i in range(len(self.player_effect)):
+                                    self.player_effect[i]["atk_invalid"] = True
+                                self.player_effect[action["player_pos"]]["dmg_replace"] = True
+                            self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["MP"][1] -= sm_info["req_MP"]
+                    else:
+                        if (action["sm_code"]["type"] == "revival" and self.chara_data[action["target"]]["HP"][1] <= 0) or action["sm_code"]["type"] != "revival":
+                            if action["sm_code"]["type"] == "HP":
+                                size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
+                                self.chara_data[action["target"]]["HP"][1] += size
+                                if self.chara_data[action["target"]]["HP"][1] > self.chara_data[action["target"]]["HP"][0]:
+                                    self.chara_data[action["target"]]["HP"][1] = self.chara_data[action["target"]]["HP"][0]
+                            elif action["sm_code"]["type"] == "MP":
+                                size = pyxel.rndi(action["sm_code"]["effect"][0],action["sm_code"]["effect"][1])
+                                self.chara_data[action["target"]]["MP"][1] += size
+                                if self.chara_data[action["target"]]["MP"][1] > self.chara_data[action["target"]]["MP"][0]:
+                                    self.chara_data[action["target"]]["MP"][1] = self.chara_data[action["target"]]["MP"][0]
+                            elif action["sm_code"]["type"] == "revival":
+                                self.chara_data[action["target"]]["HP"][1] = int(self.chara_data[action["target"]]["HP"][0] * (action["sm_code"]["effect"] / 100))
+                                self.player_op.append({"player_pos":list(self.chara_data.keys()).index(action["target"]),"target":-1,"sm":"None","sm_code":"None","revival":True})
+                            self.battle_item[list(self.battle_item.keys())[action["use_num"]]]["value"] -= 1
+                            if self.app.item_codes[list(self.battle_item.keys())[action["use_num"]]]["value"] == 0:
+                                self.app.item_codes.pop(list(self.battle_item.keys())[action["use_num"]])
+                                self.battle_item.pop(list(self.battle_item.keys())[action["use_num"]])
+                            print(f"{action['sm_code']=}")
             for i in self.chara_data.keys():
                 if self.chara_data[i]["HP"][1] > self.chara_data[i]["HP"][0]:
                     self.chara_data[i]["HP"][1] = self.chara_data[i]["HP"][0]
             self.attack_count += 1
             self.enemy_animation = True
         else:
-            live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
-            if self.attack_count == len(self.player_op):
-                self.operation_player = False
-                self.attack_count = 0
-                self.select_num1 = -1
-                self.select_num2 = -1
-            if self.operation_player:
-                if not (self.player_op[self.attack_count]["target"] != -1 and self.player_op[self.attack_count]["target_team"] == "enemy") and not (self.player_op[self.attack_count]["sm"] == "skill" and self.player_op[self.attack_count]["sm_code"] == "08"):
-                    self.enemy_animation = False
-                else:
-                    if self.player_op[self.attack_count]["sm"] == "skill" and self.player_op[self.attack_count]["sm_code"] == "08" and not self.player_op[self.attack_count]["effect_check"]:
-                        self.random_range = pyxel.rndi(1,100)
-                        if 1 <= self.random_range <= 10:
-                            random_magic = pyxel.rndi(1,20)
-                            if random_magic < 10:
-                                random_magic = f"0{random_magic}"
-                            else:
-                                random_magic = str(random_magic)
-                            live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
-                            live_p = [len_ for len_,i in enumerate(self.chara_data) if self.chara_data[i]["HP"][1] > 0]
-                            ran_p = live_p[pyxel.rndi(0,len(live_p) - 1)]
-                            ran_e = live_e[pyxel.rndi(0,len(live_e) - 1)]
-                            int_code = int(random_magic)
-                            self.player_op[self.attack_count]["effect_invoke"] = True
-                            self.player_op[self.attack_count]["effect_name"] = random_magic
-                            if 1 <= int_code <= 15 or int_code == 21:
-                                self.player_op[self.attack_count]["effect_type"] = "atk"
-                                self.player_op[self.attack_count]["target"] = ran_e
-                            elif int_code == 16:
-                                self.player_op[self.attack_count]["effect_type"] = "rec"
-                                self.player_op[self.attack_count]["target"] = ran_p
-                            elif 17 <= int_code <= 18:
-                                self.player_op[self.attack_count]["effect_type"] = "dbuff"
-                                self.player_op[self.attack_count]["target"] = ran_e
-                            elif 19 <= int_code <= 20:
-                                self.player_op[self.attack_count]["effect_type"] = "buff"
-                                self.player_op[self.attack_count]["target"] = ran_p
-                        self.player_op[self.attack_count]["effect_check"] = True
-                        if self.player_op[self.attack_count]["effect_type"] == "atk":
-                            self.vibe_count = self.player_op[self.attack_count]["target"]
-                        else:
-                            self.vibe_count = "none"
-                            self.enemy_animation = False
+            if "revival" in self.player_op[self.attack_count]:
+                live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
+                if self.attack_count == len(self.player_op):
+                    self.operation_player = False
+                    self.attack_count = 0
+                    self.select_num1 = -1
+                    self.select_num2 = -1
+                if self.operation_player:
+                    if not (self.player_op[self.attack_count]["target"] != -1 and self.player_op[self.attack_count]["target_team"] == "enemy") and not (self.player_op[self.attack_count]["sm"] == "skill" and self.player_op[self.attack_count]["sm_code"] == "08"):
+                        self.enemy_animation = False
                     else:
-                        self.vibe_count = self.player_op[self.attack_count]["target"]
-                    if type(self.vibe_count) is int:
-                        if self.vibe_enemy[self.vibe_count]["total"] >= 30:
-                            self.enemy_animation = False
-                            self.vibe_enemy[self.vibe_count] = {
-                                "total":0,
-                                "value":0,
-                                "move":"p"
-                            }
-                            self.damage_pos = 0
-                        elif self.vibe_enemy[self.vibe_count]["total"] < 30:
-                            action = self.player_op[self.attack_count]
-                            atk = self.atk_sum(action)
-                            def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
-                            damage = False
-                            damage_amount = 0
-                            kaisin_p = 1
-                            ####
-                            #ダメージ計算
-                            #遊び人のスキルによる魔法発動時のダメージ
-                            ####
-                            if action["kaisin"]:
-                                kaisin_p = self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100
-                            if action["sm"] == "None":
-                                damage = True
-                                damage_amount = (atk - def_) * kaisin_p
-                            elif action["sm"] == "skill":
-                                sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                                if action["sm_code"] == "01":
+                        if self.player_op[self.attack_count]["sm"] == "skill" and self.player_op[self.attack_count]["sm_code"] == "08" and not self.player_op[self.attack_count]["effect_check"]:
+                            self.random_range = pyxel.rndi(1,100)
+                            if 1 <= self.random_range <= 10:
+                                random_magic = pyxel.rndi(1,20)
+                                if random_magic < 10:
+                                    random_magic = f"0{random_magic}"
+                                else:
+                                    random_magic = str(random_magic)
+                                live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
+                                live_p = [len_ for len_,i in enumerate(self.chara_data) if self.chara_data[i]["HP"][1] > 0]
+                                ran_p = live_p[pyxel.rndi(0,len(live_p) - 1)]
+                                ran_e = live_e[pyxel.rndi(0,len(live_e) - 1)]
+                                int_code = int(random_magic)
+                                self.player_op[self.attack_count]["effect_invoke"] = True
+                                self.player_op[self.attack_count]["effect_name"] = random_magic
+                                if 1 <= int_code <= 15 or int_code == 21:
+                                    self.player_op[self.attack_count]["effect_type"] = "atk"
+                                    self.player_op[self.attack_count]["target"] = ran_e
+                                elif int_code == 16:
+                                    self.player_op[self.attack_count]["effect_type"] = "rec"
+                                    self.player_op[self.attack_count]["target"] = ran_p
+                                elif 17 <= int_code <= 18:
+                                    self.player_op[self.attack_count]["effect_type"] = "dbuff"
+                                    self.player_op[self.attack_count]["target"] = ran_e
+                                elif 19 <= int_code <= 20:
+                                    self.player_op[self.attack_count]["effect_type"] = "buff"
+                                    self.player_op[self.attack_count]["target"] = ran_p
+                            self.player_op[self.attack_count]["effect_check"] = True
+                            if self.player_op[self.attack_count]["effect_type"] == "atk":
+                                self.vibe_count = self.player_op[self.attack_count]["target"]
+                            else:
+                                self.vibe_count = "none"
+                                self.enemy_animation = False
+                        else:
+                            self.vibe_count = self.player_op[self.attack_count]["target"]
+                        if type(self.vibe_count) is int:
+                            if self.vibe_enemy[self.vibe_count]["total"] >= 30:
+                                self.enemy_animation = False
+                                self.vibe_enemy[self.vibe_count] = {
+                                    "total":0,
+                                    "value":0,
+                                    "move":"p"
+                                }
+                                self.damage_pos = 0
+                            elif self.vibe_enemy[self.vibe_count]["total"] < 30:
+                                action = self.player_op[self.attack_count]
+                                atk = self.atk_sum(action)
+                                def_ = self.enemy_status[action["target"]]["def_ab"] * (100 + self.enemy_effect[action["target"]]["def_buff"] - self.enemy_effect[action["target"]]["def_dbuff"]) / 100
+                                damage = False
+                                damage_amount = 0
+                                kaisin_p = 1
+                                ####
+                                #ダメージ計算
+                                #遊び人のスキルによる魔法発動時のダメージ
+                                ####
+                                if action["kaisin"]:
+                                    kaisin_p = self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100
+                                if action["sm"] == "None":
                                     damage = True
-                                    damage_amount = (atk - def_) * kaisin_p * 2
-                                elif action["sm_code"] == "02":
-                                    damage = True
-                                    cri_atk = atk * (self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
-                                    damage_amount = cri_atk - def_
-                                elif action["sm_code"] == "08":
-                                    if action["effect_invoke"] and action["effect_type"] == "atk":
-                                        sm_info = self.magic_codes["magic"][action["effect_name"]]
+                                    damage_amount = (atk - def_) * kaisin_p
+                                elif action["sm"] == "skill":
+                                    sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                                    if action["sm_code"] == "01":
+                                        damage = True
+                                        damage_amount = (atk - def_) * kaisin_p * 2
+                                    elif action["sm_code"] == "02":
+                                        damage = True
+                                        cri_atk = atk * (self.chara_data[list(self.chara_data.keys())[action["player_pos"]]]["satisfaction"][1] / 100)
+                                        damage_amount = cri_atk - def_
+                                    elif action["sm_code"] == "08":
+                                        if action["effect_invoke"] and action["effect_type"] == "atk":
+                                            sm_info = self.magic_codes["magic"][action["effect_name"]]
+                                            damage = True
+                                            magic_atk = atk * sm_info["atk_amount"] / 100
+                                            damage_amount = (magic_atk - def_) * kaisin_p
+                                elif action["sm"] == "magic":
+                                    int_code = int(action["sm_code"])
+                                    sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
+                                    if 1 <= int_code <= 15 or int_code == 21:
                                         damage = True
                                         magic_atk = atk * sm_info["atk_amount"] / 100
                                         damage_amount = (magic_atk - def_) * kaisin_p
-                            elif action["sm"] == "magic":
-                                int_code = int(action["sm_code"])
-                                sm_info = self.magic_codes[action["sm"]][action["sm_code"]]
-                                if 1 <= int_code <= 15 or int_code == 21:
-                                    damage = True
-                                    magic_atk = atk * sm_info["atk_amount"] / 100
-                                    damage_amount = (magic_atk - def_) * kaisin_p
-                            if damage:
-                                enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
-                                if damage_amount > 0:
-                                    if action["kaisin"]:
-                                        if self.damage_pos < -30:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),10)
+                                if damage:
+                                    enemy_interval = self.enemy_info["enemy_pos"][str(self.enemy_num)]
+                                    if damage_amount > 0:
+                                        if action["kaisin"]:
+                                            if self.damage_pos < -30:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),10)
+                                            else:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),10)
                                         else:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),10)
+                                            if self.damage_pos < -30:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),8)
+                                            else:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),8)
                                     else:
-                                        if self.damage_pos < -30:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,str(int(damage_amount)),8)
+                                        if action["kaisin"]:
+                                            if self.damage_pos < -30:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",10)
+                                            else:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",10)
                                         else:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,str(int(damage_amount)),8)
-                                else:
+                                            if self.damage_pos < -30:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",8)
+                                            else:
+                                                self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
+                                    self.damage_pos -= 2
+                                if self.vibe_enemy[self.vibe_count]["total"] == 0:
                                     if action["kaisin"]:
-                                        if self.damage_pos < -30:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",10)
-                                        else:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",10)
+                                        self.app.sound_manager.play_se("damage_enemy")
                                     else:
-                                        if self.damage_pos < -30:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,20,"0",8)
-                                        else:
-                                            self.umplus10.draw_text(enemy_interval[action["target"]] + 12,50 + self.damage_pos,"0",8)
-                                self.damage_pos -= 2
-                            if self.vibe_enemy[self.vibe_count]["total"] == 0:
-                                if action["kaisin"]:
-                                    self.app.sound_manager.play_se("damage_enemy")
+                                        self.app.sound_manager.play_se("damage_enemy")
+                                vibe = self.vibe_enemy[self.vibe_count]
+                                if vibe["move"] == "p":
+                                    if vibe["value"] < 2:
+                                        vibe["value"] += 2
+                                    else:
+                                        vibe["move"] = "m"
+                                        vibe["value"] -= 2
                                 else:
-                                    self.app.sound_manager.play_se("damage_enemy")
-                            vibe = self.vibe_enemy[self.vibe_count]
-                            if vibe["move"] == "p":
-                                if vibe["value"] < 2:
-                                    vibe["value"] += 2
-                                else:
-                                    vibe["move"] = "m"
-                                    vibe["value"] -= 2
-                            else:
-                                if vibe["value"] > -2:
-                                    vibe["value"] -= 2
-                                else:
-                                    vibe["move"] = "p"
-                                    vibe["value"] += 2
-                            vibe["total"] += 1
+                                    if vibe["value"] > -2:
+                                        vibe["value"] -= 2
+                                    else:
+                                        vibe["move"] = "p"
+                                        vibe["value"] += 2
+                                vibe["total"] += 1
 
     def item_update(self):
         """アイテム表示・選択"""
