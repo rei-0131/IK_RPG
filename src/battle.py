@@ -1186,10 +1186,11 @@ class Battle:
                             self.ai_turn = self.turn
                             print(f"{self.ai_action}")
                         i = self.attack_count
+                        for i in range(len(self.ai_action)):
+                            if self.ai_action[i][0] == 0:
+                                if pyxel.rndi(0,1) == 0:
+                                    self.ai_action[i][0] = pyxel.rndi(0,len(list(self.chara_data.keys())))
                         ai_ac = self.ai_action[i]
-                        if ai_ac[0] == 0:
-                            if pyxel.rndi(0,1) == 0:
-                                ai_ac[0] = pyxel.rndi(0,len(list(self.chara_data.keys())))
                         if int(ai_ac[0]) >= len(list(self.chara_data.keys())) or self.chara_data[list(self.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
                             ai_ac[0] = live_p[pyxel.rndi(0,len(live_p) - 1)]
                         if not self.player_animation:
