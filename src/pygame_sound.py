@@ -71,20 +71,21 @@ class pygame_sound:
                     self.loop("assets/sounds/ed.ogg")
                 self.now_music = "endroll"
         elif self.app.now_scene == scenes.MAIN_SCENE:
-            if 430 <= int(self.app.msg_id) <= 454:
-                if self.now_music != "city_last":
-                    if exefile:
-                        self.loop(resource_path("last_field.ogg"))
-                    else:
-                        self.loop("assets/sounds/last_field.ogg")
-                    self.now_music = "city_last"
-            else:
-                if self.now_music != "city":
-                    if exefile:
-                        self.loop(resource_path("city.ogg"))
-                    else:
-                        self.loop("assets/sounds/city.ogg")
-                    self.now_music = "city"
+            if self.app.msg_id is not None:
+                if 430 <= int(self.app.msg_id) <= 454:
+                    if self.now_music != "city_last":
+                        if exefile:
+                            self.loop(resource_path("last_field.ogg"))
+                        else:
+                            self.loop("assets/sounds/last_field.ogg")
+                        self.now_music = "city_last"
+                else:
+                    if self.now_music != "city":
+                        if exefile:
+                            self.loop(resource_path("city.ogg"))
+                        else:
+                            self.loop("assets/sounds/city.ogg")
+                        self.now_music = "city"
         elif self.app.now_scene == scenes.BATTLE_SCENE:
             if self.app.battle.win == "":
                 if self.app.battle.in_boss:
