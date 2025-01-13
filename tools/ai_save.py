@@ -7,7 +7,7 @@ import joblib
 
 data = []
 ai_answer =[]
-with open("src/assets/first_ai.txt","r",encoding="utf-8") as f:
+with open("ai_data/first_ai.txt","r",encoding="utf-8") as f:
     ai_data_ = []
     for line in f:
         line = line.rstrip()
