@@ -5,6 +5,8 @@ from sklearn.preprocessing import StandardScaler
 import copy
 import joblib
 
+import utils.scenes as scenes
+
 
 class Battle:
     """
@@ -98,6 +100,7 @@ class Battle:
         self.add_sm = {}
         self.win_show = False
         self.add_sm_tf = False
+        self.game_init = False
 
     def clean(self,scene):
         """初期化"""
@@ -196,6 +199,7 @@ class Battle:
         self.add_sm = {}
         self.win_show = False
         self.add_sm_tf = False
+        self.game_init = False
 
         # 経験値確認用
         # self.in_battle = False
@@ -1187,7 +1191,7 @@ class Battle:
                             for i in range(len(self.ai_action)):
                                 if self.ai_action[i][0] == 0:
                                     if pyxel.rndi(0,1) == 0:
-                                        self.ai_action[i][0] = pyxel.rndi(0,len(list(self.chara_data.keys())))
+                                        self.ai_action[i][0] = live_p[pyxel.rndi(0,len(live_p) - 1)]
                             print(f"{self.ai_action}")
                         i = self.attack_count
                         ai_ac = self.ai_action[i]
@@ -1459,10 +1463,10 @@ class Battle:
                         if self.finger_pos1 != 0:
                             self.finger_pos1 -= 11
                         else:
-                            self.finger_pos1 = 11
+                            self.finger_pos1 = 22
                         self.app.sound_manager.play_se("select")
                     if pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat = 8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8):
-                        if self.finger_pos1 != 11:
+                        if self.finger_pos1 != 22:
                             self.finger_pos1 += 11
                         else:
                             self.finger_pos1 = 0
@@ -1478,6 +1482,16 @@ class Battle:
                         self.set_enemy(self.enemy_num,self.enemy_code)
                     elif self.select_num1 == 1:
                         self.app.save_load.update(over_load=False,left=False,load=True,battle_load = True)
+                    elif self.select_num1 == 2:
+                        self.game_init = True
+                        self.app.clean()
+                        self.app.setting_in.enter_pos = -1
+                        self.app.setting_in.finger_pos = 0
+                        self.app.title_s.question_mark = 0
+                        self.app.save_load.finger_pos = 0
+                        self.app.save_load.setting_finger = 1
+                        self.app.save_load.save_pos = 1
+                        self.app.now_scene = scenes.TITLE_SCENE
 
     def sm_draw(self,sm):
         """
@@ -1848,11 +1862,12 @@ class Battle:
                     self.escape = False
         else:
             if self.win == "enemy":
-                pyxel.rect(99,88,95,45,0)
-                pyxel.rectb(99,88,95,45,7)
+                pyxel.rect(99,88,95,50,0)
+                pyxel.rectb(99,88,95,50,7)
                 self.umplus10.draw_text(122,89,"YOU LOSE",7)
-                self.umplus10.draw_text(124,100,"CONTINUE",7)
+                self.umplus10.draw_text(122,100,"CONTINUE",7)
                 self.umplus10.draw_text(115,111,"セーブのロード",7)
+                self.umplus10.draw_text(115,122,"タイトルに戻る",7)
                 pyxel.blt(100,100 + self.finger_pos1,self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                 if self.select_num1 == 1:
                     pyxel.cls(0)

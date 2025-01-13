@@ -33,7 +33,7 @@ from pygame_sound import pygame_sound
 from rpg_cmd import CMD
 
 ##########テスト環境
-is_test = True
+is_test = False
 mode = "init"
 msg = False
 ##########
@@ -234,6 +234,70 @@ class App:
         # pyxel.load("../nakayubi-shiei.pyxres")
         pyxel.run(self.update, self.draw)
 
+    def clean(self):
+        self.local = local
+        self.now_scene = -1
+        self.back_scene = -1
+        self.msg_id = None
+        self.be_scene = 0
+        self.now_map = 0
+        self.is_test = is_test
+        self.disp_id = None
+        self.in_word = False
+        self.new_game = True
+        self.from_load = False
+        self.loaddata = None
+        self.in_battle = False
+        self.load_write = False
+        self.mode = mode
+        self.debug_msg = msg
+        self.INIT_DATA = init_data
+        self.chara_data = init_data[mode]["chara_data"]
+        self.item_codes = init_data[mode]["item_codes"]
+        self.equip_codes = init_data[mode]["equip_codes"]
+        self.imp_item_codes = init_data[mode]["imp_item_codes"]
+        self.init_data = init_data[mode]
+        self.config = config
+        self.save_data = save_data
+        self.scenes = scenes_
+        self.words_j = words
+        self.tools = tools
+        self.magic_codes = magic_codes
+        self.enemy_info = enemy_info
+        self.assets_info = assets_info
+        self.collision_data = collision_data
+        self.character_data = character_data
+        self.chara_levelup = {
+            "magic":self.character_data["magic"],
+            "skill":self.character_data["skill"]
+        }
+        self.start_loading = False
+        self.load_msg = ""
+        self.game_time = "00:00:00"
+        self.money = 0
+        self.game_time_start = None
+        self.bgm_run = True
+        self.scale = 0.4
+        self.player_scale = 2
+        self.coord = [0] * 8
+        self.story_flags_tf = {i:False for i in story_flag_names["TF"]}
+        self.story_flags_co = {i:0 for i in story_flag_names["COUNT"]}
+        self.now_location = scenes.CLASS1_SCENE
+        self.mobs = [[] for _ in range(len(list(self.scenes["code"].keys())) - 7)]
+        self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
+        self.story_animation = False
+        self.random_encount = False
+        self.trade = False
+        self.question_selects = {}
+        self.op_show = [True,True]
+        self.adc = False
+        self.exefile = exefile
+        self.base_path = base_path
+        self.load_game = False
+        self.be_msg_id = ""
+        self.heal = False
+        self.heal_time = 0
+
     def resource_path(self,relative_path):
         """
         パスチェック
@@ -263,13 +327,14 @@ class App:
         """
         print(f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] {msg}")
 
-    def my_modules(self):
+    def my_modules(self,reload=False):
         """各クラスのインスタンス作成"""
         ld_st = time.time()
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
         print(self.load_msg)
         self.info("Loading SoundManager...")
         self.sound_manager = SoundManager()
+        self.load_bgms()
         self.info("Loading Map...")
         self.map = Map(self)
         self.cloud = cloud
@@ -723,7 +788,7 @@ class App:
                     if pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
                         self.op_show[1] = False
                         self.sound_manager.play_se("ok")
-            if self.in_battle and not self.random_encount:
+            if self.in_battle and not self.random_encount and not self.battle.game_init:
                 print("loading battle")
                 self.battle.clean(self.now_scene)
                 self.battle.save_chara(self.chara_data)
@@ -753,7 +818,6 @@ class App:
             if not self.start_loading and self.load_write:
                 self.start_loading = True
                 self.my_modules()
-                self.load_bgms()
                 self.now_scene = 0
         if not self.now_scene == scenes.START_SCENE and not self.in_word:
             if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == scenes.MAIN_SCENE or self.now_scene == scenes.IN_SETTING_SCENE):
