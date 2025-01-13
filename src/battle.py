@@ -775,14 +775,14 @@ class Battle:
             self.attack_count += 1
             self.enemy_animation = True
         else:
-            if "revival" in self.player_op[self.attack_count]:
-                live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
-                if self.attack_count == len(self.player_op):
-                    self.operation_player = False
-                    self.attack_count = 0
-                    self.select_num1 = -1
-                    self.select_num2 = -1
-                if self.operation_player:
+            live_e = [len_ for len_,v in enumerate(self.enemy_status) if  v["HP"][1] > 0]
+            if self.attack_count == len(self.player_op):
+                self.operation_player = False
+                self.attack_count = 0
+                self.select_num1 = -1
+                self.select_num2 = -1
+            if self.operation_player:
+                if "revival" not in self.player_op[self.attack_count]:
                     if not (self.player_op[self.attack_count]["target"] != -1 and self.player_op[self.attack_count]["target_team"] == "enemy") and not (self.player_op[self.attack_count]["sm"] == "skill" and self.player_op[self.attack_count]["sm_code"] == "08"):
                         self.enemy_animation = False
                     else:
@@ -1184,12 +1184,12 @@ class Battle:
                             self.ai_action = self.AI.predict(ai_input_data)
                             self.ai_action[:,0] -= 1
                             self.ai_turn = self.turn
+                            for i in range(len(self.ai_action)):
+                                if self.ai_action[i][0] == 0:
+                                    if pyxel.rndi(0,1) == 0:
+                                        self.ai_action[i][0] = pyxel.rndi(0,len(list(self.chara_data.keys())))
                             print(f"{self.ai_action}")
                         i = self.attack_count
-                        for i in range(len(self.ai_action)):
-                            if self.ai_action[i][0] == 0:
-                                if pyxel.rndi(0,1) == 0:
-                                    self.ai_action[i][0] = pyxel.rndi(0,len(list(self.chara_data.keys())))
                         ai_ac = self.ai_action[i]
                         if int(ai_ac[0]) >= len(list(self.chara_data.keys())) or self.chara_data[list(self.chara_data.keys())[int(ai_ac[0])]]["HP"][1] <= 0:
                             ai_ac[0] = live_p[pyxel.rndi(0,len(live_p) - 1)]
