@@ -50,7 +50,8 @@ a.datas += [
     ('normal_battle.ogg','.\\src\\assets\\sounds\\normal_battle.ogg','DATA'),
     ('city.ogg','.\\src\\assets\\sounds\\city.ogg','DATA'),
     ('ed.ogg','.\\src\\assets\\sounds\\ed.ogg','DATA'),
-    ('op.ogg','.\\src\\assets\\sounds\\op.ogg','DATA')
+    ('op.ogg','.\\src\\assets\\sounds\\op.ogg','DATA'),
+    ('last_field.ogg','.\\src\\assets\\sounds\\last_field.ogg','DATA')
 ]
 
 pyz = PYZ(a.pure)
@@ -78,7 +79,7 @@ exe = EXE(
     a.datas,
     [('v', None, 'OPTION')],
     name='イチ工クエスト_console',
-    debug=True,
+    debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
