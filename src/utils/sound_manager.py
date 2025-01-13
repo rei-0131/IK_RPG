@@ -3,7 +3,7 @@ import pyxel
 import os
 import sys
 
-exefile = False
+exefile = True
 
 def resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
