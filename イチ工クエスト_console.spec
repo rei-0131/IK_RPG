@@ -11,7 +11,7 @@ a = Analysis(
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    noarchive=True,
+    noarchive=False,
     optimize=0,
 )
 
@@ -77,7 +77,7 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.datas,
-    [('v', None, 'OPTION')],
+    [],
     name='イチ工クエスト_console',
     debug=False,
     bootloader_ignore_signals=False,

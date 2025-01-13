@@ -5,7 +5,7 @@ import sys
 import utils.scenes as scenes
 
 
-exefile = False
+exefile = True
 
 def resource_path(relative_path):
     """
