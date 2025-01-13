@@ -71,7 +71,7 @@ class pygame_sound:
                     self.loop("assets/sounds/ed.ogg")
                 self.now_music = "endroll"
         elif self.app.now_scene == scenes.MAIN_SCENE:
-            if 430 <= self.app.msg_id <= 454:
+            if 430 <= int(self.app.msg_id) <= 454:
                 if self.now_music != "city_last":
                     if exefile:
                         self.loop(resource_path("last_field.ogg"))
