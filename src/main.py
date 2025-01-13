@@ -39,7 +39,7 @@ msg = False
 ##########
 
 #main, scenes, sound_manager,pygame_sound
-exefile = False
+exefile = True
 
 def resource_path(relative_path):
     """
