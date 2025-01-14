@@ -928,42 +928,42 @@ class Setting:
                                 else:
                                     mai_s = self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3]
 
-                            equip_ = self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]
-                            if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][1] == "DEF":
-                                if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
-                                    if def_ + int(def_ * (equip_ / 100)) + def_p - mai_s > def_ + def_p:
-                                        self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",11)
-                                    elif def_ + int(def_ * (equip_ / 100)) + def_p - mai_s == def_ + def_p:
-                                        self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",7)
-                                    else:
-                                        self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",8)
-                                else:
-                                    if def_ + equip_ + def_p - mai_s > def_ + atk_p:
-                                        self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",11)
-                                    elif def_ + equip_ + def_p - mai_s == def_ + atk_p:
-                                        self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",7)
-                                    else:
-                                        self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",8)
+                    equip_ = self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]
+                    if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][1] == "DEF":
+                        if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
+                            if def_ + int(def_ * (equip_ / 100)) + def_p - mai_s > def_ + def_p:
+                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",11)
+                            elif def_ + int(def_ * (equip_ / 100)) + def_p - mai_s == def_ + def_p:
+                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",7)
                             else:
-                                if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
-                                    if atk + int(atk * (equip_ / 100)) + atk_p - mai_s > atk + atk_p:
-                                        self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",11)
-                                    elif atk + int(atk * (equip_ / 100)) + atk_p - mai_s == atk + atk_p:
-                                        self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",7)
-                                    else:
-                                        self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",8)
-                                else:
-                                    if atk + equip_ + atk_p - mai_s > atk + atk_p:
-                                        self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",11)
-                                    elif atk + equip_ + atk_p - mai_s == atk + atk_p:
-                                        self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",7)
-                                    else:
-                                        self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",8)
-                            try:
-                                self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
-                            except IndexError:
-                                self.in_pqse_finger = 0
-                                self.in_eqst_item = 0
+                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",8)
+                        else:
+                            if def_ + equip_ + def_p - mai_s > def_ + atk_p:
+                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",11)
+                            elif def_ + equip_ + def_p - mai_s == def_ + atk_p:
+                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",7)
+                            else:
+                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",8)
+                    else:
+                        if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
+                            if atk + int(atk * (equip_ / 100)) + atk_p - mai_s > atk + atk_p:
+                                self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",11)
+                            elif atk + int(atk * (equip_ / 100)) + atk_p - mai_s == atk + atk_p:
+                                self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",7)
+                            else:
+                                self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",8)
+                        else:
+                            if atk + equip_ + atk_p - mai_s > atk + atk_p:
+                                self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",11)
+                            elif atk + equip_ + atk_p - mai_s == atk + atk_p:
+                                self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",7)
+                            else:
+                                self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",8)
+                    try:
+                        self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
+                    except IndexError:
+                        self.in_pqse_finger = 0
+                        self.in_eqst_item = 0
                 self.umplus10.draw_text(110,59,"※戻るにはESCキーまたはＡボタンを押す",8)
 
     def status_draw(self):
