@@ -916,6 +916,8 @@ class Battle:
                                         vibe["move"] = "p"
                                         vibe["value"] += 2
                                 vibe["total"] += 1
+                else:
+                    self.enemy_animation = False
 
     def item_update(self):
         """アイテム表示・選択"""
@@ -1424,6 +1426,10 @@ class Battle:
                                         "value":1,
                                         "battle":item["battle"]
                                     }
+                            for k,v in  self.status_diff.keys():
+                                if v["HP"] != 0:
+                                    self.chara_data[k]["HP"][1] = self.chara_data[k]["HP"][0]
+                                    self.status_diff[k]["MP"][1] = self.chara_data[k]["MP"][0]
                             for i in self.chara_data.keys():
                                 if self.chara_data[i]["HP"][1] <= 0:
                                     self.chara_data[i]["HP"][1] = 1
@@ -1601,7 +1607,7 @@ class Battle:
         live_num = 0
         live_p = []
         for len_,i in enumerate(self.chara_data):
-            if self.app.chara_data[i]["HP"][1] > 0:
+            if self.chara_data[i]["HP"][1] > 0:
                 live_num += 1
                 live_p.append(len_)
 
