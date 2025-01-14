@@ -1778,8 +1778,6 @@ class Battle:
                                         self.enemy_target_select_draw()
                                     elif self.target_team == "self":
                                         self.self_target_select_draw()
-                                    elif self.target_team == "none":
-                                        self.none_target_select_draw()
                         elif self.select_num1 == 2:
                             pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
@@ -1791,8 +1789,6 @@ class Battle:
                                         self.enemy_target_select_draw()
                                     elif self.target_team == "self":
                                         self.self_target_select_draw()
-                                    elif self.target_team == "none":
-                                        self.none_target_select_draw()
                         elif self.select_num1 == 3:
                             pyxel.blt(112,self.init_y//2+15+(self.finger_pos2),self.finger_ad[0],self.finger_ad[1],self.finger_ad[2],self.finger_ad[3],self.finger_ad[4],self.finger_ad[5])
                             if self.select_num2 != -1:
