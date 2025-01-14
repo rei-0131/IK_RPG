@@ -155,6 +155,8 @@ class Setting:
                 if (pyxel.btnp(pyxel.KEY_RETURN) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)):
                     if len(list(self.app.item_codes.keys())) > 0:
                         #アイテムを使用するときの処理など
+                        self.finger_pos1 = 0
+                        pos = 0
                         self.enter_pos2 = self.in_st_finger + self.in_st_pos
                         print(self.tools["basic"][list(self.app.item_codes.keys())[self.in_st_finger + self.in_st_pos]]["name"])
                         self.app.sound_manager.play_se("ok")
