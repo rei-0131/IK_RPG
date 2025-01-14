@@ -1429,7 +1429,7 @@ class Battle:
                             for k,v in  self.status_diff.items():
                                 if v["HP"] != 0:
                                     self.chara_data[k]["HP"][1] = self.chara_data[k]["HP"][0]
-                                    self.status_diff[k]["MP"][1] = self.chara_data[k]["MP"][0]
+                                    self.chara_data[k]["MP"][1] = self.chara_data[k]["MP"][0]
                             for i in self.chara_data.keys():
                                 if self.chara_data[i]["HP"][1] <= 0:
                                     self.chara_data[i]["HP"][1] = 1
