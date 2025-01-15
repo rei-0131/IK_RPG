@@ -9,6 +9,7 @@ import joblib
 import numpy as np
 import sys
 import os
+import copy
 
 sys.path.append("src")
 
@@ -33,7 +34,7 @@ from pygame_sound import pygame_sound
 from rpg_cmd import CMD
 
 ##########テスト環境
-is_test = False
+is_test = True
 mode = "init"
 msg = False
 ##########
@@ -161,12 +162,12 @@ class App:
         self.load_write = False
         self.mode = mode
         self.debug_msg = msg
-        self.INIT_DATA = init_data
-        self.chara_data = init_data[mode]["chara_data"]
-        self.item_codes = init_data[mode]["item_codes"]
-        self.equip_codes = init_data[mode]["equip_codes"]
-        self.imp_item_codes = init_data[mode]["imp_item_codes"]
-        self.init_data = init_data[mode]
+        self.INIT_DATA = copy.deepcopy(init_data)
+        self.chara_data = copy.deepcopy(init_data[mode]["chara_data"])
+        self.item_codes = copy.deepcopy(init_data[mode]["item_codes"])
+        self.equip_codes = copy.deepcopy(init_data[mode]["equip_codes"])
+        self.imp_item_codes = copy.deepcopy(init_data[mode]["imp_item_codes"])
+        self.init_data = copy.deepcopy(init_data[mode])
         self.config = config
         self.save_data = save_data
         self.scenes = scenes_
@@ -251,12 +252,12 @@ class App:
         self.load_write = False
         self.mode = mode
         self.debug_msg = msg
-        self.INIT_DATA = init_data
-        self.chara_data = init_data[mode]["chara_data"]
-        self.item_codes = init_data[mode]["item_codes"]
-        self.equip_codes = init_data[mode]["equip_codes"]
-        self.imp_item_codes = init_data[mode]["imp_item_codes"]
-        self.init_data = init_data[mode]
+        self.INIT_DATA = copy.deepcopy(init_data)
+        self.chara_data = copy.deepcopy(init_data[mode]["chara_data"])
+        self.item_codes = copy.deepcopy(init_data[mode]["item_codes"])
+        self.equip_codes = copy.deepcopy(init_data[mode]["equip_codes"])
+        self.imp_item_codes = copy.deepcopy(init_data[mode]["imp_item_codes"])
+        self.init_data = copy.deepcopy(init_data[mode])
         self.config = config
         self.save_data = save_data
         self.scenes = scenes_
@@ -327,7 +328,7 @@ class App:
         """
         print(f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] {msg}")
 
-    def my_modules(self,reload=False):
+    def my_modules(self):
         """各クラスのインスタンス作成"""
         ld_st = time.time()
         self.load_msg = f"[{dt.datetime.now(ZoneInfo('Asia/Tokyo')).strftime('%Y/%m/%d %H:%M:%S')}] Load start"
@@ -466,23 +467,36 @@ class App:
                         "location": 6,
                         "x": -100,
                         "y": -100,
-                        "chara_data":self.chara_data,
-                        "item_codes":self.item_codes,
-                        "imp_item_codes":self.imp_item_codes,
-                        "equip_codes":self.equip_codes,
-                        "story_flags_tf":self.story_flags_tf,
-                        "story_flags_co":self.story_flags_co,
-                        "question_selects":self.question_selects
+                        "chara_data":copy.deepcopy(self.chara_data),
+                        "item_codes":copy.deepcopy(self.item_codes),
+                        "imp_item_codes":copy.deepcopy(self.imp_item_codes),
+                        "equip_codes":copy.deepcopy(self.equip_codes),
+                        "story_flags_tf":copy.deepcopy(self.story_flags_tf),
+                        "story_flags_co":copy.deepcopy(self.story_flags_co),
+                        "question_selects":copy.deepcopy(self.question_selects)
                         }
                     }
+                    self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
+                    self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
                     self.game_time = self.loaddata["play_data"]["time"]
                     self.money = self.loaddata["play_data"]["money"]
                     self.player.x = self.loaddata["play_data"]["x"]
                     self.player.y = self.loaddata["play_data"]["y"]
                     self.msg_id = self.loaddata["play_data"]["words"]["msg_id"]
                     self.disp_id = self.loaddata["play_data"]["words"]["disp_id"]
+                    self.chara_data = self.loaddata["play_data"]["chara_data"]
+                    self.item_codes = self.loaddata["play_data"]["item_codes"]
+                    self.imp_item_codes = self.loaddata["play_data"]["imp_item_codes"]
+                    self.equip_codes = self.loaddata["play_data"]["equip_codes"]
                     self.now_location = self.loaddata["play_data"]["location"]
+                    self.story_flags_tf = self.loaddata["play_data"]["story_flags_tf"]
+                    self.story_flags_co = self.loaddata["play_data"]["story_flags_co"]
+                    self.question_selects = self.loaddata["play_data"]["question_selects"]
                     self.load_game = False
+                    if self.battle.game_init:
+                        self.my_modules()
+                        self.mobs = [[] for _ in range(len(list(self.scenes["code"].keys())) - 7)]
+                        self.scene_show = [False for _ in range(len(list(self.scenes["code"].keys())) - 7)]
                 self.new_game = False
             if not self.scene_show[self.now_location - 6]:
                 for k,v in self.assets_info["chara"].items():
