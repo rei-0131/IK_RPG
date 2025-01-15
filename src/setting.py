@@ -374,7 +374,7 @@ class Setting:
                     self.app.sound_manager.play_se("ok")
             else:
                 len_eq = len(self.app.loaddata["play_data"]["equip_codes"][self.tool_names[self.equip_part]])
-                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A):
+                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A):
                     self.equip_part = -1
                     self.in_pqse_finger = 0
                     self.in_eqst_item = 0
@@ -886,7 +886,7 @@ class Setting:
                                 if j == self.in_pqse_finger + self.in_eqst_item:
                                     pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                                 if i[1][1] == 9:
-                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"E",i[1][1])
+                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"Ｅ",i[1][1])
                                 self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
                         else:
                             for i,j in zip(enumerate(self.equip_dis[self.in_eqst_item:self.in_eqst_item+8]),range(self.in_eqst_item,self.in_eqst_item+8)):
@@ -895,7 +895,7 @@ class Setting:
                                 if j == self.in_pqse_finger + self.in_eqst_item:
                                     pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                                 if i[1][1] == 9:
-                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
+                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"Ｅ",i[1][1])
                                 self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
                     else:
                         for i,j in zip(enumerate(self.equip_dis),range(len(self.equip_dis))):
@@ -904,7 +904,7 @@ class Setting:
                             if j == self.in_pqse_finger + self.in_eqst_item:
                                 pyxel.rect(71+(114*w),136+(16*h),114,15,1)
                             if i[1][1] == 9:
-                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"使",i[1][1])
+                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"Ｅ",i[1][1])
                             self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
                     pyxel.rect(71,6,228,20,0)
                     self.umplus10.draw_text(115,93,"→",7)
