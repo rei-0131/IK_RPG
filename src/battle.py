@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import copy
-import joblib
+import cloudpickle
 
 import utils.scenes as scenes
 
@@ -80,9 +80,11 @@ class Battle:
         self.finger_ad = self.app.assets_info["finger_ad"]
         self.finger_ws = self.app.assets_info["finger_ws"]
         if self.app.exefile:
-            self.AI = joblib.load(self.app.resource_path("rpg.aibi"))
+            with open(self.app.resource_path("rpg.aibi"), mode='rb') as f:
+                self.AI = cloudpickle.load(f)
         else:
-            self.AI = joblib.load("assets/rpg.aibi")
+            with open("assets/rpg.aibi", mode='rb') as f:
+                self.AI = cloudpickle.load(f)
         self.xp_up = {}
         self.xp_get = False
         self.xp_stop = False
