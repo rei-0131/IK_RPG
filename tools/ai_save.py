@@ -3,7 +3,7 @@ from sklearn.decomposition import PCA
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
-import joblib
+import cloudpickle
 
 data = []
 ai_answer =[]
@@ -52,4 +52,5 @@ data = scaler.fit_transform(data)
 clf = MultiOutputRegressor(MLPClassifier(alpha=0.00001, hidden_layer_sizes=(400,200,100,50),max_iter=1000,random_state=0,early_stopping=True))
 clf.fit(data , data_answer)
 
-joblib.dump(clf, "rpg.aibi")
+with open('rpg_1.5.2.aibi', mode='wb') as f:
+    cloudpickle.dump(clf,f)
