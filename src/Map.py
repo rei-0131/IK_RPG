@@ -62,15 +62,15 @@ class Map:
         if key == "w":
             check_x[0] += 3
             for i in range(1,point_n - 1):
-                check_x[i] += 2 + 12 / (point_n - 1) * i * player_scale
+                check_x[i] += 2 + 7 / (point_n - 1) * i * player_scale
             check_y += player_scale * 9
         elif key == "s":
             check_x[0] += 3
             for i in range(1,point_n - 1):
-                check_x[i] += 2 + 12 / (point_n - 1) * i * player_scale
+                check_x[i] += 2 + 7 / (point_n - 1) * i * player_scale
             check_y += 16 * player_scale
         elif key == "a":
-            check_x += 2
+            check_x += 6
             for i in range(8):
                 check_y[i] += 12 / (point_n - 2) * 7 * player_scale
             for i in range(8,point_n - 1):
@@ -78,7 +78,7 @@ class Map:
             check_y[point_n - 1] += 16 * player_scale
         elif key == "d":
             for i in range(point_n):
-                check_x[i] += 12 * player_scale
+                check_x[i] += 11 * player_scale
             for i in range(8):
                 check_y[i] += 12 / (point_n - 2) * 7 * player_scale
             for i in range(8,point_n - 1):

@@ -34,7 +34,7 @@ from pygame_sound import pygame_sound
 from rpg_cmd import CMD
 
 ##########テスト環境
-is_test = True
+is_test = False
 mode = "init"
 msg = False
 ##########
@@ -842,7 +842,7 @@ class App:
                     self.be_scene = self.now_scene
                     self.now_scene = scenes.IN_SETTING_SCENE
         if not self.now_scene == scenes.START_SCENE:
-            if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL) and self.is_test:
+            if pyxel.btnp(pyxel.KEY_C) and pyxel.btn(pyxel.KEY_CTRL):
                 if self.now_scene == "cmd":
                     self.now_scene = self.back_scene
                 else:
