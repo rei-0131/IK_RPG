@@ -1280,6 +1280,7 @@ class Battle:
                                             self.chara_data[list(self.chara_data.keys())[n]]["HP"][1] = self.chara_data[list(self.chara_data.keys())[n]]["HP"][0]
                                         self.player_effect[n]["recovery_turn"] -= 1
                                     self.player_effect[n]["atk_invalid"] = False
+                                    self.player_effect[n]["dmg_replace"] = False
                         else:
                             if self.vibe_player[int(ai_ac[0])]["total"] >= 10:
                                 self.player_animation = False
