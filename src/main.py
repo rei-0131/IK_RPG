@@ -5,7 +5,7 @@ import time
 import datetime as dt
 from zoneinfo import ZoneInfo
 import sklearn
-import joblib
+import cloudpickle
 import numpy as np
 import sys
 import os
@@ -378,7 +378,7 @@ class App:
             print(f"pyodide version:{pyodide.__version__}")
         print(f"numpy version:{np.__version__}")
         print(f"scikit-learn version:{sklearn.__version__}")
-        print(f"joblib version:{joblib.__version__}")
+        print(f"cloudpickle version:{cloudpickle.__version__}")
         print("-----------------------------------")
 
     def load_bgms(self):
