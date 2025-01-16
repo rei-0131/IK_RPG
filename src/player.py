@@ -1,4 +1,5 @@
 import pyxel
+
 import utils.scenes as scenes
 
 class Player:
