@@ -833,7 +833,7 @@ class App:
                 self.start_loading = True
                 self.my_modules()
                 self.now_scene = 0
-        if not self.now_scene == scenes.START_SCENE and not self.in_word:
+        if not self.now_scene == scenes.START_SCENE and not self.in_word and not self.trade:
             if (pyxel.btnp(pyxel.KEY_TAB) or  pyxel.btnp(pyxel.GAMEPAD1_BUTTON_Y)) and (self.now_scene == scenes.MAIN_SCENE or self.now_scene == scenes.IN_SETTING_SCENE):
                 if self.now_scene == scenes.IN_SETTING_SCENE:
                     self.now_scene = self.be_scene
