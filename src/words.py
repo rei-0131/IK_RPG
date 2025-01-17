@@ -28,7 +28,7 @@ class Words:
         #操作
         self.frame_count += 1
         if not self.app.story_animation:
-            if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B):
+            if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RETURN):
                 if self.app.msg_id == "38" and not self.app.story_flags_tf["energy_stu"]:
                     self.app.story_flags_tf["energy_stu"] = True
                 if self.app.msg_id == "40" and not self.app.story_flags_tf["languid_stu"]:
@@ -95,7 +95,7 @@ class Words:
                     self.frame_count = 0
         else:
             if not self.app.story_animation:
-                if (pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B)) and self.frame_count > 8:
+                if (pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_B) or pyxel.btnp(pyxel.KEY_RETURN)) and self.frame_count > 8:
                     if self.app.msg_id == "432":
                         self.app.now_location = scenes.CLASS1_SCENE
                         self.app.player.x = 330
