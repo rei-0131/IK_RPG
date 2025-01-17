@@ -36,6 +36,8 @@ class Setting:
         self.in_eqst_finger = 0
         self.in_eqst_item = 0
         self.in_pqse_finger = 0
+        self.dis_num = 0
+        self.equip_num = 0
         self.in_eq_enter = -1
         self.finger_pos1 = 0
         self.equip_men = False
@@ -374,63 +376,53 @@ class Setting:
                     self.app.sound_manager.play_se("ok")
             else:
                 len_eq = len(self.app.loaddata["play_data"]["equip_codes"][self.tool_names[self.equip_part]])
-                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or pyxel.btnp(pyxel.KEY_LEFT) or pyxel.btnp(pyxel.KEY_A):
+                if pyxel.btnp(pyxel.KEY_ESCAPE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or pyxel.btnp(pyxel.KEY_A):
                     self.equip_part = -1
                     self.in_pqse_finger = 0
                     self.in_eqst_item = 0
                     self.equip_select = True
                     self.app.sound_manager.play_se("select")
-                if len_eq > 2:
-                    if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
-                        if self.in_pqse_finger != 0 and self.in_pqse_finger != 1:
-                            self.in_pqse_finger -= 2
-                            self.app.sound_manager.play_se("select")
-                        elif self.in_eqst_item != 0:
-                            self.in_eqst_item -= 2
-                            self.app.sound_manager.play_se("select")
-                    if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
-                        if len_eq // 2 + len_eq % 2 >= self.in_pqse_finger + 1:
+                if (pyxel.btnp(pyxel.KEY_UP,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_W,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_UP,hold = 8,repeat=8)):
+                    if not (self.in_pqse_finger == 0 and self.in_pqse_finger == 1):
+                        self.in_pqse_finger -= 2
+                        self.app.sound_manager.play_se("select")
+                    elif self.in_eqst_item - 2 >= 0:
+                        self.in_eqst_item -= 2
+                        self.app.sound_manager.play_se("select")
+                if (pyxel.btnp(pyxel.KEY_DOWN,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_S,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_DOWN,hold = 8,repeat=8)):
+                    if self.in_pqse_finger != 6 and self.in_pqse_finger != 7:
+                        if self.in_pqse_finger + 2 < self.dis_num:
                             self.in_pqse_finger += 2
                             self.app.sound_manager.play_se("select")
-                        else:
-                            if len_eq // 2 >= self.in_eqst_item + 4:
-                                self.in_eqst_item += 2
-                                self.app.sound_manager.play_se("select")
-                            elif self.in_eqst_item + self.in_pqse_finger + 2 <= len_eq - 1:
-                                self.in_eqst_item += 2
-                                self.app.sound_manager.play_se("select")
-                            elif self.in_eqst_item + self.in_pqse_finger + 2 == len_eq and self.in_pqse_finger % 2 != 0:
-                                self.in_eqst_item += 2
-                                self.in_pqse_finger -= 1
-                                self.app.sound_manager.play_se("select")
-                    if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
-                        if self.in_pqse_finger - 2 != len_eq // 2 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
-                            self.in_pqse_finger += 1
-                            self.app.sound_manager.play_se("select")
-                        elif self.in_eqst_item + self.in_pqse_finger != len_eq + 1 and self.in_pqse_finger + self.in_eqst_item != len_eq - 1:
+                    else:
+                        if self.in_pqse_finger + self.in_eqst_item + 2 < self.equip_num:
                             self.in_eqst_item += 2
-                            if self.in_pqse_finger % 2 == 0:
-                                self.in_pqse_finger += 1
-                            else:
-                                self.in_pqse_finger -= 1
                             self.app.sound_manager.play_se("select")
-                    if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
-                        if self.in_pqse_finger == 0 and self.in_eqst_item != 0:
+                        elif self.in_pqse_finger + self.in_eqst_item + 2 == self.equip_num:
+                            self.in_eqst_item += 2
+                            self.in_pqse_finger -= 1
+                            self.app.sound_manager.play_se("select")
+                if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
+                    if self.in_pqse_finger + 1 < self.dis_num:
+                        self.in_pqse_finger += 1
+                        self.app.sound_manager.play_se("select")
+                    elif not self.in_eqst_item + 11 <= self.equip_num and self.in_pqse_finger % 2 != 0:
+                        self.in_pqse_finger -= 1
+                        self.in_eqst_item += 2
+                        self.app.sound_manager.play_se("select")
+                    elif self.in_eqst_item + 10 <= self.equip_num:
+                        self.in_pqse_finger -= 1
+                        self.in_eqst_item += 2
+                        self.app.sound_manager.play_se("select")
+                if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
+                    if self.in_eqst_item != 0:
+                        if self.in_pqse_finger == 0:
+                            self.in_pqse_finger += 1
                             self.in_eqst_item -= 2
-                            self.in_pqse_finger += 1
-                            self.app.sound_manager.play_se("select")
-                        elif self.in_eqst_item != 0:
+                        else:
                             self.in_pqse_finger -= 1
-                            self.app.sound_manager.play_se("select")
-                        elif self.in_pqse_finger != 0:
-                            self.in_pqse_finger -= 1
-                            self.app.sound_manager.play_se("select")
-                else:
-                    if pyxel.btnp(pyxel.KEY_RIGHT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_D,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_RIGHT,hold = 8,repeat=8):
-                        if self.in_pqse_finger != 1:
-                            self.in_pqse_finger += 1
-                            self.app.sound_manager.play_se("select")
-                    if pyxel.btnp(pyxel.KEY_LEFT,hold = 8,repeat=8) or pyxel.btnp(pyxel.KEY_A,hold = 8,repeat=8) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_DPAD_LEFT,hold = 8,repeat=8):
+                        self.app.sound_manager.play_se("select")
+                    else:
                         if self.in_pqse_finger != 0:
                             self.in_pqse_finger -= 1
                             self.app.sound_manager.play_se("select")
@@ -877,46 +869,44 @@ class Setting:
                         else:
                             self.equip_dis.append([i,7])
 
-                    if len(self.app.loaddata["play_data"]["equip_codes"][self.tool_names[self.equip_part]]) > 8:
-                        item_len = len(self.app.loaddata["play_data"]["equip_codes"][self.tool_names[self.equip_part]])
-                        if item_len - self.in_eqst_item <= 8:
-                            for i,j in zip(enumerate(self.equip_dis[self.in_eqst_item:item_len]),range(self.in_eqst_item,item_len)):
-                                h = int(i[0] // 2)
-                                w = i[0] % 2
-                                if j == self.in_pqse_finger + self.in_eqst_item:
-                                    pyxel.rect(71+(114*w),136+(16*h),114,15,1)
-                                if i[1][1] == 9:
-                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"Ｅ",i[1][1])
-                                self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
-                        else:
-                            for i,j in zip(enumerate(self.equip_dis[self.in_eqst_item:self.in_eqst_item+8]),range(self.in_eqst_item,self.in_eqst_item+8)):
-                                h = int(i[0] // 2)
-                                w = i[0] % 2
-                                if j == self.in_pqse_finger + self.in_eqst_item:
-                                    pyxel.rect(71+(114*w),136+(16*h),114,15,1)
-                                if i[1][1] == 9:
-                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"Ｅ",i[1][1])
-                                self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
-                    else:
-                        for i,j in zip(enumerate(self.equip_dis),range(len(self.equip_dis))):
-                            h = int(i[0] // 2)
-                            w = i[0] % 2
-                            if j == self.in_pqse_finger + self.in_eqst_item:
-                                pyxel.rect(71+(114*w),136+(16*h),114,15,1)
-                            if i[1][1] == 9:
-                                    self.umplus10.draw_text(173+(114*w),139+(16*h),"Ｅ",i[1][1])
-                            self.umplus10.draw_text(71+(114*w),139+(16*h),self.tools[self.tool_names[self.equip_part]][i[1][0]][0],i[1][1])
+                    if len(self.equip_dis) > 0:
+                        try:
+                            self.equip_num = len(self.equip_dis)
+                            if self.equip_num >= self.in_eqst_item + 13:
+                                self.dis_num = 8
+                                for i,eq in enumerate(self.equip_dis[self.in_eqst_item:self.equip_num]):
+                                    h = int(i // 2)
+                                    w = i % 2
+                                    if i == self.in_pqse_finger:
+                                        pyxel.rect(71 + (114 * w),136 + (16 * h),114,15,1)
+                                    if eq[1] == 9:
+                                        self.umplus10.draw_text(173 + (114 * w),139 + (16 * h),"Ｅ",eq[1])
+                                    self.umplus10.draw_text(71 + (114 * w),139 + (16 * h),self.tools[self.tool_names[self.equip_part]][eq[0]][0],eq[1])
+                            else:
+                                self.dis_num = self.equip_num - self.in_eqst_item
+                                for i,eq in enumerate(self.equip_dis[self.in_eqst_item:self.equip_num]):
+                                    h = int(i // 2)
+                                    w = i % 2
+                                    if i == self.in_pqse_finger:
+                                        pyxel.rect(71 + (114 * w),136 + (16 * h),114,15,1)
+                                    if eq[1] == 9:
+                                        self.umplus10.draw_text(173 + (114 * w),139 + (16 * h),"ＥA",eq[1])
+                                    self.umplus10.draw_text(71 + (114 * w),139 + (16 * h),self.tools[self.tool_names[self.equip_part]][eq[0]][0],eq[1])
+                        except Exception:
+                            pass
                     pyxel.rect(71,6,228,20,0)
                     self.umplus10.draw_text(115,93,"→",7)
                     self.umplus10.draw_text(115,104,"→",7)
                     if self.in_eqst_item + self.in_pqse_finger + 1 >= len(list(self.tools[self.tool_names[self.equip_part]].keys())):
-                        equip_sum = (self.in_eqst_item + self.in_pqse_finger) % 4
+                        equip_sum = self.in_pqse_finger + self.in_eqst_item
                     else:
-                        equip_sum = self.in_eqst_item + self.in_pqse_finger
+                        equip_sum = self.in_pqse_finger + self.in_eqst_item
+                    if equip_sum >= self.equip_num:
+                        equip_sum = 0
 
                     mai_s = 0
                     if self.tool_names[self.equip_part] in chara_data["equipments"]:
-                        if chara_data["equipments"][self.tool_names[self.equip_part]] != "":
+                        if self.equip_dis[equip_sum][0] != "":
                             if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][1] == "DEF":
                                 if self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][2] == "p":
                                     mai_s = def_ * (self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3] / 100)
@@ -928,30 +918,30 @@ class Setting:
                                 else:
                                     mai_s = self.tools[self.tool_names[self.equip_part]][chara_data["equipments"][self.tool_names[self.equip_part]]][3]
 
-                    equip_ = self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][3]
-                    if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][1] == "DEF":
-                        if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
-                            if def_ + int(def_ * (equip_ / 100)) + def_p - mai_s > def_ + def_p:
-                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",11)
-                            elif def_ + int(def_ * (equip_ / 100)) + def_p - mai_s == def_ + def_p:
-                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",7)
+                    equip_ = self.tools[self.tool_names[self.equip_part]][self.equip_dis[equip_sum][0]][3]
+                    if self.tools[self.tool_names[self.equip_part]][self.equip_dis[equip_sum][0]][1] == "DEF":
+                        if self.tools[self.tool_names[self.equip_part]][self.equip_dis[equip_sum][0]][2] == "p":
+                            if int(def_ + def_ * (equip_ / 100) + def_p - mai_s) > def_ + def_p:
+                                self.umplus10.draw_text(136,104,f"{int(def_ + def_ * (equip_ / 100) + def_p - mai_s)}",11)
+                            elif int(def_ + def_ * (equip_ / 100) + def_p - mai_s) == def_ + def_p:
+                                self.umplus10.draw_text(136,104,f"{int(def_ + def_ * (equip_ / 100) + def_p - mai_s)}",7)
                             else:
-                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",8)
+                                self.umplus10.draw_text(136,104,f"{int(def_ + def_ * (equip_ / 100) + def_p - mai_s)}",8)
                         else:
                             if def_ + equip_ + def_p - mai_s > def_ + atk_p:
-                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",11)
+                                self.umplus10.draw_text(136,104,f"{def_ + equip_ + def_p - mai_s}",11)
                             elif def_ + equip_ + def_p - mai_s == def_ + atk_p:
-                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",7)
+                                self.umplus10.draw_text(136,104,f"{def_ + equip_ + def_p - mai_s}",7)
                             else:
-                                self.umplus10.draw_text(136,104,f"{int(def_ + int(def_ * (equip_ / 100) + def_p - mai_s))}",8)
+                                self.umplus10.draw_text(136,104,f"{def_ + equip_ + def_p - mai_s}",8)
                     else:
-                        if self.tools[self.tool_names[self.equip_part]][list(self.tools[self.tool_names[self.equip_part]].keys())[equip_sum]][2] == "p":
-                            if atk + int(atk * (equip_ / 100)) + atk_p - mai_s > atk + atk_p:
-                                self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",11)
-                            elif atk + int(atk * (equip_ / 100)) + atk_p - mai_s == atk + atk_p:
-                                self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",7)
+                        if self.tools[self.tool_names[self.equip_part]][self.equip_dis[equip_sum][0]][2] == "p":
+                            if int(atk + atk * (equip_ / 100) + atk_p - mai_s) > atk + atk_p:
+                                self.umplus10.draw_text(136,93,f"{int(atk + atk * (equip_ / 100) + atk_p - mai_s)}",11)
+                            elif int(atk + atk * (equip_ / 100) + atk_p - mai_s) == atk + atk_p:
+                                self.umplus10.draw_text(136,93,f"{int(atk + atk * (equip_ / 100) + atk_p - mai_s)}",7)
                             else:
-                                self.umplus10.draw_text(136,93,f"{int(atk + int(atk * (equip_ / 100) + atk_p - mai_s))}",8)
+                                self.umplus10.draw_text(136,93,f"{int(atk + atk * (equip_ / 100) + atk_p - mai_s)}",8)
                         else:
                             if atk + equip_ + atk_p - mai_s > atk + atk_p:
                                 self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",11)
@@ -960,7 +950,7 @@ class Setting:
                             else:
                                 self.umplus10.draw_text(136,93,f"{int(atk + equip_ + atk_p - mai_s)}",8)
                     try:
-                        self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[self.in_pqse_finger + self.in_eqst_item][0]][4],7)
+                        self.umplus10.draw_text(71,6,self.tools[self.tool_names[self.equip_part]][self.equip_dis[equip_sum][0]][4],7)
                     except IndexError:
                         self.in_pqse_finger = 0
                         self.in_eqst_item = 0
