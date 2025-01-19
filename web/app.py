@@ -12,7 +12,10 @@ app.secret_key = os.urandom(24)
 
 @app.route("/",methods=["GET", "POST"])
 def rpg():
-    user_agent = request.headers.get("User-Agent").lower()
+    try:
+        user_agent = request.headers.get("User-Agent").lower()
+    except Exception:
+        user_agent = "tmp mobile"
     print(f"{dt.datetime.now().strftime('[%Y-%m-%dT%H:%M:%S.%f]')} {user_agent}")
     if "mobile" in user_agent:
         return render_template("sp/rpg.html")
