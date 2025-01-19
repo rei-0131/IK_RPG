@@ -2,7 +2,7 @@
 
 2DRPG
 
-[**現段階の master をプレイ**](https://tops-desired-hog.ngrok-free.app)
+[**現段階の master をプレイ**](https://ik-rpg.f5.si)
 
 ## 使用モジュール
 
